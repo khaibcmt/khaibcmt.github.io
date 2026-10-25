@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Khai Portal - Hệ Thống Ứng Dụng Dạy Học</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --bg-dark: #0d1117;
+      --sidebar-bg: #161b22;
+      --border-color: #30363d;
+      --text-primary: #f0f6fc;
+      --text-secondary: #8b949e;
+      --active-bg: #21262d;
+      --accent-color: #2f81f7;
+      --sidebar-width: 260px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    aside {
+      width: var(--sidebar-width);
+      background-color: var(--sidebar-bg);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      transition: width 0.3s ease;
+      z-index: 10;
+    }
+
+    .brand {
+      padding: 18px 20px;
+      font-size: 1.15rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid var(--border-color);
+      color: #58a6ff;
+    }
+
+    .menu-group {
+      flex: 1;
+      padding: 12px 8px;
+      overflow-y: auto;
+    }
+
+    .menu-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-secondary);
+      padding: 8px 12px 6px;
+      font-weight: 600;
+    }
+
+    .nav-btn {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 14px;
+      margin-bottom: 4px;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 0.95rem;
+      text-align: left;
+      transition: all 0.2s;
+    }
+
+    .nav-btn:hover {
+      background-color: var(--active-bg);
+      color: var(--text-primary);
+    }
+
+    .nav-btn.active {
+      background-color: var(--active-bg);
+      border-color: var(--border-color);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    .nav-btn i {
+      font-size: 1.1rem;
+      width: 20px;
+      text-align: center;
+    }
+
+    .user-profile {
+      padding: 14px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+    }
+
+    .user-profile i {
+      font-size: 1.4rem;
+      color: #58a6ff;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background-color: #010409;
+      height: 100vh;
+    }
+
+    .topbar {
+      height: 52px;
+      border-bottom: 1px solid var(--border-color);
+      background-color: var(--sidebar-bg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+    }
+
+    .current-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .btn-action {
+      background-color: var(--active-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-decoration: none;
+      transition: background 0.2s;
+    }
+
+    .btn-action:hover {
+      background-color: #30363d;
+    }
+
+    .iframe-wrapper {
+      flex: 1;
+      position: relative;
+      width: 100%;
+      height: calc(100vh - 52px);
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #ffffff;
+    }
+
+    .loader {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      color: var(--text-secondary);
+      font-size: 0.95rem;
+    }
+
+    .spinner {
+      width: 32px;
+      height: 32px;
+      border: 3px solid var(--border-color);
+      border-top-color: var(--accent-color);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 768px) {
+      aside {
+        width: 60px;
+      }
+      .brand span, .menu-label, .nav-btn span, .user-profile span {
+        display: none;
+      }
+      .nav-btn {
+        justify-content: center;
+        padding: 12px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <aside>
+    <div class="brand">
+      <i class="fa-solid fa-layer-group"></i>
+      <span>Khai System</span>
+    </div>
+
+    <div class="menu-group">
+      <div class="menu-label">Trợ lý Giáo viên</div>
+      <button class="nav-btn active" data-url="/eduai-pro/" data-title="EduAI Pro - Trợ Lý Soạn Bài & Đề Thi" data-color="#58a6ff">
+        <i class="fa-solid fa-robot" style="color: #58a6ff;"></i>
+        <span>EduAI Pro</span>
+      </button>
+
+      <button class="nav-btn" data-url="/biomaster-ai/" data-title="BioMaster AI - Trợ Lý Sinh Học Chuyên Sâu" data-color="#3fb950">
+        <i class="fa-solid fa-dna" style="color: #3fb950;"></i>
+        <span>BioMaster AI</span>
+      </button>
+
+      <div class="menu-label">Trò chơi & Tương tác</div>
+      <button class="nav-btn" data-url="/dautruong3d/" data-title="Đấu Trường 3D - Kéo Co & Rung Chuông Vàng" data-color="#f778ba">
+        <i class="fa-solid fa-cubes" style="color: #f778ba;"></i>
+        <span>Đấu Trường 3D</span>
+      </button>
+
+      <button class="nav-btn" data-url="/trochoi/" data-title="Trò Chơi Học Tập - Minigame Khởi Động" data-color="#d29922">
+        <i class="fa-solid fa-gamepad" style="color: #d29922;"></i>
+        <span>Trò Chơi Học Tập</span>
+      </button>
+
+      <div class="menu-label">Dữ liệu & Lớp học</div>
+      <button class="nav-btn" data-url="/edu/" data-title="Edu Hub - Tài Liệu & Liên Kết Lớp Học" data-color="#bc8cff">
+        <i class="fa-solid fa-book-open" style="color: #bc8cff;"></i>
+        <span>Edu Hub</span>
+      </button>
+    </div>
+
+    <div class="user-profile">
+      <i class="fa-solid fa-circle-user"></i>
+      <span>khaibcmt.github.io</span>
+    </div>
+  </aside>
+
+  <main>
+    <div class="topbar">
+      <div class="current-info">
+        <i id="header-icon" class="fa-solid fa-robot" style="color: #58a6ff;"></i>
+        <span id="header-title">EduAI Pro - Trợ Lý Soạn Bài & Đề Thi</span>
+      </div>
+      <div class="actions">
+        <a id="btn-external" href="/eduai-pro/" target="_blank" class="btn-action" title="Mở trang trong tab mới">
+          <i class="fa-solid fa-arrow-up-right-from-square"></i> Tab mới
+        </a>
+        <button id="btn-fullscreen" class="btn-action" title="Chế độ toàn màn hình">
+          <i class="fa-solid fa-expand"></i> Phóng to
+        </button>
+      </div>
+    </div>
+
+    <div class="iframe-wrapper">
+      <div class="loader" id="loader">
+        <div class="spinner"></div>
+        <span>Đang tải mô-đun...</span>
+      </div>
+      <iframe id="app-viewport" src="/eduai-pro/" allow="camera; microphone; autoplay; fullscreen"></iframe>
+    </div>
+  </main>
+
+  <script>
+    const navButtons = document.querySelectorAll('.nav-btn');
+    const iframe = document.getElementById('app-viewport');
+    const loader = document.getElementById('loader');
+    const headerTitle = document.getElementById('header-title');
+    const headerIcon = document.getElementById('header-icon');
+    const btnExternal = document.getElementById('btn-external');
+    const btnFullscreen = document.getElementById('btn-fullscreen');
+
+    navButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        navButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+
+        const targetUrl = button.getAttribute('data-url');
+        const targetTitle = button.getAttribute('data-title');
+        const iconClass = button.querySelector('i').className;
+        const iconColor = button.getAttribute('data-color');
+
+        loader.style.display = 'flex';
+        iframe.style.opacity = '0';
+
+        headerTitle.textContent = targetTitle;
+        headerIcon.className = iconClass;
+        headerIcon.style.color = iconColor;
+        btnExternal.href = targetUrl;
+        iframe.src = targetUrl;
+      });
+    });
+
+    iframe.addEventListener('load', () => {
+      loader.style.display = 'none';
+      iframe.style.opacity = '1';
+    });
+
+    btnFullscreen.addEventListener('click', () => {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+          console.error(err);
+        });
+        btnFullscreen.innerHTML = '<i class="fa-solid fa-compress"></i> Thu nhỏ';
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+          btnFullscreen.innerHTML = '<i class="fa-solid fa-expand"></i> Phóng to';
+        }
+      }
+    });
+  </script>
+</body>
+</html>
