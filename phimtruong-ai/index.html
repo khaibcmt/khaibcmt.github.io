@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PhimTrường AI — Filmmaking Studio</title>
+<style>
+  html,body{height:100%;}
+  body{margin:0;background:#0a0f1e;color:#dbe4ff;font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif;font-size:14px;overflow:hidden;}
+  ::-webkit-scrollbar{width:9px;height:9px}
+  ::-webkit-scrollbar-track{background:#0a0f1e}
+  ::-webkit-scrollbar-thumb{background:#24335f;border-radius:6px}
+  ::-webkit-scrollbar-thumb:hover{background:#31478a}
+  button{font-family:inherit;cursor:pointer;}
+  input,select,textarea{font-family:inherit;}
+  .app{display:flex;height:100vh;}
+
+  /* ===== RAIL ICON TRÁI ===== */
+  .rail{width:52px;flex:0 0 52px;background:#070b16;border-right:1px solid #1b2748;display:flex;flex-direction:column;align-items:center;padding:10px 0;gap:6px;}
+  .rail .rlogo{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#6d5cff,#b04dff);display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:12px;box-shadow:0 0 14px rgba(130,90,255,.55);}
+  .rail button{width:38px;height:38px;border-radius:10px;border:1px solid transparent;background:transparent;color:#8fa3d9;font-size:17px;display:flex;align-items:center;justify-content:center;}
+  .rail button:hover{background:#131e3d;color:#fff;}
+  .rail button.on{background:#16224a;border-color:#2b3f7d;color:#7ee2ff;}
+  .rail .sp{flex:1;}
+
+  /* ===== CỘT TRÁI ===== */
+  .side{width:400px;flex:0 0 400px;background:#0c1327;border-right:1px solid #1b2748;overflow-y:auto;padding:12px 12px 30px;}
+  .brand{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+  .brand .blogo{width:40px;height:40px;border-radius:10px;background:#131f42;border:1px solid #2b3f7d;display:flex;align-items:center;justify-content:center;font-size:21px;}
+  .brand h1{font-size:19px;margin:0;color:#fff;line-height:1.1;}
+  .brand .sub{color:#57b6ff;font-size:12.5px;}
+  .brand .mp{margin-left:auto;background:#131f42;border:1px solid #8a6d1f;color:#ffcf4d;border-radius:9px;padding:8px 10px;font-weight:700;font-size:12.5px;}
+  .brand .info{width:30px;height:30px;border-radius:50%;border:1px solid #2b3f7d;background:#131f42;color:#9db4e8;font-weight:700;}
+  .card{background:#101830;border:1px solid #1e2c52;border-radius:13px;padding:12px;margin-bottom:12px;}
+  .card h3{margin:0 0 8px;font-size:13px;letter-spacing:.4px;color:#9fd0ff;text-transform:uppercase;display:flex;align-items:center;gap:7px;}
+  .card h3 .right{margin-left:auto;text-transform:none;letter-spacing:0;}
+  .bal{border-color:#8a6d1f;background:linear-gradient(180deg,#141b33,#101830);}
+  .bal .lab{color:#ffcf4d;font-size:12px;font-weight:700;letter-spacing:.5px;}
+  .bal .val{font-size:17px;color:#fff;font-weight:800;}
+  .bal .val b{color:#ffcf4d;}
+  .bal .runs{font-size:12.5px;text-align:right;line-height:1.5;}
+  .ok{color:#2ee59d}.bad{color:#ff5d7a}.mut{color:#8296c4}.small{font-size:12px}.tiny{font-size:11px}
+  .rowflex{display:flex;align-items:center;gap:8px;}
+  .grow{flex:1;}
+  select.inp, input.inp, textarea.inp{width:100%;box-sizing:border-box;background:#0a1122;border:1px solid #26386b;border-radius:9px;color:#e6eeff;padding:9px 10px;font-size:13.5px;outline:none;}
+  select.inp:focus, input.inp:focus, textarea.inp:focus{border-color:#3f6cff;}
+  textarea.inp{resize:vertical;min-height:88px;line-height:1.45;}
+  .btn{border:1px solid #2b3f7d;background:#16224a;color:#dbe4ff;border-radius:9px;padding:8px 12px;font-size:13px;font-weight:600;}
+  .btn:hover{filter:brightness(1.2);}
+  .btn.green{background:linear-gradient(180deg,#0f9d63,#0b7a4c);border-color:#17b978;color:#eafff4;}
+  .btn.orange{background:linear-gradient(180deg,#3a2a10,#2a1e08);border-color:#a8741a;color:#ffb84d;}
+  .btn.red{background:#2a1220;border-color:#7d2440;color:#ff7d9c;}
+  .btn.pink{background:#2a1030;border-color:#8b2f7d;color:#ff8ae2;}
+  .btn.grad{background:linear-gradient(90deg,#6d5cff,#d6339e);border:none;color:#fff;}
+  .btn.big{width:100%;padding:13px;font-size:15px;font-weight:800;border-radius:11px;}
+  .btn.sm{padding:5px 9px;font-size:12px;border-radius:7px;}
+  .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:800;letter-spacing:.3px;}
+  .badge.green{background:#0d3524;color:#2ee59d;border:1px solid #17b978;}
+  .badge.orange{background:#3a2a10;color:#ffb84d;border:1px solid #a8741a;}
+  .badge.pink{background:#33122b;color:#ff8ae2;border:1px solid #8b2f7d;}
+  .badge.purple{background:#221244;color:#b79cff;border:1px solid #5b3df0;}
+  .badge.gray{background:#131f42;color:#9db4e8;border:1px solid #2b3f7d;}
+  .spatial{border-color:#17b978;background:linear-gradient(180deg,#0d2135,#0d2a20);}
+  .spatial h3{color:#2ee59d;text-transform:none;font-size:15px;letter-spacing:0;}
+  .rescue{border-color:#a8741a;background:linear-gradient(180deg,#241a08,#171106);}
+  .rescue h3{color:#ffb84d;text-transform:none;font-size:15px;letter-spacing:0;}
+  .chk{display:flex;align-items:flex-start;gap:8px;cursor:pointer;font-size:13.5px;}
+  .chk input{margin-top:2px;accent-color:#17b978;width:16px;height:16px;}
+  .linkish{color:#57b6ff;background:none;border:none;padding:0;font-size:12.5px;text-decoration:underline;}
+  .secTitle{display:flex;align-items:center;gap:8px;margin:16px 0 10px;font-size:15px;font-weight:800;color:#ff8a9c;}
+  .secTitle.teal{color:#2ee5c8;}
+  .secTitle .right{margin-left:auto;display:flex;gap:6px;align-items:center;}
+  .progwrap{background:#1a0f22;border:1px solid #8b2f7d;border-radius:11px;padding:11px;margin-bottom:10px;}
+  .progbar{height:9px;background:#0a1122;border-radius:6px;overflow:hidden;margin:8px 0;}
+  .progbar i{display:block;height:100%;background:linear-gradient(90deg,#d6339e,#ffb84d);border-radius:6px;transition:width .3s;}
+  .actorCard{background:#0d1730;border:1px solid #22345f;border-radius:12px;padding:11px;margin-bottom:12px;}
+  .actorCard .aname{font-size:16px;font-weight:800;color:#fff;}
+  .tabs{display:flex;gap:6px;margin:10px 0;}
+  .tabs button{flex:1;background:#0a1122;border:1px solid #26386b;color:#9db4e8;border-radius:8px;padding:7px 4px;font-size:12.5px;font-weight:700;}
+  .tabs button.on{background:#16224a;color:#7ee2ff;border-color:#3f6cff;}
+  .angleGrid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
+  .angleCell{background:#0a1122;border:1px solid #22345f;border-radius:8px;overflow:hidden;text-align:center;}
+  .angleCell .ph{height:74px;display:flex;align-items:center;justify-content:center;font-size:26px;background:linear-gradient(180deg,#1c7a3f,#0f4d27);color:#baffd9;}
+  .angleCell img{width:100%;height:74px;object-fit:cover;display:block;}
+  .angleCell .al{font-size:10px;color:#9db4e8;padding:3px 1px;line-height:1.2;}
+  .wardGrid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;}
+  .wardCell{background:#160d24;border:1px solid #4a2358;border-radius:8px;overflow:hidden;text-align:center;padding-bottom:5px;}
+  .wardCell .ph{height:64px;display:flex;align-items:center;justify-content:center;font-size:24px;background:linear-gradient(180deg,#233257,#131f42);}
+  .wardCell img{width:100%;height:64px;object-fit:cover;display:block;}
+  .wardCell .wl{font-size:10.5px;color:#ffc7ef;padding:3px 1px;font-weight:700;line-height:1.2;}
+  .wardCell .wb{display:flex;gap:3px;justify-content:center;padding:0 3px;}
+  .wardCell .wb button{flex:1;font-size:10px;padding:3px 2px;}
+  .bgCard{background:#0d1730;border:1px solid #1f4d3a;border-radius:12px;padding:11px;margin-bottom:12px;}
+  .bgImg{position:relative;border-radius:9px;overflow:hidden;border:1px solid #22345f;margin-top:8px;}
+  .bgImg .ph{height:110px;background:linear-gradient(135deg,#2a3c6e,#16224a 55%,#0d2a20);display:flex;align-items:center;justify-content:center;font-size:34px;}
+  .bgImg img{width:100%;height:110px;object-fit:cover;display:block;}
+  .bgImg .key{position:absolute;left:0;right:0;bottom:0;background:rgba(4,8,18,.82);color:#ffcf4d;font-size:10.5px;padding:4px 7px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .dropzone{border:2px dashed #3f6cff;border-radius:11px;padding:16px 12px;text-align:center;color:#9db4e8;background:#0a1122;transition:all .15s;}
+  .dropzone.drag{border-color:#2ee59d;background:#0d2a20;color:#2ee59d;}
+  .comicCard{background:#0d1730;border:1px solid #4a2358;border-radius:12px;padding:10px;margin-bottom:10px;}
+  .comicCard img.thumb{width:100%;height:150px;object-fit:cover;border-radius:8px;border:1px solid #22345f;display:block;}
+  .presetRow{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+  .presetRow button{flex:1;min-width:100px;background:#0a1122;border:1px solid #26386b;color:#9db4e8;border-radius:8px;padding:7px 6px;font-size:11.5px;font-weight:700;line-height:1.3;}
+  .presetRow button.on{background:#2a1060;border-color:#5b3df0;color:#cdb9ff;}
+  .vframe img.kf{width:100%;border-radius:8px;display:block;}
+
+  /* ===== VÙNG CHÍNH ===== */
+  .main{flex:1;display:flex;flex-direction:column;min-width:0;background:#0a0f1e;}
+  .topbar{display:flex;align-items:center;gap:10px;padding:10px 14px;border-bottom:1px solid #1b2748;background:#0c1327;flex-wrap:wrap;}
+  .toptabs{display:flex;background:#131f42;border-radius:20px;padding:3px;}
+  .toptabs button{border:none;background:transparent;color:#9db4e8;padding:6px 18px;border-radius:16px;font-weight:700;font-size:13px;}
+  .toptabs button.on{background:#26386b;color:#fff;}
+  .tlhead{display:flex;align-items:center;gap:14px;padding:10px 14px 4px;flex-wrap:wrap;}
+  .tlhead .t{font-size:17px;font-weight:800;color:#2ee5c8;letter-spacing:.4px;}
+  .tlbar{display:flex;align-items:center;gap:10px;padding:8px 14px;flex-wrap:wrap;}
+  .tlbar .bt{font-weight:800;color:#ffcf4d;font-size:14.5px;}
+  .seg{display:flex;background:#0a1122;border:1px solid #26386b;border-radius:9px;overflow:hidden;}
+  .seg button{border:none;background:transparent;color:#9db4e8;padding:6px 12px;font-size:12.5px;font-weight:700;}
+  .seg button.on{background:#5b3df0;color:#fff;}
+  .scrollMain{flex:1;overflow-y:auto;padding:4px 14px 14px;}
+  .grid{display:grid;gap:14px;}
+  .grid.gon{grid-template-columns:repeat(4,1fr);}
+  .grid.morong{grid-template-columns:repeat(3,1fr);}
+  .grid.cucdai{grid-template-columns:repeat(2,1fr);}
+  .scene{background:#101830;border:1px solid #1e2c52;border-radius:13px;padding:11px;display:flex;flex-direction:column;gap:8px;}
+  .scene .shead{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+  .scene .sno{background:#2a2060;color:#b79cff;font-weight:800;font-size:11px;padding:3px 8px;border-radius:6px;letter-spacing:.5px;}
+  .scene .sname{font-weight:800;color:#fff;font-size:15px;}
+  .scene .stime{background:#3a2a10;color:#ffb84d;font-weight:700;font-size:11.5px;padding:3px 8px;border-radius:6px;}
+  .scene .scr{background:#221244;color:#b79cff;font-weight:700;font-size:11.5px;padding:3px 8px;border-radius:6px;}
+  .scene select{background:#0a1122;border:1px solid #26386b;color:#e6eeff;border-radius:7px;padding:5px 6px;font-size:12px;}
+  .scene .selrow{display:flex;gap:6px;}
+  .scene .selrow select{flex:1;min-width:0;}
+  .ovr{background:#2a1060;border:1px solid #5b3df0;color:#cdb9ff;font-weight:800;font-size:12px;padding:7px 10px;border-radius:8px;}
+  .wchip{background:#33122b;border:1px solid #8b2f7d;color:#ff8ae2;font-weight:700;font-size:12px;padding:7px 10px;border-radius:8px;}
+  .vframe{background:#04060d;border:1px solid #1b2748;border-radius:10px;min-height:150px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:#8296c4;text-align:center;padding:12px;}
+  .vframe video{width:100%;border-radius:8px;background:#000;}
+  .vframe .vic{font-size:30px;opacity:.7;}
+  .bind{border:1px solid #1f4d3a;border-radius:10px;padding:9px;background:#0c1a2e;}
+  .bind .bh{display:flex;align-items:center;gap:8px;color:#2ee5c8;font-weight:800;font-size:12px;letter-spacing:.3px;}
+  .bind .bh .right{margin-left:auto;display:flex;gap:6px;align-items:center;}
+  .bindGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px;}
+  .bindCol .bt2{color:#ff8ae2;font-weight:800;font-size:12px;margin-bottom:6px;}
+  .bindCol .bt2.teal{color:#2ee5c8;}
+  .mini{display:flex;gap:7px;align-items:center;background:#160d2e;border:1px solid #4a2358;border-radius:8px;padding:5px;margin-bottom:5px;cursor:pointer;text-align:left;width:100%;color:#dbe4ff;}
+  .mini:hover{border-color:#8b2f7d;}
+  .mini .th{width:34px;height:44px;border-radius:5px;background:linear-gradient(180deg,#1c7a3f,#0f4d27);display:flex;align-items:center;justify-content:center;font-size:16px;flex:0 0 34px;overflow:hidden;}
+  .mini .th img{width:100%;height:100%;object-fit:cover;}
+  .mini .mn{font-weight:800;font-size:12px;color:#fff;line-height:1.2;}
+  .mini .ms{font-size:11px;color:#9db4e8;}
+  .mini .ovrb{background:#5b3df0;color:#fff;font-size:9px;font-weight:800;padding:1px 5px;border-radius:4px;}
+  .miniBg{display:flex;gap:7px;align-items:center;background:#0d2135;border:1px solid #1f4d3a;border-radius:8px;padding:5px;cursor:pointer;text-align:left;width:100%;color:#dbe4ff;}
+  .miniBg:hover{border-color:#17b978;}
+  .miniBg .th{width:52px;height:40px;border-radius:5px;background:linear-gradient(135deg,#2a3c6e,#0d2a20);display:flex;align-items:center;justify-content:center;font-size:17px;flex:0 0 52px;overflow:hidden;}
+  .miniBg .th img{width:100%;height:100%;object-fit:cover;}
+  .bottombar{display:flex;align-items:center;gap:16px;padding:9px 14px;border-top:1px solid #1b2748;background:#0c1327;font-size:13px;flex-wrap:wrap;}
+  .bottombar b{color:#ffcf4d;}
+  .bottombar .bbtns{margin-left:auto;display:flex;gap:8px;}
+
+  /* ===== MODAL / TOAST ===== */
+  .modalWrap{position:fixed;inset:0;background:rgba(3,6,14,.78);display:none;align-items:center;justify-content:center;z-index:60;padding:18px;}
+  .modalWrap.open{display:flex;}
+  .modal{background:#101830;border:1px solid #2b3f7d;border-radius:14px;max-width:760px;width:100%;max-height:88vh;overflow-y:auto;padding:18px;}
+  .modal h2{margin:0 0 10px;font-size:17px;color:#fff;}
+  .modal pre{white-space:pre-wrap;word-break:break-word;background:#0a1122;border:1px solid #26386b;border-radius:9px;padding:12px;font-size:12.5px;line-height:1.55;color:#cfe0ff;max-height:46vh;overflow-y:auto;}
+  .modal video{width:100%;border-radius:10px;background:#000;}
+  #toasts{position:fixed;right:16px;bottom:16px;z-index:99;display:flex;flex-direction:column;gap:8px;max-width:380px;}
+  .toast{background:#131f42;border:1px solid #3f6cff;color:#e6eeff;border-radius:10px;padding:10px 13px;font-size:13px;box-shadow:0 6px 24px rgba(0,0,0,.5);line-height:1.45;}
+  .toast.err{border-color:#ff5d7a;background:#2a1220;}
+  .toast.ok{border-color:#17b978;background:#0d2a20;}
+  .hiddenFile{display:none;}
+  @media (max-width:1200px){.grid.gon{grid-template-columns:repeat(3,1fr);} .grid.morong{grid-template-columns:repeat(2,1fr);} .grid.cucdai{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- RAIL -->
+  <nav class="rail">
+    <div class="rlogo">🎬</div>
+    <button class="on" title="Tổng quan">▦</button>
+    <button title="Thư viện ảnh">🖼️</button>
+    <button title="Diễn viên">🧍</button>
+    <button title="Dự án phim">🎞️</button>
+    <button title="Thêm mới">＋</button>
+    <div class="sp"></div>
+    <button title="Cài đặt">⚙️</button>
+    <button title="Thùng rác">🗑️</button>
+  </nav>
+
+  <!-- CỘT TRÁI -->
+  <aside class="side">
+    <div class="brand">
+      <div class="blogo">🎬</div>
+      <div>
+        <h1>PhimTrường AI</h1>
+        <div class="sub">Filmmaking Studio</div>
+      </div>
+      <button class="mp" id="btnMasterPrompt">🎬 Master Prompt</button>
+      <button class="info" id="btnInfo" title="Giới thiệu">i</button>
+    </div>
+
+    <div class="card bal">
+      <div class="rowflex">
+        <div>
+          <div class="lab">📊 SỐ DƯ REALTIME:</div>
+          <div class="val">Khả dụng: <b>0 Credits</b></div>
+        </div>
+        <div class="grow"></div>
+        <div class="runs">
+          <div><span class="ok">✓ Đã chạy:</span> <span id="statRun">0 cr</span></div>
+          <div><span class="bad">✗ Cảnh lỗi:</span> <span id="statErr">0 cr</span></div>
+        </div>
+      </div>
+      <div class="small" style="margin-top:7px;color:#7ee2ff;">⚡ Chế độ miễn phí — quay video qua Google Flow bằng tài khoản Pro của bạn: app xuất prompt + ảnh tham chiếu, bạn quay ở Flow rồi nạp clip về.</div>
+    </div>
+
+    <div class="card">
+      <h3>🔑 API Key Gemini (AI Studio — miễn phí)</h3>
+      <div class="rowflex">
+        <input type="password" class="inp grow" id="apiKeyInput" placeholder="Dán API key Gemini của bạn...">
+        <button class="btn green" id="btnSaveKey">Lưu</button>
+      </div>
+      <div class="small mut" style="margin-top:7px;">Key miễn phí tại <b style="color:#57b6ff;">aistudio.google.com</b> — dùng sinh ảnh DNA &amp; bối cảnh. Key chỉ lưu trong trình duyệt của bạn (localStorage), không gửi đi nơi khác ngoài Google.</div>
+      <div id="keyStatus" class="small" style="margin-top:5px;"></div>
+    </div>
+
+    <div class="card">
+      <h3>🎙️ Chất giọng toàn tập cho phim:</h3>
+      <select class="inp" id="voiceSelect">
+        <option>Miền Nam (Chuẩn Sài Gòn / Drama)</option>
+        <option>Miền Bắc (Chuẩn Hà Nội / Drama)</option>
+        <option>Miền Trung (Huế / Drama)</option>
+      </select>
+      <div class="rowflex" style="margin-top:7px;">
+        <span class="small mut">Áp dụng tự động vào khẩu hình &amp; kịch bản</span>
+        <span class="grow"></span>
+        <span class="small" style="color:#ffcf4d;font-weight:700;" id="voiceTag">[Giọng Miền Nam]</span>
+      </div>
+    </div>
+
+    <div class="card spatial">
+      <h3>🛡️ Đã nhận diện trùng khớp không gian <span class="right"><span class="badge green">100% READY</span></span></h3>
+      <div class="small">Cùng tài khoản: Đủ <b id="spatialCount">42</b> tệp DNA nhân vật &amp; bối cảnh. Không cần đồng bộ lại!</div>
+    </div>
+
+    <div class="card rescue">
+      <h3>🛡️ Tự động sửa thoại &amp; cảnh né vi phạm chính sách <span class="right"><span class="badge orange">AUTO RESCUE</span></span></h3>
+      <div class="small">Khi AI báo <i>"Dịch vụ tạo video không hoạt động"</i> hoặc chặn prompt vì yếu tố nhạy cảm/xung đột gay gắt, hệ thống sẽ tự động hoàn trả 100% credit đồng thời chỉnh sửa lại hành động, lời thoại sang diễn xuất tâm lý an toàn và quay lại ngay!</div>
+    </div>
+
+    <div class="card">
+      <div class="rowflex">
+        <div class="grow">
+          <div style="font-weight:700;">📁 Thư Mục Lưu Trữ: <span id="folderName" style="color:#7ee2ff;">PhimTruongAI</span></div>
+        </div>
+        <button class="btn sm" id="btnFolder">⚙️ Đổi</button>
+      </div>
+      <label class="chk" style="margin-top:9px;">
+        <input type="checkbox" id="chkAutoDlScene" checked>
+        <span>Tự động tải về ngay khi tạo xong từng scene <span class="badge green" style="margin-left:6px;">AUTO ON</span></span>
+      </label>
+    </div>
+
+    <div class="card">
+      <h3>🧑‍🤝‍🧑 Thông tin nhân vật <span class="right"><button class="linkish" id="btnSampleActor">✏️ Nạp Mẫu</button></span></h3>
+      <textarea class="inp" id="actorInfoText" placeholder="Dán mô tả nhân vật + trang phục theo từng bối cảnh..."></textarea>
+    </div>
+
+    <div class="card">
+      <h3>🏙️ Thông tin bối cảnh (BC01, BC02...) <span class="right"><button class="linkish" id="btnSampleBg">✏️ Nạp Mẫu BC</button></span></h3>
+      <textarea class="inp" id="bgInfoText" placeholder="BC01: ..."></textarea>
+    </div>
+
+    <div class="card">
+      <label class="chk"><input type="checkbox" id="chkRotate" checked><span>🔄 Xoay vòng tạo đến khi đủ 100% DNA</span></label>
+      <div class="rowflex" style="margin-top:9px;background:#0a1122;border:1px solid #26386b;border-radius:9px;padding:8px 10px;">
+        <span>🛡️ Lách người nổi tiếng (Google Safe)</span>
+        <span class="grow"></span>
+        <span class="badge green">BẬT</span>
+      </div>
+      <button class="btn green big" id="btnGenAll" style="margin-top:11px;">✨ Tạo DNA &amp; Bối Cảnh</button>
+      <button class="btn big" id="btnSyncTimeline" style="margin-top:8px;">🗂️ Đồng Bộ Timeline</button>
+      <button class="btn orange big" id="btnResetTimeline" style="margin-top:8px;">🔄 Reset Timeline &amp; Xóa Kịch Bản Cũ (Giữ Lại DNA &amp; Bối Cảnh)</button>
+    </div>
+
+    <div class="card">
+      <h3>📂 Quản lý dự án <span class="right"><span class="mut small">Định dạng: .json</span></span></h3>
+      <div class="rowflex">
+        <button class="btn grow" id="btnOpenProject">📂 Mở Dự Án (.json)</button>
+        <button class="btn grow" id="btnSaveProject">💾 Lưu Dự Án (.json)</button>
+      </div>
+      <input type="file" id="projectFile" accept=".json,application/json" class="hiddenFile">
+    </div>
+
+    <!-- DNA DIỄN VIÊN -->
+    <div class="secTitle">🧍 DNA Diễn Viên (<span id="actorCount">6</span>)
+      <span class="right">
+        <button class="btn red sm" id="btnResetDNA">🗑️ Reset DNA</button>
+        <span class="badge green">Safe</span>
+      </span>
+    </div>
+    <div class="card">
+      <div class="rowflex">
+        <label class="chk grow"><input type="checkbox" id="chkAutoDlDNA" checked><span>⬇️ Tự động tải về máy tính sau khi tạo DNA</span></label>
+        <span class="badge purple">FALLBACK: 3 NANO MODELS</span>
+      </div>
+      <button class="btn grad big" id="btnTestVideoAll" style="margin-top:10px;">⚡ Tự Động Test Video Tất Cả Diễn Viên (Tự Đổi Người Mới Nếu Lỗi) <span class="badge orange">1-CLICK</span></button>
+      <button class="btn big" id="btnGenAngles" style="margin-top:8px;">✨ Tạo Đủ 5 Góc Cho 6 Diễn Viên (Tự Đổi Model)</button>
+      <div class="progwrap" id="designProg" style="margin-top:11px;">
+        <div class="rowflex">
+          <div style="font-weight:800;color:#ff8ae2;">✨ <span id="progLabel">AI Đang Thiết Kế Trang Phục...</span></div>
+          <span class="grow"></span>
+          <b id="progText" style="color:#fff;">25 / 42 (60%)</b>
+        </div>
+        <div class="progbar"><i id="progFill" style="width:60%;"></i></div>
+        <div class="rowflex">
+          <span class="small mut" id="progDetail">👤 LÊ NGỌC HÂN (4/6) &nbsp;•&nbsp; 👗 Áo Dài Truyền Thống / Công Sở</span>
+        </div>
+        <div class="rowflex" style="margin-top:9px;">
+          <button class="btn orange grow" id="btnProgPause">⏸ Tạm Dừng</button>
+          <button class="btn red grow" id="btnProgStop">⏹ Dừng Hẳn</button>
+        </div>
+      </div>
+    </div>
+    <div id="actorList"></div>
+
+    <!-- BỐI CẢNH -->
+    <div class="secTitle teal">🏔️ Bối Cảnh Phim (<span id="bgCount">12</span>)
+      <span class="right">
+        <button class="btn red sm" id="btnResetBg">🗑️ Reset Bối Cảnh</button>
+        <span class="badge green">NO HUMANS</span>
+      </span>
+    </div>
+    <div class="card">
+      <div class="rowflex">
+        <div class="grow" style="font-weight:700;">🏔️ Định danh: <span id="bgReadyText">12/12 bối cảnh đã có ảnh</span></div>
+        <button class="btn green" id="btnGenAllBg">🔄 Dựng Hết Các Bối Cảnh (Auto Model)</button>
+      </div>
+    </div>
+    <div id="bgList"></div>
+
+    <!-- TRUYỆN TRANH → PHIM -->
+    <div class="secTitle" style="color:#cdb9ff;">📚 Truyện Tranh → Phim</div>
+    <div class="card">
+      <div class="small mut">Nạp ảnh truyện tranh có sẵn: sửa lại bằng AI, đưa lên Timeline làm <b style="color:#cdb9ff;">khung hình đầu (keyframe)</b> cho từng cảnh rồi quay video ở Google Flow.</div>
+      <div class="dropzone" id="comicDrop" style="margin-top:10px;">
+        <div style="font-size:26px;">🖼️</div>
+        <div style="font-weight:700;margin-top:4px;">Kéo-thả ảnh truyện vào đây</div>
+        <div class="small">hoặc</div>
+        <button class="btn grad" id="btnLoadComic" style="margin-top:6px;">📚 Nạp Ảnh Truyện (chọn nhiều ảnh)</button>
+      </div>
+      <input type="file" id="comicFile" accept="image/*" multiple class="hiddenFile">
+      <div style="font-weight:800;color:#cdb9ff;margin-top:12px;font-size:13px;">🎨 Preset sửa ảnh (áp cho cả khối):</div>
+      <div class="presetRow" id="comicPresets">
+        <button data-preset="clean" class="on">Giữ nguyên phong cách truyện, làm sạch + tăng nét</button>
+        <button data-preset="real">Chuyển thành người thật điện ảnh</button>
+        <button data-preset="cine">Điện ảnh hoá nhẹ (giữ nét vẽ, thêm ánh sáng phim)</button>
+      </div>
+      <div class="small mut" style="margin-top:8px;">Mẹo: ảnh truyện cũng nạp thẳng vào DNA diễn viên bằng nút <b>Nạp Ảnh (hoặc ảnh truyện)</b> trong thẻ diễn viên ở trên.</div>
+    </div>
+    <div id="comicList"></div>
+  </aside>
+
+  <!-- VÙNG CHÍNH -->
+  <main class="main">
+    <div class="topbar">
+      <div class="toptabs">
+        <button class="on">Công cụ</button>
+        <button>Chỉnh sửa</button>
+      </div>
+      <span class="grow" style="flex:1;"></span>
+      <button class="btn orange" id="btnThumbnail">🖼️ Tạo Thumbnail Phim</button>
+      <button class="btn" id="btnSpatial" style="border-color:#17b978;color:#2ee59d;">🛡️ Đã Khớp Không Gian (<span id="spatialCount2">42</span>)</button>
+      <button class="btn green" id="btnExportFlow">▶ Xuất Gói Quay Flow (24)</button>
+    </div>
+
+    <div class="tlbar" style="padding-bottom:0;">
+      <label class="chk"><input type="checkbox" id="chkRescue" checked><span>🛡️ <b style="color:#ffb84d;">Auto Né Vi Phạm Chính Sách</b></span></label>
+      <label class="chk"><input type="checkbox" id="chkLockDNA" checked><span>🔒 <b style="color:#2ee5c8;">Khóa Nhận Dạng (DNA 5 Góc)</b></span></label>
+    </div>
+
+    <div class="tlhead">
+      <span class="t">🎬 TIMELINE DỰNG PHIM</span>
+      <span class="mut">Đã quay: <b class="ok" id="shotCount">0/24 cảnh</b></span>
+      <span class="mut">🎙️ Giọng thoại: <b style="color:#7ee2ff;" id="voiceEcho">Miền Nam</b></span>
+    </div>
+
+    <div class="tlbar">
+      <span class="bt">🎞️ Băng Chuyển Timeline (24 Phân cảnh)</span>
+      <span style="flex:1;"></span>
+      <span class="mut small">Cỡ ô:</span>
+      <div class="seg" id="sizeSeg">
+        <button data-size="gon">Gọn</button>
+        <button data-size="morong" class="on">Mở Rộng</button>
+        <button data-size="cucdai">Cực Đại</button>
+      </div>
+    </div>
+
+    <div class="scrollMain">
+      <div class="grid morong" id="sceneGrid"></div>
+    </div>
+
+    <div class="bottombar">
+      <span>Thời lượng: <b>10s/cảnh</b></span>
+      <span>Chất lượng: <b style="color:#7ee2ff;">720p</b></span>
+      <span>Số dư: <b>0 Credits</b> <span class="mut">(Đã dùng: 0 cr)</span></span>
+      <span>Đã quay: <b id="shotCount2">0/24 Video</b></span>
+      <div class="bbtns">
+        <button class="btn green" id="btnMaster">🎬 Ghép Master (<span id="masterCount">0</span> Cảnh)</button>
+        <button class="btn" id="btnDownloadScenes">⬇ Tải Từng Scene Lẻ</button>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- MODAL -->
+<div class="modalWrap" id="modalWrap">
+  <div class="modal">
+    <div class="rowflex">
+      <h2 id="modalTitle" class="grow">Tiêu đề</h2>
+      <button class="btn sm" id="modalClose">✕ Đóng</button>
+    </div>
+    <div id="modalBody"></div>
+  </div>
+</div>
+
+<div id="toasts"></div>
+<input type="file" id="genericFile" class="hiddenFile">
+
+<script>
+"use strict";
+/* ================= HELPERS ================= */
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+function toast(msg, type){
+  const t = document.createElement('div');
+  t.className = 'toast' + (type ? ' ' + type : '');
+  t.innerHTML = msg;
+  $('#toasts').appendChild(t);
+  setTimeout(()=>{ t.style.opacity='0'; t.style.transition='opacity .4s'; setTimeout(()=>t.remove(), 420); }, 4600);
+}
+function downloadFile(name, href){
+  const a = document.createElement('a');
+  a.href = href; a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+}
+function downloadText(name, text){
+  const url = URL.createObjectURL(new Blob([text], {type:'text/plain;charset=utf-8'}));
+  downloadFile(name, url);
+  setTimeout(()=>URL.revokeObjectURL(url), 4000);
+}
+function stripVN(str){
+  return (str||'')
+    .replace(/đ/g,'d').replace(/Đ/g,'D')
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-zA-Z0-9 ]/g,' ')
+    .trim().replace(/\s+/g,' ');
+}
+function locCode(name){ return 'LOC_' + stripVN(name).toUpperCase().replace(/ /g,'_'); }
+function fmtTime(sec){
+  const m = String(Math.floor(sec/60)).padStart(2,'0');
+  const s = String(sec%60).padStart(2,'0');
+  return m + ':' + s;
+}
+function voiceShort(v){
+  if(v.indexOf('Miền Bắc')===0) return 'Miền Bắc';
+  if(v.indexOf('Miền Trung')===0) return 'Miền Trung';
+  return 'Miền Nam';
+}
+let _fileCb = null;
+function pickFile(accept, cb){
+  const f = $('#genericFile');
+  f.accept = accept; f.value = '';
+  _fileCb = cb;
+  f.onchange = ()=>{ if(f.files && f.files[0]) cb(f.files[0]); };
+  f.click();
+}
+function readAsDataURL(file){
+  return new Promise(res=>{ const r = new FileReader(); r.onload = ()=>res(r.result); r.readAsDataURL(file); });
+}
+
+/* ================= DỮ LIỆU MẪU ================= */
+const WARDROBE_CONTEXTS = [
+  {name:'Trang trọng', icon:'⭐'},
+  {name:'Ở nhà', icon:'🏠'},
+  {name:'Công sở', icon:'💼'},
+  {name:'Dự Tiệc', icon:'🍸'},
+  {name:'Dạo phố', icon:'🚶'},
+  {name:'Áo dài', icon:'🌸'},
+  {name:'Thể thao', icon:'🏃'},
+  {name:'Bệnh viện', icon:'🏥'}
+];
+const ANGLE_LABELS = ['Chính diện','3/4 trái','Hồ sơ phải','3/4 phải','Toàn thân'];
+const SHOT_OPTIONS = ['Góc rộng 24mm','Toàn thân 35mm','Qua vai OTS','Cận mặt 85mm','Trung cảnh 50mm'];
+const MOVE_OPTIONS = ['Ray trượt','Dolly tiến','Lia ngang','Tĩnh','Bay lên'];
+const PROP_OPTIONS = ['Không có phụ kiện','Điện thoại','Túi xách','Ly rượu vang','Hồ sơ tài liệu','Chìa khóa xe'];
+
+const SAMPLE_ACTOR_TEXT =
+`NGUYỄN THẢO VY (Nữ, 27) — Gương mặt thanh tú, tóc đen dài ngang lưng, dáng cao thanh mảnh.
+- Công sở: Áo sơ mi trắng phối quần âu xám than, áo khoác blazer đen, giày da lịch lãm.
+- Dự Tiệc: Váy dạ hội ánh kim xẻ tà, giày cao gót bạc, clutch cầm tay.
+- Bệnh viện: Áo sơ mi xanh nhạt phối quần âu xám than, áo khoác cardigan mỏng màu ghi, giày da mềm, vẻ mặt nghiêm nghị và lo âu.
+- Ở nhà: Bộ pijama lụa màu kem, tóc búi gọn.
+
+PHẠM GIA HUY (Nam, 30) — CEO trẻ, tóc vuốt gọn, vest luôn phẳng.
+- Công sở: Vest xanh navy, sơ mi trắng, cà vạt lụa, đồng hồ cơ.
+- Dự Tiệc: Tuxedo đen, nơ bướm.
+
+BÀ NGUYỄN BÍCH LIÊN (Nữ, 58) — Phu nhân Trần Gia, khí chất quyền quý.
+- Dự Tiệc: Áo dài gấm cao cấp thêu hoa văn chìm, quần đen, giày da lịch lãm.
+- Trang trọng: Váy dạ hội nhung đỏ đô, trang sức ngọc trai.`;
+
+const SAMPLE_BG_TEXT =
+`BC01: Biệt thự Trần Gia tại Thảo Điền
+Biệt thự ba tầng xa hoa với nội thất gỗ óc chó, cầu thang đá cẩm thạch trắng, đèn chùm pha lê, phòng khách rộng lớn, cửa kính nhìn ra khu vườn xanh mát.
+
+BC10: Văn phòng công ty tại Quận 1
+Văn phòng hiện đại tầng 30, cửa kính toàn cảnh nhìn xuống thành phố, bàn họp dài gỗ sồi, ghế da đen, ánh sáng trắng sang trọng.`;
+
+function mkWardrobe(hasAll){
+  const w = {};
+  WARDROBE_CONTEXTS.forEach(c=>{ w[c.name] = {has: !!hasAll, img: null}; });
+  return w;
+}
+function defaultState(){
+  const actors = [
+    {id:'nv1', name:'NGUYỄN THẢO VY', gender:'Nữ', age:27, desc:'Gương mặt thanh tú, tóc đen dài ngang lưng, dáng cao thanh mảnh, khí chất thư ký tổng giám đốc.',
+      outfits:{'Công sở':'Áo sơ mi trắng, quần âu xám than, blazer đen, giày da lịch lãm','Dự Tiệc':'Váy dạ hội ánh kim xẻ tà, giày cao gót bạc','Bệnh viện':'Áo sơ mi xanh nhạt, quần âu xám than, cardigan mỏng màu ghi, giày da mềm','Ở nhà':'Bộ pijama lụa màu kem, tóc búi gọn'},
+      angleCount:5, angleImgs:[null,null,null,null,null], wardrobe:mkWardrobe(true), tab:'angles'},
+    {id:'nv2', name:'PHẠM GIA HUY', gender:'Nam', age:30, desc:'CEO trẻ, tóc vuốt gọn, gương mặt góc cạnh, phong thái quyết đoán.',
+      outfits:{'Công sở':'Vest xanh navy, sơ mi trắng, cà vạt lụa, đồng hồ cơ','Dự Tiệc':'Tuxedo đen, nơ bướm','Trang trọng':'Vest xám charcoal, sơ mi xanh nhạt'},
+      angleCount:5, angleImgs:[null,null,null,null,null], wardrobe:mkWardrobe(true), tab:'angles'},
+    {id:'nv3', name:'BÀ NGUYỄN BÍCH LIÊN', gender:'Nữ', age:58, desc:'Phu nhân Trần Gia, tóc búi cao, khí chất quyền quý, ánh mắt sắc sảo.',
+      outfits:{'Dự Tiệc':'Áo dài gấm cao cấp thêu hoa văn chìm, quần đen, giày da lịch lãm','Trang trọng':'Váy dạ hội nhung đỏ đô, trang sức ngọc trai','Ở nhà':'Bộ đồ lụa thêu hoa màu tím than'},
+      angleCount:5, angleImgs:[null,null,null,null,null], wardrobe:mkWardrobe(true), tab:'angles'},
+    {id:'nv4', name:'LÊ NGỌC HÂN', gender:'Nữ', age:24, desc:'Tiểu thư út nhà họ Trần, gương mặt trong sáng, tóc xoăn nhẹ ngang vai.',
+      outfits:{'Dự Tiệc':'Váy công chúa trắng kem dự tiệc sinh nhật','Áo dài':'Áo dài truyền thống hồng phấn thêu hoa','Dạo phố':'Váy hoa nhí, túi xách mini, giày búp bê'},
+      angleCount:5, angleImgs:[null,null,null,null,null], wardrobe:mkWardrobe(true), tab:'angles'},
+    {id:'nv5', name:'TRẦN QUỐC BẢO', gender:'Nam', age:45, desc:'Chủ tịch Trần Gia, tóc điểm bạc, dáng người vững chãi, giọng trầm.',
+      outfits:{'Trang trọng':'Vest đen 3 mảnh, cà vạt đỏ đô','Công sở':'Vest xám, sơ mi trắng','Ở nhà':'Áo polo tối màu, quần kaki'},
+      angleCount:5, angleImgs:[null,null,null,null,null], wardrobe:mkWardrobe(true), tab:'angles'},
+    {id:'nv6', name:'ĐỖ THANH TÙNG', gender:'Nam', age:35, desc:'Tài xế kiêm vệ sĩ của gia đình, thân hình rắn chắc, ít nói.',
+      outfits:{'Công sở':'Vest đen, áo sơ mi đen, tai nghe liên lạc','Dạo phố':'Áo thun đen, quần jean, áo khoác da'},
+      angleCount:5, angleImgs:[null,null,null,null,null], wardrobe:mkWardrobe(true), tab:'angles'}
+  ];
+  const bgDefs = [
+    ['BC01','Biệt thự Trần Gia tại Thảo Điền','Biệt thự ba tầng xa hoa với nội thất gỗ óc chó, cầu thang đá cẩm thạch trắng, đèn chùm pha lê, phòng khách rộng lớn, cửa kính nhìn ra khu vườn xanh mát.'],
+    ['BC02','Phòng khách biệt thự','Phòng khách rộng với sofa da Ý màu kem, bàn trà đá marble, tranh sơn dầu lớn, rèm voan trắng, ánh sáng vàng ấm.'],
+    ['BC03','Bệnh viện quốc tế','Sảnh bệnh viện hiện đại, quầy lễ tân đá trắng, hàng ghế chờ inox, cây xanh trong nhà, ánh sáng trắng dịu.'],
+    ['BC04','Nhà hàng sang trọng','Nhà hàng fine-dining, bàn ăn phủ khăn trắng, ly pha lê, nến thơm, cửa sổ nhìn ra sông Sài Gòn về đêm.'],
+    ['BC05','Đường phố Sài Gòn','Đường phố Sài Gòn buổi sáng, hàng cây xanh, xe máy qua lại xa xa, ánh nắng vàng nhẹ, vỉa hè lát đá.'],
+    ['BC06','Quán cà phê sân vườn','Quán cà phê sân vườn nhiều cây xanh, bàn gỗ mộc, ô che nắng, hồ cá koi nhỏ, không khí yên bình.'],
+    ['BC07','Phòng họp công ty','Phòng họp kính, bàn dài gỗ sồi, 12 ghế da đen, màn hình trình chiếu lớn, logo công ty trên tường.'],
+    ['BC08','Sân vườn biệt thự','Sân vườn biệt thự với hồ bơi xanh ngọc, hàng dừa, ghế tắm nắng, lối đi lát đá, hoàng hôn ấm.'],
+    ['BC09','Phòng ngủ master','Phòng ngủ master rộng, giường king size ga trắng, đèn ngủ vàng ấm, cửa kính ra ban công, rèm hai lớp.'],
+    ['BC10','Văn phòng công ty','Văn phòng hiện đại tầng 30, cửa kính toàn cảnh nhìn xuống thành phố, bàn làm việc gỗ sồi, ghế da đen, ánh sáng trắng sang trọng.'],
+    ['BC11','Bếp ăn gia đình','Bếp ăn ấm cúng, đảo bếp đá trắng, tủ gỗ óc chó, đèn thả trần vàng ấm, bàn ăn 6 ghế.'],
+    ['BC12','Showroom xe hơi','Showroom xe sang, sàn đá bóng loáng, dãy xe trưng bày dưới đèn spotlight, kính cường lực toàn mặt tiền.']
+  ];
+  const backgrounds = bgDefs.map(d=>({id:d[0], name:d[1], desc:d[2], loc:locCode(d[1]), has:true, img:null}));
+  const A = actors.map(a=>a.id), B = backgrounds.map(b=>b.id);
+  const binds = [
+    [B[9],[A[0],A[1]],'Công sở'],[B[9],[A[0],A[1]],'Công sở'],[B[0],[A[2],A[3]],'Dự Tiệc'],
+    [B[6],[A[1],A[4]],'Công sở'],[B[1],[A[2],A[4]],'Trang trọng'],[B[3],[A[0],A[1]],'Dự Tiệc'],
+    [B[2],[A[0],A[3]],'Bệnh viện'],[B[4],[A[3],A[5]],'Dạo phố'],[B[5],[A[0],A[3]],'Dạo phố'],
+    [B[7],[A[2],A[3]],'Ở nhà'],[B[8],[A[0],A[1]],'Ở nhà'],[B[10],[A[2],A[4]],'Ở nhà'],
+    [B[11],[A[1],A[5]],'Công sở'],[B[6],[A[0],A[4]],'Công sở'],[B[0],[A[2],A[3]],'Áo dài'],
+    [B[3],[A[1],A[3]],'Dự Tiệc'],[B[2],[A[4],A[0]],'Bệnh viện'],[B[4],[A[0],A[5]],'Dạo phố'],
+    [B[9],[A[1],A[0]],'Công sở'],[B[1],[A[3],A[2]],'Trang trọng'],[B[5],[A[3],A[0]],'Ở nhà'],
+    [B[7],[A[4],A[2]],'Trang trọng'],[B[11],[A[0],A[1]],'Dự Tiệc'],[B[0],[A[0],A[1],A[2],A[3]],'Dự Tiệc']
+  ];
+  const dialogues = [
+    'Thảo Vy: "Tổng giám đốc, hồ sơ thầu đã sẵn sàng, chỉ chờ anh ký."',
+    'Gia Huy: "Tốt. Cuộc họp chiều nay, không ai được phép vắng mặt."',
+    'Bà Bích Liên: "Hân nhi, tối nay là tiệc của Trần Gia, con phải thật rạng rỡ."',
+    'Quốc Bảo: "Gia Huy, dự án Thảo Điền không được phép có sai sót."',
+    'Bà Bích Liên: "Chuyện hôn sự của hai nhà, ta đã quyết rồi."',
+    'Thảo Vy: "Anh Huy, cảm ơn anh vì bữa tối nay..."',
+    'Ngọc Hân: "Chị Vy, kết quả xét nghiệm của ba có rồi sao?"',
+    'Thanh Tùng: "Tiểu thư, xe đã chờ sẵn ở cổng."',
+    'Ngọc Hân: "Cà phê ở đây vẫn ngon như ngày nào, chị nhỉ?"',
+    'Bà Bích Liên: "Ngồi xuống đi con, mẹ có chuyện muốn nói."',
+    'Gia Huy: "Đêm nay anh không về công ty nữa đâu."',
+    'Quốc Bảo: "Bữa cơm gia đình, đừng nhắc chuyện làm ăn."',
+    'Gia Huy: "Chiếc xe này, tôi mua tặng Thảo Vy."',
+    'Thảo Vy: "Chủ tịch, đây là bản kế hoạch quý mới."',
+    'Ngọc Hân: "Mẹ, con muốn mặc áo dài trong lễ đính hôn."',
+    'Gia Huy: "Hân, em thấy chiếc váy này có hợp với Vy không?"',
+    'Quốc Bảo: "Bác sĩ nói sao về sức khỏe của tôi?"',
+    'Thảo Vy: "Anh Tùng, cảm ơn anh đã đưa tôi về an toàn."',
+    'Gia Huy: "Vy, từ nay em là thư ký trưởng của tập đoàn."',
+    'Ngọc Hân: "Bà nội, con kể bà nghe chuyện này nè..."',
+    'Thảo Vy: "Chiều nay mình ghé thăm bà ngoại nhé Hân."',
+    'Quốc Bảo: "Hoàng hôn ở Thảo Điền đẹp như tranh vẽ."',
+    'Thảo Vy: "Anh Huy, mọi người đang chờ chúng ta."',
+    'Bà Bích Liên: "Trần Gia ta, từ nay bước sang trang mới!"'
+  ];
+  const scenes = binds.map((bd,i)=>({
+    n:i+1, bgId:bd[0], actorIds:bd[1].slice(), wardrobe:bd[2],
+    shot:SHOT_OPTIONS[i%SHOT_OPTIONS.length],
+    move:MOVE_OPTIONS[i%MOVE_OPTIONS.length],
+    prop:PROP_OPTIONS[i%PROP_OPTIONS.length],
+    dialogue:dialogues[i],
+    duration:10, quality:'720p HD',
+    clipName:null, mediaId:'MID-' + Math.random().toString(36).slice(2,8).toUpperCase()
+  }));
+  return {
+    settings:{ voice:'Miền Nam (Chuẩn Sài Gòn / Drama)', folder:'PhimTruongAI',
+      autoDlScene:true, autoDlDNA:true, rotateDNA:true, rescue:true, lockDNA:true,
+      viewSize:'morong', masterPrompt:'MASTER PROMPT — PhimTrường AI:\nPhong cách: phim truyền hình Việt Nam (drama gia đình), hình ảnh điện ảnh, ánh sáng tự nhiên, diễn xuất tâm lý tinh tế. Luôn giữ nguyên khuôn mặt diễn viên theo ảnh DNA tham chiếu, trang phục đúng bối cảnh, không gian bối cảnh nhất quán theo mã LOC. Thoại tiếng Việt tự nhiên, đúng chất giọng vùng miền đã chọn.' },
+    actors, backgrounds, scenes
+  };
+}
+let state = defaultState();
+let clipURLs = {}; /* sceneN -> objectURL (chỉ tồn tại trong phiên) */
+
+/* ================= TRA CỨU ================= */
+const actorById = id => state.actors.find(a=>a.id===id);
+const bgById = id => state.backgrounds.find(b=>b.id===id);
+function totalFiles(){
+  let t = 0;
+  state.actors.forEach(a=>{ t += a.angleCount; });
+  state.backgrounds.forEach(b=>{ if(b.has) t += 1; });
+  return t;
+}
+function shotScenes(){ return state.scenes.filter(s=>s.clipName).length; }
+
+/* ================= RENDER: THỐNG KÊ ================= */
+function renderStats(){
+  const tf = totalFiles();
+  $('#spatialCount').textContent = tf;
+  $('#spatialCount2').textContent = tf;
+  const sc = shotScenes();
+  $('#shotCount').textContent = sc + '/24 cảnh';
+  $('#shotCount2').textContent = sc + '/24 Video';
+  $('#masterCount').textContent = sc;
+  $('#actorCount').textContent = state.actors.length;
+  const bgReady = state.backgrounds.filter(b=>b.has).length;
+  $('#bgCount').textContent = state.backgrounds.length;
+  $('#bgReadyText').textContent = bgReady + '/' + state.backgrounds.length + ' bối cảnh đã có ảnh';
+  $('#voiceEcho').textContent = voiceShort(state.settings.voice);
+  $('#voiceTag').textContent = '[Giọng ' + voiceShort(state.settings.voice) + ']';
+  $('#btnExportFlow').textContent = '▶ Xuất Gói Quay Flow (' + state.scenes.length + ')';
+}
+
+/* ================= RENDER: DIỄN VIÊN ================= */
+function actorThumbHTML(a, h){
+  const img = a.angleImgs[0];
+  if(img) return '<img src="' + img + '" alt="">';
+  return '<span style="font-size:' + Math.round(h*0.45) + 'px;">' + (a.gender==='Nữ' ? '👩' : '👨') + '</span>';
+}
+function renderActors(){
+  const wrap = $('#actorList');
+  wrap.innerHTML = state.actors.map(a=>{
+    const gIcon = a.gender==='Nữ' ? '♀️' : '♂️';
+    let tabBody = '';
+    if(a.tab === 'angles'){
+      tabBody = '<div class="angleGrid">' + ANGLE_LABELS.map((lb,i)=>{
+        const img = a.angleImgs[i];
+        const cell = img
+          ? '<img src="' + img + '" alt="">'
+          : '<div class="ph">' + (a.gender==='Nữ' ? '👩' : '👨') + '</div>';
+        return '<div class="angleCell">' + cell + '<div class="al">' + lb + '</div></div>';
+      }).join('') + '</div>';
+    } else {
+      tabBody = '<div class="wardGrid">' + WARDROBE_CONTEXTS.map(c=>{
+        const w = a.wardrobe[c.name] || {has:false, img:null};
+        const cell = w.img
+          ? '<img src="' + w.img + '" alt="">'
+          : '<div class="ph">' + c.icon + '</div>';
+        return '<div class="wardCell">' + cell +
+          '<div class="wl">' + c.icon + ' ' + c.name + (w.has ? ' <span class="badge green" style="font-size:9px;padding:1px 5px;">ĐÃ CÓ</span>' : '') + '</div>' +
+          '<div class="wb">' +
+            '<button class="btn pink sm" data-act="genWardrobe" data-actor="' + a.id + '" data-ctx="' + c.name + '">🔄 Tạo lại</button>' +
+            '<button class="btn sm" data-act="dlWardrobe" data-actor="' + a.id + '" data-ctx="' + c.name + '">⬇</button>' +
+          '</div></div>';
+      }).join('') + '</div>' +
+      '<button class="btn pink" style="width:100%;margin-top:7px;" data-act="genAllWardrobe" data-actor="' + a.id + '">🔄 Tạo Hết Các Trang Phục</button>';
+    }
+    return '<div class="actorCard">' +
+      '<div class="rowflex">' +
+        '<span style="font-size:19px;">' + gIcon + '</span>' +
+        '<span class="aname">' + a.name + '</span>' +
+        '<span class="badge pink">' + a.gender.toUpperCase() + '</span>' +
+        '<span class="mut small">(' + a.age + ')</span>' +
+        '<span class="grow"></span>' +
+        '<button class="btn sm" data-act="saveActor" data-actor="' + a.id + '">⬇ Lưu Hồ Sơ</button>' +
+        '<button class="btn sm" data-act="uploadActorImg" data-actor="' + a.id + '">🖼️ Nạp Ảnh (hoặc ảnh truyện)</button>' +
+      '</div>' +
+      '<div class="small mut" style="margin-top:5px;">' + a.desc + '</div>' +
+      '<div style="background:#0a2a1e;border:1px solid #17b978;border-radius:9px;padding:9px;margin-top:9px;">' +
+        '<div class="rowflex"><span style="color:#2ee59d;font-weight:700;">🔄 Tạo &amp; Kiểm Tra Ảnh Tham Chiếu DNA (Auto Model)</span>' +
+        '<span class="grow"></span>' +
+        '<span class="badge ' + (a.angleCount>=5 ? 'green' : 'orange') + '">' + (a.angleCount>0 ? '✓ Đã có ảnh • ' + a.angleCount + '/5 góc' : 'Chưa có ảnh') + '</span></div>' +
+        '<button class="btn green" style="width:100%;margin-top:8px;" data-act="genAngles" data-actor="' + a.id + '">🔄 Tạo Tiếp Góc Còn Thiếu</button>' +
+      '</div>' +
+      '<div class="tabs">' +
+        '<button class="' + (a.tab==='angles' ? 'on' : '') + '" data-act="tabActor" data-actor="' + a.id + '" data-tab="angles">🧍 5 Góc DNA (' + a.angleCount + '/5)</button>' +
+        '<button class="' + (a.tab==='wardrobe' ? 'on' : '') + '" data-act="tabActor" data-actor="' + a.id + '" data-tab="wardrobe">👗 Tủ Đồ / Trang Phục DNA (' + WARDROBE_CONTEXTS.length + ')</button>' +
+      '</div>' + tabBody +
+    '</div>';
+  }).join('');
+}
+
+/* ================= RENDER: BỐI CẢNH ================= */
+function renderBackgrounds(){
+  const wrap = $('#bgList');
+  wrap.innerHTML = state.backgrounds.map(b=>{
+    const imgPart = b.img
+      ? '<img src="' + b.img + '" alt="">'
+      : '<div class="ph">🏔️</div>';
+    return '<div class="bgCard">' +
+      '<div class="rowflex">' +
+        '<span class="badge green">' + b.id + '</span>' +
+        '<b style="color:#fff;font-size:14.5px;">' + b.name + '</b>' +
+        '<span class="grow"></span>' +
+        '<button class="btn sm" data-act="dlBg" data-bg="' + b.id + '">⬇</button>' +
+        '<button class="btn sm" data-act="galleryBg" data-bg="' + b.id + '">Gallery</button>' +
+        '<button class="btn sm" style="background:#2a2060;border-color:#5b3df0;color:#cdb9ff;" data-act="testBg" data-bg="' + b.id + '">▶ Test Video</button>' +
+        '<button class="btn green sm" data-act="genBg" data-bg="' + b.id + '">🔄 Tạo Lại</button>' +
+      '</div>' +
+      '<div class="small mut" style="margin-top:5px;">' + b.desc + '</div>' +
+      '<div class="rowflex" style="margin-top:7px;">' +
+        '<span class="small">🆔 Định danh:</span>' +
+        '<b class="small" style="color:#ffcf4d;">' + b.loc + '</b>' +
+        '<span class="grow"></span>' +
+        (b.has ? '<span class="badge green">✓ ĐÃ CÓ ẢNH CHUẨN</span>' : '<span class="badge orange">CHƯA CÓ ẢNH</span>') +
+      '</div>' +
+      '<div class="bgImg">' + imgPart + '<div class="key">KEY: ' + b.loc + '</div></div>' +
+    '</div>';
+  }).join('');
+}
+
+/* ================= RENDER: CẢNH / TIMELINE ================= */
+function optsHTML(list, cur){
+  return list.map(o=>'<option ' + (o===cur ? 'selected' : '') + '>' + o + '</option>').join('');
+}
+function renderScenes(){
+  const grid = $('#sceneGrid');
+  grid.className = 'grid ' + state.settings.viewSize;
+  grid.innerHTML = state.scenes.map(s=>{
+    const bg = bgById(s.bgId);
+    const start = (s.n-1) * s.duration;
+    const frame = s.clipName && clipURLs[s.n]
+      ? '<video controls src="' + clipURLs[s.n] + '"></video><div class="small ok">✓ Đã nạp clip: ' + s.clipName + '</div>'
+      : (s.keyframe
+        ? '<img class="kf" src="' + s.keyframe + '" alt="Keyframe truyện"><div class="small" style="color:#cdb9ff;font-weight:700;">📚 Keyframe truyện — dùng làm khung hình đầu khi quay ở Flow</div><button class="btn sm red" data-act="clearKeyframe" data-scene="' + s.n + '">✕ Gỡ keyframe</button>'
+        : '<div class="vic">🎥</div><div style="font-weight:700;color:#9db4e8;">Chưa quay video</div><div class="small">Chi phí: 15 credits</div>');
+    const actorMinis = s.actorIds.map(aid=>{
+      const a = actorById(aid);
+      if(!a) return '';
+      return '<button class="mini" data-act="overrideActor" data-scene="' + s.n + '" data-actor="' + aid + '">' +
+        '<span class="th">' + actorThumbHTML(a, 44) + '</span>' +
+        '<span><span class="ovrb">OVR</span> <span class="mn">' + a.name + '</span><br>' +
+        '<span class="ms">Trang phục riêng • <span style="color:#57b6ff;">Sửa Override</span></span></span></button>';
+    }).join('');
+    const bgMini = bg
+      ? '<button class="miniBg" data-act="changeSceneBg" data-scene="' + s.n + '">' +
+          '<span class="th">' + (bg.img ? '<img src="' + bg.img + '" alt="">' : '🏔️') + '</span>' +
+          '<span><span class="mn" style="font-weight:800;font-size:12px;color:#fff;">' + bg.id + ' – ' + bg.name + '</span><br>' +
+          '<span class="ms" style="font-size:11px;color:#ffcf4d;">' + bg.id + ' • ' + bg.loc + '</span><br>' +
+          '<span style="font-size:11px;color:#57b6ff;">Bấm để đổi bối cảnh</span></span></button>'
+      : '<div class="small mut">Chưa gắn bối cảnh</div>';
+    return '<div class="scene">' +
+      '<div class="shead">' +
+        '<span class="sno">SCENE ' + s.n + '</span>' +
+        '<span class="sname">CẢNH ' + s.n + '</span>' +
+        '<span class="stime">' + fmtTime(start) + ' - ' + fmtTime(start + s.duration) + '</span>' +
+        '<span class="scr">15 cr</span>' +
+        '<span style="flex:1;"></span>' +
+        '<select data-chg="duration" data-scene="' + s.n + '">' + optsHTML(['5s','10s','15s'], s.duration + 's') + '</select>' +
+        '<select data-chg="quality" data-scene="' + s.n + '">' + optsHTML(['720p HD','1080p Full HD','480p'], s.quality) + '</select>' +
+      '</div>' +
+      '<div class="rowflex">' +
+        '<button class="ovr" data-act="overrideScene" data-scene="' + s.n + '">🎛️ OVERRIDE ●</button>' +
+        '<span class="wchip">👗 ' + s.wardrobe + '</span>' +
+        '<span class="small mut">Chạm thumbnail bên dưới để đổi nhanh</span>' +
+      '</div>' +
+      '<div class="selrow">' +
+        '<select data-chg="shot" data-scene="' + s.n + '">' + optsHTML(SHOT_OPTIONS, s.shot) + '</select>' +
+        '<select data-chg="move" data-scene="' + s.n + '">' + optsHTML(MOVE_OPTIONS, s.move) + '</select>' +
+        '<select data-chg="prop" data-scene="' + s.n + '">' + optsHTML(PROP_OPTIONS, s.prop) + '</select>' +
+      '</div>' +
+      '<div class="vframe">' + frame +
+        '<div class="rowflex" style="margin-top:4px;">' +
+          '<button class="btn sm" data-act="viewPrompt" data-scene="' + s.n + '">📝 Xem Prompt Quay</button>' +
+          '<button class="btn green sm" data-act="loadClip" data-scene="' + s.n + '">📥 Nạp Clip Từ Flow</button>' +
+        '</div>' +
+      '</div>' +
+      '<div class="bind">' +
+        '<div class="bh">🔗 TỰ ĐỘNG BINDING ASSET THAM CHIẾU:' +
+          '<span class="right"><button class="btn sm" data-act="refreshMedia" data-scene="' + s.n + '">🔄 Làm Mới MediaId</button>' +
+          '<span class="tiny mut">' + s.mediaId + '</span></span>' +
+        '</div>' +
+        '<div class="bindGrid">' +
+          '<div class="bindCol"><div class="bt2">🧑 NHÂN VẬT (' + s.actorIds.length + '): <span class="tiny" style="color:#2ee5c8;">DNA MAP</span></div>' + actorMinis + '</div>' +
+          '<div class="bindCol"><div class="bt2 teal">🏔️ BỐI CẢNH SCENE: <span style="color:#ffcf4d;">' + (bg ? bg.id : '—') + '</span></div>' + bgMini + '</div>' +
+        '</div>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+function renderAll(){ renderStats(); renderActors(); renderBackgrounds(); renderComics(); renderScenes(); }
+
+/* ================= CHUẨN HOÁ STATE ================= */
+function normalizeState(){
+  if(!Array.isArray(state.comics)) state.comics = [];
+  if(!state.settings.comicPreset) state.settings.comicPreset = 'clean';
+  state.scenes.forEach(s=>{ if(s.keyframe === undefined) s.keyframe = null; });
+}
+normalizeState();
+
+/* ================= TRUYỆN TRANH → PHIM ================= */
+const COMIC_PRESETS = {
+  clean: 'Clean up this comic panel image: keep the exact same comic/manga art style, same characters, same composition and line art. Remove noise, compression artifacts and blemishes, sharpen the linework, enhance colors, deliver a crisp high-quality illustration.',
+  real: 'Transform this comic panel into a photorealistic cinematic film still: real human actors matching the characters in the panel, same composition, poses and framing, cinematic lighting, Vietnamese TV drama style, photorealistic skin and clothing textures.',
+  cine: 'Apply a light cinematic treatment to this comic panel: keep the drawn art style and line art fully intact, add cinematic lighting, depth, subtle film grain and movie color grading, more dramatic atmosphere.'
+};
+let comicSeq = 0;
+function renderComics(){
+  const wrap = $('#comicList');
+  if(!wrap) return;
+  if(!state.comics.length){
+    wrap.innerHTML = '<div class="small mut" style="margin-bottom:12px;">Chưa có trang truyện nào. Nạp ảnh truyện để bắt đầu.</div>';
+    return;
+  }
+  wrap.innerHTML = state.comics.map((c,i)=>{
+    const usedIn = state.scenes.filter(s=>s.keyframe === c.img).map(s=>s.n);
+    return '<div class="comicCard">' +
+      '<div class="rowflex"><b style="color:#fff;">📄 Trang truyện ' + (i+1) + '</b>' +
+      (usedIn.length ? '<span class="badge purple">Keyframe: Cảnh ' + usedIn.join(', ') + '</span>' : '') +
+      '<span class="grow"></span>' +
+      '<button class="btn red sm" data-act="delComic" data-comic="' + c.id + '">🗑️ Xóa</button></div>' +
+      '<img class="thumb" src="' + c.img + '" alt="" style="margin-top:8px;">' +
+      (c.name ? '<div class="tiny mut" style="margin-top:5px;">' + c.name + '</div>' : '') +
+      '<div class="rowflex" style="margin-top:8px;">' +
+        '<button class="btn green sm grow" data-act="comicToTimeline" data-comic="' + c.id + '">⬆ Đưa Lên Timeline</button>' +
+        '<button class="btn grad sm grow" data-act="comicEditAI" data-comic="' + c.id + '">🎨 Sửa Bằng AI</button>' +
+      '</div>' +
+    '</div>';
+  }).join('');
+}
+async function addComicFiles(files){
+  const imgs = Array.from(files).filter(f=>f.type.indexOf('image/')===0);
+  if(!imgs.length){ toast('⚠️ Không có file ảnh nào hợp lệ.', 'err'); return; }
+  for(const f of imgs){
+    const url = await readAsDataURL(f);
+    comicSeq += 1;
+    state.comics.push({id:'tr' + Date.now() + '_' + comicSeq, name:f.name, img:url, origImg:null});
+  }
+  renderComics();
+  toast('✅ Đã nạp ' + imgs.length + ' trang truyện.', 'ok');
+}
+
+/* ================= PROMPT QUAY + AUTO RESCUE ================= */
+const RESCUE_MAP = [
+  ['giết chết','hạ gục'],['giết','hạ gục'],['đâm chết','xô ngã'],['đâm','xô đẩy'],['chém','đối đầu'],
+  ['máu me','vết xước nhẹ'],['máu','vết xước'],['súng','đạo cụ sân khấu'],['dao','đạo cụ sân khấu'],
+  ['tự tử','tuyệt vọng'],['khỏa thân','trang phục kín đáo'],['ma túy','vật khả nghi'],['cờ bạc','trò đỏ đen'],
+  ['bạo lực','xung đột tâm lý'],['đánh nhau','tranh cãi gay gắt'],['chửi bới','trách móc'],['hôn nhau','nhìn nhau trìu mến']
+];
+function rescueText(t){
+  let out = t || '';
+  RESCUE_MAP.forEach(pair=>{
+    out = out.replace(new RegExp(pair[0], 'gi'), pair[1]);
+  });
+  return out;
+}
+function maybeRescue(t){ return state.settings.rescue ? rescueText(t) : t; }
+function buildScenePrompt(s){
+  const bg = bgById(s.bgId);
+  const voice = voiceShort(state.settings.voice);
+  const lines = [];
+  lines.push('CINEMATIC VIDEO PROMPT — SCENE ' + s.n + ' (10 seconds, 720p, Vietnamese TV drama, photorealistic)');
+  if(s.keyframe){
+    lines.push('FIRST FRAME: Use the attached comic keyframe image as the EXACT first frame of the video and animate from it. Keep the same characters, costumes, composition and location as the keyframe.');
+    lines.push('MOTION FROM KEYFRAME: Characters begin moving naturally from the keyframe pose, camera ' + s.move + ', then the scene action and dialogue below unfold.');
+  }
+  if(bg) lines.push('LOCATION [' + bg.loc + ']: ' + maybeRescue(bg.name) + ' — ' + maybeRescue(bg.desc) + ' (use the attached background reference image, keep the space identical)');
+  s.actorIds.forEach(aid=>{
+    const a = actorById(aid);
+    if(!a) return;
+    const outfit = (a.outfits && a.outfits[s.wardrobe]) ? a.outfits[s.wardrobe] : s.wardrobe;
+    lines.push('CHARACTER: ' + a.name + ' (' + a.gender + ', ' + a.age + ') — ' + a.desc + ' Wardrobe (' + s.wardrobe + '): ' + outfit + '. IMPORTANT: face must stay identical to the attached DNA reference photos (5 angles).');
+  });
+  lines.push('SHOT: ' + s.shot + '. CAMERA MOVEMENT: ' + s.move + '. PROPS: ' + s.prop + '.');
+  lines.push('DIALOGUE (speak in Vietnamese, ' + voice + ' accent, natural drama acting): ' + maybeRescue(s.dialogue));
+  lines.push('STYLE: ' + (state.settings.lockDNA ? 'Identity lock ON (DNA 5 angles). ' : '') + 'Consistent faces across all scenes, natural skin texture, soft cinematic lighting, no text, no watermark, no logo.');
+  return lines.join('\n');
+}
+
+/* ================= GEMINI IMAGE API (KEY MIỄN PHÍ) ================= */
+function getKey(){ return localStorage.getItem('phimtruong_gemini_key') || ''; }
+function openKeyGuide(){
+  $('#apiKeyInput').scrollIntoView({behavior:'smooth', block:'center'});
+  $('#apiKeyInput').focus();
+  toast('🔑 <b>Chưa có API key Gemini.</b><br>Tạo key miễn phí trong 3 bước:<br>1) Vào <b>aistudio.google.com</b> → đăng nhập Google.<br>2) Bấm <b>"Get API key"</b> → "Create API key".<br>3) Dán key vào ô API Key ở cột trái rồi bấm <b>Lưu</b>.', 'err');
+}
+async function geminiImage(promptText, imageDataUrl){
+  const key = getKey();
+  if(!key){ openKeyGuide(); return null; }
+  const parts = [{text: promptText}];
+  if(imageDataUrl){
+    const m = imageDataUrl.match(/^data:([^;]+);base64,(.+)$/);
+    if(m) parts.push({inlineData:{mimeType:m[1], data:m[2]}});
+  }
+  let res, data;
+  try{
+    res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-image:generateContent?key=' + encodeURIComponent(key), {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({contents:[{parts: parts}]})
+    });
+    data = await res.json();
+  }catch(e){
+    toast('❌ Lỗi mạng khi gọi Gemini: ' + e.message, 'err');
+    return null;
+  }
+  if(!res.ok){
+    const msg = (data && data.error && data.error.message) ? data.error.message : ('HTTP ' + res.status);
+    toast('❌ Gemini từ chối: ' + msg + '<br><span class="small">Có thể do hết quota miễn phí trong ngày hoặc key chưa đúng — kiểm tra lại tại aistudio.google.com.</span>', 'err');
+    return null;
+  }
+  const cparts = (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) || [];
+  const ip = cparts.find(p=>p.inlineData);
+  if(!ip){
+    toast('❌ Gemini không trả ảnh về (có thể prompt bị lọc an toàn). Hãy đổi mô tả rồi thử lại.', 'err');
+    return null;
+  }
+  return 'data:' + (ip.inlineData.mimeType || 'image/png') + ';base64,' + ip.inlineData.data;
+}
+function autoDl(img, name){ if(state.settings.autoDlDNA) downloadFile(name, img); }
+
+/* ================= MODAL ================= */
+function openModal(title, html){
+  $('#modalTitle').textContent = title;
+  $('#modalBody').innerHTML = html;
+  $('#modalWrap').classList.add('open');
+}
+function closeModal(){
+  $('#modalWrap').classList.remove('open');
+  const v = $('#modalBody video');
+  if(v){ v.pause(); }
+  $('#modalBody').innerHTML = '';
+}
+$('#modalClose').addEventListener('click', closeModal);
+$('#modalWrap').addEventListener('click', e=>{ if(e.target === $('#modalWrap')) closeModal(); });
+function copyText(t){
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).then(()=>toast('📋 Đã sao chép vào clipboard.', 'ok'), ()=>fallbackCopy(t));
+  } else fallbackCopy(t);
+}
+function fallbackCopy(t){
+  const ta = document.createElement('textarea');
+  ta.value = t; document.body.appendChild(ta); ta.select();
+  try{ document.execCommand('copy'); toast('📋 Đã sao chép vào clipboard.', 'ok'); }
+  catch(e){ toast('⚠️ Không sao chép tự động được — hãy bôi đen và copy thủ công.', 'err'); }
+  ta.remove();
+}
+
+/* ================= TIẾN ĐỘ THIẾT KẾ (MÔ PHỎNG) ================= */
+const design = { val:25, total:42, timer:null, paused:false };
+function designRender(){
+  const pct = design.total ? Math.round(design.val / design.total * 100) : 0;
+  $('#progText').textContent = design.val + ' / ' + design.total + ' (' + pct + '%)';
+  $('#progFill').style.width = pct + '%';
+  $('#btnProgPause').textContent = design.paused ? '▶ Tiếp Tục' : '⏸ Tạm Dừng';
+}
+function designStart(){
+  if(design.timer) return;
+  if(design.val >= design.total) design.val = 0;
+  design.paused = false;
+  $('#progLabel').textContent = 'AI Đang Thiết Kế Trang Phục...';
+  design.timer = setInterval(()=>{
+    if(design.paused) return;
+    design.val += 1;
+    const a = state.actors[design.val % state.actors.length];
+    const ctx = WARDROBE_CONTEXTS[design.val % WARDROBE_CONTEXTS.length];
+    $('#progDetail').textContent = '👤 ' + (a ? a.name : '') + ' • 👗 ' + ctx.name;
+    designRender();
+    if(design.val >= design.total){
+      designStop(true);
+      toast('✅ Đã thiết kế xong ' + design.total + '/' + design.total + ' mục trang phục (mô phỏng tiến độ).', 'ok');
+    }
+  }, 350);
+  designRender();
+}
+function designStop(done){
+  if(design.timer){ clearInterval(design.timer); design.timer = null; }
+  if(!done){
+    design.val = 0;
+    $('#progLabel').textContent = 'Đã dừng thiết kế.';
+    $('#progDetail').textContent = 'Bấm "Tạo DNA & Bối Cảnh" hoặc "Tạo Hết Các Trang Phục" để chạy lại.';
+  }
+  designRender();
+}
+$('#btnProgPause').addEventListener('click', ()=>{
+  if(!design.timer){ toast('Tiến độ chưa chạy — bấm "Tạo DNA & Bối Cảnh" để bắt đầu.'); return; }
+  design.paused = !design.paused;
+  designRender();
+});
+$('#btnProgStop').addEventListener('click', ()=>designStop(false));
+
+/* ================= HÀNH ĐỘNG (data-act) ================= */
+document.addEventListener('click', async e=>{
+  const el = e.target.closest('[data-act]');
+  if(!el) return;
+  const act = el.dataset.act;
+  const aid = el.dataset.actor, bgid = el.dataset.bg, sn = parseInt(el.dataset.scene || '0', 10);
+  const scene = state.scenes.find(s=>s.n===sn);
+  const actor = aid ? actorById(aid) : null;
+  const bg = bgid ? bgById(bgid) : null;
+
+  if(act === 'tabActor' && actor){ actor.tab = el.dataset.tab; renderActors(); }
+
+  if(act === 'saveActor' && actor){
+    downloadText('ho-so-' + stripVN(actor.name).toLowerCase().replace(/ /g,'-') + '.json',
+      JSON.stringify(actor, null, 2));
+    toast('💾 Đã tải hồ sơ diễn viên ' + actor.name + '.', 'ok');
+  }
+
+  if(act === 'uploadActorImg' && actor){
+    pickFile('image/*', async f=>{
+      actor.angleImgs[0] = await readAsDataURL(f);
+      if(actor.angleCount < 1) actor.angleCount = 1;
+      renderActors(); renderScenes(); renderStats();
+      toast('🖼️ Đã nạp ảnh cho ' + actor.name + ' (dùng làm ảnh DNA chính diện + thumbnail binding).', 'ok');
+    });
+  }
+
+  if(act === 'genAngles' && actor){
+    const missing = ANGLE_LABELS.map((lb,i)=>i).filter(i=>!actor.angleImgs[i]);
+    if(!getKey()){ openKeyGuide(); return; }
+    if(!missing.length){ toast(actor.name + ' đã đủ 5 góc có ảnh thật.'); return; }
+    toast('🎨 Đang tạo ' + missing.length + ' góc DNA cho ' + actor.name + ' bằng Gemini (miễn phí)...');
+    for(const i of missing){
+      const prompt = 'Photorealistic full-body character reference photo of a ' + actor.age + '-year-old Vietnamese ' + (actor.gender==='Nữ' ? 'woman' : 'man') + ', ' + actor.desc + ' View angle: ' + ANGLE_LABELS[i] + '. Plain solid green screen background, even studio lighting, standing straight, neutral expression, sharp focus, consistent same face across all angles.';
+      const img = await geminiImage(prompt, null);
+      if(!img) break;
+      actor.angleImgs[i] = img;
+      autoDl(img, 'DNA_' + stripVN(actor.name).replace(/ /g,'_') + '_goc' + (i+1) + '.png');
+      renderActors();
+    }
+    actor.angleCount = Math.max(actor.angleCount, actor.angleImgs.filter(Boolean).length);
+    renderActors(); renderScenes(); renderStats();
+  }
+
+  if(act === 'genWardrobe' && actor){
+    if(!getKey()){ openKeyGuide(); return; }
+    const ctx = el.dataset.ctx;
+    const outfit = (actor.outfits && actor.outfits[ctx]) ? actor.outfits[ctx] : ctx;
+    toast('👗 Đang tạo trang phục "' + ctx + '" cho ' + actor.name + '...');
+    const img = await geminiImage('Photorealistic full-body fashion reference photo of a ' + actor.age + '-year-old Vietnamese ' + (actor.gender==='Nữ' ? 'woman' : 'man') + ', ' + actor.desc + ' Wearing outfit for context "' + ctx + '": ' + outfit + '. Plain light gray studio background, standing straight, sharp focus.', null);
+    if(img){
+      actor.wardrobe[ctx] = {has:true, img:img};
+      autoDl(img, 'TrangPhuc_' + stripVN(actor.name).replace(/ /g,'_') + '_' + stripVN(ctx).replace(/ /g,'_') + '.png');
+      renderActors();
+      toast('✅ Đã tạo trang phục ' + ctx + ' cho ' + actor.name + '.', 'ok');
+    }
+  }
+
+  if(act === 'dlWardrobe' && actor){
+    const w = actor.wardrobe[el.dataset.ctx];
+    if(w && w.img) downloadFile('TrangPhuc_' + stripVN(actor.name).replace(/ /g,'_') + '_' + stripVN(el.dataset.ctx).replace(/ /g,'_') + '.png', w.img);
+    else toast('Ô trang phục này chưa có ảnh thật — bấm "Tạo lại" (cần key Gemini) để sinh ảnh.', 'err');
+  }
+
+  if(act === 'genAllWardrobe' && actor){
+    designStart();
+    if(!getKey()){ openKeyGuide(); return; }
+    for(const c of WARDROBE_CONTEXTS){
+      if(actor.wardrobe[c.name] && actor.wardrobe[c.name].img) continue;
+      const outfit = (actor.outfits && actor.outfits[c.name]) ? actor.outfits[c.name] : c.name;
+      const img = await geminiImage('Photorealistic full-body fashion reference photo of a ' + actor.age + '-year-old Vietnamese ' + (actor.gender==='Nữ' ? 'woman' : 'man') + ', ' + actor.desc + ' Wearing outfit for context "' + c.name + '": ' + outfit + '. Plain light gray studio background, standing straight, sharp focus.', null);
+      if(!img) break;
+      actor.wardrobe[c.name] = {has:true, img:img};
+      renderActors();
+    }
+    toast('👗 Đã xử lý xong tủ đồ của ' + actor.name + '.', 'ok');
+  }
+
+  if(act === 'genBg' && bg){
+    if(!getKey()){ openKeyGuide(); return; }
+    toast('🏔️ Đang dựng bối cảnh ' + bg.id + ' bằng Gemini...');
+    const img = await geminiImage('Photorealistic cinematic photo of a filming location, EMPTY, absolutely NO people, NO humans: ' + bg.name + ' — ' + bg.desc + ' Wide establishing shot, natural cinematic lighting, 16:9.', null);
+    if(img){
+      bg.img = img; bg.has = true;
+      autoDl(img, bg.id + '_' + bg.loc + '.png');
+      renderBackgrounds(); renderScenes(); renderStats();
+      toast('✅ Đã dựng xong ' + bg.id + ' — ' + bg.name + '.', 'ok');
+    }
+  }
+
+  if(act === 'dlBg' && bg){
+    if(bg.img) downloadFile(bg.id + '_' + bg.loc + '.png', bg.img);
+    else toast(bg.id + ' chưa có ảnh thật — bấm "Tạo Lại" (cần key Gemini) để sinh ảnh.', 'err');
+  }
+
+  if(act === 'galleryBg' && bg){
+    openModal('🖼️ ' + bg.id + ' — ' + bg.name,
+      (bg.img ? '<img src="' + bg.img + '" style="width:100%;border-radius:10px;">' : '<div class="vframe" style="min-height:200px;"><div class="vic">🏔️</div><div>Chưa có ảnh thật — đang dùng ảnh minh hoạ khung.</div></div>') +
+      '<p class="small mut">' + bg.desc + '</p><p class="small">🆔 Định danh: <b style="color:#ffcf4d;">' + bg.loc + '</b></p>');
+  }
+
+  if(act === 'testBg' && bg){
+    downloadText('test-video-' + bg.id + '.txt',
+      'TEST VIDEO — BỐI CẢNH ' + bg.id + ' (' + bg.loc + ')\nDán prompt này vào Google Flow kèm ảnh bối cảnh:\n\n' +
+      'Slow cinematic push-in shot of an EMPTY location, no people: ' + bg.name + ' — ' + bg.desc + ' Natural light, photorealistic, 10 seconds.');
+    toast('⬇ Đã tải prompt test video cho ' + bg.id + ' (dùng ở Google Flow).', 'ok');
+  }
+
+  if(act === 'refreshMedia' && scene){
+    scene.mediaId = 'MID-' + Math.random().toString(36).slice(2,8).toUpperCase();
+    renderScenes();
+    toast('🔄 Đã làm mới MediaId cho Cảnh ' + scene.n + ': ' + scene.mediaId, 'ok');
+  }
+
+  if(act === 'viewPrompt' && scene){
+    const p = buildScenePrompt(scene);
+    openModal('📝 Prompt Quay — Cảnh ' + scene.n,
+      (scene.keyframe ? '<p class="small" style="color:#cdb9ff;">📚 Cảnh này có <b>keyframe truyện</b> — khi quay ở Flow, hãy đính kèm ảnh keyframe làm khung hình đầu (first frame).</p>' : '') +
+      '<pre id="promptText"></pre>' +
+      '<div class="rowflex"><button class="btn green" id="btnCopyPrompt">📋 Sao chép Prompt</button>' +
+      '<button class="btn" id="btnDlPrompt">⬇ Tải .txt</button></div>');
+    $('#promptText').textContent = p;
+    $('#btnCopyPrompt').addEventListener('click', ()=>copyText(p));
+    $('#btnDlPrompt').addEventListener('click', ()=>downloadText('prompt-canh-' + scene.n + '.txt', p));
+  }
+
+  if(act === 'loadClip' && scene){
+    pickFile('video/*', f=>{
+      if(clipURLs[scene.n]) URL.revokeObjectURL(clipURLs[scene.n]);
+      clipURLs[scene.n] = URL.createObjectURL(f);
+      scene.clipName = f.name;
+      renderScenes(); renderStats();
+      toast('🎬 Đã nạp clip cho Cảnh ' + scene.n + ': ' + f.name, 'ok');
+    });
+  }
+
+  if(act === 'clearKeyframe' && scene){
+    scene.keyframe = null;
+    renderScenes(); renderComics();
+    toast('Đã gỡ keyframe khỏi Cảnh ' + scene.n + '.');
+  }
+
+  if(act === 'changeSceneBg' && scene){
+    const opts = state.backgrounds.map(b=>'<option value="' + b.id + '" ' + (b.id===scene.bgId ? 'selected' : '') + '>' + b.id + ' — ' + b.name + ' (' + b.loc + ')</option>').join('');
+    openModal('🏔️ Đổi bối cảnh — Cảnh ' + scene.n,
+      '<label class="small mut">Chọn bối cảnh:</label><select class="inp" id="mBgSel" style="margin:8px 0 12px;">' + opts + '</select>' +
+      '<button class="btn green" id="mBgApply">Áp dụng</button>');
+    $('#mBgApply').addEventListener('click', ()=>{
+      scene.bgId = $('#mBgSel').value;
+      closeModal(); renderScenes();
+      toast('🏔️ Cảnh ' + scene.n + ' đã đổi sang bối cảnh ' + scene.bgId + '.', 'ok');
+    });
+  }
+
+  if((act === 'overrideActor' || act === 'overrideScene') && scene){
+    const wopts = WARDROBE_CONTEXTS.map(c=>'<option ' + (c.name===scene.wardrobe ? 'selected' : '') + '>' + c.name + '</option>').join('');
+    const cur = actor ? ' cho ' + actor.name : '';
+    openModal('🎛️ Override — Cảnh ' + scene.n + cur,
+      '<label class="small mut">Trang phục áp cho cảnh này:</label><select class="inp" id="mWardSel" style="margin:8px 0 12px;">' + wopts + '</select>' +
+      '<button class="btn green" id="mWardApply">Áp dụng Override</button>');
+    $('#mWardApply').addEventListener('click', ()=>{
+      scene.wardrobe = $('#mWardSel').value;
+      closeModal(); renderScenes();
+      toast('👗 Cảnh ' + scene.n + ' đã override trang phục: ' + scene.wardrobe, 'ok');
+    });
+  }
+
+  /* --- Truyện tranh --- */
+  if(act === 'delComic'){
+    const idx = state.comics.findIndex(c=>c.id===el.dataset.comic);
+    if(idx >= 0){
+      const removed = state.comics[idx];
+      state.scenes.forEach(s=>{ if(s.keyframe === removed.img) s.keyframe = null; });
+      state.comics.splice(idx, 1);
+      renderComics(); renderScenes();
+      toast('🗑️ Đã xóa trang truyện.');
+    }
+  }
+  if(act === 'comicToTimeline'){
+    const c = state.comics.find(x=>x.id===el.dataset.comic);
+    if(!c) return;
+    const target = state.scenes.find(s=>!s.keyframe);
+    if(!target){ toast('⚠️ Cả 24 cảnh đều đã có keyframe. Gỡ keyframe ở một cảnh trước.', 'err'); return; }
+    target.keyframe = c.img;
+    renderScenes(); renderComics();
+    toast('⬆ Đã gán trang truyện làm keyframe cho <b>Cảnh ' + target.n + '</b> (cảnh trống keyframe tiếp theo).', 'ok');
+  }
+  if(act === 'comicEditAI'){
+    const c = state.comics.find(x=>x.id===el.dataset.comic);
+    if(!c) return;
+    if(!getKey()){ openKeyGuide(); return; }
+    toast('🎨 Đang sửa ảnh truyện bằng Gemini theo preset đã chọn...');
+    const img = await geminiImage(COMIC_PRESETS[state.settings.comicPreset] || COMIC_PRESETS.clean, c.img);
+    if(img){
+      const prev = c.img;
+      if(!c.origImg) c.origImg = prev;
+      c.img = img;
+      state.scenes.forEach(s=>{ if(s.keyframe === prev) s.keyframe = img; });
+      renderComics(); renderScenes();
+      toast('✅ Đã sửa xong trang truyện bằng AI.', 'ok');
+    }
+  }
+});
+
+/* Thay đổi select trong thẻ cảnh */
+document.addEventListener('change', e=>{
+  const el = e.target.closest('[data-chg]');
+  if(!el) return;
+  const scene = state.scenes.find(s=>s.n===parseInt(el.dataset.scene, 10));
+  if(!scene) return;
+  const k = el.dataset.chg;
+  if(k === 'duration') scene.duration = parseInt(el.value, 10) || 10;
+  else scene[k] = el.value;
+  renderScenes();
+});
+
+/* ================= NÚT & ĐIỀU KHIỂN CHÍNH ================= */
+$('#btnSaveKey').addEventListener('click', ()=>{
+  const v = $('#apiKeyInput').value.trim();
+  if(!v){ toast('⚠️ Ô key đang trống.', 'err'); return; }
+  localStorage.setItem('phimtruong_gemini_key', v);
+  $('#keyStatus').innerHTML = '<span class="ok">✓ Đã lưu key (chỉ ở trình duyệt này). Các nút Tạo ảnh sẽ gọi Gemini thật.</span>';
+  toast('🔑 Đã lưu API key Gemini.', 'ok');
+});
+$('#voiceSelect').addEventListener('change', e=>{
+  state.settings.voice = e.target.value;
+  renderStats();
+});
+$('#btnFolder').addEventListener('click', ()=>{
+  const name = prompt('Tên thư mục lưu trữ:', state.settings.folder);
+  if(name && name.trim()){
+    state.settings.folder = name.trim();
+    $('#folderName').textContent = state.settings.folder;
+    toast('📁 Đã đổi thư mục lưu trữ: ' + state.settings.folder, 'ok');
+  }
+});
+$('#chkAutoDlScene').addEventListener('change', e=>{ state.settings.autoDlScene = e.target.checked; });
+$('#chkAutoDlDNA').addEventListener('change', e=>{ state.settings.autoDlDNA = e.target.checked; });
+$('#chkRotate').addEventListener('change', e=>{ state.settings.rotateDNA = e.target.checked; });
+$('#chkRescue').addEventListener('change', e=>{ state.settings.rescue = e.target.checked; toast('🛡️ Auto Né Vi Phạm Chính Sách: ' + (e.target.checked ? 'BẬT — prompt xuất ra sẽ tự thay từ nhạy cảm.' : 'TẮT')); });
+$('#chkLockDNA').addEventListener('change', e=>{ state.settings.lockDNA = e.target.checked; });
+$('#btnSampleActor').addEventListener('click', ()=>{ $('#actorInfoText').value = SAMPLE_ACTOR_TEXT; toast('✏️ Đã nạp mẫu thông tin nhân vật.', 'ok'); });
+$('#btnSampleBg').addEventListener('click', ()=>{ $('#bgInfoText').value = SAMPLE_BG_TEXT; toast('✏️ Đã nạp mẫu thông tin bối cảnh.', 'ok'); });
+
+$('#btnSyncTimeline').addEventListener('click', ()=>{
+  state.scenes.forEach(s=>{ s.mediaId = 'MID-' + Math.random().toString(36).slice(2,8).toUpperCase(); });
+  renderAll();
+  toast('🗂️ Đã đồng bộ Timeline: ' + state.scenes.length + ' cảnh khớp DNA & bối cảnh (' + totalFiles() + ' tệp).', 'ok');
+});
+$('#btnResetTimeline').addEventListener('click', ()=>{
+  if(!confirm('Reset Timeline & xóa kịch bản cũ? DNA diễn viên và bối cảnh được GIỮ LẠI.')) return;
+  Object.values(clipURLs).forEach(u=>URL.revokeObjectURL(u));
+  clipURLs = {};
+  state.scenes = defaultState().scenes;
+  normalizeState();
+  renderAll();
+  toast('🔄 Đã reset Timeline về 24 cảnh mặc định. DNA & bối cảnh giữ nguyên.', 'ok');
+});
+$('#btnResetDNA').addEventListener('click', ()=>{
+  if(!confirm('Reset toàn bộ DNA diễn viên? Ảnh góc và tủ đồ sẽ bị xóa.')) return;
+  state.actors.forEach(a=>{
+    a.angleImgs = [null,null,null,null,null];
+    a.angleCount = 0;
+    Object.keys(a.wardrobe).forEach(k=>{ a.wardrobe[k] = {has:false, img:null}; });
+  });
+  renderAll();
+  toast('🗑️ Đã reset DNA diễn viên.', 'ok');
+});
+$('#btnResetBg').addEventListener('click', ()=>{
+  if(!confirm('Reset toàn bộ bối cảnh? Ảnh bối cảnh sẽ bị xóa.')) return;
+  state.backgrounds.forEach(b=>{ b.img = null; b.has = false; });
+  renderAll();
+  toast('🗑️ Đã reset bối cảnh.', 'ok');
+});
+
+$('#btnGenAll').addEventListener('click', async ()=>{
+  designStart();
+  if(!getKey()){ openKeyGuide(); return; }
+  toast('✨ Bắt đầu tạo DNA & Bối Cảnh bằng Gemini (miễn phí)...');
+  for(const b of state.backgrounds){
+    if(b.img) continue;
+    const img = await geminiImage('Photorealistic cinematic photo of a filming location, EMPTY, absolutely NO people, NO humans: ' + b.name + ' — ' + b.desc + ' Wide establishing shot, natural cinematic lighting, 16:9.', null);
+    if(!img) break;
+    b.img = img; b.has = true;
+    renderBackgrounds(); renderScenes(); renderStats();
+  }
+  toast('✨ Đã xử lý xong lượt Tạo DNA & Bối Cảnh (bối cảnh nào chưa có ảnh thật sẽ được tạo; góc DNA tạo riêng bằng nút trong thẻ diễn viên).', 'ok');
+});
+$('#btnGenAngles').addEventListener('click', ()=>{
+  designStart();
+  toast('✨ Dùng nút "Tạo Tiếp Góc Còn Thiếu" trong từng thẻ diễn viên để tạo 5 góc bằng key Gemini. Đang chạy mô phỏng tiến độ thiết kế trang phục.', 'ok');
+});
+$('#btnGenAllBg').addEventListener('click', async ()=>{
+  if(!getKey()){ openKeyGuide(); return; }
+  toast('🏔️ Đang dựng các bối cảnh còn thiếu ảnh thật...');
+  for(const b of state.backgrounds){
+    if(b.img) continue;
+    const img = await geminiImage('Photorealistic cinematic photo of a filming location, EMPTY, absolutely NO people, NO humans: ' + b.name + ' — ' + b.desc + ' Wide establishing shot, natural cinematic lighting, 16:9.', null);
+    if(!img) break;
+    b.img = img; b.has = true;
+    renderBackgrounds(); renderScenes(); renderStats();
+  }
+  toast('🏔️ Đã xử lý xong lượt dựng bối cảnh.', 'ok');
+});
+$('#btnTestVideoAll').addEventListener('click', ()=>{
+  const txt = 'GÓI TEST VIDEO DIỄN VIÊN — PhimTrường AI (dán từng prompt vào Google Flow kèm ảnh DNA của diễn viên)\n' +
+    state.actors.map(a=>'\n=== ' + a.name + ' (' + a.gender + ', ' + a.age + ') ===\n' +
+      'Medium shot of the actor from the attached DNA reference photos, face identical, saying one line in Vietnamese (' + voiceShort(state.settings.voice) + ' accent): "Xin chào, tôi là ' + a.name + '." Natural acting, cinematic lighting, 5 seconds.').join('\n');
+  downloadText('goi-test-video-dien-vien.txt', txt);
+  toast('⬇ Đã xuất gói prompt test video cho ' + state.actors.length + ' diễn viên (quay thử ở Google Flow).', 'ok');
+});
+
+/* Dự án JSON */
+$('#btnSaveProject').addEventListener('click', ()=>{
+  const data = JSON.stringify({app:'PhimTruongAI', version:1, exportedAt:new Date().toISOString(), settings:state.settings, actors:state.actors, backgrounds:state.backgrounds, scenes:state.scenes, comics:state.comics}, null, 2);
+  const url = URL.createObjectURL(new Blob([data], {type:'application/json'}));
+  downloadFile('du-an-phimtruong.json', url);
+  setTimeout(()=>URL.revokeObjectURL(url), 4000);
+  toast('💾 Đã lưu dự án (.json). Lưu ý: clip video đã nạp không nằm trong file JSON (chỉ lưu tên clip) — hãy giữ file clip gốc.', 'ok');
+});
+$('#btnOpenProject').addEventListener('click', ()=>$('#projectFile').click());
+$('#projectFile').addEventListener('change', e=>{
+  const f = e.target.files[0];
+  if(!f) return;
+  const r = new FileReader();
+  r.onload = ()=>{
+    try{
+      const d = JSON.parse(r.result);
+      if(!d.actors || !d.backgrounds || !d.scenes) throw new Error('Thiếu dữ liệu');
+      state.settings = Object.assign(state.settings, d.settings || {});
+      state.actors = d.actors; state.backgrounds = d.backgrounds; state.scenes = d.scenes;
+      state.comics = d.comics || [];
+      Object.values(clipURLs).forEach(u=>URL.revokeObjectURL(u));
+      clipURLs = {};
+      state.scenes.forEach(s=>{ s.clipName = null; });
+      normalizeState();
+      syncSettingsUI();
+      renderAll();
+      toast('📂 Đã mở dự án: ' + state.actors.length + ' diễn viên, ' + state.backgrounds.length + ' bối cảnh, ' + state.scenes.length + ' cảnh.', 'ok');
+    }catch(err){
+      toast('❌ File dự án không hợp lệ: ' + err.message, 'err');
+    }
+  };
+  r.readAsText(f);
+  e.target.value = '';
+});
+
+/* Cỡ ô timeline */
+$('#sizeSeg').addEventListener('click', e=>{
+  const b = e.target.closest('button[data-size]');
+  if(!b) return;
+  state.settings.viewSize = b.dataset.size;
+  $$('#sizeSeg button').forEach(x=>x.classList.toggle('on', x === b));
+  renderScenes();
+});
+
+/* Xuất gói quay Flow */
+$('#btnExportFlow').addEventListener('click', ()=>{
+  const L = [];
+  L.push('============================================================');
+  L.push('GÓI QUAY GOOGLE FLOW — PhimTrường AI');
+  L.push('Tập phim: 24 cảnh x 10 giây | Chất lượng: 720p | Giọng thoại: ' + state.settings.voice);
+  L.push('Cách dùng: với mỗi cảnh, mở Google Flow → đính kèm ảnh tham chiếu được liệt kê → dán prompt → quay → tải clip về → nạp vào app bằng nút "Nạp Clip Từ Flow".');
+  L.push('============================================================');
+  state.scenes.forEach(s=>{
+    const bg = bgById(s.bgId);
+    L.push('');
+    L.push('---------- CẢNH ' + s.n + ' (' + fmtTime((s.n-1)*s.duration) + ' - ' + fmtTime(s.n*s.duration) + ') ----------');
+    L.push('Ảnh tham chiếu cần đính kèm:');
+    if(s.keyframe) L.push('  - [KEYFRAME TRUYỆN] Ảnh truyện tranh của cảnh này → dùng làm KHUNG HÌNH ĐẦU (first frame).');
+    if(bg) L.push('  - [BỐI CẢNH] ' + bg.id + ' — ' + bg.loc);
+    s.actorIds.forEach(aid=>{
+      const a = actorById(aid);
+      if(a) L.push('  - [DNA] ' + a.name + ' — 5 góc DNA, trang phục: ' + s.wardrobe);
+    });
+    L.push('PROMPT:');
+    L.push(buildScenePrompt(s));
+  });
+  const kfScenes = state.scenes.filter(s=>s.keyframe).map(s=>s.n);
+  L.push('');
+  L.push('============================================================');
+  L.push('DANH SÁCH KEYFRAME TRUYỆN THEO CẢNH: ' + (kfScenes.length ? kfScenes.map(n=>'Cảnh ' + n).join(', ') : 'Không có cảnh nào dùng keyframe truyện.'));
+  downloadText('goi-quay-flow-24-canh.txt', L.join('\n'));
+  toast('⬇ Đã xuất gói quay Flow: 24 prompt + danh sách ảnh tham chiếu' + (kfScenes.length ? ' (keyframe ở cảnh: ' + kfScenes.join(', ') + ')' : '') + '.', 'ok');
+});
+
+/* Thumbnail phim */
+$('#btnThumbnail').addEventListener('click', ()=>{
+  const cv = document.createElement('canvas');
+  cv.width = 1280; cv.height = 720;
+  const ctx = cv.getContext('2d');
+  const g = ctx.createLinearGradient(0,0,1280,720);
+  g.addColorStop(0,'#1b1040'); g.addColorStop(.55,'#0a0f1e'); g.addColorStop(1,'#0d2a20');
+  ctx.fillStyle = g; ctx.fillRect(0,0,1280,720);
+  const bgImg = (state.backgrounds.find(b=>b.img) || {}).img;
+  const drawText = ()=>{
+    ctx.fillStyle = 'rgba(4,8,18,.45)'; ctx.fillRect(0,470,1280,250);
+    ctx.fillStyle = '#ffcf4d'; ctx.font = '800 64px "Segoe UI", Arial'; ctx.fillText('PHIM TRƯỜNG AI', 60, 580);
+    ctx.fillStyle = '#e6eeff'; ctx.font = '600 34px "Segoe UI", Arial';
+    ctx.fillText('Drama gia đình — Tập 1 • Giọng ' + voiceShort(state.settings.voice), 60, 645);
+    downloadFile('thumbnail-phim.png', cv.toDataURL('image/png'));
+    toast('🖼️ Đã tạo & tải thumbnail phim (1280x720).', 'ok');
+  };
+  if(bgImg){
+    const im = new Image();
+    im.onload = ()=>{ ctx.drawImage(im, 0, 0, 1280, 720); drawText(); };
+    im.onerror = drawText;
+    im.src = bgImg;
+  } else drawText();
+});
+
+/* Ghép Master — phát nối tiếp */
+let masterList = [], masterIdx = 0;
+function playMasterStep(){
+  const v = $('#masterVideo');
+  const lbl = $('#masterLabel');
+  if(!v) return;
+  if(masterIdx >= masterList.length){
+    if(lbl) lbl.textContent = '✅ Đã phát hết ' + masterList.length + ' cảnh.';
+    return;
+  }
+  const s = masterList[masterIdx];
+  if(lbl) lbl.textContent = '▶ Đang phát Cảnh ' + s.n + ' / ' + masterList.length + ' cảnh đã nạp clip (' + s.clipName + ')';
+  v.src = clipURLs[s.n];
+  v.play().catch(()=>{});
+}
+$('#btnMaster').addEventListener('click', ()=>{
+  masterList = state.scenes.filter(s=>s.clipName && clipURLs[s.n]);
+  if(!masterList.length){ toast('⚠️ Chưa có cảnh nào được nạp clip. Hãy quay ở Flow rồi dùng nút "Nạp Clip Từ Flow" trong từng cảnh.', 'err'); return; }
+  masterIdx = 0;
+  openModal('🎬 Ghép Master — Phát nối tiếp ' + masterList.length + ' cảnh',
+    '<div id="masterLabel" class="small" style="margin-bottom:8px;"></div>' +
+    '<video id="masterVideo" controls></video>' +
+    '<div class="small mut" style="margin-top:8px;">Các clip được phát nối tiếp theo đúng thứ tự cảnh. Để xuất 1 file phim duy nhất, ghép các clip đã tải bằng CapCut/Premiere ở bước hậu kỳ.</div>');
+  const v = $('#masterVideo');
+  v.addEventListener('ended', ()=>{ masterIdx += 1; playMasterStep(); });
+  playMasterStep();
+});
+$('#btnDownloadScenes').addEventListener('click', ()=>{
+  const have = state.scenes.filter(s=>s.clipName && clipURLs[s.n]);
+  if(!have.length){ toast('⚠️ Chưa có clip nào để tải.', 'err'); return; }
+  have.forEach((s,i)=>{
+    setTimeout(()=>downloadFile('canh-' + String(s.n).padStart(2,'0') + '.mp4', clipURLs[s.n]), i * 500);
+  });
+  toast('⬇ Đang tải ' + have.length + ' scene lẻ...', 'ok');
+});
+$('#btnSpatial').addEventListener('click', ()=>{
+  toast('🛡️ Không gian đã khớp: ' + totalFiles() + ' tệp DNA & bối cảnh đang khớp với Timeline.', 'ok');
+});
+$('#btnMasterPrompt').addEventListener('click', ()=>{
+  openModal('🎬 Master Prompt',
+    '<textarea class="inp" id="mPrompt" style="min-height:180px;">' + state.settings.masterPrompt.replace(/</g,'&lt;') + '</textarea>' +
+    '<button class="btn green" id="mPromptSave" style="margin-top:10px;">💾 Lưu Master Prompt</button>');
+  $('#mPromptSave').addEventListener('click', ()=>{
+    state.settings.masterPrompt = $('#mPrompt').value;
+    closeModal();
+    toast('🎬 Đã lưu Master Prompt.', 'ok');
+  });
+});
+$('#btnInfo').addEventListener('click', ()=>{
+  openModal('ℹ️ PhimTrường AI — Filmmaking Studio',
+    '<p class="small" style="line-height:1.6;">Bản <b>Đợt 1</b>: khung giao diện + logic cục bộ theo mẫu DramaBox AI Pro, chạy hoàn toàn miễn phí.</p>' +
+    '<p class="small" style="line-height:1.6;">• <b>Ảnh DNA & bối cảnh</b>: sinh thật bằng API Gemini miễn phí (key AI Studio của bạn).<br>' +
+    '• <b>Video</b>: app xuất prompt + ảnh tham chiếu từng cảnh → bạn quay ở <b>Google Flow</b> bằng tài khoản Pro → nạp clip về bằng nút "Nạp Clip Từ Flow".<br>' +
+    '• <b>Truyện Tranh → Phim</b>: nạp ảnh truyện, sửa bằng AI, gán làm keyframe (khung hình đầu) cho từng cảnh.<br>' +
+    '• <b>Ghép Master</b>: phát nối tiếp các clip đã nạp theo thứ tự cảnh.</p>');
+});
+
+/* Truyện tranh: nạp + kéo thả + preset */
+$('#btnLoadComic').addEventListener('click', ()=>$('#comicFile').click());
+$('#comicFile').addEventListener('change', e=>{
+  if(e.target.files && e.target.files.length) addComicFiles(e.target.files);
+  e.target.value = '';
+});
+const dz = $('#comicDrop');
+['dragenter','dragover'].forEach(ev=>dz.addEventListener(ev, e=>{ e.preventDefault(); dz.classList.add('drag'); }));
+['dragleave','drop'].forEach(ev=>dz.addEventListener(ev, e=>{ e.preventDefault(); dz.classList.remove('drag'); }));
+dz.addEventListener('drop', e=>{
+  const files = e.dataTransfer && e.dataTransfer.files;
+  if(files && files.length) addComicFiles(files);
+});
+$('#comicPresets').addEventListener('click', e=>{
+  const b = e.target.closest('button[data-preset]');
+  if(!b) return;
+  state.settings.comicPreset = b.dataset.preset;
+  $$('#comicPresets button').forEach(x=>x.classList.toggle('on', x === b));
+});
+
+/* Đồng bộ UI từ settings */
+function syncSettingsUI(){
+  $('#voiceSelect').value = state.settings.voice;
+  $('#folderName').textContent = state.settings.folder;
+  $('#chkAutoDlScene').checked = !!state.settings.autoDlScene;
+  $('#chkAutoDlDNA').checked = !!state.settings.autoDlDNA;
+  $('#chkRotate').checked = !!state.settings.rotateDNA;
+  $('#chkRescue').checked = !!state.settings.rescue;
+  $('#chkLockDNA').checked = !!state.settings.lockDNA;
+  $$('#sizeSeg button').forEach(x=>x.classList.toggle('on', x.dataset.size === state.settings.viewSize));
+  $$('#comicPresets button').forEach(x=>x.classList.toggle('on', x.dataset.preset === state.settings.comicPreset));
+}
+
+/* ================= KHỞI TẠO ================= */
+(function init(){
+  const k = getKey();
+  if(k){
+    $('#apiKeyInput').value = k;
+    $('#keyStatus').innerHTML = '<span class="ok">✓ Đã có key đã lưu — các nút Tạo ảnh sẽ gọi Gemini thật.</span>';
+  }
+  $('#actorInfoText').value = SAMPLE_ACTOR_TEXT;
+  $('#bgInfoText').value = SAMPLE_BG_TEXT;
+  syncSettingsUI();
+  designRender();
+  renderAll();
+})();
+</script>
+</body>
+</html>
