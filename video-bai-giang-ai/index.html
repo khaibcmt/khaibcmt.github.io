@@ -1,0 +1,1198 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Video Bài Giảng AI — Nêu tên bài, nhận video dạy học</title>
+<style>
+  :root{
+    --bg:#07271d; --bg2:#0b3d2e; --panel:#0e4634; --panel2:#0a3527;
+    --line:#1d6a4e; --txt:#f2f7f3; --muted:#b9d6c6; --accent:#ffd94d;
+    --green:#37d67a; --red:#ff6b6b; --blue:#57b6ff;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",Arial,Helvetica,sans-serif;background:linear-gradient(180deg,var(--bg),#04160f);color:var(--txt)}
+  .wrap{max-width:980px;margin:0 auto;padding:18px 16px 60px}
+  header.top{text-align:center;padding:14px 0 6px}
+  header.top h1{margin:0;font-size:34px;letter-spacing:.5px}
+  header.top h1 .ai{color:var(--accent)}
+  header.top p{margin:6px 0 0;color:var(--muted);font-size:16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-top:16px}
+  .card h2{margin:0 0 10px;font-size:19px;color:var(--accent)}
+  .card h3{margin:14px 0 8px;font-size:16px}
+  label{display:block;font-size:14px;color:var(--muted);margin:8px 0 4px}
+  input[type=text],input[type=password],textarea,select{
+    width:100%;padding:11px 12px;border-radius:9px;border:1px solid var(--line);
+    background:var(--panel2);color:var(--txt);font-size:16px;font-family:inherit}
+  textarea{resize:vertical}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  .row>*{flex:1}
+  .row>.shrink{flex:0 0 auto}
+  button{cursor:pointer;border:none;border-radius:10px;padding:11px 18px;font-size:16px;font-weight:600;font-family:inherit}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  .btn{background:#14532d;color:#fff;border:1px solid var(--line)}
+  .btn:hover:not(:disabled){background:#1a6b3b}
+  .btn-accent{background:var(--accent);color:#20301f}
+  .btn-accent:hover:not(:disabled){background:#ffca28}
+  .btn-big{width:100%;padding:16px;font-size:21px;border-radius:12px;background:linear-gradient(90deg,#1f9d55,#37d67a);color:#04240f}
+  .btn-big:hover:not(:disabled){filter:brightness(1.08)}
+  .btn-ghost{background:transparent;color:var(--muted);border:1px solid var(--line)}
+  .tabs{display:flex;gap:8px;margin-bottom:12px}
+  .tab{flex:1;text-align:center;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);cursor:pointer;font-weight:600;font-size:16px}
+  .tab.active{background:var(--accent);color:#20301f;border-color:var(--accent)}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  .chip{border:1px solid var(--line);background:var(--panel2);color:var(--txt);border-radius:999px;padding:7px 13px;font-size:14px;cursor:pointer}
+  .chip:hover{border-color:var(--accent);color:var(--accent)}
+  .steps{list-style:none;margin:0;padding:0}
+  .steps li{display:flex;align-items:center;gap:10px;padding:7px 0;font-size:16px;border-bottom:1px dashed rgba(255,255,255,.08)}
+  .steps li:last-child{border-bottom:none}
+  .st{font-size:13px;font-weight:700;border-radius:999px;padding:3px 10px;min-width:86px;text-align:center;background:#234; color:#cfe}
+  .st.wait{background:#1c3a2e;color:var(--muted)}
+  .st.run{background:#7a5b00;color:#ffe9a8}
+  .st.done{background:#14532d;color:#b6ffd2}
+  .st.err{background:#5f1d1d;color:#ffc4c4}
+  .st.skip{background:#333;color:#ddd}
+  .seg{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:10px;background:var(--panel2)}
+  .seg .tag{display:inline-block;font-size:12px;font-weight:700;border-radius:6px;padding:2px 8px;margin-right:8px;background:#14532d;color:#b6ffd2;text-transform:uppercase}
+  .seg .tag.diagram{background:#5b4a00;color:#ffe9a8}
+  .seg .tag.table{background:#123c5f;color:#c4e4ff}
+  .seg .tag.text{background:#3d2b5f;color:#e2d4ff}
+  .seg h4{margin:2px 0 6px;font-size:17px;display:inline}
+  .seg p{margin:4px 0;color:var(--muted);font-size:14.5px;line-height:1.45}
+  .seg .narr{color:var(--txt)}
+  .small{font-size:13.5px;color:var(--muted);line-height:1.5}
+  .warn{background:#4a3405;border:1px solid #a97b12;color:#ffe9a8;border-radius:10px;padding:10px 14px;margin-top:12px;font-size:14.5px;line-height:1.5}
+  .err-box{background:#4a1515;border:1px solid #a12;color:#ffd7d7;border-radius:10px;padding:10px 14px;margin-top:12px;font-size:14.5px;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+  .ok-box{background:#123f27;border:1px solid var(--line);color:#c9f5da;border-radius:10px;padding:10px 14px;margin-top:12px;font-size:14.5px;line-height:1.5}
+  details{margin-top:10px}
+  summary{cursor:pointer;color:var(--accent);font-size:14.5px;font-weight:600}
+  #stage{width:100%;border-radius:12px;border:1px solid var(--line);background:#000;display:block}
+  progress{width:100%;height:20px;appearance:none}
+  progress::-webkit-progress-bar{background:#123528;border-radius:8px}
+  progress::-webkit-progress-value{background:var(--green);border-radius:8px}
+  progress::-moz-progress-bar{background:var(--green);border-radius:8px}
+  video{width:100%;border-radius:12px;border:1px solid var(--line);background:#000}
+  .hidden{display:none!important}
+  .asset-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px dashed rgba(255,255,255,.08);font-size:14.5px}
+  .asset-row:last-child{border-bottom:none}
+  .asset-row button{padding:5px 12px;font-size:13.5px}
+  .kbd{background:#0006;border:1px solid var(--line);border-radius:5px;padding:0 6px;font-family:Consolas,monospace;font-size:13px}
+  a{color:var(--blue)}
+  .count{font-size:14px;color:var(--accent);font-weight:700}
+  .seg .tag.sgk{background:#0f5132;color:#b6ffd2}
+  .mini{padding:6px 12px;font-size:13.5px;border-radius:8px}
+  #libDrop{border:2px dashed var(--line);border-radius:12px;padding:18px;text-align:center;margin-top:10px;background:var(--panel2)}
+  #libDrop.over{border-color:var(--accent);background:#14532d}
+  #libGrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));gap:10px;margin-top:12px}
+  .lib-item{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel2)}
+  .lib-item img{width:100%;height:100px;object-fit:cover;display:block}
+  .lib-item .nm{font-size:12px;padding:5px 7px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lib-item .del{width:100%;border-radius:0;padding:5px;font-size:12.5px;background:#5f1d1d;color:#ffd7d7}
+  .pick-grid{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .pick-grid img{width:88px;height:66px;object-fit:cover;border-radius:8px;border:2px solid var(--line);cursor:pointer}
+  .pick-grid img:hover{border-color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <h1>🎬 Video Bài Giảng <span class="ai">AI</span></h1>
+    <p>Chỉ cần nêu <b>tên bài</b> hoặc dán <b>câu chuyện</b> — app tự viết kịch bản, tạo hình, vẽ sơ đồ, dựng bảng số liệu, thu giọng đọc và ghép thành video.</p>
+  </header>
+
+  <!-- ===== API KEY ===== -->
+  <div class="card" id="keyCard">
+    <h2>🔑 1. API Key Gemini (miễn phí)</h2>
+    <div class="row">
+      <input type="password" id="apiKey" placeholder="Dán Gemini API key của thầy vào đây (AIza...)" autocomplete="off">
+      <button class="btn shrink" id="saveKeyBtn">💾 Lưu Key</button>
+      <button class="btn-ghost shrink" id="toggleKeyBtn">Hiện</button>
+    </div>
+    <div class="small" id="keyStatus" style="margin-top:8px">Key chỉ lưu trong trình duyệt này (localStorage), app không gửi key đi nơi nào khác ngoài Google.</div>
+    <details id="keyGuide">
+      <summary>Chưa có key? Xem 3 bước tạo key MIỄN PHÍ</summary>
+      <div class="small" style="margin-top:8px;line-height:1.7">
+        - Bước 1: Mở trang <b>aistudio.google.com</b> và đăng nhập bằng tài khoản Google.<br>
+        - Bước 2: Bấm <b>"Get API key"</b> (khoá API) → <b>"Create API key"</b> (Tạo khoá API) → tạo trong dự án mới.<br>
+        - Bước 3: Sao chép dãy ký tự bắt đầu bằng <span class="kbd">AIza...</span> rồi dán vào ô phía trên và bấm <b>Lưu Key</b>.<br>
+        Gói miễn phí có hạn mức theo ngày — đủ để làm vài video bài giảng mỗi ngày.
+      </div>
+    </details>
+  </div>
+
+  <!-- ===== INPUT ===== -->
+  <div class="card">
+    <h2>📝 2. Nội dung bài học</h2>
+    <div class="tabs">
+      <div class="tab active" id="tabName">📌 Theo Tên Bài</div>
+      <div class="tab" id="tabStory">📖 Theo Câu Chuyện</div>
+    </div>
+
+    <div id="paneName">
+      <label>Tên bài học *</label>
+      <input type="text" id="lessonName" placeholder="Ví dụ: Quang hợp ở lá cây">
+      <div class="row">
+        <div><label>Môn học</label><input type="text" id="lessonSubject" placeholder="Ví dụ: Sinh học"></div>
+        <div><label>Lớp</label><input type="text" id="lessonGrade" placeholder="Ví dụ: 10"></div>
+      </div>
+      <label>Ví dụ 1 chạm (bấm để điền sẵn):</label>
+      <div class="chips">
+        <span class="chip" data-ex="quanghop">🌿 Quang hợp ở lá cây — Sinh 10</span>
+        <span class="chip" data-ex="lua">🌾 Vòng đời cây lúa — CNNN 11</span>
+        <span class="chip" data-ex="tieuhoa">🐄 Tiêu hoá ở động vật — Sinh 11</span>
+      </div>
+    </div>
+
+    <div id="paneStory" class="hidden">
+      <label>Tiêu đề video (tuỳ chọn)</label>
+      <input type="text" id="storyTitle" placeholder="Ví dụ: Chuyện cây lúa thần kỳ">
+      <label>Dán nội dung câu chuyện / bài học *</label>
+      <textarea id="storyText" rows="9" placeholder="Dán toàn bộ nội dung câu chuyện hoặc bài học vào đây. AI sẽ chuyển thành kịch bản video có hình, sơ đồ, bảng số liệu và lời đọc..."></textarea>
+    </div>
+
+    <div style="margin-top:16px">
+      <button class="btn-big" id="createBtn">🎬 TẠO VIDEO</button>
+      <div class="small" style="margin-top:8px;text-align:center">App sẽ viết kịch bản trước để thầy xem và duyệt — đó là điểm dừng duy nhất. Duyệt xong, app tự chạy hết các bước còn lại.</div>
+      <div style="text-align:center;margin-top:10px">
+        <button class="btn-ghost" id="demoBtn">👀 Xem Thử Không Cần Key</button>
+        <div class="small">Chạy thử toàn bộ quy trình bằng kịch bản mẫu "Quang hợp" dựng sẵn — không gọi API, không có giọng đọc, để thầy thấy sản phẩm cuối trước khi tạo key.</div>
+      </div>
+    </div>
+    <div id="inputError"></div>
+  </div>
+
+  <!-- ===== THƯ VIỆN HÌNH SGK ===== -->
+  <div class="card" id="libCard">
+    <h2>📚 Thư Viện Hình SGK <span class="count" id="libCount">0 hình</span></h2>
+    <div class="small">Đây là nguồn hình <b>CHÍNH</b> của app: hình và sơ đồ chụp từ sách giáo khoa — đúng sách, đúng số liệu. Nạp một lần, dùng lại cho mọi video. Thư viện được lưu bền ngay trong trình duyệt (IndexedDB), tắt máy mở lại vẫn còn.</div>
+    <div id="libDrop">
+      <div style="font-size:16px">📥 Kéo–thả ảnh SGK vào đây, hoặc</div>
+      <button class="btn" id="libAddBtn" style="margin-top:8px">📁 Nạp Ảnh Từ Máy (chọn được nhiều ảnh)</button>
+      <input type="file" id="libFile" accept="image/*" multiple class="hidden">
+    </div>
+    <div id="libWarn" class="warn hidden">⚠️ Trình duyệt không mở được IndexedDB — thư viện chỉ giữ được trong phiên làm việc này, tải lại trang sẽ mất ảnh. Thầy nên dùng Chrome và không mở trang ở chế độ ẩn danh.</div>
+    <div id="libGrid"></div>
+  </div>
+
+  <!-- ===== PROGRESS ===== -->
+  <div class="card hidden" id="progressCard">
+    <h2>⚙️ 3. Tiến trình làm việc <span class="count" id="progressNote"></span></h2>
+    <ul class="steps">
+      <li><span class="st wait" id="st1">Chờ</span> ✍️ Bước 1 — Viết kịch bản từ tên bài / câu chuyện</li>
+      <li><span class="st wait" id="st2">Chờ</span> 🖼️ Bước 2 — Tạo hình minh hoạ bằng AI</li>
+      <li><span class="st wait" id="st3">Chờ</span> 🎨 Bước 3 — Vẽ slide (hình, sơ đồ, bảng số liệu)</li>
+      <li><span class="st wait" id="st4">Chờ</span> 🎙️ Bước 4 — Thu giọng đọc tiếng Việt</li>
+      <li><span class="st wait" id="st5">Chờ</span> 🎞️ Bước 5 — Dựng video và cho tải về</li>
+    </ul>
+    <div id="assetBox" class="hidden">
+      <h3>Chi tiết từng phần:</h3>
+      <div id="assetList"></div>
+    </div>
+    <div id="buildLog"></div>
+  </div>
+
+  <!-- ===== SCRIPT REVIEW ===== -->
+  <div class="card hidden" id="scriptCard">
+    <h2>📜 4. Kịch bản — thầy duyệt trước khi dựng</h2>
+    <div id="scriptMeta" style="font-size:17px;font-weight:700"></div>
+    <div id="scriptSegs"></div>
+    <details>
+      <summary>✏️ Xem / sửa kịch bản dạng JSON</summary>
+      <textarea id="scriptJson" rows="14" style="margin-top:8px;font-family:Consolas,monospace;font-size:13px"></textarea>
+      <div class="row" style="margin-top:8px">
+        <button class="btn shrink" id="applyJsonBtn">✔ Áp Dụng Bản Sửa</button>
+        <span class="small" id="jsonMsg"></span>
+      </div>
+    </details>
+    <div class="row" style="margin-top:14px">
+      <button class="btn-accent" id="buildBtn" style="flex:2;padding:15px;font-size:18px">▶ DỰNG VIDEO NGAY</button>
+      <button class="btn-ghost shrink" id="cancelScriptBtn">Huỷ, làm lại</button>
+    </div>
+  </div>
+
+  <!-- ===== RENDER / RESULT ===== -->
+  <div class="card hidden" id="renderCard">
+    <h2>🎞️ 5. Đang dựng video...</h2>
+    <canvas id="stage" width="1920" height="1080"></canvas>
+    <div style="margin-top:10px"><progress id="renderProg" value="0" max="100"></progress></div>
+    <div class="small" id="renderNote">Đang ghi hình... thầy đừng đóng trang này.</div>
+  </div>
+
+  <div class="card hidden" id="resultCard">
+    <h2>✅ Video đã xong!</h2>
+    <video id="resultVideo" controls playsinline></video>
+    <div class="row" style="margin-top:12px">
+      <a id="downloadLink" href="#" download="video-bai-giang.webm" style="text-decoration:none;flex:1">
+        <button class="btn-accent" style="width:100%;padding:15px;font-size:18px">⬇ TẢI VIDEO (.webm)</button>
+      </a>
+      <button class="btn shrink" id="againBtn">🔄 Làm Video Khác</button>
+    </div>
+    <div class="warn">📌 <b>Ghi chú trung thực:</b> file xuất ra là định dạng <b>WebM</b> — phát được ngay trên điện thoại và máy tính (Chrome, Zalo, trình duyệt...). Nếu cần bản <b>MP4</b>, thầy dùng bản ghép ngoài hoặc nhắn trợ lý ghép hộ.</div>
+    <div id="resultNote"></div>
+  </div>
+
+  <div class="small" style="text-align:center;margin-top:22px;color:#7fae95">Video Bài Giảng AI — chạy hoàn toàn trong trình duyệt bằng Gemini API key miễn phí của chính thầy.</div>
+</div>
+
+<script>
+"use strict";
+/* =========================================================
+   Video Bài Giảng AI — chạy thật A→Z trong trình duyệt.
+   Pipeline: kịch bản (gemini-2.5-flash) → ảnh (gemini-2.5-flash-image)
+   → slide canvas 1920x1080 → giọng đọc (gemini-2.5-flash-preview-tts)
+   → MediaRecorder(captureStream + audio) → WebM tải về.
+   ========================================================= */
+const $ = id => document.getElementById(id);
+const API_BASE = "https://generativelanguage.googleapis.com/v1beta/models/";
+const MODEL_TEXT  = "gemini-2.5-flash";
+const MODEL_IMAGE = "gemini-2.5-flash-image";
+const MODEL_TTS   = "gemini-2.5-flash-preview-tts";
+const TTS_VOICE   = "Kore";
+const NO_AUDIO_SECONDS = 4;
+
+let mode = "name";               // "name" | "story"
+let scriptData = null;           // kịch bản JSON đã duyệt
+let assets = {};                 // idx -> {status:'ok'|'err'|'skip', img:Image|null, err:''}
+let audios = {};                 // idx -> {status:'ok'|'err', buffer:AudioBuffer|null, err:''}
+let demoMode = false;
+let building = false;
+
+/* ---------- API key ---------- */
+function getKey(){ return (localStorage.getItem("vbg_gemini_key") || "").trim(); }
+function refreshKeyUI(){
+  const k = getKey();
+  $("apiKey").value = k;
+  $("keyStatus").innerHTML = k
+    ? "✅ Đã lưu key trong trình duyệt này. App đã sẵn sàng gọi Gemini."
+    : "⚠️ Chưa có key — mở mục hướng dẫn 3 bước ở trên để tạo key miễn phí.";
+}
+$("saveKeyBtn").addEventListener("click", () => {
+  localStorage.setItem("vbg_gemini_key", $("apiKey").value.trim());
+  refreshKeyUI();
+  alert("Đã lưu key. Giờ thầy nhập tên bài và bấm TẠO VIDEO.");
+});
+$("toggleKeyBtn").addEventListener("click", () => {
+  const inp = $("apiKey");
+  inp.type = inp.type === "password" ? "text" : "password";
+  $("toggleKeyBtn").textContent = inp.type === "password" ? "Hiện" : "Ẩn";
+});
+
+/* ---------- Tabs & ví dụ ---------- */
+function setMode(m){
+  mode = m;
+  $("tabName").classList.toggle("active", m === "name");
+  $("tabStory").classList.toggle("active", m === "story");
+  $("paneName").classList.toggle("hidden", m !== "name");
+  $("paneStory").classList.toggle("hidden", m !== "story");
+}
+$("tabName").addEventListener("click", () => setMode("name"));
+$("tabStory").addEventListener("click", () => setMode("story"));
+const EXAMPLES = {
+  quanghop: ["Quang hợp ở lá cây", "Sinh học", "10"],
+  lua:      ["Vòng đời cây lúa", "Công nghệ nông nghiệp", "11"],
+  tieuhoa:  ["Tiêu hoá ở động vật", "Sinh học", "11"]
+};
+document.querySelectorAll(".chip").forEach(ch => ch.addEventListener("click", () => {
+  const e = EXAMPLES[ch.dataset.ex]; if (!e) return;
+  setMode("name");
+  $("lessonName").value = e[0]; $("lessonSubject").value = e[1]; $("lessonGrade").value = e[2];
+  $("lessonName").focus();
+}));
+
+/* ---------- Trạng thái 5 bước ---------- */
+const ST_TXT = { wait:"Chờ", run:"Đang chạy", done:"Xong ✔", err:"Lỗi ✖", skip:"Bỏ qua" };
+function setStep(n, st){
+  const el = $("st" + n); if (!el) return;
+  el.className = "st " + st; el.textContent = ST_TXT[st] || st;
+}
+function resetSteps(){ for (let i = 1; i <= 5; i++) setStep(i, "wait"); }
+function showErr(boxId, msg){
+  const b = $(boxId); if (!b) return;
+  b.innerHTML = '<div class="err-box">❌ ' + escapeHtml(msg) + "</div>";
+}
+function escapeHtml(s){
+  return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+/* ---------- Gọi Gemini ---------- */
+async function gemini(model, body){
+  const key = getKey();
+  if (!key) throw new Error("Chưa có API key. Thầy dán key vào mục 1 ở đầu trang trước đã.");
+  const res = await fetch(API_BASE + model + ":generateContent?key=" + encodeURIComponent(key), {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  });
+  const txt = await res.text();
+  let data = null;
+  try { data = JSON.parse(txt); } catch (e) { /* giữ nguyên text để báo lỗi */ }
+  if (!res.ok) {
+    const m = (data && data.error && data.error.message) ? data.error.message : (txt || ("HTTP " + res.status));
+    throw new Error("Gemini báo lỗi (" + res.status + "): " + m);
+  }
+  if (!data) throw new Error("Gemini trả về dữ liệu không đọc được.");
+  return data;
+}
+function firstText(data){
+  try {
+    const parts = data.candidates[0].content.parts || [];
+    for (const p of parts) if (typeof p.text === "string") return p.text;
+  } catch (e) {}
+  return "";
+}
+function firstInline(data){
+  try {
+    const parts = data.candidates[0].content.parts || [];
+    for (const p of parts) if (p.inlineData && p.inlineData.data) return p.inlineData;
+  } catch (e) {}
+  return null;
+}
+
+/* ---------- BƯỚC 1: viết kịch bản ---------- */
+function masterPrompt(){
+  return [
+    "Bạn là giáo viên Việt Nam giàu kinh nghiệm, đang soạn kịch bản cho MỘT video bài giảng ngắn chiếu trên điện thoại học sinh.",
+    "Hãy trả về DUY NHẤT một JSON hợp lệ (không kèm chữ nào khác) theo đúng cấu trúc sau:",
+    "{",
+    '  "title": "Tiêu đề video",',
+    '  "subject": "Môn học",',
+    '  "grade": "Lớp",',
+    '  "segments": [',
+    '    { "type": "image",   "heading": "Tiêu đề đoạn", "narration": "Lời đọc tiếng Việt...", "imagePrompt": "English image prompt, no text in image" },',
+    '    { "type": "sgk",     "heading": "Tiêu đề đoạn", "narration": "...", "imageHint": "Hình 12.3 SGK — mô tả hình SGK cần tìm", "imagePrompt": "English fallback prompt if no textbook image, no text" },',
+    '    { "type": "diagram", "heading": "Tiêu đề đoạn", "narration": "...", "diagram": { "steps": [ {"label":"Bước 1","sub":"giải thích ngắn"}, {"label":"Bước 2","sub":"..."} ] } },',
+    '    { "type": "table",   "heading": "Tiêu đề đoạn", "narration": "...", "table": { "caption": "Tên bảng", "headers": ["Cột 1","Cột 2"], "rows": [["...","..."]] } },',
+    '    { "type": "text",    "heading": "Tiêu đề đoạn", "narration": "...", "bullets": ["Ý chính 1","Ý chính 2"] }',
+    "  ]",
+    "}",
+    "QUY TẮC BẮT BUỘC:",
+    "- Có từ 5 đến 7 segments. Đoạn đầu là image hoặc sgk mở bài, đoạn cuối là text hoặc image tổng kết.",
+    "- Có ÍT NHẤT 1 segment diagram (sơ đồ dòng chảy 3–6 bước) và ÍT NHẤT 1 segment table (bảng số liệu).",
+    "- ƯU TIÊN segment type sgk cho nội dung mà sách giáo khoa thường có sẵn hình hoặc sơ đồ minh hoạ (cấu tạo, quá trình, thí nghiệm...). Segment sgk PHẢI có trường imageHint mô tả chính xác hình SGK cần tìm, ví dụ: Hình 12.3 SGK — sơ đồ quang hợp. Nếu bài có hình SGK quen thuộc, hãy dùng ít nhất 1–2 segment sgk.",
+    '- narration: lời đọc tiếng Việt tự nhiên cho học sinh nghe, mỗi đoạn 2–4 câu (khoảng 35–60 từ). Mọi con số, phân số, công thức trong narration PHẢI viết thành dạng đọc được bằng chữ (ví dụ: "sáu phân tử", "một phần hai", "hai mươi phần trăm"), KHÔNG dùng ký hiệu như CO2, %, 1/2.',
+    "- imagePrompt: tiếng Anh, mô tả ảnh minh hoạ giáo dục rõ ràng, thân thiện học sinh, ghi rõ no text, no watermark. Chỉ có ở segment type image.",
+    "- Số liệu trong table: chỉ dùng số liệu đúng kiến thức sách giáo khoa phổ thông. Nếu không chắc chắn về một con số cụ thể, PHẢI ghi rõ trong caption là số liệu minh hoạ (ví dụ caption bắt đầu bằng: Số liệu minh hoạ — ...).",
+    "- Nội dung bám sát chương trình phổ thông Việt Nam, chính xác, không bịa kiến thức.",
+    "- heading ngắn gọn, viết hoa chữ cái đầu, không quá 9 từ."
+  ].join("\n");
+}
+function validateScript(s){
+  if (!s || typeof s !== "object") throw new Error("Kịch bản không phải JSON hợp lệ.");
+  if (!Array.isArray(s.segments) || s.segments.length < 3) throw new Error("Kịch bản có quá ít đoạn (cần ít nhất 3 đoạn).");
+  const types = ["image", "sgk", "diagram", "table", "text"];
+  s.segments.forEach((sg, i) => {
+    if (!types.includes(sg.type)) throw new Error("Đoạn " + (i + 1) + " có type lạ: " + sg.type);
+    if (!sg.heading) sg.heading = "Đoạn " + (i + 1);
+    if (!sg.narration) sg.narration = "";
+    if (sg.type === "diagram" && (!sg.diagram || !Array.isArray(sg.diagram.steps) || !sg.diagram.steps.length))
+      throw new Error("Đoạn " + (i + 1) + " là sơ đồ nhưng thiếu steps.");
+    if (sg.type === "table" && (!sg.table || !Array.isArray(sg.table.headers) || !Array.isArray(sg.table.rows)))
+      throw new Error("Đoạn " + (i + 1) + " là bảng nhưng thiếu headers/rows.");
+    if (sg.type === "text" && !Array.isArray(sg.bullets)) sg.bullets = [];
+    if (sg.type === "image" && !sg.imagePrompt) sg.imagePrompt = sg.heading;
+    if (sg.type === "sgk" && !sg.imageHint) sg.imageHint = sg.heading;
+  });
+  return s;
+}
+async function generateScript(){
+  let userPart;
+  if (mode === "name") {
+    const name = $("lessonName").value.trim();
+    if (!name) throw new Error("Thầy chưa nhập TÊN BÀI.");
+    const subj = $("lessonSubject").value.trim() || "(chưa rõ môn)";
+    const grade = $("lessonGrade").value.trim() || "(chưa rõ lớp)";
+    userPart = "Tên bài: " + name + "\nMôn học: " + subj + "\nLớp: " + grade;
+  } else {
+    const story = $("storyText").value.trim();
+    if (!story) throw new Error("Thầy chưa dán nội dung câu chuyện / bài học.");
+    const t = $("storyTitle").value.trim();
+    userPart = (t ? ("Tiêu đề gợi ý: " + t + "\n") : "") +
+      "Dưới đây là nội dung câu chuyện / bài học. Hãy chuyển thành kịch bản video bài giảng bám sát nội dung này:\n\"\"\"\n" + story + "\n\"\"\"";
+  }
+  const data = await gemini(MODEL_TEXT, {
+    contents: [{ parts: [{ text: masterPrompt() + "\n\n---\n" + userPart }] }],
+    generationConfig: { responseMimeType: "application/json", temperature: 0.6 }
+  });
+  let txt = firstText(data).trim();
+  txt = txt.replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/```\s*$/i, "").trim();
+  let parsed;
+  try { parsed = JSON.parse(txt); }
+  catch (e) { throw new Error("AI trả kịch bản không đúng JSON. Thầy bấm TẠO VIDEO thử lại. Chi tiết: " + txt.slice(0, 200)); }
+  return validateScript(parsed);
+}
+
+/* ---------- Màn hình duyệt kịch bản ---------- */
+const TYPE_LABEL = { image: "🖼 Hình ảnh", sgk: "📚 Hình SGK", diagram: "🔀 Sơ đồ", table: "📊 Bảng số liệu", text: "📄 Nội dung chữ" };
+function renderScriptReview(){
+  if (!scriptData) return;
+  $("scriptMeta").textContent = "🎬 " + (scriptData.title || "Video bài giảng") +
+    (scriptData.subject ? " — " + scriptData.subject : "") + (scriptData.grade ? " • Lớp " + scriptData.grade : "");
+  const box = $("scriptSegs"); box.innerHTML = "";
+  scriptData.segments.forEach((sg, i) => {
+    const d = document.createElement("div"); d.className = "seg";
+    let extra = "";
+    if (sg.type === "diagram") extra = "<p>Các bước: " + sg.diagram.steps.map(s => escapeHtml(s.label)).join(" → ") + "</p>";
+    if (sg.type === "table") extra = "<p>Bảng: " + escapeHtml(sg.table.caption || "") + " — " + sg.table.rows.length + " dòng số liệu.</p>";
+    if (sg.type === "text") extra = "<p>" + (sg.bullets || []).map(escapeHtml).join("<br>") + "</p>";
+    if (sg.type === "image") extra = "<p>Mô tả ảnh (AI sẽ vẽ): <i>" + escapeHtml(sg.imagePrompt || "") + "</i></p>";
+    if (sg.type === "sgk") extra = "<p>Hình SGK cần tìm: <i>" + escapeHtml(sg.imageHint || "") + "</i></p>";
+    d.innerHTML = '<span class="tag ' + sg.type + '">' + TYPE_LABEL[sg.type] + "</span>" +
+      "<h4>Đoạn " + (i + 1) + ": " + escapeHtml(sg.heading) + "</h4>" +
+      '<p class="narr">🎙 ' + escapeHtml(sg.narration) + "</p>" + extra;
+    if (sg.type === "image" || sg.type === "sgk") d.appendChild(buildAssignUI(sg, i));
+    box.appendChild(d);
+  });
+  $("scriptJson").value = JSON.stringify(scriptData, null, 2);
+  $("scriptCard").classList.remove("hidden");
+  $("scriptCard").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+$("applyJsonBtn").addEventListener("click", () => {
+  try {
+    const parsed = validateScript(JSON.parse($("scriptJson").value));
+    scriptData = parsed;
+    $("jsonMsg").textContent = "✔ Đã áp dụng bản sửa.";
+    renderScriptReview();
+  } catch (e) {
+    $("jsonMsg").textContent = "❌ " + e.message;
+  }
+});
+$("cancelScriptBtn").addEventListener("click", () => {
+  scriptData = null;
+  $("scriptCard").classList.add("hidden");
+  resetSteps();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+/* ---------- Kịch bản mẫu cho chế độ xem thử ---------- */
+const DEMO_SCRIPT = {
+  title: "Quang hợp ở lá cây",
+  subject: "Sinh học",
+  grade: "10",
+  segments: [
+    { type: "sgk", heading: "Quang hợp là gì?",
+      imageHint: "Hình SGK Sinh học 10 — lá cây xanh dưới ánh sáng mặt trời",
+      narration: "Chào các em. Hôm nay chúng ta cùng tìm hiểu quang hợp ở lá cây, quá trình giúp cây xanh tự tạo ra chất dinh dưỡng và nhả ra khí ô xi cho sự sống.",
+      imagePrompt: "Vibrant close-up photograph of fresh green leaves backlit by warm morning sunlight, sun rays through leaf veins, lush garden bokeh background, educational nature photography, no text, no people, no watermark" },
+    { type: "diagram", heading: "Sơ đồ quá trình quang hợp",
+      narration: "Quang hợp diễn ra theo một chuỗi đơn giản. Cây hấp thụ ánh sáng mặt trời, lấy nước và khí các bô níc, quang hợp trong lục lạp, rồi tạo ra đường glu cô zơ và thải khí ô xi ra môi trường.",
+      diagram: { steps: [
+        { label: "Ánh sáng", sub: "Năng lượng mặt trời" },
+        { label: "Nước + CO₂", sub: "Từ rễ và không khí" },
+        { label: "Lục lạp", sub: "Nơi diễn ra quang hợp" },
+        { label: "Glucose", sub: "Chất dinh dưỡng" },
+        { label: "Khí O₂", sub: "Thải ra môi trường" }
+      ] } },
+    { type: "table", heading: "Ánh sáng và cường độ quang hợp",
+      narration: "Bảng số liệu minh hoạ cho thấy ánh sáng càng mạnh thì cường độ quang hợp càng tăng, nhưng đến điểm bão hoà ánh sáng thì dù tăng sáng nữa, quang hợp cũng không tăng thêm.",
+      table: { caption: "Số liệu minh hoạ — Cường độ ánh sáng và cường độ quang hợp",
+        headers: ["Điều kiện ánh sáng", "Yếu", "Trung bình", "Mạnh"],
+        rows: [
+          ["Cường độ ánh sáng (lux)", "2.000", "8.000", "20.000"],
+          ["Cường độ quang hợp (đơn vị tương đối)", "3", "7", "10"]
+        ] } },
+    { type: "text", heading: "Điều kiện cần cho quang hợp",
+      narration: "Để quang hợp tốt, cây cần đủ ánh sáng, đủ nước, khí các bô níc và nhiệt độ thích hợp. Thiếu một trong các yếu tố này, cây sẽ sinh trưởng kém.",
+      bullets: ["Đủ ánh sáng, nhất là ánh sáng buổi sáng", "Đủ nước và khoáng chất từ đất", "Nhiệt độ thích hợp, khoảng 25 đến 35 độ C", "Không khí lưu thông, có khí CO₂"] },
+    { type: "image", heading: "Ứng dụng trong trồng trọt",
+      narration: "Hiểu được quang hợp, người nông dân biết trồng cây đúng mật độ, tỉa cành tạo tán để lá đón được nhiều ánh sáng, từ đó tăng năng suất cây trồng.",
+      imagePrompt: "Wide photograph of a lush green rice paddy field at sunrise in the Mekong Delta Vietnam, golden light on water between young rice plants, palm trees in distance, educational agriculture photography, no text, no people, no watermark" }
+  ]
+};
+
+
+/* =========================================================
+   THƯ VIỆN HÌNH SGK — nguồn hình CHÍNH (đúng sách, đúng số liệu).
+   Lưu bền bằng IndexedDB (store 'sgk-images'); lỗi thì fallback
+   bộ nhớ phiên + cảnh báo. Segment chỉ lưu tham chiếu id + tên.
+   ========================================================= */
+const IDB_NAME = "vbg-db", IDB_STORE = "sgk-images";
+let library = new Map();          // id -> {id, name, dataUrl, img}
+let idbOK = true;
+
+function idbOpen(){
+  return new Promise((resolve, reject) => {
+    const rq = indexedDB.open(IDB_NAME, 1);
+    rq.onupgradeneeded = () => { rq.result.createObjectStore(IDB_STORE, { keyPath: "id" }); };
+    rq.onsuccess = () => resolve(rq.result);
+    rq.onerror = () => reject(rq.error);
+  });
+}
+async function idbPut(rec){
+  if (!idbOK) return;
+  try {
+    const db = await idbOpen();
+    await new Promise((res, rej) => {
+      const tx = db.transaction(IDB_STORE, "readwrite");
+      tx.objectStore(IDB_STORE).put({ id: rec.id, name: rec.name, dataUrl: rec.dataUrl });
+      tx.oncomplete = res; tx.onerror = () => rej(tx.error);
+    });
+  } catch (e) { idbOK = false; warnLibFallback(); }
+}
+async function idbDel(id){
+  if (!idbOK) return;
+  try {
+    const db = await idbOpen();
+    await new Promise((res, rej) => {
+      const tx = db.transaction(IDB_STORE, "readwrite");
+      tx.objectStore(IDB_STORE).delete(id);
+      tx.oncomplete = res; tx.onerror = () => rej(tx.error);
+    });
+  } catch (e) { /* bỏ qua */ }
+}
+async function idbLoadAll(){
+  try {
+    const db = await idbOpen();
+    const rows = await new Promise((res, rej) => {
+      const out = [];
+      const rq = db.transaction(IDB_STORE, "readonly").objectStore(IDB_STORE).openCursor();
+      rq.onsuccess = () => { const c = rq.result; if (c) { out.push(c.value); c.continue(); } else res(out); };
+      rq.onerror = () => rej(rq.error);
+    });
+    for (const r of rows) {
+      let img = null;
+      try { img = await loadImageEl(r.dataUrl); } catch (e) {}
+      library.set(r.id, { id: r.id, name: r.name, dataUrl: r.dataUrl, img });
+    }
+  } catch (e) { idbOK = false; warnLibFallback(); }
+  renderLibrary();
+}
+function warnLibFallback(){ const w = $("libWarn"); if (w) w.classList.remove("hidden"); }
+function loadImageEl(src){
+  return new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = src; });
+}
+function readAsDataURL(file){
+  return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(file); });
+}
+async function addLibraryFiles(fileList, assignIdx){
+  const files = Array.from(fileList || []).filter(f => f.type && f.type.indexOf("image/") === 0);
+  for (const f of files) {
+    try {
+      const dataUrl = await readAsDataURL(f);
+      const img = await loadImageEl(dataUrl);
+      const id = "img_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8);
+      const rec = { id, name: f.name, dataUrl, img };
+      library.set(id, rec);
+      idbPut(rec);
+      if (assignIdx != null && scriptData && scriptData.segments[assignIdx]) {
+        scriptData.segments[assignIdx].sgkImageId = id;
+      }
+    } catch (e) { /* bỏ qua file lỗi */ }
+  }
+  renderLibrary();
+  if (scriptData) renderScriptReview();
+}
+function renderLibrary(){
+  const grid = $("libGrid"); if (!grid) return;
+  $("libCount").textContent = library.size + " hình";
+  grid.innerHTML = "";
+  if (!library.size) {
+    grid.innerHTML = '<div class="small">Chưa có hình nào. Nạp ảnh chụp từ SGK của thầy vào đây — mỗi video đều dùng lại được.</div>';
+    return;
+  }
+  library.forEach(rec => {
+    const d = document.createElement("div"); d.className = "lib-item";
+    const im = document.createElement("img"); im.src = rec.dataUrl; im.alt = rec.name;
+    const nm = document.createElement("div"); nm.className = "nm"; nm.textContent = rec.name; nm.title = rec.name;
+    const del = document.createElement("button"); del.className = "del"; del.textContent = "🗑 Xoá";
+    del.addEventListener("click", () => {
+      library.delete(rec.id); idbDel(rec.id);
+      if (scriptData) scriptData.segments.forEach(sg => { if (sg.sgkImageId === rec.id) delete sg.sgkImageId; });
+      renderLibrary(); if (scriptData) renderScriptReview();
+    });
+    d.appendChild(im); d.appendChild(nm); d.appendChild(del);
+    grid.appendChild(d);
+  });
+}
+$("libAddBtn").addEventListener("click", () => $("libFile").click());
+$("libFile").addEventListener("change", e => { addLibraryFiles(e.target.files, null); e.target.value = ""; });
+const libDrop = $("libDrop");
+["dragenter", "dragover"].forEach(ev => libDrop.addEventListener(ev, e => { e.preventDefault(); libDrop.classList.add("over"); }));
+["dragleave", "drop"].forEach(ev => libDrop.addEventListener(ev, e => { e.preventDefault(); libDrop.classList.remove("over"); }));
+libDrop.addEventListener("drop", e => { if (e.dataTransfer) addLibraryFiles(e.dataTransfer.files, null); });
+
+/* ---------- UI gán hình cho từng segment (ở màn hình kịch bản) ---------- */
+function mkBtn(label, cls){
+  const b = document.createElement("button");
+  b.className = cls || "btn"; b.classList.add("mini"); b.textContent = label;
+  return b;
+}
+function buildAssignUI(sg, i){
+  const wrap = document.createElement("div");
+  wrap.style.marginTop = "8px";
+  const assigned = sg.sgkImageId ? library.get(sg.sgkImageId) : null;
+  const st = document.createElement("div"); st.className = "small"; st.style.marginBottom = "6px";
+  if (assigned) st.innerHTML = "🖼 Trạng thái hình: ✅ <b>Đã có hình SGK</b> — " + escapeHtml(assigned.name);
+  else if (sg.type === "sgk") st.innerHTML = "🖼 Trạng thái hình: ⚠️ <b>Chưa có hình</b> — chọn hình SGK bên dưới, hoặc bật sinh AI dự phòng, hoặc bỏ qua (slide sẽ hiện ô trống kèm tiêu đề).";
+  else st.innerHTML = "🖼 Trạng thái hình: chưa gán hình SGK — nếu không gán, app sẽ <b>sinh ảnh bằng AI</b> khi dựng.";
+  wrap.appendChild(st);
+
+  const row = document.createElement("div"); row.className = "row";
+  const picker = document.createElement("div"); picker.className = "pick-grid hidden";
+  const bPick = mkBtn("📚 Chọn hình SGK", "btn");
+  bPick.addEventListener("click", () => {
+    picker.innerHTML = "";
+    if (!library.size) {
+      picker.innerHTML = '<span class="small">Thư viện đang trống — thầy nạp ảnh SGK ở mục Thư Viện Hình SGK phía trên trước.</span>';
+    } else {
+      library.forEach(rec => {
+        const im = document.createElement("img"); im.src = rec.dataUrl; im.title = rec.name;
+        im.addEventListener("click", () => { sg.sgkImageId = rec.id; renderScriptReview(); });
+        picker.appendChild(im);
+      });
+    }
+    picker.classList.toggle("hidden");
+  });
+  const bUp = mkBtn("📁 Nạp từ máy", "btn");
+  const fileInp = document.createElement("input");
+  fileInp.type = "file"; fileInp.accept = "image/*"; fileInp.className = "hidden";
+  fileInp.addEventListener("change", e => { addLibraryFiles(e.target.files, i); e.target.value = ""; });
+  bUp.addEventListener("click", () => fileInp.click());
+  row.appendChild(bPick); row.appendChild(bUp); row.appendChild(fileInp);
+
+  if (sg.type === "sgk") {
+    const bAI = mkBtn(sg.useAI ? "🤖 Sinh AI dự phòng: ĐANG BẬT ✔" : "🤖 Thiếu hình? Sinh bằng AI", sg.useAI ? "btn-accent" : "btn-ghost");
+    bAI.addEventListener("click", () => { sg.useAI = !sg.useAI; renderScriptReview(); });
+    row.appendChild(bAI);
+  }
+  if (assigned) {
+    const bUn = mkBtn("✖ Bỏ gán", "btn-ghost");
+    bUn.addEventListener("click", () => { delete sg.sgkImageId; renderScriptReview(); });
+    row.appendChild(bUn);
+  }
+  wrap.appendChild(row);
+  wrap.appendChild(picker);
+  return wrap;
+}
+
+/* ---------- BƯỚC 2: hình cho từng segment ---------- */
+async function genImageForSegment(i){
+  const sg = scriptData.segments[i];
+  if (sg.sgkImageId && library.get(sg.sgkImageId) && library.get(sg.sgkImageId).img) {
+    assets[i] = { status: "ok", img: library.get(sg.sgkImageId).img, source: "sgk", err: "" };
+    renderAssetRows(); return true;
+  }
+  const canAI = sg.type === "image" || (sg.type === "sgk" && sg.useAI);
+  if (!canAI) { assets[i] = { status: "skip", img: null, source: "none", err: "" }; renderAssetRows(); return false; }
+  const prompt = sg.imagePrompt || sg.imageHint || sg.heading;
+  try {
+    const data = await gemini(MODEL_IMAGE, {
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: { responseModalities: ["TEXT", "IMAGE"] }
+    });
+    const inline = firstInline(data);
+    if (!inline) throw new Error("AI không trả về ảnh (có thể hết quota hoặc nội dung bị chặn).");
+    const img = await loadImageEl("data:" + (inline.mimeType || "image/png") + ";base64," + inline.data);
+    assets[i] = { status: "ok", img, source: "ai", err: "" };
+  } catch (e) {
+    assets[i] = { status: "err", img: null, source: "ai", err: e.message };
+  }
+  renderAssetRows();
+  return assets[i].status === "ok";
+}
+
+/* ---------- Bảng trạng thái chi tiết + nút thử lại ---------- */
+function renderAssetRows(){
+  const box = $("assetList"); if (!box || !scriptData) return;
+  box.innerHTML = "";
+  scriptData.segments.forEach((sg, i) => {
+    const row = document.createElement("div"); row.className = "asset-row";
+    const a = assets[i], au = audios[i];
+    let imgTxt = "—";
+    if (sg.type === "image" || sg.type === "sgk") {
+      if (!a) imgTxt = "Hình: chờ...";
+      else if (a.status === "ok") imgTxt = "Hình: ✔ " + (a.source === "sgk" ? "hình SGK" : "AI sinh");
+      else if (a.status === "skip") imgTxt = "Hình: bỏ qua (ô trống)";
+      else imgTxt = "Hình: ✖ lỗi";
+    }
+    let auTxt = "Tiếng: chờ...";
+    if (demoMode) auTxt = "Tiếng: (xem thử — không có)";
+    else if (au) auTxt = au.status === "ok" ? "Tiếng: ✔ " + au.buffer.duration.toFixed(1) + "s" : "Tiếng: ✖ lỗi";
+    const label = document.createElement("span");
+    label.style.flex = "1";
+    label.textContent = "Đoạn " + (i + 1) + " — " + sg.heading + "  |  " + imgTxt + "  |  " + auTxt;
+    row.appendChild(label);
+    if (a && a.status === "err") {
+      const b = mkBtn("↻ Thử lại ảnh", "btn");
+      b.addEventListener("click", async () => { b.disabled = true; await genImageForSegment(i); });
+      row.appendChild(b);
+    }
+    if (au && au.status === "err" && !demoMode) {
+      const b = mkBtn("↻ Thử lại tiếng", "btn");
+      b.addEventListener("click", async () => { b.disabled = true; await genAudioForSegment(i); });
+      row.appendChild(b);
+    }
+    if (a && a.status === "err") {
+      const e = document.createElement("div");
+      e.className = "small"; e.style.color = "#ffb3b3"; e.style.width = "100%";
+      e.textContent = a.err;
+      row.appendChild(e);
+    }
+    box.appendChild(row);
+  });
+}
+
+/* =========================================================
+   BƯỚC 3: VẼ SLIDE BẰNG CANVAS 1920×1080
+   Chữ và số trong sơ đồ / bảng lấy ĐÚNG từ JSON — không qua AI ảnh.
+   ========================================================= */
+const W = 1920, H = 1080;
+const FONT = '"Segoe UI", Arial, sans-serif';
+function rr(ctx, x, y, w, h, r){
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+function slideBg(ctx){
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, "#0d4a33"); g.addColorStop(1, "#052418");
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = "rgba(255,255,255,0.045)";
+  ctx.beginPath(); ctx.arc(1780, 90, 210, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(90, 1010, 170, 0, Math.PI * 2); ctx.fill();
+}
+function wrapLines(ctx, text, maxW){
+  const words = String(text || "").split(/\s+/).filter(Boolean);
+  const lines = []; let cur = "";
+  for (const w of words) {
+    const t = cur ? cur + " " + w : w;
+    if (ctx.measureText(t).width > maxW && cur) { lines.push(cur); cur = w; }
+    else cur = t;
+  }
+  if (cur) lines.push(cur);
+  return lines.length ? lines : [""];
+}
+function drawHeading(ctx, heading, sub){
+  ctx.fillStyle = "#ffd94d";
+  ctx.font = "700 62px " + FONT; ctx.textAlign = "left"; ctx.textBaseline = "top";
+  const lines = wrapLines(ctx, heading, 1700).slice(0, 2);
+  lines.forEach((ln, k) => ctx.fillText(ln, 110, 56 + k * 74));
+  const y = 56 + lines.length * 74 + 12;
+  ctx.fillStyle = "#37d67a"; ctx.fillRect(110, y, 260, 7);
+  if (sub) { ctx.fillStyle = "#b9d6c6"; ctx.font = "400 32px " + FONT; ctx.fillText(sub, 110, y + 22); }
+  return y + (sub ? 70 : 26);
+}
+function drawCover(ctx, img, scale){
+  const s = Math.max(W / img.width, H / img.height) * (scale || 1);
+  const w = img.width * s, h = img.height * s;
+  ctx.drawImage(img, (W - w) / 2, (H - h) / 2, w, h);
+}
+function drawContain(ctx, img, x, y, w, h){
+  const s = Math.min(w / img.width, h / img.height);
+  const dw = img.width * s, dh = img.height * s;
+  ctx.fillStyle = "#eef4ee"; ctx.fillRect(x, y, w, h);
+  ctx.drawImage(img, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
+}
+function drawImageSlide(ctx, sg, asset, t){
+  const has = asset && asset.status === "ok" && asset.img;
+  if (has && asset.source === "sgk") {
+    slideBg(ctx);
+    drawContain(ctx, asset.img, 90, 60, W - 180, H - 300);
+  } else if (has) {
+    drawCover(ctx, asset.img, 1 + 0.06 * t);
+  } else {
+    slideBg(ctx);
+    ctx.strokeStyle = "rgba(255,217,77,0.65)"; ctx.lineWidth = 4; ctx.setLineDash([18, 14]);
+    rr(ctx, 240, 210, W - 480, 560, 22); ctx.stroke(); ctx.setLineDash([]);
+    ctx.fillStyle = "#ffd94d"; ctx.font = "700 52px " + FONT; ctx.textAlign = "center";
+    ctx.fillText(sg.type === "sgk" ? "📚 CHỜ HÌNH SGK" : "🖼 HÌNH MINH HOẠ", W / 2, 420);
+    ctx.fillStyle = "#d7eadd";
+    ctx.font = "400 36px " + FONT;
+    const hint = sg.type === "sgk" ? (sg.imageHint || "") : (sg.imagePrompt || "");
+    wrapLines(ctx, hint, 1300).slice(0, 3).forEach((ln, k) => ctx.fillText(ln, W / 2, 510 + k * 50));
+    ctx.textAlign = "left";
+  }
+  const bandH = 190;
+  const g = ctx.createLinearGradient(0, H - bandH - 60, 0, H);
+  g.addColorStop(0, "rgba(0,0,0,0)"); g.addColorStop(0.45, "rgba(0,0,0,0.78)"); g.addColorStop(1, "rgba(0,0,0,0.92)");
+  ctx.fillStyle = g; ctx.fillRect(0, H - bandH - 60, W, bandH + 60);
+  ctx.fillStyle = "#ffffff"; ctx.font = "700 58px " + FONT; ctx.textAlign = "left"; ctx.textBaseline = "top";
+  wrapLines(ctx, sg.heading, 1700).slice(0, 2).forEach((ln, k) => ctx.fillText(ln, 110, H - bandH + 18 + k * 70));
+  if (scriptData && scriptData.title) {
+    ctx.fillStyle = "#ffd94d"; ctx.font = "600 30px " + FONT; ctx.textAlign = "right";
+    ctx.fillText(scriptData.title, W - 110, 46); ctx.textAlign = "left";
+  }
+}
+function arrow(ctx, x1, y1, x2, y2){
+  ctx.strokeStyle = "#ffd94d"; ctx.fillStyle = "#ffd94d"; ctx.lineWidth = 7;
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+  const ang = Math.atan2(y2 - y1, x2 - x1);
+  ctx.beginPath();
+  ctx.moveTo(x2, y2);
+  ctx.lineTo(x2 - 26 * Math.cos(ang - 0.45), y2 - 26 * Math.sin(ang - 0.45));
+  ctx.lineTo(x2 - 26 * Math.cos(ang + 0.45), y2 - 26 * Math.sin(ang + 0.45));
+  ctx.closePath(); ctx.fill();
+}
+function drawDiagram(ctx, sg){
+  slideBg(ctx);
+  const steps = (sg.diagram && sg.diagram.steps) || [];
+  const topY = drawHeading(ctx, sg.heading, "Sơ đồ quá trình");
+  const n = steps.length; if (!n) return;
+  const perRow = n <= 3 ? n : Math.ceil(n / 2);
+  const rows = Math.ceil(n / perRow);
+  const areaX = 110, areaW = W - 220, areaY = Math.max(topY + 30, 250), areaH = H - areaY - 90;
+  const gapX = 96, gapY = 110;
+  const boxW = (areaW - (perRow - 1) * gapX) / perRow;
+  const boxH = Math.min(320, (areaH - (rows - 1) * gapY) / rows);
+  const centers = [];
+  steps.forEach((s, i) => {
+    const row = Math.floor(i / perRow);
+    let col = i % perRow;
+    if (row % 2 === 1) col = perRow - 1 - col;               // hàng 2 đi ngược (serpentine)
+    const x = areaX + col * (boxW + gapX), y = areaY + row * (boxH + gapY);
+    centers.push({ x: x + boxW / 2, y: y + boxH / 2, row });
+    ctx.fillStyle = "rgba(255,255,255,0.08)"; rr(ctx, x, y, boxW, boxH, 20); ctx.fill();
+    ctx.strokeStyle = "#37d67a"; ctx.lineWidth = 4; rr(ctx, x, y, boxW, boxH, 20); ctx.stroke();
+    ctx.fillStyle = "#ffd94d"; ctx.beginPath(); ctx.arc(x + 46, y + 46, 27, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#20301f"; ctx.font = "800 30px " + FONT; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText(String(i + 1), x + 46, y + 48);
+    ctx.fillStyle = "#ffffff"; ctx.font = "700 41px " + FONT; ctx.textAlign = "center";
+    wrapLines(ctx, s.label, boxW - 50).slice(0, 2).forEach((ln, k) => ctx.fillText(ln, x + boxW / 2, y + 96 + k * 50));
+    if (s.sub) {
+      ctx.fillStyle = "#b9d6c6"; ctx.font = "400 31px " + FONT;
+      wrapLines(ctx, s.sub, boxW - 56).slice(0, 3).forEach((ln, k) => ctx.fillText(ln, x + boxW / 2, y + 208 + k * 42));
+    }
+    ctx.textAlign = "left"; ctx.textBaseline = "top";
+  });
+  for (let i = 0; i + 1 < n; i++) {
+    const a = centers[i], b = centers[i + 1];
+    if (a.row === b.row) {
+      const dir = b.x > a.x ? 1 : -1;
+      arrow(ctx, a.x + dir * (boxW / 2 + 6), a.y, b.x - dir * (boxW / 2 + 6), b.y);
+    } else {
+      arrow(ctx, a.x, a.y + boxH / 2 + 8, b.x, b.y - boxH / 2 - 8);
+    }
+  }
+}
+function drawTable(ctx, sg){
+  slideBg(ctx);
+  const tb = sg.table || { headers: [], rows: [] };
+  const topY = drawHeading(ctx, sg.heading, "Bảng số liệu");
+  let y = topY + 16;
+  if (tb.caption) {
+    ctx.fillStyle = "#ffe9a8"; ctx.font = "italic 600 37px " + FONT; ctx.textAlign = "left";
+    wrapLines(ctx, tb.caption, 1700).slice(0, 2).forEach(ln => { ctx.fillText(ln, 110, y); y += 50; });
+    y += 14;
+  }
+  const cols = Math.max(1, tb.headers.length);
+  const tx = 110, tw = W - 220, colW = tw / cols;
+  let fontSize = 36;
+  function measure(fs){
+    ctx.font = "400 " + fs + "px " + FONT;
+    let total = 92;
+    tb.rows.forEach(r => {
+      let lines = 1;
+      r.forEach(c => { lines = Math.max(lines, wrapLines(ctx, c, colW - 34).length); });
+      total += lines * (fs + 14) + 26;
+    });
+    return total;
+  }
+  while (fontSize > 24 && measure(fontSize) > H - y - 60) fontSize -= 2;
+  ctx.fillStyle = "#14532d"; rr(ctx, tx, y, tw, 92, 12); ctx.fill();
+  ctx.fillStyle = "#ffd94d"; ctx.font = "700 " + (fontSize + 2) + "px " + FONT; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  tb.headers.forEach((h, c) => ctx.fillText(h, tx + colW * c + colW / 2, y + 48));
+  y += 92;
+  ctx.textAlign = "left";
+  tb.rows.forEach((r, ri) => {
+    ctx.font = "400 " + fontSize + "px " + FONT;
+    let lines = 1;
+    const cellLines = r.map(c => { const L = wrapLines(ctx, c, colW - 34); lines = Math.max(lines, L.length); return L; });
+    const rh = lines * (fontSize + 14) + 26;
+    ctx.fillStyle = ri % 2 ? "rgba(255,255,255,0.10)" : "rgba(255,255,255,0.05)";
+    ctx.fillRect(tx, y, tw, rh);
+    ctx.strokeStyle = "rgba(255,255,255,0.22)"; ctx.lineWidth = 2; ctx.strokeRect(tx, y, tw, rh);
+    ctx.fillStyle = "#ffffff";
+    cellLines.forEach((L, c) => L.forEach((ln, k) => ctx.fillText(ln, tx + colW * c + 18, y + 16 + k * (fontSize + 14) + fontSize / 2)));
+    y += rh;
+  });
+  ctx.textBaseline = "top";
+}
+function drawText(ctx, sg){
+  slideBg(ctx);
+  const topY = drawHeading(ctx, sg.heading, scriptData ? (scriptData.title || "") : "");
+  let y = topY + 36;
+  ctx.font = "400 47px " + FONT;
+  (sg.bullets || []).forEach(b => {
+    ctx.fillStyle = "#ffd94d"; ctx.beginPath(); ctx.arc(150, y + 30, 13, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#ffffff";
+    wrapLines(ctx, b, 1560).slice(0, 3).forEach((ln, k) => { ctx.fillText(ln, 200, y + k * 62); });
+    y += Math.max(1, wrapLines(ctx, b, 1560).length) * 62 + 30;
+  });
+}
+function drawSlide(ctx, sg, asset, t){
+  if (sg.type === "image" || sg.type === "sgk") drawImageSlide(ctx, sg, asset, t || 0);
+  else if (sg.type === "diagram") drawDiagram(ctx, sg);
+  else if (sg.type === "table") drawTable(ctx, sg);
+  else drawText(ctx, sg);
+}
+
+/* =========================================================
+   BƯỚC 4: GIỌNG ĐỌC — Gemini TTS trả PCM 16-bit 24kHz.
+   ========================================================= */
+let sharedCtx = null;
+function audioCtx(){
+  if (!sharedCtx) sharedCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return sharedCtx;
+}
+function pcmToAudioBuffer(base64){
+  const bin = atob(base64);
+  const bytes = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+  const n = Math.floor(bytes.length / 2);
+  const buf = audioCtx().createBuffer(1, Math.max(1, n), 24000);
+  const ch = buf.getChannelData(0);
+  const dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  for (let i = 0; i < n; i++) ch[i] = dv.getInt16(i * 2, true) / 32768;
+  return buf;
+}
+async function genAudioForSegment(i){
+  const sg = scriptData.segments[i];
+  if (!sg.narration || !sg.narration.trim()) {
+    audios[i] = { status: "err", buffer: null, err: "Đoạn này không có lời đọc." };
+    renderAssetRows(); return false;
+  }
+  try {
+    const data = await gemini(MODEL_TTS, {
+      contents: [{ parts: [{ text: sg.narration }] }],
+      generationConfig: {
+        responseModalities: ["AUDIO"],
+        speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: TTS_VOICE } } }
+      }
+    });
+    const inline = firstInline(data);
+    if (!inline) throw new Error("Gemini TTS không trả về âm thanh.");
+    audios[i] = { status: "ok", buffer: pcmToAudioBuffer(inline.data), err: "" };
+  } catch (e) {
+    audios[i] = { status: "err", buffer: null, err: e.message };
+  }
+  renderAssetRows();
+  return audios[i].status === "ok";
+}
+
+/* =========================================================
+   BƯỚC 5: DỰNG VIDEO — canvas.captureStream + audio gộp,
+   MediaRecorder ghi WebM theo đúng thời lượng từng đoạn.
+   ========================================================= */
+function recordVideo(){
+  return new Promise((resolve, reject) => {
+    const canvas = $("stage");
+    const ctx = canvas.getContext("2d");
+    const segs = scriptData.segments;
+    const durations = segs.map((sg, i) => {
+      const a = audios[i];
+      return (a && a.status === "ok" && a.buffer) ? a.buffer.duration : NO_AUDIO_SECONDS;
+    });
+    const total = durations.reduce((s, d) => s + d, 0);
+    const actx = audioCtx();
+    if (actx.state === "suspended") actx.resume();
+    const dest = actx.createMediaStreamDestination();
+    const t0 = actx.currentTime + 0.2;
+    let off = 0;
+    segs.forEach((sg, i) => {
+      const a = audios[i];
+      if (a && a.status === "ok" && a.buffer) {
+        const src = actx.createBufferSource();
+        src.buffer = a.buffer;
+        src.connect(dest); src.connect(actx.destination);
+        src.start(t0 + off);
+      }
+      off += durations[i];
+    });
+    const vStream = canvas.captureStream(30);
+    const stream = new MediaStream([].concat(vStream.getVideoTracks(), dest.stream.getAudioTracks()));
+    let mime = "";
+    const cands = ["video/webm;codecs=vp9,opus", "video/webm;codecs=vp8,opus", "video/webm", ""];
+    for (const c of cands) { if (!c || MediaRecorder.isTypeSupported(c)) { mime = c; break; } }
+    let rec;
+    try {
+      rec = new MediaRecorder(stream, mime ? { mimeType: mime, videoBitsPerSecond: 6000000 } : undefined);
+    } catch (e) { reject(new Error("Trình duyệt không khởi tạo được MediaRecorder: " + e.message)); return; }
+    const chunks = [];
+    rec.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
+    rec.onstop = () => resolve(new Blob(chunks, { type: "video/webm" }));
+    rec.onerror = () => reject(new Error("MediaRecorder gặp lỗi khi ghi."));
+    const startT = performance.now();
+    function frame(){
+      const el = (performance.now() - startT) / 1000;
+      let acc = 0, idx = segs.length - 1, localT = durations[idx] || 0;
+      for (let i = 0; i < segs.length; i++) {
+        if (el < acc + durations[i]) { idx = i; localT = el - acc; break; }
+        acc += durations[i];
+      }
+      drawSlide(ctx, segs[idx], assets[idx], durations[idx] ? localT / durations[idx] : 0);
+      $("renderProg").value = Math.min(100, (el / total) * 100);
+      $("renderNote").textContent = "Đang ghi: đoạn " + (idx + 1) + "/" + segs.length + " — " + segs[idx].heading +
+        "  (" + Math.round(el) + "s / " + Math.round(total) + "s)";
+      if (el < total + 0.3) requestAnimationFrame(frame);
+    }
+    rec.start(250);
+    requestAnimationFrame(frame);
+    setTimeout(() => { if (rec.state !== "inactive") rec.stop(); }, (total + 0.7) * 1000);
+  });
+}
+
+/* ---------- Điều phối: bấm DỰNG VIDEO NGAY ---------- */
+function logWarn(html){
+  const d = document.createElement("div");
+  d.className = "warn"; d.innerHTML = html;
+  $("buildLog").appendChild(d);
+}
+async function buildVideo(){
+  if (building || !scriptData) return;
+  building = true;
+  $("buildBtn").disabled = true; $("cancelScriptBtn").disabled = true; $("createBtn").disabled = true;
+  $("buildLog").innerHTML = "";
+  $("progressCard").classList.remove("hidden");
+  $("assetBox").classList.remove("hidden");
+  $("resultCard").classList.add("hidden");
+  assets = {}; audios = {};
+  renderAssetRows();
+  try {
+    /* BƯỚC 2 — hình */
+    setStep(2, "run");
+    let usedLib = false, imgErr = [];
+    for (let i = 0; i < scriptData.segments.length; i++) {
+      const sg = scriptData.segments[i];
+      if (sg.type !== "image" && sg.type !== "sgk") { assets[i] = { status: "skip", img: null, source: "none", err: "" }; continue; }
+      if (demoMode) {
+        if (sg.sgkImageId && library.get(sg.sgkImageId) && library.get(sg.sgkImageId).img) {
+          assets[i] = { status: "ok", img: library.get(sg.sgkImageId).img, source: "sgk", err: "" }; usedLib = true;
+        } else assets[i] = { status: "skip", img: null, source: "none", err: "" };
+        renderAssetRows();
+      } else {
+        await genImageForSegment(i);
+        if (assets[i] && assets[i].status === "err") imgErr.push(i + 1);
+      }
+    }
+    setStep(2, demoMode ? (usedLib ? "done" : "skip") : "done");
+    if (imgErr.length) logWarn("⚠️ Có " + imgErr.length + " đoạn không lấy được hình (đoạn " + imgErr.join(", ") +
+      "). Các đoạn đó sẽ hiện slide tiêu đề thay thế — video vẫn dựng tiếp. Thầy có thể bấm <b>Thử lại ảnh</b> ở bảng chi tiết phía trên.");
+
+    /* BƯỚC 3 — vẽ slide (vẽ thử 1 lượt lên canvas để chắc chắn không lỗi) */
+    setStep(3, "run");
+    const stageCtx = $("stage").getContext("2d");
+    scriptData.segments.forEach((sg, i) => drawSlide(stageCtx, sg, assets[i], 0));
+    setStep(3, "done");
+
+    /* BƯỚC 4 — giọng đọc */
+    if (demoMode) {
+      setStep(4, "skip");
+    } else {
+      setStep(4, "run");
+      const auErr = [];
+      for (let i = 0; i < scriptData.segments.length; i++) {
+        const ok = await genAudioForSegment(i);
+        if (!ok) auErr.push(i + 1);
+      }
+      if (auErr.length === scriptData.segments.length) {
+        setStep(4, "err");
+        logWarn("❌ <b>Không thu được giọng đọc cho đoạn nào</b> (có thể đã hết hạn mức TTS miễn phí hôm nay). Video vẫn sẽ được dựng nhưng <b>KHÔNG có tiếng</b>. Thầy kiểm tra lại key hoặc thử lại sau.");
+      } else {
+        setStep(4, "done");
+        if (auErr.length) logWarn("⚠️ Các đoạn " + auErr.join(", ") + " không có giọng đọc (hết hạn mức hoặc lỗi) — trong video, các đoạn đó sẽ im lặng " + NO_AUDIO_SECONDS + " giây. Các đoạn còn lại có tiếng bình thường.");
+      }
+    }
+
+    /* BƯỚC 5 — dựng video */
+    setStep(5, "run");
+    $("renderCard").classList.remove("hidden");
+    $("renderCard").scrollIntoView({ behavior: "smooth", block: "start" });
+    $("renderProg").value = 0;
+    const blob = await recordVideo();
+    setStep(5, "done");
+    $("renderCard").classList.add("hidden");
+    const url = URL.createObjectURL(blob);
+    $("resultVideo").src = url;
+    const dl = $("downloadLink");
+    dl.href = url;
+    dl.setAttribute("download", (scriptData.title || "video-bai-giang").replace(/[^\p{L}\p{N}]+/gu, "-") + ".webm");
+    let note = '<div class="ok-box">📦 Dung lượng file: <b>' + (blob.size / 1048576).toFixed(2) + ' MB</b> — ' + scriptData.segments.length + ' đoạn.</div>';
+    if (demoMode) note += '<div class="warn">👀 Đây là <b>bản xem thử không cần key</b>: hình AI và giọng đọc bị tắt để chạy thử quy trình. Muốn có hình thật + giọng đọc thật, thầy tạo key miễn phí rồi bấm TẠO VIDEO.</div>';
+    $("resultNote").innerHTML = note;
+    $("resultCard").classList.remove("hidden");
+    $("resultCard").scrollIntoView({ behavior: "smooth", block: "start" });
+  } catch (e) {
+    showErr("buildLog", "Dựng video thất bại: " + e.message);
+  }
+  building = false;
+  $("buildBtn").disabled = false; $("cancelScriptBtn").disabled = false; $("createBtn").disabled = false;
+}
+$("buildBtn").addEventListener("click", buildVideo);
+
+/* ---------- Bấm TẠO VIDEO ---------- */
+$("createBtn").addEventListener("click", async () => {
+  if (building) return;
+  $("inputError").innerHTML = "";
+  if (!getKey()) {
+    showErr("inputError", "Thầy chưa dán API key. Thầy tạo key miễn phí theo 3 bước ở mục 1 đầu trang, dán vào rồi bấm Lưu Key.");
+    $("keyGuide").open = true;
+    $("keyCard").scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+  demoMode = false;
+  $("progressNote").textContent = "";
+  const dn0 = $("demoNote"); if (dn0) dn0.classList.add("hidden");
+  scriptData = null; assets = {}; audios = {};
+  $("scriptCard").classList.add("hidden");
+  $("resultCard").classList.add("hidden");
+  $("renderCard").classList.add("hidden");
+  $("assetBox").classList.add("hidden");
+  $("buildLog").innerHTML = "";
+  $("progressCard").classList.remove("hidden");
+  $("progressCard").scrollIntoView({ behavior: "smooth", block: "start" });
+  resetSteps(); setStep(1, "run");
+  try {
+    scriptData = await generateScript();
+    setStep(1, "done");
+    renderScriptReview();
+  } catch (e) {
+    setStep(1, "err");
+    showErr("buildLog", e.message);
+  }
+});
+
+/* ---------- Chế độ xem thử không cần key ---------- */
+$("demoBtn").addEventListener("click", () => {
+  if (building) return;
+  demoMode = true;
+  scriptData = JSON.parse(JSON.stringify(DEMO_SCRIPT));
+  assets = {}; audios = {};
+  $("inputError").innerHTML = "";
+  $("resultCard").classList.add("hidden");
+  $("renderCard").classList.add("hidden");
+  $("assetBox").classList.add("hidden");
+  $("buildLog").innerHTML = "";
+  $("progressCard").classList.remove("hidden");
+  resetSteps(); setStep(1, "done");
+  $("progressNote").textContent = "— CHẾ ĐỘ XEM THỬ (kịch bản mẫu dựng sẵn, không gọi API, không có giọng đọc)";
+  renderScriptReview();
+  let dn = $("demoNote");
+  if (!dn) {
+    dn = document.createElement("div");
+    dn.id = "demoNote"; dn.className = "warn";
+    dn.innerHTML = "👀 <b>Đang xem thử bằng kịch bản mẫu.</b> Đoạn 1 là loại <b>Hình SGK</b>: nếu thầy đã nạp ảnh SGK vào thư viện, hãy bấm <b>Chọn hình SGK</b> để gán — ảnh sẽ được vẽ nguyên vẹn lên slide. Khi dựng ở chế độ xem thử, app không gọi AI nên không có ảnh AI và không có giọng đọc.";
+    $("scriptCard").insertBefore(dn, $("scriptSegs"));
+  }
+  dn.classList.remove("hidden");
+});
+
+/* ---------- Làm video khác ---------- */
+$("againBtn").addEventListener("click", () => {
+  $("resultCard").classList.add("hidden");
+  $("scriptCard").classList.add("hidden");
+  $("progressCard").classList.add("hidden");
+  scriptData = null; demoMode = false;
+  resetSteps();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+});
+
+/* ---------- Khởi tạo ---------- */
+refreshKeyUI();
+idbLoadAll();
+</script>
+</body>
+</html>
