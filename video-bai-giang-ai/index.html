@@ -103,6 +103,8 @@
   .gal-cell.pickable.sel img{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue)}
   .gal-cell.pickable.sel .cap{color:var(--txt);font-weight:700}
   .obadge{display:inline-block;background:#123c5f;color:#c4e4ff;border-radius:6px;padding:2px 8px;font-size:12.5px;font-weight:700;margin-left:6px}
+  .phieu-item{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:10px;background:var(--panel)}
+  .phieu-item.dim{opacity:.6}
 </style>
 </head>
 <body>
@@ -197,8 +199,16 @@
         <span class="chip type-chip" data-type="full">📚 Nội dung toàn bài</span>
         <span class="chip type-chip" data-type="part">🔎 Nội dung từng phần</span>
         <span class="chip type-chip" data-type="review">📝 Ôn tập / tổng kết</span>
+        <span class="chip type-chip" data-type="phieu">📋 Phiếu Học Tập</span>
       </div>
       <div class="small" style="margin-top:6px">Chọn 🚀 Khởi động thì app tự gợi ý thời lượng 2 phút (thầy vẫn đổi lại được ở bộ chọn thời lượng bên dưới). App tự nhớ loại video đã chọn cho lần mở sau.</div>
+    </div>
+    <div id="phieuPanel" class="hidden" style="margin-top:14px;border:1px dashed var(--line);border-radius:12px;padding:12px 14px;background:var(--panel2)">
+      <div style="font-weight:700;font-size:16px">📋 Video Phiếu Học Tập — dựng thẳng từ kho phiếu có sẵn</div>
+      <div class="small" style="margin-top:4px">App lấy phiếu học tập + đáp án nguyên văn từ <b>kho phiếu</b> (trích sẵn từ giáo án) và dựng đúng khuôn: phiếu câm đánh số → điền dần từng ô, đọc đầy đủ đáp án → bảng đáp án của giáo viên → cảnh QR làm bài tập tương tác. Không qua AI viết kịch bản nên đáp án không bị sửa một chữ.</div>
+      <div id="phieuStatus" class="small" style="margin-top:8px">⏳ Đang tải kho phiếu…</div>
+      <div id="phieuList" style="margin-top:4px"></div>
+      <div id="phieuPreview" class="hidden" style="margin-top:12px;border-top:1px dashed var(--line);padding-top:10px"></div>
     </div>
 
     <div style="margin-top:16px">
@@ -1293,7 +1303,7 @@ async function generateScript(){
 }
 
 /* ---------- Màn hình duyệt kịch bản ---------- */
-const TYPE_LABEL = { image: "🖼 Hình ảnh", sgk: "📚 Hình SGK", diagram: "🔀 Sơ đồ", table: "📊 Bảng số liệu", text: "📄 Nội dung chữ" };
+const TYPE_LABEL = { image: "🖼 Hình ảnh", sgk: "📚 Hình SGK", diagram: "🔀 Sơ đồ", table: "📊 Bảng số liệu", text: "📄 Nội dung chữ", phieu: "📋 Phiếu học tập" };
 function renderScriptReview(){
   if (!scriptData) return;
   $("scriptMeta").textContent = "🎬 " + (scriptData.title || "Video bài giảng") +
@@ -1308,6 +1318,12 @@ function renderScriptReview(){
     if (sg.type === "text") extra = "<p>" + (sg.bullets || []).map(escapeHtml).join("<br>") + "</p>";
     if (sg.type === "image") extra = "<p>Mô tả ảnh (AI sẽ vẽ): <i>" + escapeHtml(sg.imagePrompt || "") + "</i></p>";
     if (sg.type === "sgk") extra = "<p>Hình SGK cần tìm: <i>" + escapeHtml(sg.imageHint || "") + "</i></p>";
+    if (sg.type === "phieu") {
+      if (sg.phKind === "open") extra = "<p>Cảnh mở: bảng phiếu <b>câm</b> — ô trống chỉ có vòng tròn đánh số, kèm câu yêu cầu của phiếu.</p>";
+      else if (sg.phKind === "fill") extra = "<p>" + escapeHtml(sg.caption || "") + "</p>";
+      else if (sg.phKind === "key") extra = "<p>Cảnh chốt: bảng đáp án đầy đủ của giáo viên để học sinh đối chiếu với bài làm.</p>";
+      else if (sg.phKind === "qr") extra = "<p>Cảnh cuối: mã QR + link làm bài tập tương tác: <i>" + escapeHtml(sg.qrUrl || "") + "</i></p>";
+    }
     d.innerHTML = '<span class="tag ' + sg.type + '">' + TYPE_LABEL[sg.type] + "</span>" +
       "<h4>Đoạn " + (i + 1) + ": " + escapeHtml(sg.heading) + "</h4>" +
       '<p class="narr">🎙 ' + escapeHtml(sg.narration) + "</p>" + extra;
@@ -1333,6 +1349,12 @@ function updateDurInfo(){
   const info = $("durInfo"), warn = $("durWarn");
   if (!info || !warn) return;
   if (!scriptData) { info.textContent = ""; warn.classList.add("hidden"); return; }
+  if (scriptData._mode === "phieu") {
+    const totalSecP = narrationChars(scriptData) / 13;
+    info.textContent = "⏱ Ước tính thời lượng đọc: " + fmtDur(totalSecP) + " — video phiếu đọc ĐẦY ĐỦ đáp án nên không áp mức thời lượng tối đa ở trên; thời lượng thật đi theo giọng đọc của từng cảnh.";
+    warn.classList.add("hidden");
+    return;
+  }
   const totalSec = narrationChars(scriptData) / 13;   /* tốc độ đọc ~13 ký tự/giây */
   info.textContent = "⏱ Ước tính thời lượng: " + fmtDur(totalSec) + " (mức tối đa đã chọn: " + maxMinutes + " phút)";
   const over = totalSec > maxMinutes * 60 * 1.1;      /* chỉ cảnh báo khi vượt quá 10% */
@@ -1380,6 +1402,10 @@ $("shortenBtn").addEventListener("click", async () => {
   }
 });
 $("applyJsonBtn").addEventListener("click", () => {
+  if (scriptData && scriptData._mode === "phieu") {
+    $("jsonMsg").textContent = "ℹ️ Kịch bản phiếu học tập sinh thẳng từ dữ liệu phiếu trong kho nên không sửa bằng JSON — muốn đổi nội dung, thầy chọn phiếu khác.";
+    return;
+  }
   try {
     const parsed = validateScript(JSON.parse($("scriptJson").value));
     if (scriptData) { parsed._mode = scriptData._mode; parsed._picked = scriptData._picked; }
@@ -2252,7 +2278,730 @@ function drawText(ctx, sg){
     y += Math.max(1, wrapLines(ctx, b, 1560).length) * 62 + 30;
   });
 }
+
+/* =========================================================
+   📋 VIDEO PHIẾU HỌC TẬP (Giai đoạn 2) — app tự dựng video từ KHO PHIẾU
+   (phieu-lib): phiếu câm đánh số → điền dần từng ô + đọc đầy đủ đáp án →
+   bảng đáp án giáo viên → cảnh QR bài tập tương tác. Kịch bản sinh THẲNG
+   từ dữ liệu phiếu, KHÔNG qua Gemini — đáp án giữ nguyên văn 100%.
+   ========================================================= */
+/*__PURE_QR__*/
+/* Sinh mã QR ngay trong trang, không gọi CDN: byte mode (UTF-8), mức sửa
+   lỗi M, tự chọn version 1–10 theo độ dài dữ liệu. Trả về {size, mod} với
+   mod[y][x] = 1 là ô đen (chưa gồm vùng trắng đệm — nơi vẽ tự cộng). */
+const QR_EC_TABLE_M = [
+  [10, [[1, 16]]], [16, [[1, 28]]], [26, [[1, 44]]], [18, [[2, 32]]], [24, [[2, 43]]],
+  [16, [[4, 27]]], [18, [[4, 31]]], [22, [[2, 38], [2, 39]]],
+  [22, [[3, 36], [2, 37]]], [26, [[4, 43], [1, 44]]]
+];
+const QR_ALIGN_POS = [[], [6, 18], [6, 22], [6, 26], [6, 30], [6, 34], [6, 22, 38], [6, 24, 42], [6, 26, 46], [6, 28, 50]];
+const QR_GEXP = [], QR_GLOG = [];
+(function(){
+  let x = 1;
+  for (let i = 0; i < 255; i++){ QR_GEXP.push(x); QR_GLOG[x] = i; x <<= 1; if (x & 0x100) x ^= 0x11d; }
+  for (let i = 255; i < 512; i++) QR_GEXP.push(QR_GEXP[i - 255]);
+})();
+function qrGfMul(a, b){ return (a && b) ? QR_GEXP[(QR_GLOG[a] + QR_GLOG[b]) % 255] : 0; }
+function qrPolyMul(p, q){
+  const r = new Array(p.length + q.length - 1).fill(0);
+  for (let i = 0; i < p.length; i++) for (let j = 0; j < q.length; j++) r[i + j] ^= qrGfMul(p[i], q[j]);
+  return r;
+}
+function qrEcBytes(data, ecLen){
+  let gen = [1];
+  for (let i = 0; i < ecLen; i++) gen = qrPolyMul(gen, [1, QR_GEXP[i]]);
+  const rem = data.concat(new Array(ecLen).fill(0));
+  for (let i = 0; i < data.length; i++){
+    const coef = rem[i];
+    if (coef) for (let j = 0; j < gen.length; j++) rem[i + j] ^= qrGfMul(gen[j], coef);
+  }
+  return rem.slice(data.length);
+}
+function qrUtf8Bytes(s){
+  const out = [];
+  for (let i = 0; i < s.length; i++){
+    let c = s.charCodeAt(i);
+    if (c < 0x80) out.push(c);
+    else if (c < 0x800) out.push(0xc0 | (c >> 6), 0x80 | (c & 63));
+    else if (c >= 0xd800 && c <= 0xdbff && i + 1 < s.length){
+      const c2 = s.charCodeAt(++i), cp = 0x10000 + ((c - 0xd800) << 10) + (c2 - 0xdc00);
+      out.push(0xf0 | (cp >> 18), 0x80 | ((cp >> 12) & 63), 0x80 | ((cp >> 6) & 63), 0x80 | (cp & 63));
+    } else out.push(0xe0 | (c >> 12), 0x80 | ((c >> 6) & 63), 0x80 | (c & 63));
+  }
+  return out;
+}
+function qrDataCodewords(bytes, version){
+  const spec = QR_EC_TABLE_M[version - 1];
+  const totalData = spec[1].reduce((s, g) => s + g[0] * g[1], 0);
+  const bits = [];
+  const push = (val, len) => { for (let i = len - 1; i >= 0; i--) bits.push((val >>> i) & 1); };
+  push(0x4, 4);                                   /* byte mode */
+  push(bytes.length, version >= 10 ? 16 : 8);     /* đếm ký tự */
+  bytes.forEach(b => push(b, 8));
+  const cap = totalData * 8;
+  const term = Math.min(4, cap - bits.length);
+  for (let i = 0; i < term; i++) bits.push(0);
+  while (bits.length % 8) bits.push(0);
+  const pads = [0xec, 0x11];
+  for (let p = 0; bits.length < cap; p++) push(pads[p % 2], 8);
+  const out = [];
+  for (let i = 0; i < bits.length; i += 8){
+    let b = 0;
+    for (let j = 0; j < 8; j++) b = (b << 1) | bits[i + j];
+    out.push(b);
+  }
+  return out;
+}
+function qrInterleave(dataCw, version){
+  const spec = QR_EC_TABLE_M[version - 1], ecLen = spec[0];
+  const blocks = [];
+  let off = 0;
+  spec[1].forEach(g => {
+    for (let k = 0; k < g[0]; k++){
+      const d = dataCw.slice(off, off + g[1]); off += g[1];
+      blocks.push({ d: d, ec: qrEcBytes(d, ecLen) });
+    }
+  });
+  const out = [];
+  const maxD = Math.max.apply(null, blocks.map(b => b.d.length));
+  for (let i = 0; i < maxD; i++) blocks.forEach(b => { if (i < b.d.length) out.push(b.d[i]); });
+  for (let i = 0; i < ecLen; i++) blocks.forEach(b => out.push(b.ec[i]));
+  return out;
+}
+function qrFormatBits(mask){
+  const data = mask;                              /* mức M: 2 bit mức lỗi = 00 */
+  let rem = data;
+  for (let i = 0; i < 10; i++) rem = (rem << 1) ^ ((rem >>> 9) * 0x537);
+  return ((data << 10) | rem) ^ 0x5412;
+}
+function qrVersionBits(version){
+  let rem = version;
+  for (let i = 0; i < 12; i++) rem = (rem << 1) ^ ((rem >>> 11) * 0x1f25);
+  return (version << 12) | rem;
+}
+function qrBuildMatrix(codewords, version){
+  const size = version * 4 + 17;
+  const mod = [], fn = [];
+  for (let y = 0; y < size; y++){ mod.push(new Array(size).fill(0)); fn.push(new Array(size).fill(false)); }
+  const setF = (x, y, v) => { if (x >= 0 && x < size && y >= 0 && y < size){ mod[y][x] = v ? 1 : 0; fn[y][x] = true; } };
+  /* timing */
+  for (let i = 0; i < size; i++){ setF(6, i, i % 2 === 0); setF(i, 6, i % 2 === 0); }
+  /* 3 ô định vị */
+  const finder = (cx, cy) => {
+    for (let dy = -4; dy <= 4; dy++) for (let dx = -4; dx <= 4; dx++){
+      const dist = Math.max(Math.abs(dx), Math.abs(dy));
+      setF(cx + dx, cy + dy, dist !== 2 && dist !== 4);
+    }
+  };
+  finder(3, 3); finder(size - 4, 3); finder(3, size - 4);
+  /* ô căn chỉnh: bỏ qua đúng 3 tổ hợp nằm ở 3 góc định vị */
+  const pos = QR_ALIGN_POS[version - 1];
+  pos.forEach(cx => pos.forEach(cy => {
+    const corner = (cx === pos[0] && cy === pos[0]) ||
+      (cx === pos[pos.length - 1] && cy === pos[0]) ||
+      (cx === pos[0] && cy === pos[pos.length - 1]);
+    if (corner) return;
+    for (let dy = -2; dy <= 2; dy++) for (let dx = -2; dx <= 2; dx++){
+      const dist = Math.max(Math.abs(dx), Math.abs(dy));
+      setF(cx + dx, cy + dy, dist !== 1);
+    }
+  }));
+  /* ô tối cố định */
+  setF(8, size - 8, 1);
+  /* vùng thông tin version (v>=7) — chừa chỗ trước, ghi trị sau khi chọn mask */
+  if (version >= 7){
+    for (let i = 0; i < 18; i++){
+      setF(size - 11 + (i % 3), Math.floor(i / 3), 0);
+      setF(Math.floor(i / 3), size - 11 + (i % 3), 0);
+    }
+  }
+  /* chừa vùng format info quanh ô định vị trái-trên */
+  const reserve = [[8,0],[8,1],[8,2],[8,3],[8,4],[8,5],[8,7],[8,8],[7,8],[5,8],[4,8],[3,8],[2,8],[1,8],[0,8],
+                   [size-1,8],[size-2,8],[size-3,8],[size-4,8],[size-5,8],[size-6,8],[size-7,8],[size-8,8],
+                   [8,size-7],[8,size-6],[8,size-5],[8,size-4],[8,size-3],[8,size-2],[8,size-1]];
+  reserve.forEach(p => setF(p[0], p[1], 0));
+  /* đặt dữ liệu zigzag */
+  let bitIdx = 0;
+  const totalBits = codewords.length * 8;
+  const getBit = i => (codewords[i >>> 3] >>> (7 - (i & 7))) & 1;
+  for (let right = size - 1; right >= 1; right -= 2){
+    if (right === 6) right = 5;
+    for (let vert = 0; vert < size; vert++){
+      for (let j = 0; j < 2; j++){
+        const x = right - j;
+        const upward = ((right + 1) & 2) === 0;
+        const y = upward ? size - 1 - vert : vert;
+        if (!fn[y][x]){
+          mod[y][x] = bitIdx < totalBits ? getBit(bitIdx) : 0;
+          bitIdx++;
+        }
+      }
+    }
+  }
+  return { size: size, mod: mod, fn: fn };
+}
+function qrApplyMask(base, mask){
+  const size = base.size;
+  const mod = base.mod.map(row => row.slice());
+  const cond = [
+    (r, c) => (r + c) % 2 === 0, (r, c) => r % 2 === 0, (r, c) => c % 3 === 0,
+    (r, c) => (r + c) % 3 === 0, (r, c) => (Math.floor(r / 2) + Math.floor(c / 3)) % 2 === 0,
+    (r, c) => (r * c) % 2 + (r * c) % 3 === 0,
+    (r, c) => ((r * c) % 2 + (r * c) % 3) % 2 === 0,
+    (r, c) => ((r + c) % 2 + (r * c) % 3) % 2 === 0
+  ][mask];
+  for (let y = 0; y < size; y++) for (let x = 0; x < size; x++)
+    if (!base.fn[y][x] && cond(y, x)) mod[y][x] ^= 1;
+  /* ghi format info + version info theo mask */
+  const bits = qrFormatBits(mask);
+  const gb = i => (bits >>> i) & 1;
+  for (let i = 0; i <= 5; i++) mod[i][8] = gb(i);
+  mod[7][8] = gb(6); mod[8][8] = gb(7); mod[8][7] = gb(8);
+  for (let i = 9; i < 15; i++) mod[8][14 - i] = gb(i);
+  for (let i = 0; i < 8; i++) mod[8][size - 1 - i] = gb(i);
+  for (let i = 8; i < 15; i++) mod[size - 15 + i][8] = gb(i);
+  mod[size - 8][8] = 1;
+  const version = (size - 17) / 4;
+  if (version >= 7){
+    const vb = qrVersionBits(version);
+    for (let i = 0; i < 18; i++){
+      const b = (vb >>> i) & 1;
+      mod[Math.floor(i / 3)][size - 11 + (i % 3)] = b;
+      mod[size - 11 + (i % 3)][Math.floor(i / 3)] = b;
+    }
+  }
+  return mod;
+}
+function qrPenalty(mod){
+  const size = mod.length;
+  let score = 0;
+  const lineScore = line => {
+    let s = 0, runColor = line[0], runLen = 1;
+    for (let i = 1; i < line.length; i++){
+      if (line[i] === runColor) runLen++;
+      else { if (runLen >= 5) s += 3 + (runLen - 5); runColor = line[i]; runLen = 1; }
+    }
+    if (runLen >= 5) s += 3 + (runLen - 5);
+    /* mẫu giống ô định vị có đệm sáng 4 ô một phía */
+    for (let i = 0; i + 7 <= line.length; i++){
+      if (line[i] === 1 && line[i + 1] === 0 && line[i + 2] === 1 && line[i + 3] === 1 && line[i + 4] === 1 && line[i + 5] === 0 && line[i + 6] === 1){
+        const before = i >= 4 && !line[i - 1] && !line[i - 2] && !line[i - 3] && !line[i - 4];
+        const after = i + 11 <= line.length && !line[i + 7] && !line[i + 8] && !line[i + 9] && !line[i + 10];
+        if (before || after) s += 40;
+      }
+    }
+    return s;
+  };
+  for (let y = 0; y < size; y++) score += lineScore(mod[y]);
+  for (let x = 0; x < size; x++){ const col = []; for (let y = 0; y < size; y++) col.push(mod[y][x]); score += lineScore(col); }
+  for (let y = 0; y + 1 < size; y++) for (let x = 0; x + 1 < size; x++)
+    if (mod[y][x] === mod[y][x + 1] && mod[y][x] === mod[y + 1][x] && mod[y][x] === mod[y + 1][x + 1]) score += 3;
+  let dark = 0;
+  mod.forEach(row => row.forEach(v => { if (v) dark++; }));
+  const total = size * size;
+  score += Math.max(0, Math.ceil(Math.abs(dark * 20 - total * 10) / total) - 1) * 10;
+  return score;
+}
+function qrMatrix(text){
+  const bytes = qrUtf8Bytes(String(text || ""));
+  let version = 0;
+  for (let v = 1; v <= 10; v++){
+    const totalData = QR_EC_TABLE_M[v - 1][1].reduce((s, g) => s + g[0] * g[1], 0);
+    const needBits = 4 + (v >= 10 ? 16 : 8) + bytes.length * 8;
+    if (needBits <= totalData * 8){ version = v; break; }
+  }
+  if (!version) throw new Error("Nội dung quá dài cho mã QR (tối đa version 10).");
+  const cw = qrInterleave(qrDataCodewords(bytes, version), version);
+  const base = qrBuildMatrix(cw, version);
+  let best = null, bestScore = Infinity;
+  for (let m = 0; m < 8; m++){
+    const cand = qrApplyMask(base, m);
+    const sc = qrPenalty(cand);
+    if (sc < bestScore){ bestScore = sc; best = cand; }
+  }
+  return { size: base.size, version: version, mod: best };
+}
+/*__END_PURE_QR__*/
+/*__PURE_PHIEU__*/
+/* Thời lượng đứng hình khi cảnh phiếu KHÔNG có tiếng: theo độ dài lời đọc
+   (~13 ký tự/giây như ước tính chung của app), tối thiểu 4 giây. */
+function phieuNoAudioSec(narration){
+  return Math.max(4, Math.ceil(String(narration || "").length / 13));
+}
+/* Link bài tập tương tác của 1 phiếu: <thư mục app>?bt=<id phiếu> */
+function buildExerciseUrl(id, baseHref){
+  const clean = String(baseHref || "").split(/[?#]/)[0];
+  const dir = clean.replace(/[^/]*$/, "");
+  return dir + "?bt=" + encodeURIComponent(String(id || ""));
+}
+/* Phiếu chọn được để dựng video = manifest gắn cờ sanSangVideo. */
+function phieuSelectable(entry){ return !!(entry && entry.sanSangVideo); }
+function phieuBlockReason(entry){
+  if (!entry) return "không rõ trạng thái";
+  if (entry.thieuDapAn) return "thiếu đáp án trong giáo án — chưa có nguồn đáp án chắc chắn";
+  if (entry.loai === "ghi-ket-qua") return "phiếu ghi kết quả quan sát/thực hành — đáp án mở, chưa hỗ trợ dựng video";
+  if (entry.loai === "cau-hoi-ngan") return "phiếu câu hỏi ngắn — chưa hỗ trợ dựng video";
+  if (entry.loai === "doan-van-dien") return "phiếu điền đoạn văn — chưa hỗ trợ dựng video";
+  return "chưa sẵn sàng để dựng video";
+}
+/* Sinh kịch bản cảnh video phiếu từ dữ liệu phiếu — bám đúng khuôn mẫu đã
+   duyệt: mở (phiếu câm) → mỗi ô 1 cảnh điền → bảng đáp án GV → QR.
+   Đáp án chép NGUYÊN VĂN từ dữ liệu, không qua AI, không sửa một chữ. */
+function buildPhieuScenes(entry, data, opts){
+  opts = opts || {};
+  const cacO = (data.cacO || []).slice().sort((a, b) => a.so - b.so);
+  const n = cacO.length;
+  const cauHoi = String(data.cauHoiPhieu || "").trim();
+  const instr = String(opts.instr || "").trim();
+  const segs = [];
+  let openNarr = cauHoi;
+  if (openNarr && !/[.!?…:]$/.test(openNarr)) openNarr += ".";
+  openNarr += " Các em hãy quan sát bảng phiếu học tập: những ô có sẵn nội dung đã được in sẵn, còn các ô trống được đánh số thứ tự trong vòng tròn. Hãy điền nội dung đúng vào từng ô, theo thứ tự từ số 1 đến số " + n + ".";
+  if (instr) openNarr += " " + instr;
+  segs.push({ type: "phieu", phKind: "open", heading: "Phiếu học tập", narration: openNarr, noAudioSec: phieuNoAudioSec(openNarr) });
+  cacO.forEach(o => {
+    const narr = "Số " + o.so + ". " + o.tieuChi + ", " + o.cot + ": " + o.dapAn;
+    segs.push({
+      type: "phieu", phKind: "fill", fillSo: o.so,
+      heading: "Đáp án số " + o.so,
+      caption: "Đáp án số " + o.so + " — " + o.tieuChi + " · " + o.cot + ": " + o.dapAn,
+      narration: narr, noAudioSec: phieuNoAudioSec(narr)
+    });
+  });
+  const gv = data.bangDapAnGV || { cacHang: [] };
+  const keyParts = (gv.cacHang || []).map(r =>
+    r.tieuChi + ": " + (r.cacCot || []).map(c => c.cot + ": " + c.noiDung).join("; "));
+  const keyNarr = "Sau đây là bảng đáp án của giáo viên. " + keyParts.join(". ") +
+    ". Các em hãy đối chiếu với bài làm của mình và sửa lại những chỗ chưa đúng nhé!";
+  segs.push({ type: "phieu", phKind: "key", heading: "Bảng đáp án của giáo viên", narration: keyNarr, noAudioSec: phieuNoAudioSec(keyNarr) });
+  const qrUrl = buildExerciseUrl(entry && entry.id, opts.baseHref || "");
+  const qrNarr = "Cuối cùng, để kiểm tra xem mình đã hiểu bài chưa, các em hãy quét mã QR trên màn hình, hoặc mở đường link ở dưới phần mô tả của video, để làm bài tập tương tác của bài này nhé.";
+  segs.push({ type: "phieu", phKind: "qr", heading: "Bài tập tương tác", narration: qrNarr, qrUrl: qrUrl, noAudioSec: phieuNoAudioSec(qrNarr) });
+  return segs;
+}
+/* Tiêu đề + mô tả YouTube soạn sẵn: chứa link bài tập ?bt=<id> để thầy
+   dán khi đăng video. */
+function buildYoutubeDesc(entry, data, url){
+  const tenBai = (entry && entry.tenBai) || (data && data.bai) || "Bài học";
+  const title = "📋 Video phiếu học tập — " + tenBai + (entry && entry.grade ? " | Lớp " + entry.grade : "");
+  const desc = [
+    "Video phiếu học tập: mở bằng phiếu \"câm\" đánh số, lần lượt hiện đáp án từng ô (có đọc đầy đủ) và chốt bằng bảng đáp án của giáo viên để đối chiếu.",
+    "Bài: " + tenBai,
+    "",
+    "👉 LÀM BÀI TẬP TƯƠNG TÁC CỦA BÀI NÀY TẠI ĐÂY:",
+    url,
+    "(Hoặc quét mã QR ở cuối video.)",
+    "",
+    "Cách dùng: học sinh xem video, tự điền vào phiếu theo thứ tự các số, đối chiếu với bảng đáp án ở cuối video, rồi làm bài tập tương tác để kiểm tra mức độ hiểu bài."
+  ].join("\n");
+  return { title: title, desc: desc };
+}
+/*__END_PURE_PHIEU__*/
+
+/* ---------- Vẽ cảnh phiếu lên canvas 1920×1080 ---------- */
+let phieuBuildCtx = null;        // {entry, data} của phiếu đang dựng
+let phieuQrCache = { url: "", cv: null };
+function phieuGridOf(data){
+  const gv = (data && data.bangDapAnGV) || { tieuDeCot: [], cacHang: [] };
+  const headers = (gv.tieuDeCot || []).slice();
+  const rows = gv.cacHang || [];
+  const blank = {};
+  (data.cacO || []).forEach(o => { blank[o.hang + "|" + o.cotSo] = o; });
+  return { headers: headers, rows: rows, blank: blank, nCols: Math.max(1, headers.length) };
+}
+function phieuColWidths(grid, totalW){
+  const n = grid.nCols;
+  if (n === 1) return [totalW];
+  if (n === 2) return [Math.round(totalW * 0.30), totalW - Math.round(totalW * 0.30)];
+  const first = /stt/i.test(grid.headers[0] || "") ? 0.09 : 0.24;
+  const w0 = Math.round(totalW * first);
+  const rest = Math.floor((totalW - w0) / (n - 1));
+  const ws = [w0];
+  for (let i = 1; i < n - 1; i++) ws.push(rest);
+  ws.push(totalW - w0 - rest * (n - 2));
+  return ws;
+}
+/* Nội dung + trạng thái của 1 ô trong bảng phiếu.
+   mode: "open" (câm) | "fill" (đang điền tới ô current) | "key" (đáp án GV) */
+function phieuCell(grid, r, c, mode, current){
+  if (c === 0) return { kind: "label", text: grid.rows[r].tieuChi || "" };
+  const row = grid.rows[r];
+  const cell = (row.cacCot || [])[c - 1] || { cot: "", noiDung: "" };
+  const o = grid.blank[(r + 1) + "|" + c];
+  if (!o) return { kind: "given", text: cell.noiDung || "" };
+  if (mode === "key" || o.so < current) return { kind: "filled", text: o.dapAn || cell.noiDung || "", so: o.so };
+  if (mode === "fill" && o.so === current) return { kind: "current", text: o.dapAn || cell.noiDung || "", so: o.so };
+  return { kind: "blank", text: "", so: o.so };
+}
+/* Cắt bớt chữ trong Ô khi bảng quá cao: chỉ rút ngắn PHẦN HIỂN THỊ trong ô —
+   caption + lời đọc vẫn giữ đáp án đầy đủ nguyên văn. */
+function phieuFitLines(ctx, text, maxW, maxLines){
+  const lines = wrapLines(ctx, text, maxW);
+  if (lines.length <= maxLines) return lines;
+  const kept = lines.slice(0, maxLines);
+  let last = kept[maxLines - 1];
+  while (last.length > 1 && ctx.measureText(last + "…").width > maxW) last = last.slice(0, -1);
+  kept[maxLines - 1] = last + "…";
+  return kept;
+}
+function drawPhieuTable(ctx, data, y0, y1, mode, current){
+  const grid = phieuGridOf(data);
+  const tx = 110, tw = W - 220;
+  const ws = phieuColWidths(grid, tw);
+  const availH = y1 - y0;
+  let fs = 34, plan = null;
+  for (; fs >= 18; fs -= 2){
+    ctx.font = "400 " + fs + "px " + FONT;
+    let headerLines = 1;
+    grid.headers.forEach((h, c) => { headerLines = Math.max(headerLines, wrapLines(ctx, h, ws[c] - 24).length); });
+    const headerH = Math.max(84, headerLines * (fs + 12) + 26);
+    let total = headerH;
+    const rowHs = [];
+    grid.rows.forEach((row, r) => {
+      let lines = 1;
+      for (let c = 0; c < grid.nCols; c++){
+        const cell = phieuCell(grid, r, c, mode, current);
+        if (cell.kind !== "blank") lines = Math.max(lines, wrapLines(ctx, cell.text, ws[c] - 28).length);
+      }
+      const rh = lines * (fs + 13) + 24;
+      rowHs.push(rh); total += rh;
+    });
+    plan = { headerH: headerH, rowHs: rowHs };
+    if (total <= availH) break;
+  }
+  if (!plan) plan = { headerH: 84, rowHs: grid.rows.map(() => 60) };
+  /* Vẽ tiêu đề cột */
+  let y = y0;
+  ctx.fillStyle = "#14532d"; rr(ctx, tx, y, tw, plan.headerH, 12); ctx.fill();
+  ctx.fillStyle = "#ffd94d"; ctx.font = "700 " + (fs + 2) + "px " + FONT; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  grid.headers.forEach((h, c) => {
+    const lines = phieuFitLines(ctx, h, ws[c] - 24, 3);
+    const lh = fs + 12;
+    lines.forEach((ln, k) => ctx.fillText(ln, tx + ws.slice(0, c).reduce((a, b) => a + b, 0) + ws[c] / 2, y + plan.headerH / 2 + (k - (lines.length - 1) / 2) * lh));
+  });
+  y += plan.headerH;
+  ctx.textBaseline = "middle";
+  grid.rows.forEach((row, r) => {
+    const rh = plan.rowHs[r];
+    let x = tx;
+    for (let c = 0; c < grid.nCols; c++){
+      const cell = phieuCell(grid, r, c, mode, current);
+      const cw = ws[c];
+      if (cell.kind === "current"){
+        ctx.fillStyle = "#ffd94d"; ctx.fillRect(x, y, cw, rh);
+        ctx.strokeStyle = "#ff8c1a"; ctx.lineWidth = 6; ctx.strokeRect(x + 3, y + 3, cw - 6, rh - 6);
+      } else if (cell.kind === "filled"){
+        ctx.fillStyle = "rgba(255,255,255,0.13)"; ctx.fillRect(x, y, cw, rh);
+        ctx.strokeStyle = "rgba(255,255,255,0.22)"; ctx.lineWidth = 2; ctx.strokeRect(x, y, cw, rh);
+      } else {
+        ctx.fillStyle = r % 2 ? "rgba(255,255,255,0.10)" : "rgba(255,255,255,0.05)";
+        ctx.fillRect(x, y, cw, rh);
+        ctx.strokeStyle = "rgba(255,255,255,0.22)"; ctx.lineWidth = 2; ctx.strokeRect(x, y, cw, rh);
+      }
+      if (cell.kind === "blank"){
+        /* ô câm: vòng tròn đánh số ở giữa ô */
+        const cx = x + cw / 2, cy = y + rh / 2, rad = Math.min(30, rh / 2 - 8, cw / 2 - 8);
+        ctx.strokeStyle = "#ffd94d"; ctx.lineWidth = 4;
+        ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2); ctx.stroke();
+        ctx.fillStyle = "#ffd94d"; ctx.font = "800 " + Math.round(rad * 1.05) + "px " + FONT; ctx.textAlign = "center";
+        ctx.fillText(String(cell.so), cx, cy + 2);
+      } else if (cell.text){
+        const maxLines = Math.max(1, Math.floor((rh - 20) / (fs + 13)));
+        ctx.font = (cell.kind === "current" ? "700 " : "400 ") + fs + "px " + FONT;
+        const lines = phieuFitLines(ctx, cell.text, cw - 28, maxLines);
+        ctx.fillStyle = cell.kind === "current" ? "#20301f" : (cell.kind === "label" ? "#ffe9a8" : "#ffffff");
+        ctx.textAlign = "left";
+        const lh = fs + 13;
+        lines.forEach((ln, k) => ctx.fillText(ln, x + 14, y + rh / 2 + (k - (lines.length - 1) / 2) * lh));
+      }
+      x += cw;
+    }
+    y += rh;
+  });
+  ctx.textAlign = "left"; ctx.textBaseline = "top";
+  return y;
+}
+function drawPhieuQrCanvas(url){
+  if (phieuQrCache.url === url && phieuQrCache.cv) return phieuQrCache.cv;
+  const q = qrMatrix(url);
+  const quiet = 4, cells = q.size + quiet * 2, px = 16;
+  const cv = document.createElement("canvas");
+  cv.width = cells * px; cv.height = cells * px;
+  const c2 = cv.getContext("2d");
+  c2.fillStyle = "#ffffff"; c2.fillRect(0, 0, cv.width, cv.height);
+  c2.fillStyle = "#000000";
+  for (let y = 0; y < q.size; y++) for (let x = 0; x < q.size; x++)
+    if (q.mod[y][x]) c2.fillRect((x + quiet) * px, (y + quiet) * px, px, px);
+  phieuQrCache = { url: url, cv: cv };
+  return cv;
+}
+function drawPhieuScene(ctx, sg){
+  const data = phieuBuildCtx && phieuBuildCtx.data;
+  if (!data){
+    drawText(ctx, { heading: sg.heading, bullets: [sg.caption || sg.narration || ""] });
+    return;
+  }
+  const entry = phieuBuildCtx.entry || {};
+  const tenBai = entry.tenBai || data.bai || "";
+  if (sg.phKind === "qr"){
+    slideBg(ctx);
+    ctx.textAlign = "center"; ctx.textBaseline = "top";
+    ctx.fillStyle = "#ffd94d"; ctx.font = "700 64px " + FONT;
+    ctx.fillText("🎯 BÀI TẬP TƯƠNG TÁC", W / 2, 64);
+    ctx.fillStyle = "#ffffff"; ctx.font = "400 36px " + FONT;
+    wrapLines(ctx, "Xem xong video, các em làm bài tập này để kiểm tra mức độ hiểu bài nhé!", 1500)
+      .forEach((ln, k) => ctx.fillText(ln, W / 2, 158 + k * 48));
+    try {
+      const qc = drawPhieuQrCanvas(sg.qrUrl || "");
+      const box = 520;
+      ctx.fillStyle = "#ffffff"; rr(ctx, (W - box) / 2, 268, box, box, 24); ctx.fill();
+      ctx.drawImage(qc, (W - box + 32) / 2 + 0, 268 + 16, box - 32, box - 32);
+    } catch (e) {
+      ctx.fillStyle = "#ff6b6b"; ctx.font = "600 34px " + FONT;
+      ctx.fillText("(Không sinh được mã QR — thầy dùng link ở phần mô tả video)", W / 2, 480);
+    }
+    ctx.fillStyle = "#57b6ff"; ctx.font = "600 29px " + FONT;
+    wrapLines(ctx, sg.qrUrl || "", 1700).slice(0, 2).forEach((ln, k) => ctx.fillText(ln, W / 2, 824 + k * 40));
+    ctx.fillStyle = "#b9d6c6"; ctx.font = "400 33px " + FONT;
+    wrapLines(ctx, "Quét mã QR bằng camera điện thoại, hoặc bấm vào link ở phần mô tả của video trên YouTube.", 1560)
+      .forEach((ln, k) => ctx.fillText(ln, W / 2, 916 + k * 44));
+    ctx.textAlign = "left";
+    return;
+  }
+  if (sg.phKind === "key"){
+    slideBg(ctx);
+    const topY = drawHeading(ctx, "📋 BẢNG ĐÁP ÁN CỦA GIÁO VIÊN", tenBai);
+    drawPhieuTable(ctx, data, topY + 18, H - 56, "key", 0);
+    return;
+  }
+  if (sg.phKind === "fill"){
+    slideBg(ctx);
+    const n = (data.cacO || []).length;
+    const topY = drawHeading(ctx, "Đáp án số " + sg.fillSo, tenBai);
+    ctx.fillStyle = "#ffd94d"; ctx.font = "700 40px " + FONT; ctx.textAlign = "right"; ctx.textBaseline = "top";
+    ctx.fillText("Ô " + sg.fillSo + " / " + n, W - 110, 60);
+    ctx.textAlign = "left";
+    drawPhieuTable(ctx, data, topY + 14, H - 268, "fill", sg.fillSo);
+    /* băng caption dưới: đáp án đầy đủ nguyên văn */
+    const bandY = H - 238;
+    const g = ctx.createLinearGradient(0, bandY - 30, 0, H);
+    g.addColorStop(0, "rgba(0,0,0,0)"); g.addColorStop(0.35, "rgba(0,0,0,0.85)"); g.addColorStop(1, "rgba(0,0,0,0.94)");
+    ctx.fillStyle = g; ctx.fillRect(0, bandY - 30, W, 268);
+    ctx.fillStyle = "#ffffff"; ctx.font = "600 35px " + FONT; ctx.textAlign = "left"; ctx.textBaseline = "top";
+    phieuFitLines(ctx, sg.caption || "", 1700, 4).forEach((ln, k) => ctx.fillText(ln, 110, bandY + 14 + k * 47));
+    return;
+  }
+  /* open: phiếu câm + câu yêu cầu */
+  slideBg(ctx);
+  const topY = drawHeading(ctx, "📋 Phiếu học tập", tenBai);
+  let y = topY + 8;
+  const cauHoi = String(data.cauHoiPhieu || "").trim();
+  if (cauHoi){
+    ctx.fillStyle = "#ffe9a8"; ctx.font = "italic 600 35px " + FONT; ctx.textAlign = "left"; ctx.textBaseline = "top";
+    phieuFitLines(ctx, cauHoi, 1700, 3).forEach(ln => { ctx.fillText(ln, 110, y); y += 47; });
+    y += 10;
+  }
+  drawPhieuTable(ctx, data, y, H - 56, "open", 0);
+}
+
+/* ---------- Kho phiếu + panel chọn phiếu ---------- */
+let phieuLibState = "idle";      // idle | loading | ready | error
+let phieuLibEntries = [];
+let phieuSelected = null;        // entry manifest đã chọn
+let phieuData = null;            // JSON chi tiết của phiếu đã chọn
+async function loadPhieuLib(){
+  if (phieuLibState === "loading" || phieuLibState === "ready") return;
+  phieuLibState = "loading";
+  renderPhieuPanel();
+  try {
+    const res = await fetch("../phieu-lib/manifest.json", { cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+    if (!data || !Array.isArray(data.entries)) throw new Error("manifest phiếu không hợp lệ");
+    phieuLibEntries = data.entries;
+    phieuLibState = "ready";
+  } catch (e) {
+    phieuLibState = "error";
+    phieuLibEntries = [];
+  }
+  renderPhieuPanel();
+}
+function phieuForCurrentLesson(){
+  const subj = $("pickSubject").value;
+  const grade = parseInt($("pickGrade").value || "", 10);
+  const lc = $("pickLesson").value;
+  if (!subj || isNaN(grade) || !lc) return null;
+  return phieuLibEntries.filter(e => e.subjectCode === subj && e.grade === grade && e.lessonCode === lc);
+}
+function renderPhieuPanel(){
+  const st = $("phieuStatus"), list = $("phieuList");
+  if (!st || !list) return;
+  if (phieuLibState === "loading"){ st.textContent = "⏳ Đang tải kho phiếu học tập…"; list.innerHTML = ""; return; }
+  if (phieuLibState === "error"){
+    st.innerHTML = "⚠️ <b>Không tải được kho phiếu học tập</b> (phieu-lib). Kiểm tra mạng rồi thử lại. <button class=\"btn mini\" id=\"phieuRetryBtn\" type=\"button\">↻ Thử lại</button>";
+    const rb = $("phieuRetryBtn");
+    if (rb) rb.addEventListener("click", () => { phieuLibState = "idle"; loadPhieuLib(); });
+    list.innerHTML = ""; return;
+  }
+  if (phieuLibState !== "ready"){ st.textContent = "⏳ Chuẩn bị tải kho phiếu…"; return; }
+  if (mode === "story"){
+    st.textContent = "📋 Chế độ phiếu học tập dùng bộ chọn bài ở thẻ 📌 Theo Tên Bài — thầy chuyển sang thẻ đó để chọn bài và xem phiếu của bài.";
+    list.innerHTML = ""; return;
+  }
+  const items = phieuForCurrentLesson();
+  if (!items){
+    st.textContent = "👆 Thầy chọn Môn → Khối → Bài ở bộ chọn \"Bài mẫu trong kho SGK\" phía trên, app sẽ liệt kê phiếu học tập của đúng bài đó.";
+    list.innerHTML = ""; return;
+  }
+  if (!items.length){
+    st.textContent = "Bài này hiện chưa có phiếu học tập nào trong kho phiếu.";
+    list.innerHTML = ""; return;
+  }
+  const readyN = items.filter(phieuSelectable).length;
+  st.innerHTML = "Bài này có <b>" + items.length + " phiếu</b> — <b>" + readyN + " phiếu sẵn sàng dựng video</b>" +
+    (readyN < items.length ? ", " + (items.length - readyN) + " phiếu chưa dựng được (ghi rõ lý do từng phiếu)." : ".");
+  list.innerHTML = "";
+  items.forEach(e => {
+    const d = document.createElement("div");
+    const ok = phieuSelectable(e);
+    d.className = "phieu-item" + (ok ? "" : " dim");
+    let inner = "<b>" + escapeHtml(e.tieuDePhieu || e.id) + "</b>" +
+      '<div class="small" style="margin-top:3px">Loại: ' + escapeHtml(e.loai || "") + " • Số ô điền: " + (e.soO || 0) + " ô • " + (e.soO + 3) + " cảnh video</div>";
+    if (ok){
+      inner += '<div style="margin-top:8px"><button class="btn mini" type="button">✔ Chọn phiếu này để dựng video</button></div>';
+      d.innerHTML = inner;
+      d.querySelector("button").addEventListener("click", () => selectPhieu(e));
+    } else {
+      inner += '<div class="small" style="margin-top:5px;color:#ffe9a8">⛔ Chưa dựng được: ' + escapeHtml(phieuBlockReason(e)) + "</div>";
+      d.innerHTML = inner;
+    }
+    list.appendChild(d);
+  });
+}
+async function selectPhieu(entry){
+  phieuSelected = entry; phieuData = null;
+  const pv = $("phieuPreview");
+  pv.classList.remove("hidden");
+  pv.innerHTML = '<div class="small">⏳ Đang tải dữ liệu phiếu…</div>';
+  try {
+    const res = await fetch("../phieu-lib/" + entry.file, { cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    phieuData = await res.json();
+  } catch (e) {
+    pv.innerHTML = '<div class="warn">⚠️ Không tải được dữ liệu phiếu (' + escapeHtml(e.message) + "). Thầy thử lại.</div>";
+    return;
+  }
+  renderPhieuPreview();
+}
+function renderPhieuPreview(){
+  const pv = $("phieuPreview");
+  if (!pv || !phieuSelected || !phieuData) return;
+  const e = phieuSelected, d = phieuData;
+  const os = (d.cacO || []).slice().sort((a, b) => a.so - b.so);
+  let h = '<div style="font-weight:700;font-size:16px">📋 ' + escapeHtml(e.tieuDePhieu || "") + "</div>";
+  h += '<div class="small" style="margin-top:4px">Bài: <b>' + escapeHtml(e.tenBai || d.bai || "") + "</b> • " + os.length +
+    " ô điền → video " + (os.length + 3) + " cảnh (mở phiếu câm → điền từng ô → bảng đáp án GV → QR bài tập). Đáp án lấy nguyên văn từ giáo án, AI không sửa.</div>";
+  h += '<div style="margin-top:8px">';
+  os.forEach(o => {
+    const da = String(o.dapAn || "");
+    h += '<div class="small" style="padding:3px 0;border-bottom:1px dashed rgba(255,255,255,.08)">Ô <b>' + o.so + "</b> — " +
+      escapeHtml(o.tieuChi || "") + " · " + escapeHtml(o.cot || "") + ": " + escapeHtml(da.length > 110 ? da.slice(0, 110) + "…" : da) + "</div>";
+  });
+  h += "</div>";
+  h += '<div class="row" style="margin-top:12px">' +
+    '<button class="btn-accent" id="phieuBuildBtn" type="button" style="flex:2;padding:13px;font-size:17px">▶ DỰNG VIDEO PHIẾU NÀY</button>' +
+    '<button class="btn shrink" id="phieuYtBtn" type="button">📝 Tạo sẵn mô tả YouTube</button></div>';
+  h += '<div id="phieuYtBox" class="hidden" style="margin-top:10px"></div>';
+  pv.innerHTML = h;
+  pv.classList.remove("hidden");
+  $("phieuBuildBtn").addEventListener("click", preparePhieuScript);
+  $("phieuYtBtn").addEventListener("click", fillPhieuYt);
+}
+function fillPhieuYt(){
+  const box = $("phieuYtBox");
+  if (!box || !phieuSelected || !phieuData) return;
+  const url = buildExerciseUrl(phieuSelected.id, location.href);
+  const yt = buildYoutubeDesc(phieuSelected, phieuData, url);
+  box.innerHTML = '<label>Tiêu đề video gợi ý</label><input type="text" id="phieuYtTitle" readonly>' +
+    '<label style="margin-top:8px">Mô tả — dán vào phần mô tả khi đăng YouTube (link bài tập đã nằm sẵn trong mô tả)</label>' +
+    '<textarea id="phieuYtDesc" rows="9" readonly></textarea>' +
+    '<div style="margin-top:8px"><button class="btn mini" id="phieuYtCopy" type="button">📋 Sao chép tiêu đề + mô tả</button> <span class="small" id="phieuYtMsg"></span></div>';
+  box.classList.remove("hidden");
+  $("phieuYtTitle").value = yt.title;
+  $("phieuYtDesc").value = yt.desc;
+  $("phieuYtCopy").addEventListener("click", async () => {
+    const txt = yt.title + "\n\n" + yt.desc;
+    try { await navigator.clipboard.writeText(txt); $("phieuYtMsg").textContent = "✔ Đã sao chép — thầy dán vào YouTube khi đăng video."; }
+    catch (e) { $("phieuYtMsg").textContent = "Trình duyệt không cho sao chép tự động — thầy bôi đen 2 ô trên rồi copy tay."; }
+  });
+}
+/* Sinh kịch bản phiếu → đưa vào ĐÚNG pipeline duyệt + dựng hiện có. */
+function preparePhieuScript(){
+  if (!phieuSelected || !phieuData || building) return;
+  if (!getKey()){
+    showErr("inputError", "Hồ key đang rỗng. Video phiếu vẫn cần key để thu giọng đọc — thầy tạo key miễn phí theo 3 bước ở mục 1 đầu trang, dán vào rồi bấm Lưu Hồ Key.");
+    $("keyGuide").open = true;
+    $("keyCard").scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+  demoMode = false;
+  const segs = buildPhieuScenes(phieuSelected, phieuData, { instr: $("teacherInstr").value, baseHref: location.href });
+  scriptData = {
+    title: "Video phiếu học tập — " + (phieuSelected.tenBai || phieuData.bai || ""),
+    subject: SUBJECT_NAMES[phieuSelected.subjectCode] || "",
+    grade: String(phieuSelected.grade || ""),
+    segments: segs,
+    _mode: "phieu",
+    _phieu: { id: phieuSelected.id, tenBai: phieuSelected.tenBai || "", tieuDePhieu: phieuSelected.tieuDePhieu || "", soO: phieuSelected.soO || segs.length - 3 },
+    _picked: pickedLesson ? {
+      subjectCode: pickedLesson.subjectCode, subjectName: pickedLesson.subjectName,
+      grade: pickedLesson.grade, lessonNo: pickedLesson.lessonNo,
+      lessonCode: pickedLesson.lessonCode, topic: pickedLesson.topic, count: pickedLesson.count
+    } : null
+  };
+  phieuBuildCtx = { entry: phieuSelected, data: phieuData };
+  assets = {}; audios = {};
+  $("inputError").innerHTML = "";
+  $("progressNote").textContent = "— CHẾ ĐỘ PHIẾU HỌC TẬP (kịch bản sinh thẳng từ kho phiếu, đáp án nguyên văn — không qua AI viết kịch bản)";
+  $("progressCard").classList.remove("hidden");
+  $("resultCard").classList.add("hidden");
+  $("renderCard").classList.add("hidden");
+  $("assetBox").classList.add("hidden");
+  $("buildLog").innerHTML = "";
+  resetSteps(); setStep(1, "done");
+  renderScriptReview();
+}
+/* Bấm TẠO VIDEO khi đang ở loại Phiếu Học Tập → đi đường phiếu. */
+async function routePhieuCreate(){
+  if (phieuSelected && phieuData){ preparePhieuScript(); return; }
+  showErr("inputError", "Thầy chọn 1 phiếu SẴN SÀNG trong mục 📋 Phiếu Học Tập (theo bài đã chọn ở bộ chọn phía trên) rồi bấm nút \"Chọn phiếu này\" trước đã.");
+  const p = $("phieuPanel");
+  if (p) p.scrollIntoView({ behavior: "smooth", block: "start" });
+  if (phieuLibState === "idle") loadPhieuLib(); else renderPhieuPanel();
+}
+function syncPhieuPanel(){
+  const panel = $("phieuPanel");
+  if (!panel) return;
+  const on = videoType === "phieu";
+  panel.classList.toggle("hidden", !on);
+  if (on){
+    if (phieuLibState === "idle") loadPhieuLib();
+    else renderPhieuPanel();
+  }
+}
+function initPhieu(){
+  document.querySelectorAll(".type-chip").forEach(c =>
+    c.addEventListener("click", () => setTimeout(syncPhieuPanel, 0)));
+  ["tabName", "tabStory"].forEach(id => $(id).addEventListener("click", () => {
+    if (videoType === "phieu") setTimeout(renderPhieuPanel, 0);
+  }));
+  ["pickSubject", "pickGrade", "pickLesson"].forEach(id =>
+    $(id).addEventListener("change", () => { if (videoType === "phieu") renderPhieuPanel(); }));
+  syncPhieuPanel();
+}
+
 function drawSlide(ctx, sg, asset, t){
+  if (sg.type === "phieu") { drawPhieuScene(ctx, sg); return; }
   if (sg.type === "image" || sg.type === "sgk") drawImageSlide(ctx, sg, asset, t || 0);
   else if (sg.type === "diagram") drawDiagram(ctx, sg);
   else if (sg.type === "table") drawTable(ctx, sg);
@@ -2508,7 +3257,11 @@ function recordVideo(){
     const segs = scriptData.segments;
     const durations = segs.map((sg, i) => {
       const a = audios[i];
-      return (a && a.status === "ok" && a.buffer) ? a.buffer.duration : NO_AUDIO_SECONDS;
+      if (a && a.status === "ok" && a.buffer) return a.buffer.duration;
+      /* Cảnh phiếu học tập không có tiếng: đứng theo độ dài lời đọc của
+         chính cảnh đó (sg.noAudioSec). Đoạn thường không có trường này
+         nên vẫn giữ NO_AUDIO_SECONDS như cũ — luồng cũ không đổi. */
+      return sg.noAudioSec ? sg.noAudioSec : NO_AUDIO_SECONDS;
     });
     const total = durations.reduce((s, d) => s + d, 0);
     const actx = audioCtx();
@@ -2568,6 +3321,9 @@ function slugPascal(s, maxLen){
   return out;
 }
 function buildDownloadName(sd, ext){
+  if (sd && sd._phieu) {
+    return "Video_PhieuHocTap_" + (slugPascal(sd._phieu.tenBai || sd.title || "", 56) || "Phieu") + ext;
+  }
   if (sd && sd._picked) {
     const p = sd._picked;
     return "Video_" + (slugPascal(p.subjectName || "", 24) || "MonHoc") + "_Lop" + p.grade + "_Bai" + p.lessonNo + "_" + (slugPascal(p.topic || sd.title || "", 60) || "BaiHoc") + ext;
@@ -2708,6 +3464,7 @@ $("buildBtn").addEventListener("click", buildVideo);
 $("createBtn").addEventListener("click", async () => {
   if (building) return;
   $("inputError").innerHTML = "";
+  if (videoType === "phieu") { await routePhieuCreate(); return; }
   if (!getKey()) {
     showErr("inputError", "Hồ key đang rỗng. Thầy tạo key miễn phí theo 3 bước ở mục 1 đầu trang, dán vào (mỗi key 1 dòng) rồi bấm Lưu Hồ Key.");
     $("keyGuide").open = true;
@@ -2799,6 +3556,7 @@ try { refreshDurUI(); } catch (e) {}
 try { renderLessonOptions(); renderPickStatus(); } catch (e) {}
 try { idbLoadAll(); } catch (e) {}
 try { loadOnlineLib(); } catch (e) {}
+try { initPhieu(); } catch (e) {}
 </script>
 </body>
 </html>
