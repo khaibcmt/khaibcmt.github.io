@@ -1,0 +1,138 @@
+{
+ "bai": "MỞ RỘNG HỌC THUYẾT MENDEL — Sinh học 12",
+ "fileNguon": "Sinh học/Khối 12/Giáo án/HK1/KHBD_Sinh_hoc_12_Bai_9_Mo_rong_hoc_thuyet_Mendel_2_tiet.docx",
+ "cauHoiPhieu": "Nhiệm vụ: Các nhóm hoàn thành ba bảng sau trong quá trình học tập, sau đó trình bày trước lớp. Bảng A. So sánh các kiểu tương tác giữa các allele thuộc cùng một gene",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Kiểu hình của allele trội (giống thể đồng hợp trội)",
+   "tieuChi": "Trội hoàn toàn",
+   "cot": "Biểu hiện ở thể dị hợp",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Hoa đỏ (AA) × hoa trắng (aa) ở đậu Hà Lan: F1 toàn hoa đỏ; F2 phân li 3 hoa đỏ : 1 hoa trắng",
+   "tieuChi": "Trội hoàn toàn",
+   "cot": "Ví dụ và tỉ lệ phân li ở F2",
+   "hang": 1,
+   "cotSo": 2,
+   "cotPhu": true
+  },
+  {
+   "so": 3,
+   "dapAn": "Kiểu hình trung gian giữa hai thể đồng hợp",
+   "tieuChi": "Trội không hoàn toàn",
+   "cot": "Biểu hiện ở thể dị hợp",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Hoa mõm chó đỏ (AA) × trắng (aa): F1 toàn hoa hồng; F2 phân li 1 đỏ : 2 hồng : 1 trắng",
+   "tieuChi": "Trội không hoàn toàn",
+   "cot": "Ví dụ và tỉ lệ phân li ở F2",
+   "hang": 2,
+   "cotSo": 2,
+   "cotPhu": true
+  },
+  {
+   "so": 5,
+   "dapAn": "Cả hai allele đều biểu hiện kiểu hình riêng",
+   "tieuChi": "Đồng trội",
+   "cot": "Biểu hiện ở thể dị hợp",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 6,
+   "dapAn": "Nhóm máu ABO: người có kiểu gene IAIB có cả kháng nguyên A và B, nhóm máu AB",
+   "tieuChi": "Đồng trội",
+   "cot": "Ví dụ và tỉ lệ phân li ở F2",
+   "hang": 3,
+   "cotSo": 2,
+   "cotPhu": true
+  },
+  {
+   "so": 7,
+   "dapAn": "Cá thể mang allele gây chết ở trạng thái đồng hợp bị chết",
+   "tieuChi": "Allele gây chết",
+   "cot": "Biểu hiện ở thể dị hợp",
+   "hang": 4,
+   "cotSo": 1
+  },
+  {
+   "so": 8,
+   "dapAn": "Chuột Ay a × Ay a: tỉ lệ kiểu hình 2 lông vàng : 1 lông đen (AyAy chết ở giai đoạn phôi)",
+   "tieuChi": "Allele gây chết",
+   "cot": "Ví dụ và tỉ lệ phân li ở F2",
+   "hang": 4,
+   "cotSo": 2,
+   "cotPhu": true
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Kiểu tương tác",
+   "Biểu hiện ở thể dị hợp",
+   "Ví dụ và tỉ lệ phân li ở F2"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Trội hoàn toàn",
+    "cacCot": [
+     {
+      "cot": "Biểu hiện ở thể dị hợp",
+      "noiDung": "Kiểu hình của allele trội (giống thể đồng hợp trội)"
+     },
+     {
+      "cot": "Ví dụ và tỉ lệ phân li ở F2",
+      "noiDung": "Hoa đỏ (AA) × hoa trắng (aa) ở đậu Hà Lan: F1 toàn hoa đỏ; F2 phân li 3 hoa đỏ : 1 hoa trắng"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Trội không hoàn toàn",
+    "cacCot": [
+     {
+      "cot": "Biểu hiện ở thể dị hợp",
+      "noiDung": "Kiểu hình trung gian giữa hai thể đồng hợp"
+     },
+     {
+      "cot": "Ví dụ và tỉ lệ phân li ở F2",
+      "noiDung": "Hoa mõm chó đỏ (AA) × trắng (aa): F1 toàn hoa hồng; F2 phân li 1 đỏ : 2 hồng : 1 trắng"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Đồng trội",
+    "cacCot": [
+     {
+      "cot": "Biểu hiện ở thể dị hợp",
+      "noiDung": "Cả hai allele đều biểu hiện kiểu hình riêng"
+     },
+     {
+      "cot": "Ví dụ và tỉ lệ phân li ở F2",
+      "noiDung": "Nhóm máu ABO: người có kiểu gene IAIB có cả kháng nguyên A và B, nhóm máu AB"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Allele gây chết",
+    "cacCot": [
+     {
+      "cot": "Biểu hiện ở thể dị hợp",
+      "noiDung": "Cá thể mang allele gây chết ở trạng thái đồng hợp bị chết"
+     },
+     {
+      "cot": "Ví dụ và tỉ lệ phân li ở F2",
+      "noiDung": "Chuột Ay a × Ay a: tỉ lệ kiểu hình 2 lông vàng : 1 lông đen (AyAy chết ở giai đoạn phôi)"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
