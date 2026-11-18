@@ -1,0 +1,134 @@
+{
+ "bai": "BÀI MỞ ĐẦU — Công nghệ nông nghiệp 12",
+ "fileNguon": "Công nghệ nông nghiệp/Khối 12/Giáo án/Chuyên đề/CN12-CD-B01_Bai_mo_dau.docx",
+ "cauHoiPhieu": "PHIẾU HỌC TẬP — BÀI 1: BÀI MỞ ĐẦU Họ và tên: ………………………………………… Lớp: ………… Nhóm: …………",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Mục I.2 – Chọn, tạo giống",
+   "tieuChi": "1",
+   "cot": "Mục / nội dung",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Vì sao ứng dụng công nghệ sinh học giúp rút ngắn thời gian chọn, tạo giống đồng thời tạo ra giống mới có nhiều ưu điểm vượt trội về năng suất, chất lượng và khả năng chống chịu? Kể tên ít nhất hai giống cây lâm nghiệp được tạo ra nhờ công nghệ sinh học.",
+   "tieuChi": "1",
+   "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+   "hang": 1,
+   "cotSo": 2
+  },
+  {
+   "so": 3,
+   "dapAn": "Mục I.3 – Nhân giống",
+   "tieuChi": "2",
+   "cot": "Mục / nội dung",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Vì sao nuôi cấy mô tế bào lại có vai trò tạo ra cây giống khoẻ mạnh, đồng đều và sạch bệnh? Nêu các loài cây lâm nghiệp đã được nhân giống thành công bằng công nghệ này.",
+   "tieuChi": "2",
+   "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+   "hang": 2,
+   "cotSo": 2
+  },
+  {
+   "so": 5,
+   "dapAn": "Mục I.5 – Mã vạch DNA",
+   "tieuChi": "3",
+   "cot": "Mục / nội dung",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 6,
+   "dapAn": "Mã vạch DNA là gì? Nêu vai trò của mã vạch DNA trong bảo tồn, quản lí tài nguyên rừng và ví dụ về các loài đã được xây dựng mã vạch DNA.",
+   "tieuChi": "3",
+   "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+   "hang": 3,
+   "cotSo": 2
+  },
+  {
+   "so": 7,
+   "dapAn": "Mục II – Triển vọng",
+   "tieuChi": "4",
+   "cot": "Mục / nội dung",
+   "hang": 4,
+   "cotSo": 1
+  },
+  {
+   "so": 8,
+   "dapAn": "Đánh giá triển vọng của công nghệ sinh học trong lâm nghiệp theo bốn hướng chủ yếu; hướng nào em cho là quan trọng nhất với địa phương em? Vì sao?",
+   "tieuChi": "4",
+   "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+   "hang": 4,
+   "cotSo": 2
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "STT",
+   "Mục / nội dung",
+   "Câu hỏi khám phá và nội dung cần hoàn thành"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "1",
+    "cacCot": [
+     {
+      "cot": "Mục / nội dung",
+      "noiDung": "Mục I.2 – Chọn, tạo giống"
+     },
+     {
+      "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+      "noiDung": "Vì sao ứng dụng công nghệ sinh học giúp rút ngắn thời gian chọn, tạo giống đồng thời tạo ra giống mới có nhiều ưu điểm vượt trội về năng suất, chất lượng và khả năng chống chịu? Kể tên ít nhất hai giống cây lâm nghiệp được tạo ra nhờ công nghệ sinh học."
+     }
+    ]
+   },
+   {
+    "tieuChi": "2",
+    "cacCot": [
+     {
+      "cot": "Mục / nội dung",
+      "noiDung": "Mục I.3 – Nhân giống"
+     },
+     {
+      "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+      "noiDung": "Vì sao nuôi cấy mô tế bào lại có vai trò tạo ra cây giống khoẻ mạnh, đồng đều và sạch bệnh? Nêu các loài cây lâm nghiệp đã được nhân giống thành công bằng công nghệ này."
+     }
+    ]
+   },
+   {
+    "tieuChi": "3",
+    "cacCot": [
+     {
+      "cot": "Mục / nội dung",
+      "noiDung": "Mục I.5 – Mã vạch DNA"
+     },
+     {
+      "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+      "noiDung": "Mã vạch DNA là gì? Nêu vai trò của mã vạch DNA trong bảo tồn, quản lí tài nguyên rừng và ví dụ về các loài đã được xây dựng mã vạch DNA."
+     }
+    ]
+   },
+   {
+    "tieuChi": "4",
+    "cacCot": [
+     {
+      "cot": "Mục / nội dung",
+      "noiDung": "Mục II – Triển vọng"
+     },
+     {
+      "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+      "noiDung": "Đánh giá triển vọng của công nghệ sinh học trong lâm nghiệp theo bốn hướng chủ yếu; hướng nào em cho là quan trọng nhất với địa phương em? Vì sao?"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
