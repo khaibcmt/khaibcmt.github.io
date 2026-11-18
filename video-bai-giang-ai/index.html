@@ -105,6 +105,46 @@
   .obadge{display:inline-block;background:#123c5f;color:#c4e4ff;border-radius:6px;padding:2px 8px;font-size:12.5px;font-weight:700;margin-left:6px}
   .phieu-item{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:10px;background:var(--panel)}
   .phieu-item.dim{opacity:.6}
+  /* ===== Trang bài tập tương tác (?bt=) — giao diện HỌC SINH, mobile là chính ===== */
+  .bt-wrap{max-width:860px;margin:0 auto;padding:14px 12px 56px}
+  .bt-head{text-align:center;padding:10px 0 2px}
+  .bt-head h1{font-size:25px;margin:0}
+  .bt-head .bt-sub{margin-top:6px}
+  .bt-title{font-size:19px;font-weight:700;color:var(--accent);margin-top:14px;line-height:1.4}
+  .bt-sub{color:var(--muted);font-size:15px;margin-top:5px;line-height:1.55}
+  .bt-yt{position:relative;padding-top:56.25%;border-radius:12px;overflow:hidden;border:1px solid var(--line);margin-top:14px;background:#000}
+  .bt-yt iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .bt-sec{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:16px}
+  .bt-sec h2{margin:0 0 6px;font-size:18px;color:var(--accent)}
+  .bt-hint{font-size:14px;color:var(--muted);line-height:1.5;margin:2px 0 10px}
+  .bt-tablewrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  table.bt-table{border-collapse:collapse;width:100%;min-width:520px;background:var(--panel2)}
+  .bt-table th,.bt-table td{border:1px solid var(--line);padding:9px 10px;font-size:14.5px;line-height:1.45;vertical-align:top;text-align:left}
+  .bt-table th{background:#14532d;color:#eafff2;font-size:14px}
+  .bt-table td.bt-label{font-weight:700;color:var(--accent)}
+  td.bt-cell{position:relative;min-width:128px}
+  td.bt-cell .bt-num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#20301f;font-weight:800;font-size:14px;margin-bottom:6px}
+  td.bt-cell.bt-ok{background:#14532d;box-shadow:inset 0 0 0 2px var(--green)}
+  td.bt-cell.bt-bad{background:#5f1d1d;box-shadow:inset 0 0 0 2px var(--red)}
+  td.bt-cell.bt-hover{box-shadow:inset 0 0 0 3px var(--accent)}
+  .bt-correct{margin-top:8px;font-size:13.5px;line-height:1.45;color:#ffd7d7;border-top:1px dashed rgba(255,255,255,.25);padding-top:6px}
+  .bt-correct b{color:#b6ffd2}
+  .bt-tray{display:flex;flex-direction:column;gap:9px;margin-top:12px}
+  .bt-card{background:#123c5f;border:1.5px solid var(--blue);color:#eaf6ff;border-radius:11px;padding:11px 13px;font-size:15px;line-height:1.45;cursor:pointer;touch-action:none;user-select:none;-webkit-user-select:none;min-height:44px;word-break:break-word}
+  .bt-card.sel{border-color:var(--accent);background:#5b4a00;color:#fff7d6;box-shadow:0 0 0 2px var(--accent)}
+  .bt-card.incell{background:#0f5132;border-color:var(--green);margin:0}
+  .bt-card.dragging{opacity:.35}
+  .bt-ghost{position:fixed;z-index:9999;pointer-events:none;opacity:.95;box-shadow:0 10px 28px rgba(0,0,0,.5)}
+  .bt-q{border:1px solid var(--line);border-radius:12px;padding:12px 13px;margin-top:11px;background:var(--panel2)}
+  .bt-q .bt-qt{font-weight:700;font-size:15.5px;line-height:1.5}
+  .bt-opt{display:block;width:100%;text-align:left;margin-top:8px;background:var(--panel);color:var(--txt);border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;font-size:15px;line-height:1.45;min-height:44px;cursor:pointer}
+  .bt-opt.sel{border-color:var(--accent);background:#5b4a00}
+  .bt-opt.ok{border-color:var(--green);background:#14532d}
+  .bt-opt.bad{border-color:var(--red);background:#5f1d1d}
+  .bt-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+  .bt-result{border-radius:12px;padding:14px 16px;margin-top:16px;font-size:16px;line-height:1.6;display:none}
+  .bt-result.show{display:block}
+  .bt-msg{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:24px 18px;margin-top:26px;font-size:16.5px;line-height:1.65;text-align:center}
 </style>
 </head>
 <body>
@@ -321,6 +361,18 @@
   </div>
 
   <div class="small" style="text-align:center;margin-top:22px;color:#7fae95">Video Bài Giảng AI — chạy hoàn toàn trong trình duyệt bằng Gemini API key miễn phí của chính thầy.</div>
+</div>
+
+<!-- ===== TRANG BÀI TẬP TƯƠNG TÁC CHO HỌC SINH (?bt=<id phiếu>) — chỉ hiện khi link có ?bt= ===== -->
+<div id="btRoot" class="hidden">
+  <div class="bt-wrap">
+    <div class="bt-head">
+      <h1>📋 Bài Tập Tương Tác</h1>
+      <p class="bt-sub">Xem video xong, làm bài tập này để kiểm tra mức độ hiểu bài nhé!</p>
+    </div>
+    <div id="btMain"></div>
+    <div class="small" style="text-align:center;margin-top:22px;color:#7fae95">Bài tập tương tác — Video Bài Giảng AI</div>
+  </div>
 </div>
 
 <script>
@@ -2598,6 +2650,446 @@ function buildYoutubeDesc(entry, data, url){
 }
 /*__END_PURE_PHIEU__*/
 
+/*__PURE_BT__*/
+/* ============================================================
+   GIAI ĐOẠN 3 — Logic THUẦN của trang BÀI TẬP TƯƠNG TÁC (?bt=).
+   Mọi hàm ở đây không chạm DOM/mạng để test Node trích khối chạy
+   độc lập. Dữ liệu lấy từ chính phiếu (phieu-lib) — TUYỆT ĐỐI
+   không bịa nội dung ngoài phiếu.
+   ============================================================ */
+/* Tách ID video YouTube từ: ID trần (11 ký tự), link watch?v=,
+   youtu.be/, embed/, shorts/, live/. Không phải link YouTube → "". */
+function btExtractYoutubeId(input){
+  const s = String(input == null ? "" : input).trim();
+  if (!s) return "";
+  if (/^[A-Za-z0-9_-]{11}$/.test(s)) return s;
+  const pats = [
+    /[?&]v=([A-Za-z0-9_-]{11})(?![A-Za-z0-9_-])/,
+    /youtu\.be\/([A-Za-z0-9_-]{11})(?![A-Za-z0-9_-])/,
+    /\/(?:embed|shorts|live|v)\/([A-Za-z0-9_-]{11})(?![A-Za-z0-9_-])/
+  ];
+  for (let i = 0; i < pats.length; i++){
+    const m = s.match(pats[i]);
+    if (m) return m[1];
+  }
+  return "";
+}
+/* Đọc tham số link bài tập: ?bt=<id phiếu>&yt=<id/link YouTube>. */
+function btParseParams(search){
+  let qs = String(search == null ? "" : search);
+  if (qs.charAt(0) === "?") qs = qs.slice(1);
+  const p = new URLSearchParams(qs);
+  return {
+    bt: String(p.get("bt") || "").trim(),
+    yt: btExtractYoutubeId(p.get("yt") || "")
+  };
+}
+/* Link bài tập đầy đủ: link ?bt= của giai đoạn 2 + &yt= khi đã có video. */
+function btBuildUrl(id, ytInput, baseHref){
+  let url = buildExerciseUrl(id, baseHref);
+  const yt = btExtractYoutubeId(ytInput || "");
+  if (yt) url += "&yt=" + yt;
+  return url;
+}
+function btFindEntry(entries, id){
+  if (!Array.isArray(entries) || !id) return null;
+  for (let i = 0; i < entries.length; i++){
+    if (entries[i] && entries[i].id === id) return entries[i];
+  }
+  return null;
+}
+function btNormText(s){
+  return String(s == null ? "" : s).replace(/\s+/g, " ").trim();
+}
+/* Cắt chữ HIỂN THỊ (khung hẹp trên điện thoại) — chấm điểm luôn dùng
+   nguyên văn, không dùng bản cắt này. */
+function btShortText(s, max){
+  const t = btNormText(s);
+  const m = Math.max(10, max || 140);
+  if (t.length <= m) return t;
+  return t.slice(0, m - 1).replace(/\s+$/, "") + "…";
+}
+/* Lưới ô của trang bài tập, suy từ bangDapAnGV + cacO — cùng cách dựng
+   với phieuGridOf của video: cột 0 = nhãn hàng; ô có trong cacO là ô
+   ĐÍCH (học sinh phải điền), ô còn lại là ô CHO SẴN in sẵn. */
+function btBuildGrid(data){
+  const gv = (data && data.bangDapAnGV) || { tieuDeCot: [], cacHang: [] };
+  const headers = (gv.tieuDeCot || []).slice();
+  const blank = {};
+  ((data && data.cacO) || []).forEach(o => { blank[o.hang + "|" + o.cotSo] = o; });
+  const rows = (gv.cacHang || []).map((row, r) => {
+    const cotList = row.cacCot || [];
+    const nData = Math.max(headers.length - 1, cotList.length);
+    const cells = [{ kind: "label", text: String(row.tieuChi || "") }];
+    for (let ci = 0; ci < nData; ci++){
+      const c = ci + 1;
+      const cell = cotList[ci] || { cot: "", noiDung: "" };
+      const o = blank[(r + 1) + "|" + c];
+      if (o) cells.push({ kind: "target", so: o.so, dapAn: String(o.dapAn || ""), tieuChi: String(o.tieuChi || row.tieuChi || ""), cot: String(o.cot || cell.cot || "") });
+      else cells.push({ kind: "given", text: String(cell.noiDung || "") });
+    }
+    return { label: String(row.tieuChi || ""), cells: cells };
+  });
+  return { headers: headers, rows: rows };
+}
+function btShuffle(arr, rng){
+  const a = (arr || []).slice();
+  const rnd = typeof rng === "function" ? rng : Math.random;
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(rnd() * (i + 1));
+    const t = a[i]; a[i] = a[j]; a[j] = t;
+  }
+  return a;
+}
+/* Khay thẻ đáp án: mỗi ô 1 thẻ (đáp án nguyên văn), xáo trộn. */
+function btMakeCards(data, rng){
+  const os = ((data && data.cacO) || []).slice().sort((a, b) => a.so - b.so);
+  const cards = os.map(o => ({ cardId: "c" + o.so, so: o.so, text: String(o.dapAn || "") }));
+  return btShuffle(cards, rng);
+}
+/* Chấm Phần 1. placements: {soÔ: cardId}. Một thẻ tính ĐÚNG khi nội dung
+   của nó trùng đáp án của ô (so chữ đã chuẩn hoá) — nếu 2 ô có đáp án
+   giống hệt nhau thì đặt thẻ nào trong 2 thẻ đó cũng đúng, công bằng
+   với học sinh vì 2 thẻ trông y hệt nhau. */
+function btGradePlacement(data, cards, placements){
+  const byId = {};
+  (cards || []).forEach(c => { byId[c.cardId] = c; });
+  const os = (data && data.cacO) || [];
+  const perSo = {};
+  let correct = 0;
+  os.forEach(o => {
+    const cid = placements ? placements[o.so] : null;
+    const card = cid ? byId[cid] : null;
+    const okCell = !!card && btNormText(card.text) === btNormText(o.dapAn);
+    perSo[o.so] = okCell;
+    if (okCell) correct++;
+  });
+  return { correct: correct, total: os.length, perSo: perSo };
+}
+/* Chọn k vị trí rải đều trong n vị trí (đầu, cuối và các điểm chia đều). */
+function btPickSpread(n, k){
+  if (n <= 0 || k <= 0) return [];
+  if (n <= k){ const a = []; for (let i = 0; i < n; i++) a.push(i); return a; }
+  if (k === 1) return [0];
+  const idx = [];
+  for (let i = 0; i < k; i++) idx.push(Math.round(i * (n - 1) / (k - 1)));
+  return Array.from(new Set(idx));
+}
+/* Phần 2 — câu hỏi nhanh sinh TỰ ĐỘNG từ chính dữ liệu phiếu: tối đa
+   maxQ ô chọn rải đều; phương án nhiễu là đáp án của các Ô KHÁC trong
+   cùng phiếu (khác nội dung đáp án đúng, không trùng nhau). Ô nào
+   không có phương án nhiễu khả thi thì bỏ qua. */
+function btMakeQuickQuestions(data, maxQ, rng){
+  const os = ((data && data.cacO) || []).slice().sort((a, b) => a.so - b.so);
+  const limit = Math.max(0, Math.min(maxQ == null ? 4 : maxQ, 4));
+  const picks = btPickSpread(os.length, limit);
+  const qs = [];
+  picks.forEach(pi => {
+    const o = os[pi];
+    const correctText = String(o.dapAn || "");
+    const seen = new Set([btNormText(correctText)]);
+    const pool = [];
+    os.forEach(x => {
+      if (x.so === o.so) return;
+      const t = String(x.dapAn || "");
+      const nt = btNormText(t);
+      if (!nt || seen.has(nt)) return;
+      seen.add(nt);
+      pool.push(t);
+    });
+    if (!pool.length) return;
+    const distract = btShuffle(pool, rng).slice(0, 3);
+    const options = btShuffle(
+      [{ text: correctText, correct: true }].concat(distract.map(t => ({ text: t, correct: false }))), rng);
+    qs.push({
+      so: o.so,
+      tieuChi: String(o.tieuChi || ""),
+      cot: String(o.cot || ""),
+      question: "Nội dung nào đúng cho " + (o.tieuChi || "") + " — " + (o.cot || "") + "?",
+      options: options,
+      correctIndex: options.findIndex(x => x.correct),
+      correctText: correctText
+    });
+  });
+  return qs;
+}
+/* Chấm Phần 2. chosen: {thứ tự câu: thứ tự phương án đã chọn}. */
+function btGradeQuick(questions, chosen){
+  let correct = 0;
+  (questions || []).forEach((q, i) => {
+    if (chosen && chosen[i] === q.correctIndex) correct++;
+  });
+  return { correct: correct, total: (questions || []).length };
+}
+/*__END_PURE_BT__*/
+/* ---------- Trang BÀI TẬP TƯƠNG TÁC cho học sinh (?bt=<id phiếu>) ----------
+   Học sinh mở link trong mô tả YouTube / quét QR ở cuối video → app chuyển
+   hẳn sang giao diện học sinh gọn: (tuỳ chọn) video nhúng + kéo/thả thẻ đáp
+   án vào ô số + câu hỏi nhanh sinh từ chính dữ liệu phiếu + chấm tại chỗ.
+   Điểm KHÔNG lưu đi đâu cả — làm tại chỗ để ôn tập. */
+let btCtx = null;   // {entry, data, yt, cards, placements, chosen, selected, graded, questions, suppressClick}
+function btShowMsg(html, retryFn){
+  const main = $("btMain");
+  if (!main) return;
+  main.innerHTML = '<div class="bt-msg">' + html + "</div>";
+  if (retryFn){
+    const b = main.querySelector("#btRetryBtn");
+    if (b) b.addEventListener("click", retryFn);
+  }
+}
+function initBaiTap(){
+  const prm = btParseParams(location.search);
+  if (!prm.bt) return;
+  const wrap = document.querySelector(".wrap");
+  if (wrap) wrap.classList.add("hidden");
+  const root = $("btRoot");
+  if (root) root.classList.remove("hidden");
+  document.title = "📋 Bài tập tương tác";
+  loadBaiTap(prm);
+}
+async function loadBaiTap(prm){
+  btShowMsg("⏳ Đang tải bài tập, em chờ một chút nhé…");
+  try {
+    const res = await fetch("../phieu-lib/manifest.json", { cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const man = await res.json();
+    if (!man || !Array.isArray(man.entries)) throw new Error("manifest phiếu không hợp lệ");
+    const entry = btFindEntry(man.entries, prm.bt);
+    if (!entry){
+      btShowMsg("😢 <b>Không tìm thấy bài tập này.</b><br>Em kiểm tra lại đường link, hoặc quét lại mã QR ở cuối video nhé!");
+      return;
+    }
+    if (!phieuSelectable(entry)){
+      btShowMsg("📋 <b>Bài tập của phiếu này chưa sẵn sàng.</b><br>Lý do: " + escapeHtml(phieuBlockReason(entry)) +
+        ".<br>Em xem lại video và đối chiếu với bảng đáp án ở cuối video nhé!");
+      return;
+    }
+    const r2 = await fetch("../phieu-lib/" + entry.file, { cache: "no-store" });
+    if (!r2.ok) throw new Error("HTTP " + r2.status);
+    const data = await r2.json();
+    renderBaiTap(entry, data, prm.yt);
+  } catch (e) {
+    btShowMsg("⚠️ <b>Không tải được bài tập</b> — có thể do mạng chập chờn.<br><br>" +
+      '<button class="btn-accent" id="btRetryBtn" type="button" style="padding:12px 22px">↻ Thử lại</button>',
+      () => loadBaiTap(prm));
+  }
+}
+function btMakeCardEl(card){
+  const el = document.createElement("div");
+  el.className = "bt-card";
+  el.dataset.card = card.cardId;
+  el.dataset.so = card.so;
+  el.textContent = card.text;
+  return el;
+}
+function btCardEl(cardId){ return document.querySelector('.bt-card[data-card="' + cardId + '"]'); }
+function btCellEl(so){ return document.querySelector('.bt-cell[data-so="' + so + '"]'); }
+function renderBaiTap(entry, data, ytId){
+  const main = $("btMain");
+  if (!main) return;
+  const grid = btBuildGrid(data);
+  const cards = btMakeCards(data);
+  const questions = btMakeQuickQuestions(data, 4);
+  btCtx = { entry: entry, data: data, yt: ytId || "", cards: cards, placements: {},
+            chosen: {}, selected: null, graded: false, questions: questions, suppressClick: false };
+  document.title = "📋 Bài tập — " + (entry.tenBai || data.bai || "Phiếu học tập");
+  let h = "";
+  h += '<div class="bt-title">' + escapeHtml(entry.tenBai || data.bai || "") + "</div>";
+  if (entry.tieuDePhieu) h += '<div class="bt-sub">' + escapeHtml(entry.tieuDePhieu) + "</div>";
+  if (data.cauHoiPhieu && btNormText(data.cauHoiPhieu) !== btNormText(entry.tieuDePhieu || "")) h += '<div class="bt-sub" style="color:var(--txt)">' + escapeHtml(data.cauHoiPhieu) + "</div>";
+  if (ytId){
+    h += '<div class="bt-yt"><iframe src="https://www.youtube-nocookie.com/embed/' + encodeURIComponent(ytId) +
+      '" title="Video bài học" allow="accelerometer; autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>';
+  }
+  h += '<div class="bt-sec"><h2>Phần 1 — Kéo thẻ đáp án vào đúng ô số</h2>' +
+    '<p class="bt-hint">Chạm vào 1 thẻ đáp án ở khay dưới rồi chạm vào ô cần điền — hoặc kéo thẻ thả thẳng vào ô. Chạm vào thẻ đã đặt trong ô để lấy ra đặt lại.</p>' +
+    '<div class="bt-tablewrap"><table class="bt-table"><thead><tr>' +
+    grid.headers.map(x => "<th>" + escapeHtml(x) + "</th>").join("") + "</tr></thead><tbody>";
+  grid.rows.forEach(row => {
+    h += "<tr>";
+    row.cells.forEach(cell => {
+      if (cell.kind === "label") h += '<td class="bt-label">' + escapeHtml(cell.text) + "</td>";
+      else if (cell.kind === "given") h += '<td class="bt-given">' + escapeHtml(cell.text) + "</td>";
+      else h += '<td class="bt-cell" data-so="' + cell.so + '"><span class="bt-num">' + cell.so +
+        '</span><div class="bt-zone"></div><div class="bt-correct hidden"></div></td>';
+    });
+    h += "</tr>";
+  });
+  h += "</tbody></table></div>";
+  h += '<div class="bt-tray" id="btTray"></div></div>';
+  if (questions.length){
+    h += '<div class="bt-sec"><h2>Phần 2 — Câu hỏi nhanh</h2><p class="bt-hint">Chọn 1 đáp án đúng cho mỗi câu để kiểm tra mức độ hiểu bài.</p>';
+    questions.forEach((q, qi) => {
+      h += '<div class="bt-q" data-qi="' + qi + '"><div class="bt-qt">Câu ' + (qi + 1) + ". " + escapeHtml(q.question) + "</div>";
+      q.options.forEach((op, oi) => {
+        h += '<button class="bt-opt" type="button" data-qi="' + qi + '" data-oi="' + oi + '" title="' +
+          escapeHtml(op.text) + '">' + escapeHtml(btShortText(op.text, 220)) + "</button>";
+      });
+      h += "</div>";
+    });
+    h += "</div>";
+  }
+  h += '<div class="bt-actions"><button class="btn-accent" id="btSubmit" type="button" style="flex:2;padding:15px;font-size:18px">✔ Nộp bài — Chấm điểm</button>' +
+    '<button class="btn shrink" id="btReset" type="button">↺ Làm lại</button></div>';
+  h += '<div class="bt-result" id="btResult"></div>';
+  main.innerHTML = h;
+  const tray = $("btTray");
+  cards.forEach(c => tray.appendChild(btMakeCardEl(c)));
+  wireBaiTap();
+}
+function btSelectCard(cardId){
+  if (!btCtx || btCtx.graded) return;
+  btCtx.selected = btCtx.selected === cardId ? null : cardId;
+  document.querySelectorAll(".bt-card").forEach(el =>
+    el.classList.toggle("sel", el.dataset.card === btCtx.selected));
+}
+function btPlaceCard(cardId, so){
+  if (!btCtx || btCtx.graded) return;
+  const cell = btCellEl(so);
+  if (!cell) return;
+  const occupant = btCtx.placements[so];
+  if (occupant && occupant !== cardId) btReturnCard(occupant);
+  Object.keys(btCtx.placements).forEach(k => { if (btCtx.placements[k] === cardId) delete btCtx.placements[k]; });
+  const el = btCardEl(cardId);
+  if (!el) return;
+  cell.querySelector(".bt-zone").appendChild(el);
+  el.classList.add("incell");
+  el.classList.remove("sel");
+  btCtx.placements[so] = cardId;
+  btCtx.selected = null;
+}
+function btReturnCard(cardId){
+  if (!btCtx || btCtx.graded) return;
+  Object.keys(btCtx.placements).forEach(k => { if (btCtx.placements[k] === cardId) delete btCtx.placements[k]; });
+  const el = btCardEl(cardId);
+  if (!el) return;
+  el.classList.remove("incell", "sel");
+  const tray = $("btTray");
+  if (tray) tray.appendChild(el);
+  if (btCtx.selected === cardId) btCtx.selected = null;
+}
+/* Kéo bằng Pointer Events (chuột + cảm ứng): di chuyển quá ngưỡng thì tạo
+   bóng thẻ đi theo ngón tay/chuột, thả lên ô nào thì đặt vào ô đó; chưa quá
+   ngưỡng thì để sự kiện click xử lý (chạm-chọn). */
+function btDragStart(ev, el){
+  if (!btCtx || btCtx.graded) return;
+  if (ev.button !== undefined && ev.button !== 0) return;
+  const startX = ev.clientX, startY = ev.clientY;
+  let ghost = null, hoverCell = null, moved = false;
+  function onMove(e){
+    if (!moved && Math.hypot(e.clientX - startX, e.clientY - startY) < 9) return;
+    if (!moved){
+      moved = true;
+      ghost = el.cloneNode(true);
+      ghost.classList.add("bt-ghost");
+      ghost.classList.remove("sel");
+      ghost.style.width = Math.min(el.offsetWidth || 260, Math.round(window.innerWidth * 0.78)) + "px";
+      document.body.appendChild(ghost);
+      el.classList.add("dragging");
+    }
+    if (e.cancelable) e.preventDefault();
+    ghost.style.left = Math.max(2, e.clientX - ghost.offsetWidth / 2) + "px";
+    ghost.style.top = Math.max(2, e.clientY - 26) + "px";
+    const under = document.elementFromPoint(e.clientX, e.clientY);
+    const cell = under && under.closest ? under.closest(".bt-cell") : null;
+    if (hoverCell && hoverCell !== cell) hoverCell.classList.remove("bt-hover");
+    hoverCell = cell;
+    if (hoverCell) hoverCell.classList.add("bt-hover");
+  }
+  function onUp(){
+    window.removeEventListener("pointermove", onMove);
+    window.removeEventListener("pointerup", onUp);
+    window.removeEventListener("pointercancel", onUp);
+    el.classList.remove("dragging");
+    if (ghost){ ghost.remove(); ghost = null; }
+    if (hoverCell) hoverCell.classList.remove("bt-hover");
+    if (moved && btCtx){
+      btCtx.suppressClick = true;
+      setTimeout(() => { if (btCtx) btCtx.suppressClick = false; }, 400);
+      if (hoverCell) btPlaceCard(el.dataset.card, hoverCell.dataset.so);
+      hoverCell = null;
+    }
+  }
+  window.addEventListener("pointermove", onMove, { passive: false });
+  window.addEventListener("pointerup", onUp);
+  window.addEventListener("pointercancel", onUp);
+}
+function wireBaiTap(){
+  document.querySelectorAll(".bt-card").forEach(el => {
+    el.addEventListener("click", () => {
+      if (!btCtx) return;
+      if (btCtx.suppressClick){ btCtx.suppressClick = false; return; }
+      if (btCtx.graded) return;
+      const cid = el.dataset.card;
+      if (el.classList.contains("incell")) btReturnCard(cid);
+      else btSelectCard(cid);
+    });
+    el.addEventListener("pointerdown", ev => btDragStart(ev, el));
+  });
+  document.querySelectorAll(".bt-cell").forEach(cell => {
+    cell.addEventListener("click", () => {
+      if (btCtx && btCtx.selected) btPlaceCard(btCtx.selected, cell.dataset.so);
+    });
+  });
+  document.querySelectorAll(".bt-opt").forEach(btn => {
+    btn.addEventListener("click", () => {
+      if (!btCtx || btCtx.graded) return;
+      const qi = +btn.dataset.qi, oi = +btn.dataset.oi;
+      btCtx.chosen[qi] = oi;
+      document.querySelectorAll('.bt-opt[data-qi="' + qi + '"]').forEach(b =>
+        b.classList.toggle("sel", +b.dataset.oi === oi));
+    });
+  });
+  $("btSubmit").addEventListener("click", btGradeAll);
+  $("btReset").addEventListener("click", () => {
+    if (!btCtx) return;
+    renderBaiTap(btCtx.entry, btCtx.data, btCtx.yt);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+}
+function btGradeAll(){
+  if (!btCtx || btCtx.graded) return;
+  btCtx.graded = true;
+  btCtx.selected = null;
+  document.querySelectorAll(".bt-card").forEach(el => el.classList.remove("sel"));
+  const g1 = btGradePlacement(btCtx.data, btCtx.cards, btCtx.placements);
+  document.querySelectorAll(".bt-cell").forEach(cell => {
+    const so = +cell.dataset.so;
+    const okCell = !!g1.perSo[so];
+    cell.classList.add(okCell ? "bt-ok" : "bt-bad");
+    if (!okCell){
+      const o = (btCtx.data.cacO || []).find(x => x.so === so);
+      const box = cell.querySelector(".bt-correct");
+      if (box && o){
+        box.innerHTML = "Đáp án đúng: <b>" + escapeHtml(o.dapAn) + "</b>";
+        box.classList.remove("hidden");
+      }
+    }
+  });
+  const g2 = btGradeQuick(btCtx.questions, btCtx.chosen);
+  btCtx.questions.forEach((q, qi) => {
+    document.querySelectorAll('.bt-opt[data-qi="' + qi + '"]').forEach(b => {
+      const oi = +b.dataset.oi;
+      if (oi === q.correctIndex) b.classList.add("ok");
+      else if (btCtx.chosen[qi] === oi) b.classList.add("bad");
+      b.classList.remove("sel");
+    });
+  });
+  const totalQ = g1.total + g2.total, totalC = g1.correct + g2.correct;
+  let msg;
+  if (totalQ && totalC === totalQ) msg = "🎉 Xuất sắc! Em làm đúng hết — đã nắm chắc bài này rồi!";
+  else if (totalQ && totalC >= totalQ * 0.7) msg = "👍 Khá tốt! Em xem lại các ô/câu tô đỏ và đối chiếu đáp án đúng nhé.";
+  else if (totalQ && totalC >= totalQ * 0.4) msg = "💪 Em làm đúng được một phần rồi. Xem lại video, chú ý các chỗ tô đỏ, rồi bấm Làm lại để thử lần nữa nhé!";
+  else msg = "🌱 Đừng nản nhé! Em xem lại video từ đầu, điền theo từng số, rồi quay lại làm lại bài này.";
+  const res = $("btResult");
+  res.className = "bt-result show ok-box";
+  res.innerHTML = "<b>Phần 1 (kéo thẻ): " + g1.correct + "/" + g1.total + " ô đúng</b>" +
+    (btCtx.questions.length ? "<br><b>Phần 2 (câu hỏi nhanh): " + g2.correct + "/" + g2.total + " câu đúng</b>" : "") +
+    "<br>👉 Tổng: <b>" + totalC + "/" + totalQ + "</b>. " + msg +
+    '<div class="small" style="margin-top:6px">Bài tập này làm tại chỗ để ôn tập — điểm không được lưu lại hay gửi đi đâu cả.</div>';
+  res.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
 /* ---------- Vẽ cảnh phiếu lên canvas 1920×1080 ---------- */
 let phieuBuildCtx = null;        // {entry, data} của phiếu đang dựng
 let phieuQrCache = { url: "", cv: null };
@@ -2920,19 +3412,28 @@ function renderPhieuPreview(){
 function fillPhieuYt(){
   const box = $("phieuYtBox");
   if (!box || !phieuSelected || !phieuData) return;
-  const url = buildExerciseUrl(phieuSelected.id, location.href);
-  const yt = buildYoutubeDesc(phieuSelected, phieuData, url);
   box.innerHTML = '<label>Tiêu đề video gợi ý</label><input type="text" id="phieuYtTitle" readonly>' +
+    '<label style="margin-top:8px">ID video YouTube (nếu đã đăng) — dán ID hoặc cả link video: link bài tập tự thêm &yt= để học sinh mở link là thấy cả video lẫn bài tập, QR in lại cũng trỏ đúng bản có video</label>' +
+    '<input type="text" id="phieuYtId" placeholder="Ví dụ: dQw4w9WgXcQ hoặc https://www.youtube.com/watch?v=…">' +
+    '<label style="margin-top:8px">Link bài tập tương tác đầy đủ (dán vào mô tả YouTube / dùng in QR)</label>' +
+    '<input type="text" id="phieuYtLink" readonly>' +
     '<label style="margin-top:8px">Mô tả — dán vào phần mô tả khi đăng YouTube (link bài tập đã nằm sẵn trong mô tả)</label>' +
     '<textarea id="phieuYtDesc" rows="9" readonly></textarea>' +
     '<div style="margin-top:8px"><button class="btn mini" id="phieuYtCopy" type="button">📋 Sao chép tiêu đề + mô tả</button> <span class="small" id="phieuYtMsg"></span></div>';
   box.classList.remove("hidden");
-  $("phieuYtTitle").value = yt.title;
-  $("phieuYtDesc").value = yt.desc;
+  const refresh = () => {
+    const url = btBuildUrl(phieuSelected.id, $("phieuYtId").value, location.href);
+    const yt = buildYoutubeDesc(phieuSelected, phieuData, url);
+    $("phieuYtTitle").value = yt.title;
+    $("phieuYtDesc").value = yt.desc;
+    $("phieuYtLink").value = url;
+  };
+  $("phieuYtId").addEventListener("input", refresh);
+  refresh();
   $("phieuYtCopy").addEventListener("click", async () => {
-    const txt = yt.title + "\n\n" + yt.desc;
+    const txt = $("phieuYtTitle").value + "\n\n" + $("phieuYtDesc").value;
     try { await navigator.clipboard.writeText(txt); $("phieuYtMsg").textContent = "✔ Đã sao chép — thầy dán vào YouTube khi đăng video."; }
-    catch (e) { $("phieuYtMsg").textContent = "Trình duyệt không cho sao chép tự động — thầy bôi đen 2 ô trên rồi copy tay."; }
+    catch (e) { $("phieuYtMsg").textContent = "Trình duyệt không cho sao chép tự động — thầy bôi đen các ô trên rồi copy tay."; }
   });
 }
 /* Sinh kịch bản phiếu → đưa vào ĐÚNG pipeline duyệt + dựng hiện có. */
@@ -3557,6 +4058,7 @@ try { renderLessonOptions(); renderPickStatus(); } catch (e) {}
 try { idbLoadAll(); } catch (e) {}
 try { loadOnlineLib(); } catch (e) {}
 try { initPhieu(); } catch (e) {}
+try { initBaiTap(); } catch (e) {}
 </script>
 </body>
 </html>
