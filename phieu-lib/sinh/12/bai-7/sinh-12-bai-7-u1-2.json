@@ -1,0 +1,85 @@
+{
+ "bai": "CẤU TRÚC VÀ CHỨC NĂNG CỦA NHIỄM SẮC THỂ — Sinh học 12",
+ "fileNguon": "Sinh học/Khối 12/Giáo án/HK1/KHBD_Sinh_hoc_12_Bai_7_Cau_truc_va_chuc_nang_cua_nhiem_sac_the_1_tiet.docx",
+ "cauHoiPhieu": "Nhiệm vụ: Các nhóm hoàn thành hai bảng sau trong giờ học, sau đó trình bày trước lớp. Bảng A. Cấu trúc siêu hiển vi của nhiễm sắc thể qua các kì",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Các gene nằm kế tiếp nhau dọc theo chiều dài NST, mỗi gene nằm ở một vị trí xác định gọi là locus; cùng một locus trên cặp NST tương đồng có thể chứa các allele khác nhau của cùng một gene",
+   "tieuChi": "Cách sắp xếp gene trên NST",
+   "cot": "Kết quả cần đạt",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "NST là cấu trúc mang gene của tế bào; ở cấp độ phân tử, gene là một đoạn của phân tử DNA mà DNA là thành phần cấu trúc của NST; NST là vật chất di truyền ở cấp độ tế bào",
+   "tieuChi": "NST là vật chất di truyền",
+   "cot": "Kết quả cần đạt",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 3,
+   "dapAn": "NST nhân đôi và phân li đồng đều về hai tế bào con, đảm bảo thông tin di truyền được truyền đạt nguyên vẹn qua các thế hệ tế bào và thế hệ cơ thể",
+   "tieuChi": "Nguyên phân",
+   "cot": "Kết quả cần đạt",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Sự vận động của NST (tự nhân đôi, phân li, tổ hợp, tái tổ hợp) là cơ sở cho sự vận động của gene, tạo ra biến dị tổ hợp và biến dị số lượng NST",
+   "tieuChi": "Giảm phân và thụ tinh",
+   "cot": "Kết quả cần đạt",
+   "hang": 4,
+   "cotSo": 1
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Nội dung",
+   "Kết quả cần đạt"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Cách sắp xếp gene trên NST",
+    "cacCot": [
+     {
+      "cot": "Kết quả cần đạt",
+      "noiDung": "Các gene nằm kế tiếp nhau dọc theo chiều dài NST, mỗi gene nằm ở một vị trí xác định gọi là locus; cùng một locus trên cặp NST tương đồng có thể chứa các allele khác nhau của cùng một gene"
+     }
+    ]
+   },
+   {
+    "tieuChi": "NST là vật chất di truyền",
+    "cacCot": [
+     {
+      "cot": "Kết quả cần đạt",
+      "noiDung": "NST là cấu trúc mang gene của tế bào; ở cấp độ phân tử, gene là một đoạn của phân tử DNA mà DNA là thành phần cấu trúc của NST; NST là vật chất di truyền ở cấp độ tế bào"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Nguyên phân",
+    "cacCot": [
+     {
+      "cot": "Kết quả cần đạt",
+      "noiDung": "NST nhân đôi và phân li đồng đều về hai tế bào con, đảm bảo thông tin di truyền được truyền đạt nguyên vẹn qua các thế hệ tế bào và thế hệ cơ thể"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Giảm phân và thụ tinh",
+    "cacCot": [
+     {
+      "cot": "Kết quả cần đạt",
+      "noiDung": "Sự vận động của NST (tự nhân đôi, phân li, tổ hợp, tái tổ hợp) là cơ sở cho sự vận động của gene, tạo ra biến dị tổ hợp và biến dị số lượng NST"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
