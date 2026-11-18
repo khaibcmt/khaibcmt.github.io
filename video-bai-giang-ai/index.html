@@ -117,7 +117,10 @@
       <button class="btn-ghost shrink" id="resetKeyStateBtn">↺ Đặt Lại Trạng Thái</button>
       <button class="btn-ghost shrink" id="toggleKeysViewBtn">👁 Hiện key</button>
     </div>
-    <div class="small" style="margin-top:6px">Kiểm tra nhẹ không tốn quota sinh ảnh/giọng; key đạt = key hợp lệ và gọi được model.</div>
+    <div class="row" style="margin-top:6px;align-items:center">
+      <label class="small" style="cursor:pointer"><input type="checkbox" id="deepCheckImg"> 🔬 <b>Kiểm tra sâu</b>: sinh thử 1 ảnh thật cho mỗi key (tốn 1 lượt ảnh/key) — để biết chắc key nào sinh được ảnh, key nào bị Google cấp 0 lượt ảnh.</label>
+    </div>
+    <div class="small" style="margin-top:6px">Kiểm tra nhẹ không tốn quota sinh ảnh/giọng; key đạt = key hợp lệ và gọi được model. Muốn biết chắc key sinh được ẢNH hay không, thầy tick "Kiểm tra sâu" trước khi bấm Kiểm Tra Key.</div>
     <div id="keyList" style="margin-top:10px"></div>
     <div class="small" id="keyStatus" style="margin-top:8px">Key chỉ lưu trong trình duyệt này (localStorage), app không gửi key đi nơi nào khác ngoài Google.</div>
     <details id="keyGuide">
@@ -347,12 +350,20 @@ function renderKeyList(){
     const s = keyStates[i] || { st: "unknown", note: "", at: "" };
     let extra = "";
     if (s.st === "err" && s.note) extra = ' — <span style="color:#b3261e">' + escapeHtml(s.note) + "</span>";
+    if (s.st === "ok" && s.note) extra = ' — <span style="color:#e8c96a">' + escapeHtml(s.note) + "</span>";
     if (s.st === "quota") extra = " — bị chặn lúc " + escapeHtml(s.at || "") + (s.note ? " (" + escapeHtml(s.note) + ")" : "");
     h += '<div class="row" style="align-items:center;margin-top:4px">'
        + '<span style="flex:1">' + KEY_DOT[s.st] + " <b>Key #" + (i + 1) + "</b> · " + escapeHtml(maskKey(k)) + " · " + KEY_TXT[s.st] + extra + (i === activeKeyIdx ? " · <b>⭐ đang dùng</b>" : "") + "</span>"
        + '<button class="btn-ghost shrink" data-delkey="' + i + '">✖ Xoá</button></div>';
     const km = keyModels[keyIdOf(k)];
-    if (km) h += '<div class="small" style="margin:1px 0 3px 22px;color:#7fae95">Model: chữ ' + escapeHtml(km.text || "—") + " · ảnh " + escapeHtml(km.image || "—") + " · giọng " + escapeHtml(km.tts || "—") + "</div>";
+    if (km) {
+      let ttsTxt = km.tts || "—";
+      if (Array.isArray(km.ttsList) && km.ttsList.length > 1) ttsTxt += " (+" + (km.ttsList.length - 1) + " model giọng dự phòng)";
+      const capTxt = km.imgCap === "ok" ? ' · 🖼 ảnh: <span style="color:#7dd87d">✔ sinh được</span>'
+                   : km.imgCap === "no" ? ' · 🖼 ảnh: <span style="color:#ff9d94">✖ không sinh được (quota ảnh = 0)</span>'
+                   : " · 🖼 ảnh: chưa kiểm tra sâu";
+      h += '<div class="small" style="margin:1px 0 3px 22px;color:#7fae95">Model: chữ ' + escapeHtml(km.text || "—") + " · ảnh " + escapeHtml(km.image || "—") + " · giọng " + escapeHtml(ttsTxt) + capTxt + "</div>";
+    }
   });
   box.innerHTML = h;
   box.querySelectorAll("[data-delkey]").forEach(b => b.addEventListener("click", () => {
@@ -394,6 +405,7 @@ $("saveKeysBtn").addEventListener("click", () => {
 });
 $("resetKeyStateBtn").addEventListener("click", () => {
   keyStates = keyPool.map(() => ({ st: "unknown", note: "", at: "" }));
+  quotaMarks = {}; saveQuotaMarks();   /* xoá cả dấu hết quota theo (key × model / vai trò) */
   savePool(); refreshKeyUI();
 });
 
@@ -433,8 +445,36 @@ function classifyHttp(status, data, txt){
   return { kind: "other", msg: msg };
 }
 
+/* ---------- Kiểm tra SÂU năng lực sinh ẢNH của 1 key ----------
+   GET metadata KHÔNG nói được quota sinh ảnh: key đời mới vẫn liệt kê model
+   ảnh nhưng Google cấp 0 lượt → chỉ sinh thử 1 ảnh thật mới phân biệt được.
+   Thử lần lượt các model ảnh ứng viên của key; trả "ok" | "no" | "unknown". */
+async function probeImageCapability(key, disc){
+  const cands = (disc && Array.isArray(disc.imageList) && disc.imageList.length) ? disc.imageList
+              : (disc && disc.image ? [disc.image] : []);
+  if (!cands.length) return "no";
+  let sawQuota = false;
+  for (const m of cands){
+    let res, txt, data = null;
+    try {
+      res = await fetch(API_BASE + m + ":generateContent?key=" + encodeURIComponent(key), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ contents: [{ parts: [{ text: "A simple red circle centered on a plain white background, minimalist flat illustration." }] }], generationConfig: { responseModalities: ["TEXT", "IMAGE"] } })
+      });
+      txt = await res.text();
+      try { data = JSON.parse(txt); } catch (e) {}
+    } catch (netErr) { continue; }
+    if (res.ok) return firstInline(data) ? "ok" : "unknown";
+    const c = classifyHttp(res.status, data, txt);
+    if (c.kind === "quota" || c.kind === "invalid" || res.status === 404) { sawQuota = true; continue; }
+    return "unknown";
+  }
+  return sawQuota ? "no" : "unknown";
+}
+
 /* ---------- Kiểm tra key: lời gọi NHẸ, không đốt quota sinh nội dung ---------- */
-async function checkOneKey(idx){
+async function checkOneKey(idx, deep){
   const key = keyPool[idx];
   /* Bước 1: khám phá model theo CHÍNH key này (key mới không thấy model cũ) */
   let disc;
@@ -488,16 +528,29 @@ async function checkOneKey(idx){
     if (c.kind === "quota") return { st: "quota", note: "Sinh văn bản báo hết quota (429)", at: new Date().toLocaleTimeString("vi-VN") };
     return { st: "err", note: ("Sinh văn bản — HTTP " + res.status + ": " + (c.msg || "không rõ")).slice(0, 140), at: "" };
   }
+  /* Bước 4 (tuỳ chọn): KIỂM TRA SÂU — sinh thử 1 ảnh thật để chấm năng lực ảnh của key */
+  if (deep){
+    const cap = await probeImageCapability(key, disc);
+    if (cap === "ok" || cap === "no") setImgCap(keyIdOf(key), cap);
+    renderKeyList();
+    if (cap === "no"){
+      return { st: "ok", note: "Key dùng được chữ/giọng nhưng KHÔNG sinh được ảnh (mọi model ảnh của key đều bị Google cấp 0 lượt hoặc đã hết hạn mức hôm nay) — video vẫn dựng được bằng hình SGK.", at: "" };
+    }
+    if (cap === "unknown"){
+      return { st: "ok", note: "Chưa kết luận được năng lực sinh ảnh (lỗi mạng hoặc lỗi khác khi sinh thử) — thầy bấm Kiểm Tra lại sau.", at: "" };
+    }
+  }
   return { st: "ok", note: "", at: "" };
 }
 $("checkKeysBtn").addEventListener("click", async () => {
   if (!keyPool.length){ alert("Hồ đang rỗng — thầy dán key vào ô trên và bấm Lưu Hồ Key trước đã."); return; }
   const btn = $("checkKeysBtn");
   btn.disabled = true; btn.textContent = "⏳ Đang kiểm tra...";
+  const deep = !!($("deepCheckImg") && $("deepCheckImg").checked);
   try {
     for (let i = 0; i < keyPool.length; i++){
-      $("keyStatus").innerHTML = "⏳ Đang kiểm tra Key #" + (i + 1) + "/" + keyPool.length + "...";
-      const r = await checkOneKey(i);
+      $("keyStatus").innerHTML = "⏳ Đang kiểm tra Key #" + (i + 1) + "/" + keyPool.length + (deep ? " (kiểm tra sâu — sinh thử ảnh)..." : "...");
+      const r = await checkOneKey(i, deep);
       keyStates[i] = { st: r.st, note: r.note || "", at: r.at || "" };
       savePool(); renderKeyList();
     }
@@ -521,38 +574,57 @@ try { keyModels = JSON.parse(localStorage.getItem("vbg_key_models") || "{}"); } 
 if (!keyModels || typeof keyModels !== "object" || Array.isArray(keyModels)) keyModels = {};
 function keyIdOf(key){ return String(key || "").slice(-8); }
 function saveKeyModels(){ try { localStorage.setItem("vbg_key_models", JSON.stringify(keyModels)); } catch (e) {} }
-function pickTextModel(list){
-  const cand = list.map(x => x.name).filter(n => { const s = n.toLowerCase(); return s.indexOf("flash") >= 0 && s.indexOf("image") < 0 && s.indexOf("tts") < 0; });
-  if (!cand.length) return null;
-  const g3 = cand.filter(n => /^gemini-3/i.test(n)).sort().reverse();
-  if (g3.length) return g3[0];
-  if (cand.indexOf("gemini-flash-latest") >= 0) return "gemini-flash-latest";
-  if (cand.indexOf("gemini-2.5-flash") >= 0) return "gemini-2.5-flash";
-  if (cand.indexOf("gemini-2.5-flash-lite") >= 0) return "gemini-2.5-flash-lite";
-  return cand.sort().reverse()[0];
+/* ---------- XẾP HẠNG MODEL THEO VAI TRÒ (theo quota thật đã rà soát 18/11/2026) ----------
+   Mỗi vai trò giữ DANH SÁCH ứng viên đã xếp hạng, không chỉ 1 model: model này
+   429 thì app lùi xuống ứng viên kế tiếp (cùng key hoặc key khác).
+   - Chữ: Flash Lite mới nhất trước (3.5/3.1 Flash Lite = 500 lượt/ngày) →
+     Flash thường (3.6 > 3 > 2.5, 20 lượt) → 3.8 Flash dự trữ chất lượng
+     (xịn nhưng chỉ 20 lượt, cạn nhanh) → Gemma 4 tràn cuối (14,4K lượt).
+   - Giọng: giữ MỌI model TTS của key — quota tính theo TỪNG model (mỗi model
+     10 lượt/ngày riêng: 3.8 Flash Lite TTS + 3.1 Flash TTS + 2.5 Flash TTS
+     = 30 lượt/key/ngày nếu xoay đủ cả 3).
+   - Ảnh: Nano Banana (gemini-2.5-flash-image) lên đầu — model ảnh được cấp
+     quota free phổ biến nhất; rồi tới các model ảnh dòng 3. */
+function modelVer(name){
+  const m = String(name || "").match(/gemini-(\d+)(?:\.(\d+))?/i);
+  return m ? (parseInt(m[1], 10) * 100 + parseInt(m[2] || "0", 10)) : 0;
 }
-function pickImageModel(list){
-  const cand = list.filter(x => {
+function byVerDesc(a, b){ return modelVer(b) - modelVer(a) || (a < b ? 1 : -1); }
+function pickTextList(list){
+  const names = list.map(x => x.name);
+  const isTxt = n => { const s = n.toLowerCase(); return s.indexOf("image") < 0 && s.indexOf("tts") < 0 && s.indexOf("embedding") < 0; };
+  const lite    = names.filter(n => isTxt(n) && /flash-lite/i.test(n)).sort(byVerDesc);
+  const flash38 = names.filter(n => isTxt(n) && /3\.8-flash/i.test(n) && !/lite/i.test(n));
+  const flash   = names.filter(n => isTxt(n) && n.toLowerCase().indexOf("flash") >= 0 && !/lite/i.test(n) && !/3\.8-flash/i.test(n)).sort(byVerDesc);
+  const gemma   = names.filter(n => isTxt(n) && n.toLowerCase().indexOf("gemma") >= 0).sort(byVerDesc);
+  const out = [];
+  [lite, flash, flash38, gemma].forEach(g => g.forEach(n => { if (out.indexOf(n) < 0) out.push(n); }));
+  return out;
+}
+function pickTextModel(list){ const l = pickTextList(list); return l.length ? l[0] : null; }
+function imageCandFilter(list){
+  return list.filter(x => {
     const n = x.name.toLowerCase(), s = (x.name + " " + (x.display || "")).toLowerCase();
     return n.indexOf("flash-image") >= 0 || (n.indexOf("image") >= 0 && n.indexOf("flash") >= 0) || s.indexOf("nano banana") >= 0;
   });
-  if (!cand.length) return null;
-  const g3 = cand.filter(x => /^gemini-3/i.test(x.name)).sort((a, b) => (a.name < b.name ? 1 : -1));
-  if (g3.length) return g3[0].name;
-  const exact = cand.filter(x => x.name === "gemini-2.5-flash-image");
-  if (exact.length) return exact[0].name;
-  return cand.map(x => x.name).sort().reverse()[0];
 }
-function pickTtsModel(list){
-  const cand = list.map(x => x.name).filter(n => n.toLowerCase().indexOf("tts") >= 0);
-  if (!cand.length) return null;
-  const p = cand.filter(n => { const s = n.toLowerCase(); return s.indexOf("2.5") >= 0 && s.indexOf("flash") >= 0; });
-  if (p.length) return p.sort().reverse()[0];
-  return cand.sort().reverse()[0];
+function pickImageList(list){
+  const cand = imageCandFilter(list).map(x => x.name);
+  const exact = cand.filter(n => n === "gemini-2.5-flash-image");
+  const g3    = cand.filter(n => /^gemini-3/i.test(n)).sort(byVerDesc);
+  const rest  = cand.filter(n => exact.indexOf(n) < 0 && !/^gemini-3/i.test(n)).sort(byVerDesc);
+  const out = [];
+  [exact, g3, rest].forEach(g => g.forEach(n => { if (out.indexOf(n) < 0) out.push(n); }));
+  return out;
 }
+function pickImageModel(list){ const l = pickImageList(list); return l.length ? l[0] : null; }
+function pickTtsList(list){
+  return list.map(x => x.name).filter(n => n.toLowerCase().indexOf("tts") >= 0).sort(byVerDesc);
+}
+function pickTtsModel(list){ const l = pickTtsList(list); return l.length ? l[0] : null; }
 async function discoverModels(key, force){
   const id = keyIdOf(key);
-  if (!force && keyModels[id]) return keyModels[id];
+  if (!force && keyModels[id] && keyModels[id].v === 2) return keyModels[id];
   const base = "https://generativelanguage.googleapis.com/v1beta/models?key=" + encodeURIComponent(key) + "&pageSize=1000";
   let url = base, all = [];
   for (let page = 0; page < 3 && url; page++){
@@ -572,22 +644,42 @@ async function discoverModels(key, force){
     .filter(m => (m.supportedGenerationMethods || []).indexOf("generateContent") >= 0)
     .map(m => ({ name: String(m.name || "").replace(/^models\//, ""), display: m.displayName || "" }))
     .filter(x => x.name);
-  const picked = { text: pickTextModel(usable), image: pickImageModel(usable), tts: pickTtsModel(usable), at: new Date().toLocaleString("vi-VN") };
+  const picked = { v: 2, textList: pickTextList(usable), imageList: pickImageList(usable), ttsList: pickTtsList(usable), at: new Date().toLocaleString("vi-VN") };
+  picked.text = picked.textList[0] || null;
+  picked.image = picked.imageList[0] || null;
+  picked.tts = picked.ttsList[0] || null;
+  const prev = keyModels[id];
+  if (prev && prev.imgCap){ picked.imgCap = prev.imgCap; picked.imgCapAt = prev.imgCapAt || ""; }   /* giữ kết quả kiểm tra sâu đã có */
   keyModels[id] = picked; saveKeyModels();
   return picked;
 }
-/* Model cho 1 key + 1 vai trò: đã khám phá → trả kết quả đã lưu (null nghĩa là
-   key đó KHÔNG có model cho vai trò này); khám phá lỗi (mạng...) → tên dự phòng
-   để luật xoay vòng xử lý tiếp như trước. */
-async function modelForKey(key, role){
+/* Danh sách ứng viên model của 1 key cho 1 vai trò, theo thứ tự ưu tiên.
+   Bản ghi khám phá CŨ (chưa có danh sách) → tự khám phá lại 1 lần để nâng cấp;
+   khám phá lỗi (mạng...) → 1 ứng viên dự phòng để luật xoay vòng xử lý tiếp. */
+async function candidatesForKey(key, role){
   const id = keyIdOf(key);
-  if (keyModels[id]) return keyModels[id][role] || null;
+  const km = keyModels[id];
+  if (km && Array.isArray(km[role + "List"])) return km[role + "List"].slice();
+  if (km && km.v === 2) return [];
   try {
     const d = await discoverModels(key);
-    return d[role] || null;
+    if (d && Array.isArray(d[role + "List"])) return d[role + "List"].slice();
+    return d && d[role] ? [d[role]] : [];
   } catch (e) {
-    return FALLBACK_MODELS[role];
+    return [FALLBACK_MODELS[role]];
   }
+}
+/* Model chính (ứng viên đầu) cho 1 key + 1 vai trò — null nghĩa là key đó
+   KHÔNG có model cho vai trò này. */
+async function modelForKey(key, role){
+  const c = await candidatesForKey(key, role);
+  return c.length ? c[0] : null;
+}
+/* Ghi nhận năng lực sinh ảnh của 1 key (từ kiểm tra sâu hoặc từ lần sinh thật) */
+function setImgCap(keyId, cap){
+  const km = keyModels[keyId];
+  if (!km || !cap) return;
+  if (km.imgCap !== cap){ km.imgCap = cap; km.imgCapAt = new Date().toLocaleString("vi-VN"); saveKeyModels(); renderKeyList(); }
 }
 
 /* ---------- Thời lượng video tối đa (trần cứng 10 phút) ---------- */
@@ -645,18 +737,60 @@ function escapeHtml(s){
 
 /* ---------- Gọi Gemini QUA HỒ KEY — xoay vòng tự động ----------
    Mọi lời gọi Gemini trong app đều đi qua geminiCall(role, body) — role là
-   "text" | "image" | "tts"; model dùng cho mỗi key được lấy từ kết quả khám
-   phá của CHÍNH key đó (modelForKey), không còn ghim cứng một tên cho mọi key.
+   "text" | "image" | "tts"; mỗi key dùng DANH SÁCH model ứng viên đã khám
+   phá + xếp hạng của CHÍNH key đó (candidatesForKey), không ghim cứng tên.
    - Bắt đầu từ key đang hoạt động (sticky), key tươi (đạt/chưa kiểm tra) trước, key hết quota sau cùng.
-   - Key không có model cho vai trò đang gọi → bỏ qua key đó, chuyển key kế tiếp.
-   - 429/RESOURCE_EXHAUSTED → đánh dấu key 🟡 hết quota + ghi log + thử key kế tiếp.
+   - 429/RESOURCE_EXHAUSTED ở 1 model → lùi xuống ỨNG VIÊN KẾ TIẾP (model
+     khác của cùng key, hoặc key khác); giọng ghi dấu theo (key × model),
+     chữ/ảnh cạn sạch 1 key thì ghi dấu theo (key × vai trò).
+   - 404 (model không còn khả dụng cho key) → ứng viên kế tiếp.
    - 400 API_KEY_INVALID / 403 → đánh dấu key 🔴 lỗi + chuyển key.
-   - Lỗi mạng → thử lại cùng key 1 lần rồi mới chuyển.
+   - Lỗi mạng → thử lại cùng ứng viên 1 lần rồi mới chuyển.
    - Lỗi không do key (nội dung, 500...) → báo thẳng, không xoay vòng.
-   - Hết sạch key khả dụng → dừng, báo lỗi thật kèm trạng thái từng key. */
+   - Hết sạch ứng viên khả dụng → dừng, báo lỗi thật kèm trạng thái từng key. */
 function markKey(idx, st, note){
   keyStates[idx] = { st: st, note: note || "", at: st === "quota" ? new Date().toLocaleTimeString("vi-VN") : (keyStates[idx] ? keyStates[idx].at : "") };
   savePool(); renderKeyList();
+}
+
+/* ---------- DẤU HẾT QUOTA THEO (KEY × MODEL) cho giọng, (KEY × VAI TRÒ) cho chữ/ảnh ----------
+   Quota Gemini tính theo TỪNG MODEL: 1 model TTS cạn KHÔNG có nghĩa cả key
+   cạn (key còn 2 model TTS khác, mỗi model 10 lượt/ngày riêng). Dấu chỉ có
+   giá trị trong NGÀY (quota ngày tự reset) — qua ngày tự hết hạn. Lưu ở
+   localStorage riêng; hồ cũ không có dữ liệu này thì coi như chưa dấu. */
+let quotaMarks = {};
+try { quotaMarks = JSON.parse(localStorage.getItem("vbg_quota_marks") || "{}"); } catch (e) { quotaMarks = {}; }
+if (!quotaMarks || typeof quotaMarks !== "object" || Array.isArray(quotaMarks)) quotaMarks = {};
+function saveQuotaMarks(){ try { localStorage.setItem("vbg_quota_marks", JSON.stringify(quotaMarks)); } catch (e) {} }
+function qmDay(){ const d = new Date(); return d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate(); }
+function qmId(keyId, role, model){ return role === "tts" ? (keyId + "|tts|" + model) : (keyId + "|" + role); }
+function isQuotaMarked(keyId, role, model){
+  const rec = quotaMarks[qmId(keyId, role, model)];
+  return !!(rec && rec.day === qmDay());
+}
+function markQuota(keyId, role, model){
+  quotaMarks[qmId(keyId, role, model)] = { day: qmDay(), at: new Date().toLocaleTimeString("vi-VN") };
+  saveQuotaMarks();
+}
+function clearQuotaMark(keyId, role, model){
+  const id = qmId(keyId, role, model);
+  if (quotaMarks[id]){ delete quotaMarks[id]; saveQuotaMarks(); }
+}
+/* Thứ tự thử (key, model) cho 1 lời gọi: trong 1 key, model chưa bị dấu đi
+   trước, model đã bị dấu (riêng giọng) xuống sau; key đã cạn sạch 1 vai trò
+   (chữ/ảnh) thì toàn bộ ứng viên của key đó cho vai trò ấy xếp xuống cuối. */
+function buildAttempts(order, candsByIdx, keyIds, role){
+  const seq = [], tail = [];
+  order.forEach(idx => {
+    const keyId = keyIds[idx];
+    const cands = candsByIdx[idx] || [];
+    const roleMarked = role !== "tts" && isQuotaMarked(keyId, role, null);
+    const fresh = [], marked = [];
+    cands.forEach(m => { (role === "tts" && isQuotaMarked(keyId, role, m) ? marked : fresh).push(m); });
+    const items = fresh.concat(marked).map(m => ({ idx: idx, model: m }));
+    if (roleMarked) tail.push.apply(tail, items); else seq.push.apply(seq, items);
+  });
+  return seq.concat(tail);
 }
 function logKeyRotate(html){
   try {
@@ -673,7 +807,7 @@ function noteActiveKey(){
   const pn = $("progressNote");
   if (pn && keyPool.length) pn.textContent = "— Đang dùng: Key #" + (activeKeyIdx + 1) + "/" + keyPool.length;
 }
-async function geminiCall(role, body){
+async function geminiCall(role, body, meta){
   if (!keyPool.length) throw new Error("Chưa có API key. Thầy dán key vào mục 1 ở đầu trang trước đã.");
   const start = Math.min(activeKeyIdx, keyPool.length - 1);
   const fresh = [], quotaMarked = [];
@@ -687,15 +821,24 @@ async function geminiCall(role, body){
   if (!order.length){
     throw new Error("Tất cả key trong hồ đều đang bị đánh dấu Lỗi nên app không gọi Gemini được. Thầy bấm '↺ Đặt Lại Trạng Thái' ở mục 1 hoặc dán key mới. Trạng thái hồ: " + keySummary());
   }
-  let lastErr = null;
+  /* Gom ứng viên (key × model) cho vai trò này: mỗi key có NHIỀU model ứng
+     viên đã xếp hạng — model này 429 thì lùi xuống ứng viên kế tiếp (cùng
+     key hoặc key khác) thay vì dừng cả lời gọi. */
+  const candsByIdx = {}, keyIds = {};
   for (const idx of order){
-    const key = keyPool[idx];
-    const model = await modelForKey(key, role);
-    if (!model){
-      logKeyRotate("⚠️ Key #" + (idx + 1) + " không có model " + ROLE_TXT[role] + " — tự chuyển Key kế tiếp");
-      lastErr = new Error("Key #" + (idx + 1) + " không có model " + ROLE_TXT[role] + " khả dụng");
-      continue;
-    }
+    keyIds[idx] = keyIdOf(keyPool[idx]);
+    candsByIdx[idx] = await candidatesForKey(keyPool[idx], role);
+    if (!candsByIdx[idx].length)
+      logKeyRotate("⚠️ Key #" + (idx + 1) + " không có model " + ROLE_TXT[role] + " — bỏ qua key này cho vai trò " + ROLE_TXT[role]);
+  }
+  const attempts = buildAttempts(order, candsByIdx, keyIds, role);
+  if (!attempts.length){
+    throw new Error("Không key nào trong hồ có model " + ROLE_TXT[role] + " khả dụng. Trạng thái hồ key: " + keySummary());
+  }
+  let lastErr = null, sawQuota = false;
+  const quotaKeys = {};   // idx -> số ứng viên của key đó đã 429 trong lời gọi này
+  for (const att of attempts){
+    const idx = att.idx, key = keyPool[idx], model = att.model, keyId = keyIds[idx];
     for (let attempt = 0; attempt < 2; attempt++){
       let res, txt, data = null;
       try {
@@ -712,22 +855,27 @@ async function geminiCall(role, body){
           continue;
         }
         lastErr = new Error("Lỗi mạng khi gọi Gemini bằng Key #" + (idx + 1) + ": " + netErr.message);
-        logKeyRotate("⚠️ Key #" + (idx + 1) + " lỗi mạng 2 lần — tự chuyển Key kế tiếp");
+        logKeyRotate("⚠️ Key #" + (idx + 1) + " lỗi mạng 2 lần — tự chuyển ứng viên kế tiếp");
         break;
       }
       if (res.ok){
         if (!data) throw new Error("Gemini trả về dữ liệu không đọc được.");
         activeKeyIdx = idx;
+        clearQuotaMark(keyId, role, model);
+        if (role === "image") setImgCap(keyId, "ok");
         if (keyStates[idx].st !== "ok"){ keyStates[idx] = { st: "ok", note: "", at: "" }; savePool(); renderKeyList(); }
+        if (meta){ meta.keyIdx = idx; meta.model = model; }
         noteActiveKey();
         return data;
       }
       const c = classifyHttp(res.status, data, txt);
       const emsg = (data && data.error && data.error.message) ? data.error.message : (txt || ("HTTP " + res.status));
       if (c.kind === "quota"){
-        markKey(idx, "quota", String(emsg).slice(0, 120));
-        logKeyRotate("⚠️ Key #" + (idx + 1) + " hết quota — tự chuyển Key kế tiếp");
-        lastErr = new Error("Gemini báo hết quota (429) ở Key #" + (idx + 1));
+        sawQuota = true;
+        quotaKeys[idx] = (quotaKeys[idx] || 0) + 1;
+        if (role === "tts") markQuota(keyId, role, model);   /* giọng: dấu theo TỪNG model */
+        logKeyRotate("⚠️ Model " + model + " (Key #" + (idx + 1) + ") hết quota — thử ứng viên kế tiếp");
+        lastErr = new Error("Gemini báo hết quota (429) ở model " + model + " của Key #" + (idx + 1));
         break;
       }
       if (c.kind === "invalid"){
@@ -736,12 +884,31 @@ async function geminiCall(role, body){
         lastErr = new Error("Key #" + (idx + 1) + " lỗi (" + res.status + "): " + emsg);
         break;
       }
+      if (res.status === 404){
+        /* model không còn khả dụng cho key này (bản ghi khám phá đã cũ) → ứng viên kế tiếp */
+        logKeyRotate("⚠️ Model " + model + " không khả dụng cho Key #" + (idx + 1) + " (404) — thử ứng viên kế tiếp");
+        lastErr = new Error("Model " + model + " không khả dụng cho Key #" + (idx + 1) + " (404)");
+        break;
+      }
       throw new Error("Gemini báo lỗi (" + res.status + "): " + emsg);
     }
   }
+  /* Cả 1 key cạn sạch ứng viên của vai trò chữ/ảnh trong lời gọi này → ghi dấu
+     (key × vai trò) để lần gọi sau xếp key đó xuống cuối cho vai trò ấy. */
+  if (role !== "tts"){
+    order.forEach(idx => {
+      if (candsByIdx[idx].length && (quotaKeys[idx] || 0) >= candsByIdx[idx].length){
+        markQuota(keyIds[idx], role, null);
+        if (role === "image") setImgCap(keyIds[idx], "no");
+      }
+    });
+  }
+  if (role === "image" && sawQuota){
+    throw new Error("Không sinh được ảnh: mọi model ảnh của các key trong hồ đều đang hết hạn mức hôm nay. Với key AI Studio đời mới, Google cấp 0 lượt cho model ảnh nên key đó không sinh được ảnh qua API — phần hình SGK vẫn dùng bình thường. Thầy thử key khác có model ảnh, hoặc bỏ qua các đoạn cần ảnh AI. Trạng thái hồ key: " + keySummary());
+  }
   throw new Error("Đã thử hết các key trong hồ mà chưa gọi được Gemini. " + (lastErr ? lastErr.message + ". " : "") + "Trạng thái hồ key: " + keySummary());
 }
-async function gemini(role, body){ return geminiCall(role, body); }
+async function gemini(role, body, meta){ return geminiCall(role, body, meta); }
 function firstText(data){
   try {
     const parts = data.candidates[0].content.parts || [];
@@ -974,14 +1141,18 @@ const DEMO_SCRIPT = {
    Lưu bền bằng IndexedDB (store 'sgk-images'); lỗi thì fallback
    bộ nhớ phiên + cảnh báo. Segment chỉ lưu tham chiếu id + tên.
    ========================================================= */
-const IDB_NAME = "vbg-db", IDB_STORE = "sgk-images";
+const IDB_NAME = "vbg-db", IDB_STORE = "sgk-images", IDB_TTS_STORE = "tts-cache";
 let library = new Map();          // id -> {id, name, dataUrl, img}
 let idbOK = true;
 
 function idbOpen(){
   return new Promise((resolve, reject) => {
-    const rq = indexedDB.open(IDB_NAME, 1);
-    rq.onupgradeneeded = () => { rq.result.createObjectStore(IDB_STORE, { keyPath: "id" }); };
+    const rq = indexedDB.open(IDB_NAME, 2);
+    rq.onupgradeneeded = () => {
+      const db = rq.result;
+      if (!db.objectStoreNames.contains(IDB_STORE)) db.createObjectStore(IDB_STORE, { keyPath: "id" });
+      if (!db.objectStoreNames.contains(IDB_TTS_STORE)) db.createObjectStore(IDB_TTS_STORE, { keyPath: "id" });
+    };
     rq.onsuccess = () => resolve(rq.result);
     rq.onerror = () => reject(rq.error);
   });
@@ -1585,28 +1756,154 @@ function pcmToAudioBuffer(base64){
   for (let i = 0; i < n; i++) ch[i] = dv.getInt16(i * 2, true) / 32768;
   return buf;
 }
+/* ---------- CACHE GIỌNG ĐỌC (IndexedDB, store 'tts-cache') ----------
+   Khoá bản ghi = băm(nội dung đọc + giọng + model đã dùng); thêm 1 bản ghi
+   "con trỏ" theo (nội dung + giọng) để lần dựng sau tìm lại được model đã
+   dùng. Lời đọc không đổi → lấy từ cache, 0 lượt gọi TTS. */
+function hashStr(s){
+  let h1 = 0xdeadbeef, h2 = 0x41c6ce57;
+  for (let i = 0; i < s.length; i++){
+    const ch = s.charCodeAt(i);
+    h1 = Math.imul(h1 ^ ch, 2654435761);
+    h2 = Math.imul(h2 ^ ch, 1597334677);
+  }
+  h1 = Math.imul(h1 ^ (h1 >>> 16), 2246822507) ^ Math.imul(h2 ^ (h2 >>> 13), 3266489909);
+  h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
+  return (h2 >>> 0).toString(16).padStart(8, "0") + (h1 >>> 0).toString(16).padStart(8, "0");
+}
+function ttsCacheId(text, model){ return "tts_" + hashStr(text + "\u0001" + TTS_VOICE + "\u0001" + model); }
+function ttsPtrId(text){ return "ptr_" + hashStr(text + "\u0001" + TTS_VOICE); }
+async function idbTtsGet(id){
+  try {
+    const db = await idbOpen();
+    return await new Promise((res, rej) => {
+      const rq = db.transaction(IDB_TTS_STORE, "readonly").objectStore(IDB_TTS_STORE).get(id);
+      rq.onsuccess = () => res(rq.result || null); rq.onerror = () => rej(rq.error);
+    });
+  } catch (e) { return null; }
+}
+async function idbTtsPut(rec){
+  try {
+    const db = await idbOpen();
+    await new Promise((res, rej) => {
+      const tx = db.transaction(IDB_TTS_STORE, "readwrite");
+      tx.objectStore(IDB_TTS_STORE).put(rec);
+      tx.oncomplete = res; tx.onerror = () => rej(tx.error);
+    });
+  } catch (e) { /* cache lỗi thì bỏ qua — gọi API như thường */ }
+}
+async function ttsCacheLookup(text){
+  const ptr = await idbTtsGet(ttsPtrId(text));
+  if (!ptr || !ptr.model) return null;
+  const rec = await idbTtsGet(ttsCacheId(text, ptr.model));
+  return (rec && rec.pcm) ? rec : null;
+}
+async function ttsCacheSave(text, model, pcmBase64){
+  if (!model || !pcmBase64) return;
+  await idbTtsPut({ id: ttsCacheId(text, model), model: model, pcm: pcmBase64, at: Date.now() });
+  await idbTtsPut({ id: ttsPtrId(text), model: model, at: Date.now() });
+}
+function audioBufferToPcmBase64(buf){
+  const ch = buf.getChannelData(0);
+  const bytes = new Uint8Array(ch.length * 2);
+  const dv = new DataView(bytes.buffer);
+  for (let i = 0; i < ch.length; i++){
+    const v = Math.max(-1, Math.min(1, ch[i]));
+    dv.setInt16(i * 2, v < 0 ? v * 32768 : v * 32767, true);
+  }
+  let bin = "";
+  const CHUNK = 32768;
+  for (let i = 0; i < bytes.length; i += CHUNK) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + CHUNK));
+  return btoa(bin);
+}
+function sliceAudioBuffer(buf, fromSec, toSec){
+  const sr = buf.sampleRate;
+  const a = Math.max(0, Math.floor(fromSec * sr));
+  const b = Math.min(buf.length, Math.max(a + 1, Math.floor(toSec * sr)));
+  const out = audioCtx().createBuffer(1, b - a, sr);
+  out.getChannelData(0).set(buf.getChannelData(0).subarray(a, b));
+  return out;
+}
+
 async function genAudioForSegment(i){
   const sg = scriptData.segments[i];
   if (!sg.narration || !sg.narration.trim()) {
     audios[i] = { status: "err", buffer: null, err: "Đoạn này không có lời đọc." };
     renderAssetRows(); return false;
   }
+  /* Cache giọng: lời đọc + giọng không đổi → dùng lại, không tốn lượt TTS */
+  const cached = await ttsCacheLookup(sg.narration);
+  if (cached) {
+    audios[i] = { status: "ok", buffer: pcmToAudioBuffer(cached.pcm), err: "" };
+    renderAssetRows(); return true;
+  }
   try {
+    const meta = {};
     const data = await gemini("tts", {
       contents: [{ parts: [{ text: sg.narration }] }],
       generationConfig: {
         responseModalities: ["AUDIO"],
         speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: TTS_VOICE } } }
       }
-    });
+    }, meta);
     const inline = firstInline(data);
     if (!inline) throw new Error("Gemini TTS không trả về âm thanh.");
     audios[i] = { status: "ok", buffer: pcmToAudioBuffer(inline.data), err: "" };
+    ttsCacheSave(sg.narration, meta.model || "", inline.data);
   } catch (e) {
     audios[i] = { status: "err", buffer: null, err: e.message };
   }
   renderAssetRows();
   return audios[i].status === "ok";
+}
+
+/* Gom 2–3 đoạn liên tiếp vào 1 lượt gọi TTS (quota giọng là nút thắt: mỗi
+   model chỉ 10 lượt/ngày/key). Thời lượng của cụm chia cho từng slide theo
+   tỉ lệ số ký tự lời đọc; cụm lỗi → tự tách ra gọi từng đoạn như cũ. Đoạn
+   nào đã có cache thì khỏi gọi. */
+async function genAudioGroup(indices){
+  const missing = [];
+  for (const i of indices){
+    const sg = scriptData.segments[i];
+    if (!sg.narration || !sg.narration.trim()){
+      audios[i] = { status: "err", buffer: null, err: "Đoạn này không có lời đọc." };
+      continue;
+    }
+    const cached = await ttsCacheLookup(sg.narration);
+    if (cached) audios[i] = { status: "ok", buffer: pcmToAudioBuffer(cached.pcm), err: "" };
+    else missing.push(i);
+  }
+  renderAssetRows();
+  if (!missing.length) return;
+  if (missing.length === 1){ await genAudioForSegment(missing[0]); return; }
+  const joined = missing.map(i => scriptData.segments[i].narration.trim()).join("\n\n");
+  try {
+    const meta = {};
+    const data = await gemini("tts", {
+      contents: [{ parts: [{ text: joined }] }],
+      generationConfig: {
+        responseModalities: ["AUDIO"],
+        speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: TTS_VOICE } } }
+      }
+    }, meta);
+    const inline = firstInline(data);
+    if (!inline) throw new Error("Gemini TTS không trả về âm thanh.");
+    const full = pcmToAudioBuffer(inline.data);
+    const totalChars = missing.reduce((s, i) => s + scriptData.segments[i].narration.trim().length, 0) || 1;
+    let acc = 0;
+    missing.forEach((segIdx, k) => {
+      const share = scriptData.segments[segIdx].narration.trim().length / totalChars;
+      const from = acc;
+      const to = (k === missing.length - 1) ? full.duration : acc + full.duration * share;
+      acc = to;
+      const part = sliceAudioBuffer(full, from, to);
+      audios[segIdx] = { status: "ok", buffer: part, err: "" };
+      ttsCacheSave(scriptData.segments[segIdx].narration, meta.model || "", audioBufferToPcmBase64(part));
+    });
+  } catch (e) {
+    for (const i of missing) await genAudioForSegment(i);   /* cụm lỗi → gọi từng đoạn */
+  }
+  renderAssetRows();
 }
 
 /* =========================================================
@@ -1725,10 +2022,12 @@ async function buildVideo(){
     } else {
       setStep(4, "run");
       const auErr = [];
-      for (let i = 0; i < scriptData.segments.length; i++) {
-        const ok = await genAudioForSegment(i);
-        if (!ok) auErr.push(i + 1);
+      for (let g = 0; g < scriptData.segments.length; g += 3) {
+        const grp = [];
+        for (let k = g; k < Math.min(g + 3, scriptData.segments.length); k++) grp.push(k);
+        await genAudioGroup(grp);
       }
+      scriptData.segments.forEach((sg, i) => { if (!audios[i] || audios[i].status !== "ok") auErr.push(i + 1); });
       if (auErr.length === scriptData.segments.length) {
         setStep(4, "err");
         logWarn("❌ <b>Không thu được giọng đọc cho đoạn nào</b> (có thể đã hết hạn mức TTS miễn phí hôm nay). Video vẫn sẽ được dựng nhưng <b>KHÔNG có tiếng</b>. Thầy kiểm tra lại key hoặc thử lại sau.");
