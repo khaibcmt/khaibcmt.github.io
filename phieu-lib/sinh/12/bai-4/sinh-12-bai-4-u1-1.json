@@ -1,0 +1,105 @@
+{
+ "bai": "ĐỘT BIẾN GENE — Sinh học 12",
+ "fileNguon": "Sinh học/Khối 12/Giáo án/HK1/KHBD_Sinh_hoc_12_Bai_4_Dot_bien_gene_2_tiet.docx",
+ "cauHoiPhieu": "Nhiệm vụ: Các nhóm hoàn thành ba bảng sau dựa vào SGK Bài 4, sau đó trình bày trước lớp. Bảng A. Các dạng đột biến điểm",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Một cặp nucleotide trong gene được thay thế bằng một cặp nucleotide khác",
+   "tieuChi": "Thay thế một cặp nucleotide",
+   "cot": "Biến đổi trong gene",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Có thể làm thay đổi một amino acid trong chuỗi polypeptide và thay đổi chức năng của protein (ví dụ: thay thế cặp A–T thành T–A trong gene HBB gây bệnh hồng cầu hình liềm)",
+   "tieuChi": "Thay thế một cặp nucleotide",
+   "cot": "Hậu quả đối với chuỗi polypeptide",
+   "hang": 1,
+   "cotSo": 2
+  },
+  {
+   "so": 3,
+   "dapAn": "Mạch mới tổng hợp có thêm một nucleotide do một nucleotide được sử dụng làm khuôn hai lần trong quá trình tái bản DNA",
+   "tieuChi": "Thêm một cặp nucleotide",
+   "cot": "Biến đổi trong gene",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Làm thay đổi trình tự amino acid từ vị trí đột biến trở đi (dịch khung), có thể làm thay đổi hoàn toàn cấu trúc và chức năng của protein",
+   "tieuChi": "Thêm một cặp nucleotide",
+   "cot": "Hậu quả đối với chuỗi polypeptide",
+   "hang": 2,
+   "cotSo": 2
+  },
+  {
+   "so": 5,
+   "dapAn": "Mạch mới tổng hợp bị mất một nucleotide do một nucleotide không được sử dụng làm khuôn trong quá trình tái bản DNA",
+   "tieuChi": "Mất một cặp nucleotide",
+   "cot": "Biến đổi trong gene",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 6,
+   "dapAn": "Làm thay đổi trình tự amino acid từ vị trí đột biến trở đi (dịch khung), có thể làm thay đổi hoàn toàn cấu trúc và chức năng của protein",
+   "tieuChi": "Mất một cặp nucleotide",
+   "cot": "Hậu quả đối với chuỗi polypeptide",
+   "hang": 3,
+   "cotSo": 2
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Dạng đột biến điểm",
+   "Biến đổi trong gene",
+   "Hậu quả đối với chuỗi polypeptide"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Thay thế một cặp nucleotide",
+    "cacCot": [
+     {
+      "cot": "Biến đổi trong gene",
+      "noiDung": "Một cặp nucleotide trong gene được thay thế bằng một cặp nucleotide khác"
+     },
+     {
+      "cot": "Hậu quả đối với chuỗi polypeptide",
+      "noiDung": "Có thể làm thay đổi một amino acid trong chuỗi polypeptide và thay đổi chức năng của protein (ví dụ: thay thế cặp A–T thành T–A trong gene HBB gây bệnh hồng cầu hình liềm)"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Thêm một cặp nucleotide",
+    "cacCot": [
+     {
+      "cot": "Biến đổi trong gene",
+      "noiDung": "Mạch mới tổng hợp có thêm một nucleotide do một nucleotide được sử dụng làm khuôn hai lần trong quá trình tái bản DNA"
+     },
+     {
+      "cot": "Hậu quả đối với chuỗi polypeptide",
+      "noiDung": "Làm thay đổi trình tự amino acid từ vị trí đột biến trở đi (dịch khung), có thể làm thay đổi hoàn toàn cấu trúc và chức năng của protein"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Mất một cặp nucleotide",
+    "cacCot": [
+     {
+      "cot": "Biến đổi trong gene",
+      "noiDung": "Mạch mới tổng hợp bị mất một nucleotide do một nucleotide không được sử dụng làm khuôn trong quá trình tái bản DNA"
+     },
+     {
+      "cot": "Hậu quả đối với chuỗi polypeptide",
+      "noiDung": "Làm thay đổi trình tự amino acid từ vị trí đột biến trở đi (dịch khung), có thể làm thay đổi hoàn toàn cấu trúc và chức năng của protein"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
