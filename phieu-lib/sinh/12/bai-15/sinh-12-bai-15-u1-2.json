@@ -1,0 +1,192 @@
+{
+ "bai": "DI TRUYỀN GENE NGOÀI NHÂN — Sinh học 12",
+ "fileNguon": "Sinh học/Khối 12/Giáo án/HK1/KHBD_Sinh_hoc_12_Bai_15_Di_truyen_gene_ngoai_nhan_1_tiet.docx",
+ "cauHoiPhieu": "Nhiệm vụ: Các nhóm hoàn thành ba bảng sau trong quá trình học tập, sau đó trình bày trước lớp. Bảng A. Thí nghiệm của Correns về di truyền gene ngoài nhân",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Ở tế bào chất (ti thể, lạp thể), trên phân tử DNA vòng nhỏ",
+   "tieuChi": "Vị trí của gene",
+   "cot": "Di truyền do gene ngoài nhân (trong ti thể, lạp thể)",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Ở nhân tế bào, trên nhiễm sắc thể",
+   "tieuChi": "Vị trí của gene",
+   "cot": "Di truyền do gene trong nhân (trên nhiễm sắc thể)",
+   "hang": 1,
+   "cotSo": 2
+  },
+  {
+   "so": 3,
+   "dapAn": "Khác nhau",
+   "tieuChi": "Kết quả phép lai thuận nghịch",
+   "cot": "Di truyền do gene ngoài nhân (trong ti thể, lạp thể)",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Giống nhau",
+   "tieuChi": "Kết quả phép lai thuận nghịch",
+   "cot": "Di truyền do gene trong nhân (trên nhiễm sắc thể)",
+   "hang": 2,
+   "cotSo": 2
+  },
+  {
+   "so": 5,
+   "dapAn": "Theo dòng mẹ, biểu hiện ở cả hai giới",
+   "tieuChi": "Tính trạng thường được di truyền",
+   "cot": "Di truyền do gene ngoài nhân (trong ti thể, lạp thể)",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 6,
+   "dapAn": "Không theo dòng mẹ; phụ thuộc vào mối quan hệ trội, lặn của các allele trong cặp allele hoặc sự tương tác giữa các cặp allele khác nhau",
+   "tieuChi": "Tính trạng thường được di truyền",
+   "cot": "Di truyền do gene trong nhân (trên nhiễm sắc thể)",
+   "hang": 3,
+   "cotSo": 2
+  },
+  {
+   "so": 7,
+   "dapAn": "Không tồn tại thành từng cặp allele; chỉ cần một allele là có thể biểu hiện ra kiểu hình",
+   "tieuChi": "Cặp allele",
+   "cot": "Di truyền do gene ngoài nhân (trong ti thể, lạp thể)",
+   "hang": 4,
+   "cotSo": 1
+  },
+  {
+   "so": 8,
+   "dapAn": "Tồn tại thành từng cặp allele trên cặp nhiễm sắc thể tương đồng",
+   "tieuChi": "Cặp allele",
+   "cot": "Di truyền do gene trong nhân (trên nhiễm sắc thể)",
+   "hang": 4,
+   "cotSo": 2
+  },
+  {
+   "so": 9,
+   "dapAn": "Không có sự tái tổ hợp gene ngoài nhân trong quá trình thụ tinh",
+   "tieuChi": "Tái tổ hợp",
+   "cot": "Di truyền do gene ngoài nhân (trong ti thể, lạp thể)",
+   "hang": 5,
+   "cotSo": 1
+  },
+  {
+   "so": 10,
+   "dapAn": "Có tái tổ hợp (trao đổi chéo) trong giảm phân",
+   "tieuChi": "Tái tổ hợp",
+   "cot": "Di truyền do gene trong nhân (trên nhiễm sắc thể)",
+   "hang": 5,
+   "cotSo": 2
+  },
+  {
+   "so": 11,
+   "dapAn": "Phân li không đều: con của cùng một mẹ có thể nhận được số lượng allele khác nhau nên có thể có kiểu hình khác nhau",
+   "tieuChi": "Phân li",
+   "cot": "Di truyền do gene ngoài nhân (trong ti thể, lạp thể)",
+   "hang": 6,
+   "cotSo": 1
+  },
+  {
+   "so": 12,
+   "dapAn": "Phân li đều theo quy luật Mendel",
+   "tieuChi": "Phân li",
+   "cot": "Di truyền do gene trong nhân (trên nhiễm sắc thể)",
+   "hang": 6,
+   "cotSo": 2
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Đặc điểm",
+   "Di truyền do gene ngoài nhân (trong ti thể, lạp thể)",
+   "Di truyền do gene trong nhân (trên nhiễm sắc thể)"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Vị trí của gene",
+    "cacCot": [
+     {
+      "cot": "Di truyền do gene ngoài nhân (trong ti thể, lạp thể)",
+      "noiDung": "Ở tế bào chất (ti thể, lạp thể), trên phân tử DNA vòng nhỏ"
+     },
+     {
+      "cot": "Di truyền do gene trong nhân (trên nhiễm sắc thể)",
+      "noiDung": "Ở nhân tế bào, trên nhiễm sắc thể"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Kết quả phép lai thuận nghịch",
+    "cacCot": [
+     {
+      "cot": "Di truyền do gene ngoài nhân (trong ti thể, lạp thể)",
+      "noiDung": "Khác nhau"
+     },
+     {
+      "cot": "Di truyền do gene trong nhân (trên nhiễm sắc thể)",
+      "noiDung": "Giống nhau"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Tính trạng thường được di truyền",
+    "cacCot": [
+     {
+      "cot": "Di truyền do gene ngoài nhân (trong ti thể, lạp thể)",
+      "noiDung": "Theo dòng mẹ, biểu hiện ở cả hai giới"
+     },
+     {
+      "cot": "Di truyền do gene trong nhân (trên nhiễm sắc thể)",
+      "noiDung": "Không theo dòng mẹ; phụ thuộc vào mối quan hệ trội, lặn của các allele trong cặp allele hoặc sự tương tác giữa các cặp allele khác nhau"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Cặp allele",
+    "cacCot": [
+     {
+      "cot": "Di truyền do gene ngoài nhân (trong ti thể, lạp thể)",
+      "noiDung": "Không tồn tại thành từng cặp allele; chỉ cần một allele là có thể biểu hiện ra kiểu hình"
+     },
+     {
+      "cot": "Di truyền do gene trong nhân (trên nhiễm sắc thể)",
+      "noiDung": "Tồn tại thành từng cặp allele trên cặp nhiễm sắc thể tương đồng"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Tái tổ hợp",
+    "cacCot": [
+     {
+      "cot": "Di truyền do gene ngoài nhân (trong ti thể, lạp thể)",
+      "noiDung": "Không có sự tái tổ hợp gene ngoài nhân trong quá trình thụ tinh"
+     },
+     {
+      "cot": "Di truyền do gene trong nhân (trên nhiễm sắc thể)",
+      "noiDung": "Có tái tổ hợp (trao đổi chéo) trong giảm phân"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Phân li",
+    "cacCot": [
+     {
+      "cot": "Di truyền do gene ngoài nhân (trong ti thể, lạp thể)",
+      "noiDung": "Phân li không đều: con của cùng một mẹ có thể nhận được số lượng allele khác nhau nên có thể có kiểu hình khác nhau"
+     },
+     {
+      "cot": "Di truyền do gene trong nhân (trên nhiễm sắc thể)",
+      "noiDung": "Phân li đều theo quy luật Mendel"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
