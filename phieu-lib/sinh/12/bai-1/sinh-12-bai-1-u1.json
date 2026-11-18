@@ -1,0 +1,163 @@
+{
+ "bai": "DNA VÀ CƠ CHẾ TÁI BẢN — Sinh học 12",
+ "fileNguon": "Sinh học/Khối 12/Giáo án/HK1/KHBD_Sinh_hoc_12_Bai_1_DNA_va_co_che_tai_ban_DNA_2_tiet.docx",
+ "cauHoiPhieu": "Nhiệm vụ: Các nhóm hoàn thành bảng sau dựa vào SGK Bài 1, sau đó trình bày trước lớp.",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "DNA được cấu tạo theo nguyên tắc đa phân, gồm 4 loại đơn phân là các nucleotide A, T, G, C; cấu trúc xoắn kép bền vững",
+   "tieuChi": "Chức năng của DNA",
+   "cot": "Đặc điểm cấu trúc / diễn biến",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Mang, bảo quản và truyền đạt thông tin di truyền dưới dạng trình tự các nucleotide",
+   "tieuChi": "Chức năng của DNA",
+   "cot": "Chức năng / ý nghĩa",
+   "hang": 1,
+   "cotSo": 2
+  },
+  {
+   "so": 3,
+   "dapAn": "A liên kết với T bằng 2 liên kết hydrogen, G liên kết với C bằng 3 liên kết hydrogen; chiều rộng phân tử DNA ổn định (2 nm); một chu kì xoắn dài 3,4 nm gồm 10 cặp nucleotide",
+   "tieuChi": "Kết cặp đặc hiệu A – T và G – C",
+   "cot": "Đặc điểm cấu trúc / diễn biến",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Tạo cấu trúc ổn định; khi một mạch bị sai hỏng thì enzyme của tế bào có thể dùng mạch bình thường làm khuôn để sửa chữa; đảm bảo thông tin di truyền được truyền đạt gần như nguyên vẹn qua các thế hệ",
+   "tieuChi": "Kết cặp đặc hiệu A – T và G – C",
+   "cot": "Chức năng / ý nghĩa",
+   "hang": 2,
+   "cotSo": 2
+  },
+  {
+   "so": 5,
+   "dapAn": "Nguyên tắc bổ sung và nguyên tắc bán bảo toàn",
+   "tieuChi": "Nguyên tắc tái bản DNA",
+   "cot": "Đặc điểm cấu trúc / diễn biến",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 6,
+   "dapAn": "Mỗi phân tử DNA con có một mạch cũ của DNA mẹ và một mạch mới tổng hợp; thông tin di truyền được sao chép chính xác",
+   "tieuChi": "Nguyên tắc tái bản DNA",
+   "cot": "Chức năng / ý nghĩa",
+   "hang": 3,
+   "cotSo": 2
+  },
+  {
+   "so": 7,
+   "dapAn": "Tháo xoắn, tách hai mạch tạo chạc sao chép; tổng hợp đoạn mồi; DNA polymerase tổng hợp mạch mới theo chiều 5' → 3'; mạch liên tục và mạch gián đoạn (đoạn Okazaki); ligase nối các đoạn Okazaki",
+   "tieuChi": "Diễn biến tái bản DNA",
+   "cot": "Đặc điểm cấu trúc / diễn biến",
+   "hang": 4,
+   "cotSo": 1
+  },
+  {
+   "so": 8,
+   "dapAn": "Từ một phân tử DNA mẹ tạo ra hai phân tử DNA con giống nhau và giống phân tử DNA mẹ",
+   "tieuChi": "Diễn biến tái bản DNA",
+   "cot": "Chức năng / ý nghĩa",
+   "hang": 4,
+   "cotSo": 2
+  },
+  {
+   "so": 9,
+   "dapAn": "Diễn ra ở pha S của kì trung gian; trước khi nguyên phân, DNA trong tế bào mẹ tái bản và hai bản sao phân chia về hai tế bào con",
+   "tieuChi": "Ý nghĩa của tái bản DNA",
+   "cot": "Đặc điểm cấu trúc / diễn biến",
+   "hang": 5,
+   "cotSo": 1
+  },
+  {
+   "so": 10,
+   "dapAn": "Tái bản DNA là cơ chế phân tử của sự truyền thông tin di truyền qua các thế hệ tế bào và các thế hệ cơ thể",
+   "tieuChi": "Ý nghĩa của tái bản DNA",
+   "cot": "Chức năng / ý nghĩa",
+   "hang": 5,
+   "cotSo": 2
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Nội dung",
+   "Đặc điểm cấu trúc / diễn biến",
+   "Chức năng / ý nghĩa"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Chức năng của DNA",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm cấu trúc / diễn biến",
+      "noiDung": "DNA được cấu tạo theo nguyên tắc đa phân, gồm 4 loại đơn phân là các nucleotide A, T, G, C; cấu trúc xoắn kép bền vững"
+     },
+     {
+      "cot": "Chức năng / ý nghĩa",
+      "noiDung": "Mang, bảo quản và truyền đạt thông tin di truyền dưới dạng trình tự các nucleotide"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Kết cặp đặc hiệu A – T và G – C",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm cấu trúc / diễn biến",
+      "noiDung": "A liên kết với T bằng 2 liên kết hydrogen, G liên kết với C bằng 3 liên kết hydrogen; chiều rộng phân tử DNA ổn định (2 nm); một chu kì xoắn dài 3,4 nm gồm 10 cặp nucleotide"
+     },
+     {
+      "cot": "Chức năng / ý nghĩa",
+      "noiDung": "Tạo cấu trúc ổn định; khi một mạch bị sai hỏng thì enzyme của tế bào có thể dùng mạch bình thường làm khuôn để sửa chữa; đảm bảo thông tin di truyền được truyền đạt gần như nguyên vẹn qua các thế hệ"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Nguyên tắc tái bản DNA",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm cấu trúc / diễn biến",
+      "noiDung": "Nguyên tắc bổ sung và nguyên tắc bán bảo toàn"
+     },
+     {
+      "cot": "Chức năng / ý nghĩa",
+      "noiDung": "Mỗi phân tử DNA con có một mạch cũ của DNA mẹ và một mạch mới tổng hợp; thông tin di truyền được sao chép chính xác"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Diễn biến tái bản DNA",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm cấu trúc / diễn biến",
+      "noiDung": "Tháo xoắn, tách hai mạch tạo chạc sao chép; tổng hợp đoạn mồi; DNA polymerase tổng hợp mạch mới theo chiều 5' → 3'; mạch liên tục và mạch gián đoạn (đoạn Okazaki); ligase nối các đoạn Okazaki"
+     },
+     {
+      "cot": "Chức năng / ý nghĩa",
+      "noiDung": "Từ một phân tử DNA mẹ tạo ra hai phân tử DNA con giống nhau và giống phân tử DNA mẹ"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Ý nghĩa của tái bản DNA",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm cấu trúc / diễn biến",
+      "noiDung": "Diễn ra ở pha S của kì trung gian; trước khi nguyên phân, DNA trong tế bào mẹ tái bản và hai bản sao phân chia về hai tế bào con"
+     },
+     {
+      "cot": "Chức năng / ý nghĩa",
+      "noiDung": "Tái bản DNA là cơ chế phân tử của sự truyền thông tin di truyền qua các thế hệ tế bào và các thế hệ cơ thể"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
