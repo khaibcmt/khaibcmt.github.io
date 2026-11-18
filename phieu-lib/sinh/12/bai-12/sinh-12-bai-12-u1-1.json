@@ -1,0 +1,187 @@
+{
+ "bai": "ĐỘT BIẾN NHIỄM SẮC THỂ — Sinh học 12",
+ "fileNguon": "Sinh học/Khối 12/Giáo án/HK1/KHBD_Sinh_hoc_12_Bai_12_Dot_bien_nhiem_sac_the_3_tiet.docx",
+ "cauHoiPhieu": "Nhiệm vụ: Các nhóm hoàn thành ba bảng sau trong quá trình học tập, sau đó trình bày trước lớp. Bảng A. Các dạng đột biến cấu trúc nhiễm sắc thể",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Một đoạn nhiễm sắc thể bị đứt ra mà không được nối lại",
+   "tieuChi": "Mất đoạn",
+   "cot": "Cơ chế phát sinh",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Mất một số gene nhất định, có thể gây chết, giảm sức sống hoặc khả năng sinh sản",
+   "tieuChi": "Mất đoạn",
+   "cot": "Hậu quả",
+   "hang": 1,
+   "cotSo": 2
+  },
+  {
+   "so": 3,
+   "dapAn": "Hội chứng Cri du Chat do mất đoạn cánh ngắn nhiễm sắc thể số 5",
+   "tieuChi": "Mất đoạn",
+   "cot": "Ví dụ",
+   "hang": 1,
+   "cotSo": 3,
+   "cotPhu": true
+  },
+  {
+   "so": 4,
+   "dapAn": "Một đoạn nhiễm sắc thể được lặp lại một hoặc vài lần do trao đổi chéo không cân giữa hai chromatid khác nguồn trong cùng cặp nhiễm sắc thể tương đồng",
+   "tieuChi": "Lặp đoạn",
+   "cot": "Cơ chế phát sinh",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 5,
+   "dapAn": "Tăng số lượng bản sao của gene, tăng chiều dài nhiễm sắc thể, làm mất cân bằng gene",
+   "tieuChi": "Lặp đoạn",
+   "cot": "Hậu quả",
+   "hang": 2,
+   "cotSo": 2
+  },
+  {
+   "so": 6,
+   "dapAn": "Lặp đoạn nhiễm sắc thể ở ruồi giấm làm tăng số lượng gene quy định mắt lồi",
+   "tieuChi": "Lặp đoạn",
+   "cot": "Ví dụ",
+   "hang": 2,
+   "cotSo": 3,
+   "cotPhu": true
+  },
+  {
+   "so": 7,
+   "dapAn": "Một đoạn nhiễm sắc thể đứt ra, đảo ngược 180° rồi nối lại vào vị trí cũ",
+   "tieuChi": "Đảo đoạn",
+   "cot": "Cơ chế phát sinh",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 8,
+   "dapAn": "Thay đổi vị trí của gene, có thể làm thay đổi sự biểu hiện của gene",
+   "tieuChi": "Đảo đoạn",
+   "cot": "Hậu quả",
+   "hang": 3,
+   "cotSo": 2
+  },
+  {
+   "so": 9,
+   "dapAn": "Đảo đoạn nhiễm sắc thể gây vô sinh ở một số loài",
+   "tieuChi": "Đảo đoạn",
+   "cot": "Ví dụ",
+   "hang": 3,
+   "cotSo": 3,
+   "cotPhu": true
+  },
+  {
+   "so": 10,
+   "dapAn": "Một đoạn nhiễm sắc thể được chuyển từ vị trí này sang vị trí khác giữa các nhiễm sắc thể không tương đồng hoặc trên cùng một nhiễm sắc thể",
+   "tieuChi": "Chuyển đoạn",
+   "cot": "Cơ chế phát sinh",
+   "hang": 4,
+   "cotSo": 1
+  },
+  {
+   "so": 11,
+   "dapAn": "Thay đổi vị trí của gene, có thể làm thay đổi sự biểu hiện của gene",
+   "tieuChi": "Chuyển đoạn",
+   "cot": "Hậu quả",
+   "hang": 4,
+   "cotSo": 2
+  },
+  {
+   "so": 12,
+   "dapAn": "Chuyển đoạn giữa nhiễm sắc thể số 9 và số 22 tạo nhiễm sắc thể Philadelphia, gây bệnh bạch cầu mạn dòng tuỷ",
+   "tieuChi": "Chuyển đoạn",
+   "cot": "Ví dụ",
+   "hang": 4,
+   "cotSo": 3,
+   "cotPhu": true
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Dạng đột biến",
+   "Cơ chế phát sinh",
+   "Hậu quả",
+   "Ví dụ"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Mất đoạn",
+    "cacCot": [
+     {
+      "cot": "Cơ chế phát sinh",
+      "noiDung": "Một đoạn nhiễm sắc thể bị đứt ra mà không được nối lại"
+     },
+     {
+      "cot": "Hậu quả",
+      "noiDung": "Mất một số gene nhất định, có thể gây chết, giảm sức sống hoặc khả năng sinh sản"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Hội chứng Cri du Chat do mất đoạn cánh ngắn nhiễm sắc thể số 5"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Lặp đoạn",
+    "cacCot": [
+     {
+      "cot": "Cơ chế phát sinh",
+      "noiDung": "Một đoạn nhiễm sắc thể được lặp lại một hoặc vài lần do trao đổi chéo không cân giữa hai chromatid khác nguồn trong cùng cặp nhiễm sắc thể tương đồng"
+     },
+     {
+      "cot": "Hậu quả",
+      "noiDung": "Tăng số lượng bản sao của gene, tăng chiều dài nhiễm sắc thể, làm mất cân bằng gene"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Lặp đoạn nhiễm sắc thể ở ruồi giấm làm tăng số lượng gene quy định mắt lồi"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Đảo đoạn",
+    "cacCot": [
+     {
+      "cot": "Cơ chế phát sinh",
+      "noiDung": "Một đoạn nhiễm sắc thể đứt ra, đảo ngược 180° rồi nối lại vào vị trí cũ"
+     },
+     {
+      "cot": "Hậu quả",
+      "noiDung": "Thay đổi vị trí của gene, có thể làm thay đổi sự biểu hiện của gene"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Đảo đoạn nhiễm sắc thể gây vô sinh ở một số loài"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Chuyển đoạn",
+    "cacCot": [
+     {
+      "cot": "Cơ chế phát sinh",
+      "noiDung": "Một đoạn nhiễm sắc thể được chuyển từ vị trí này sang vị trí khác giữa các nhiễm sắc thể không tương đồng hoặc trên cùng một nhiễm sắc thể"
+     },
+     {
+      "cot": "Hậu quả",
+      "noiDung": "Thay đổi vị trí của gene, có thể làm thay đổi sự biểu hiện của gene"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Chuyển đoạn giữa nhiễm sắc thể số 9 và số 22 tạo nhiễm sắc thể Philadelphia, gây bệnh bạch cầu mạn dòng tuỷ"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
