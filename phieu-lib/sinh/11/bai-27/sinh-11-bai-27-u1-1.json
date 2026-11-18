@@ -1,0 +1,138 @@
+{
+ "bai": "SINH SẢN Ở ĐỘNG VẬT — Sinh học 11",
+ "fileNguon": "Sinh học/Khối 11/Giáo án/HK2/KHBD_Sinh_hoc_11_Bai_27_Sinh_san_o_dong_vat_2_tiet.docx",
+ "cauHoiPhieu": "Nhiệm vụ: Các nhóm hoàn thành các bảng sau dựa vào SGK Bài 27, sau đó trình bày trước lớp.",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Cơ thể phân đôi thành hai phần, mỗi phần phát triển thành cơ thể mới",
+   "tieuChi": "Phân đôi",
+   "cot": "Đặc điểm",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Trùng roi, trùng giày, amip",
+   "tieuChi": "Phân đôi",
+   "cot": "Ví dụ",
+   "hang": 1,
+   "cotSo": 2,
+   "cotPhu": true
+  },
+  {
+   "so": 3,
+   "dapAn": "Cơ thể mẹ mọc chồi, chồi lớn dần rồi tách ra thành cơ thể mới",
+   "tieuChi": "Nảy chồi",
+   "cot": "Đặc điểm",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Thuỷ tức, san hô",
+   "tieuChi": "Nảy chồi",
+   "cot": "Ví dụ",
+   "hang": 2,
+   "cotSo": 2,
+   "cotPhu": true
+  },
+  {
+   "so": 5,
+   "dapAn": "Cơ thể mẹ đứt thành nhiều mảnh, mỗi mảnh tái sinh thành cơ thể mới",
+   "tieuChi": "Phân mảnh",
+   "cot": "Đặc điểm",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 6,
+   "dapAn": "Sao biển, giun dẹp",
+   "tieuChi": "Phân mảnh",
+   "cot": "Ví dụ",
+   "hang": 3,
+   "cotSo": 2,
+   "cotPhu": true
+  },
+  {
+   "so": 7,
+   "dapAn": "Cơ thể mới phát triển từ trứng không được thụ tinh",
+   "tieuChi": "Trinh sinh",
+   "cot": "Đặc điểm",
+   "hang": 4,
+   "cotSo": 1
+  },
+  {
+   "so": 8,
+   "dapAn": "Ong đực, một số loài cá, bò sát",
+   "tieuChi": "Trinh sinh",
+   "cot": "Ví dụ",
+   "hang": 4,
+   "cotSo": 2,
+   "cotPhu": true
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Hình thức sinh sản vô tính",
+   "Đặc điểm",
+   "Ví dụ"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Phân đôi",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm",
+      "noiDung": "Cơ thể phân đôi thành hai phần, mỗi phần phát triển thành cơ thể mới"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Trùng roi, trùng giày, amip"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Nảy chồi",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm",
+      "noiDung": "Cơ thể mẹ mọc chồi, chồi lớn dần rồi tách ra thành cơ thể mới"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Thuỷ tức, san hô"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Phân mảnh",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm",
+      "noiDung": "Cơ thể mẹ đứt thành nhiều mảnh, mỗi mảnh tái sinh thành cơ thể mới"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Sao biển, giun dẹp"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Trinh sinh",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm",
+      "noiDung": "Cơ thể mới phát triển từ trứng không được thụ tinh"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Ong đực, một số loài cá, bò sát"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
