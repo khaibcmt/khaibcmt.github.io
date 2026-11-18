@@ -1,0 +1,183 @@
+{
+ "bai": "DI TRUYỀN GIỚI TÍNH VÀ DI TRUYỀN LIÊN KẾT VỚI GIỚI TÍNH — Sinh học 12",
+ "fileNguon": "Sinh học/Khối 12/Giáo án/HK1/KHBD_Sinh_hoc_12_Bai_10_Di_truyen_gioi_tinh_va_di_truyen_lien_ket_voi_gioi_tinh_2_tiet.docx",
+ "cauHoiPhieu": "Nhiệm vụ: Các nhóm hoàn thành ba bảng sau trong quá trình học tập, sau đó trình bày trước lớp. Bảng A. Nhiễm sắc thể giới tính và cơ chế xác định giới tính ở một số loài",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Gene lặn trên nhiễm sắc thể X",
+   "tieuChi": "Mù màu đỏ – lục",
+   "cot": "Gene gây bệnh",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Không phân biệt được màu đỏ và màu lục",
+   "tieuChi": "Mù màu đỏ – lục",
+   "cot": "Biểu hiện",
+   "hang": 1,
+   "cotSo": 2
+  },
+  {
+   "so": 3,
+   "dapAn": "Nam giới",
+   "tieuChi": "Mù màu đỏ – lục",
+   "cot": "Đối tượng mắc chủ yếu",
+   "hang": 1,
+   "cotSo": 3
+  },
+  {
+   "so": 4,
+   "dapAn": "Gene lặn trên nhiễm sắc thể X",
+   "tieuChi": "Máu khó đông",
+   "cot": "Gene gây bệnh",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 5,
+   "dapAn": "Máu khó đông, chảy máu kéo dài, khó cầm",
+   "tieuChi": "Máu khó đông",
+   "cot": "Biểu hiện",
+   "hang": 2,
+   "cotSo": 2
+  },
+  {
+   "so": 6,
+   "dapAn": "Nam giới",
+   "tieuChi": "Máu khó đông",
+   "cot": "Đối tượng mắc chủ yếu",
+   "hang": 2,
+   "cotSo": 3
+  },
+  {
+   "so": 7,
+   "dapAn": "Gene trội trên nhiễm sắc thể X",
+   "tieuChi": "Còi xương kháng vitamin D",
+   "cot": "Gene gây bệnh",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 8,
+   "dapAn": "Xương biến dạng, còi xương, không đáp ứng với vitamin D",
+   "tieuChi": "Còi xương kháng vitamin D",
+   "cot": "Biểu hiện",
+   "hang": 3,
+   "cotSo": 2
+  },
+  {
+   "so": 9,
+   "dapAn": "Cả nam và nữ (nữ nhiều hơn)",
+   "tieuChi": "Còi xương kháng vitamin D",
+   "cot": "Đối tượng mắc chủ yếu",
+   "hang": 3,
+   "cotSo": 3
+  },
+  {
+   "so": 10,
+   "dapAn": "Gene trên nhiễm sắc thể Y",
+   "tieuChi": "Tật dính ngón tay 2 và 3",
+   "cot": "Gene gây bệnh",
+   "hang": 4,
+   "cotSo": 1
+  },
+  {
+   "so": 11,
+   "dapAn": "Ngón tay 2 và 3 dính nhau",
+   "tieuChi": "Tật dính ngón tay 2 và 3",
+   "cot": "Biểu hiện",
+   "hang": 4,
+   "cotSo": 2
+  },
+  {
+   "so": 12,
+   "dapAn": "Chỉ nam giới",
+   "tieuChi": "Tật dính ngón tay 2 và 3",
+   "cot": "Đối tượng mắc chủ yếu",
+   "hang": 4,
+   "cotSo": 3
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Bệnh",
+   "Gene gây bệnh",
+   "Biểu hiện",
+   "Đối tượng mắc chủ yếu"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Mù màu đỏ – lục",
+    "cacCot": [
+     {
+      "cot": "Gene gây bệnh",
+      "noiDung": "Gene lặn trên nhiễm sắc thể X"
+     },
+     {
+      "cot": "Biểu hiện",
+      "noiDung": "Không phân biệt được màu đỏ và màu lục"
+     },
+     {
+      "cot": "Đối tượng mắc chủ yếu",
+      "noiDung": "Nam giới"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Máu khó đông",
+    "cacCot": [
+     {
+      "cot": "Gene gây bệnh",
+      "noiDung": "Gene lặn trên nhiễm sắc thể X"
+     },
+     {
+      "cot": "Biểu hiện",
+      "noiDung": "Máu khó đông, chảy máu kéo dài, khó cầm"
+     },
+     {
+      "cot": "Đối tượng mắc chủ yếu",
+      "noiDung": "Nam giới"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Còi xương kháng vitamin D",
+    "cacCot": [
+     {
+      "cot": "Gene gây bệnh",
+      "noiDung": "Gene trội trên nhiễm sắc thể X"
+     },
+     {
+      "cot": "Biểu hiện",
+      "noiDung": "Xương biến dạng, còi xương, không đáp ứng với vitamin D"
+     },
+     {
+      "cot": "Đối tượng mắc chủ yếu",
+      "noiDung": "Cả nam và nữ (nữ nhiều hơn)"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Tật dính ngón tay 2 và 3",
+    "cacCot": [
+     {
+      "cot": "Gene gây bệnh",
+      "noiDung": "Gene trên nhiễm sắc thể Y"
+     },
+     {
+      "cot": "Biểu hiện",
+      "noiDung": "Ngón tay 2 và 3 dính nhau"
+     },
+     {
+      "cot": "Đối tượng mắc chủ yếu",
+      "noiDung": "Chỉ nam giới"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
