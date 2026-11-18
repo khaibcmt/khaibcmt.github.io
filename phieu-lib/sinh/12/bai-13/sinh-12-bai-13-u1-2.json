@@ -1,0 +1,271 @@
+{
+ "bai": "DI TRUYỀN HỌC NGƯỜI VÀ DI TRUYỀN Y HỌC — Sinh học 12",
+ "fileNguon": "Sinh học/Khối 12/Giáo án/HK1/KHBD_Sinh_hoc_12_Bai_13_Di_truyen_hoc_nguoi_va_di_truyen_y_hoc_2_tiet.docx",
+ "cauHoiPhieu": "Nhiệm vụ: Các nhóm hoàn thành ba bảng sau trong quá trình học tập, sau đó trình bày trước lớp. Bảng A. Khái niệm và vai trò của di truyền học người và di truyền y học",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Theo dõi sự di truyền của một tính trạng qua nhiều thế hệ trong một dòng họ",
+   "tieuChi": "Nghiên cứu phả hệ",
+   "cot": "Nội dung",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Xác định gene quy định tính trạng là trội hay lặn, nằm trên NST thường hay NST giới tính",
+   "tieuChi": "Nghiên cứu phả hệ",
+   "cot": "Mục đích",
+   "hang": 1,
+   "cotSo": 2
+  },
+  {
+   "so": 3,
+   "dapAn": "Tóc quăn là trội so với tóc thẳng; mù màu, máu khó đông do gene lặn trên NST X",
+   "tieuChi": "Nghiên cứu phả hệ",
+   "cot": "Ví dụ kết quả",
+   "hang": 1,
+   "cotSo": 3,
+   "cotPhu": true
+  },
+  {
+   "so": 4,
+   "dapAn": "Thiết lập nhiễm sắc thể đồ (karyotype)",
+   "tieuChi": "Nghiên cứu NST (tế bào)",
+   "cot": "Nội dung",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 5,
+   "dapAn": "Chẩn đoán bệnh do đột biến cấu trúc và số lượng NST",
+   "tieuChi": "Nghiên cứu NST (tế bào)",
+   "cot": "Mục đích",
+   "hang": 2,
+   "cotSo": 2
+  },
+  {
+   "so": 6,
+   "dapAn": "Hội chứng Down, Turner, Klinefelter",
+   "tieuChi": "Nghiên cứu NST (tế bào)",
+   "cot": "Ví dụ kết quả",
+   "hang": 2,
+   "cotSo": 3,
+   "cotPhu": true
+  },
+  {
+   "so": 7,
+   "dapAn": "So sánh đặc điểm của trẻ đồng sinh cùng trứng và khác trứng trong cùng hoặc khác môi trường",
+   "tieuChi": "Nghiên cứu trẻ đồng sinh",
+   "cot": "Nội dung",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 8,
+   "dapAn": "Xác định tính trạng do kiểu gene hay môi trường quyết định",
+   "tieuChi": "Nghiên cứu trẻ đồng sinh",
+   "cot": "Mục đích",
+   "hang": 3,
+   "cotSo": 2
+  },
+  {
+   "so": 9,
+   "dapAn": "Nhóm máu, mù màu hoàn toàn do kiểu gene; khối lượng cơ thể, trí tuệ do cả kiểu gene và môi trường",
+   "tieuChi": "Nghiên cứu trẻ đồng sinh",
+   "cot": "Ví dụ kết quả",
+   "hang": 3,
+   "cotSo": 3,
+   "cotPhu": true
+  },
+  {
+   "so": 10,
+   "dapAn": "Dùng kĩ thuật tách chiết DNA, giải trình tự gene, PCR",
+   "tieuChi": "Di truyền phân tử",
+   "cot": "Nội dung",
+   "hang": 4,
+   "cotSo": 1
+  },
+  {
+   "so": 11,
+   "dapAn": "Phát hiện gene gây bệnh, chẩn đoán bệnh di truyền",
+   "tieuChi": "Di truyền phân tử",
+   "cot": "Mục đích",
+   "hang": 4,
+   "cotSo": 2
+  },
+  {
+   "so": 12,
+   "dapAn": "Phát hiện đột biến gene gây thiếu máu hồng cầu hình liềm",
+   "tieuChi": "Di truyền phân tử",
+   "cot": "Ví dụ kết quả",
+   "hang": 4,
+   "cotSo": 3,
+   "cotPhu": true
+  },
+  {
+   "so": 13,
+   "dapAn": "Phân tích enzyme, protein (sản phẩm của gene)",
+   "tieuChi": "Di truyền hoá sinh",
+   "cot": "Nội dung",
+   "hang": 5,
+   "cotSo": 1
+  },
+  {
+   "so": 14,
+   "dapAn": "Phát hiện rối loạn chuyển hoá",
+   "tieuChi": "Di truyền hoá sinh",
+   "cot": "Mục đích",
+   "hang": 5,
+   "cotSo": 2
+  },
+  {
+   "so": 15,
+   "dapAn": "Bệnh phenylketon niệu do thiếu enzyme chuyển hoá phenylalanine",
+   "tieuChi": "Di truyền hoá sinh",
+   "cot": "Ví dụ kết quả",
+   "hang": 5,
+   "cotSo": 3,
+   "cotPhu": true
+  },
+  {
+   "so": 16,
+   "dapAn": "Xác định tần số allele, kiểu gene trong quần thể người",
+   "tieuChi": "Di truyền quần thể",
+   "cot": "Nội dung",
+   "hang": 6,
+   "cotSo": 1
+  },
+  {
+   "so": 17,
+   "dapAn": "Dự đoán nguy cơ mắc bệnh di truyền trong quần thể",
+   "tieuChi": "Di truyền quần thể",
+   "cot": "Mục đích",
+   "hang": 6,
+   "cotSo": 2
+  },
+  {
+   "so": 18,
+   "dapAn": "Tần số người mang gene gây thiếu máu hồng cầu hình liềm",
+   "tieuChi": "Di truyền quần thể",
+   "cot": "Ví dụ kết quả",
+   "hang": 6,
+   "cotSo": 3,
+   "cotPhu": true
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Phương pháp",
+   "Nội dung",
+   "Mục đích",
+   "Ví dụ kết quả"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Nghiên cứu phả hệ",
+    "cacCot": [
+     {
+      "cot": "Nội dung",
+      "noiDung": "Theo dõi sự di truyền của một tính trạng qua nhiều thế hệ trong một dòng họ"
+     },
+     {
+      "cot": "Mục đích",
+      "noiDung": "Xác định gene quy định tính trạng là trội hay lặn, nằm trên NST thường hay NST giới tính"
+     },
+     {
+      "cot": "Ví dụ kết quả",
+      "noiDung": "Tóc quăn là trội so với tóc thẳng; mù màu, máu khó đông do gene lặn trên NST X"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Nghiên cứu NST (tế bào)",
+    "cacCot": [
+     {
+      "cot": "Nội dung",
+      "noiDung": "Thiết lập nhiễm sắc thể đồ (karyotype)"
+     },
+     {
+      "cot": "Mục đích",
+      "noiDung": "Chẩn đoán bệnh do đột biến cấu trúc và số lượng NST"
+     },
+     {
+      "cot": "Ví dụ kết quả",
+      "noiDung": "Hội chứng Down, Turner, Klinefelter"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Nghiên cứu trẻ đồng sinh",
+    "cacCot": [
+     {
+      "cot": "Nội dung",
+      "noiDung": "So sánh đặc điểm của trẻ đồng sinh cùng trứng và khác trứng trong cùng hoặc khác môi trường"
+     },
+     {
+      "cot": "Mục đích",
+      "noiDung": "Xác định tính trạng do kiểu gene hay môi trường quyết định"
+     },
+     {
+      "cot": "Ví dụ kết quả",
+      "noiDung": "Nhóm máu, mù màu hoàn toàn do kiểu gene; khối lượng cơ thể, trí tuệ do cả kiểu gene và môi trường"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Di truyền phân tử",
+    "cacCot": [
+     {
+      "cot": "Nội dung",
+      "noiDung": "Dùng kĩ thuật tách chiết DNA, giải trình tự gene, PCR"
+     },
+     {
+      "cot": "Mục đích",
+      "noiDung": "Phát hiện gene gây bệnh, chẩn đoán bệnh di truyền"
+     },
+     {
+      "cot": "Ví dụ kết quả",
+      "noiDung": "Phát hiện đột biến gene gây thiếu máu hồng cầu hình liềm"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Di truyền hoá sinh",
+    "cacCot": [
+     {
+      "cot": "Nội dung",
+      "noiDung": "Phân tích enzyme, protein (sản phẩm của gene)"
+     },
+     {
+      "cot": "Mục đích",
+      "noiDung": "Phát hiện rối loạn chuyển hoá"
+     },
+     {
+      "cot": "Ví dụ kết quả",
+      "noiDung": "Bệnh phenylketon niệu do thiếu enzyme chuyển hoá phenylalanine"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Di truyền quần thể",
+    "cacCot": [
+     {
+      "cot": "Nội dung",
+      "noiDung": "Xác định tần số allele, kiểu gene trong quần thể người"
+     },
+     {
+      "cot": "Mục đích",
+      "noiDung": "Dự đoán nguy cơ mắc bệnh di truyền trong quần thể"
+     },
+     {
+      "cot": "Ví dụ kết quả",
+      "noiDung": "Tần số người mang gene gây thiếu máu hồng cầu hình liềm"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
