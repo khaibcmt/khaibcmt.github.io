@@ -181,6 +181,13 @@
       <textarea id="storyText" rows="9" placeholder="Dán toàn bộ nội dung câu chuyện hoặc bài học vào đây. AI sẽ chuyển thành kịch bản video có hình, sơ đồ, bảng số liệu và lời đọc..."></textarea>
     </div>
 
+    <div style="margin-top:16px">
+      <label>✍️ Chỉ dẫn của thầy — muốn video làm như thế nào thì dặn ở đây</label>
+      <textarea id="teacherInstr" rows="4" placeholder="VD: Giảng chậm rãi, dễ hiểu cho học sinh trung bình; nhấn mạnh phần ứng dụng thực tế; mỗi ý chính cho 1 ví dụ đời sống; kết thúc bằng phần ghi nhớ + 3 câu hỏi ôn tập..."></textarea>
+      <div class="small" style="margin-top:6px">Áp dụng cho cả 2 chế độ. Khi viết kịch bản, chỉ dẫn của thầy được ưu tiên hơn phong cách mặc định của app. App tự nhớ nội dung ô này cho lần mở sau.</div>
+      <div style="margin-top:6px"><button class="btn-ghost" id="clearInstrBtn" type="button">🧹 Xoá chỉ dẫn</button></div>
+    </div>
+
     <div style="margin-top:18px">
       <label>⏱ Thời lượng video tối đa</label>
       <div class="chips" id="durChips" style="margin-top:6px">
@@ -1070,6 +1077,32 @@ function firstInline(data){
   return null;
 }
 
+/* ---------- Chỉ dẫn riêng của giáo viên cho AI viết kịch bản ----------
+   Ô nhập nằm ở khu vực nội dung, dùng cho cả 2 chế độ. Nội dung được lưu
+   localStorage để lần mở app sau vẫn còn; khi tạo kịch bản, nó được chèn
+   vào prompt thành một khối ưu tiên cao. */
+const INSTR_KEY = "vbg_custom_instructions";
+function saveTeacherInstr(){
+  try { localStorage.setItem(INSTR_KEY, $("teacherInstr").value); } catch (e) {}
+}
+function loadTeacherInstr(){
+  try { $("teacherInstr").value = localStorage.getItem(INSTR_KEY) || ""; } catch (e) {}
+}
+function teacherInstructionBlock(raw){
+  const t = String(raw == null ? "" : raw).trim();
+  if (!t) return "";
+  return "CHỈ DẪN CỦA GIÁO VIÊN (ƯU TIÊN CAO — BẮT BUỘC LÀM THEO):\n\"\"\"\n" + t + "\n\"\"\"\n" +
+    "Hãy làm đúng các chỉ dẫn trên đây của giáo viên khi viết kịch bản. Khi chỉ dẫn của giáo viên xung đột với các mặc định về phong cách, cấu trúc, nhịp giảng hay cách trình bày, CHỈ DẪN CỦA GIÁO VIÊN THẮNG. " +
+    "Ngoại lệ duy nhất: các ràng buộc về HÌNH SGK CÓ THẬT và tính chính xác của số liệu vẫn giữ nguyên tuyệt đối — không được bịa số hiệu hình hay số liệu ngoài danh sách đã cho vì bất kỳ chỉ dẫn nào.";
+}
+loadTeacherInstr();
+$("teacherInstr").addEventListener("input", saveTeacherInstr);
+$("clearInstrBtn").addEventListener("click", () => {
+  $("teacherInstr").value = "";
+  saveTeacherInstr();
+  $("teacherInstr").focus();
+});
+
 /* ---------- BƯỚC 1: viết kịch bản ---------- */
 function masterPrompt(){
   return [
@@ -1141,6 +1174,8 @@ async function generateScript(){
       "Dưới đây là nội dung câu chuyện / bài học. Hãy chuyển thành kịch bản video bài giảng bám sát nội dung này:\n\"\"\"\n" + story + "\n\"\"\"" +
       "\n\nLƯU Ý CHẾ ĐỘ KỂ CHUYỆN: đây là video kể chuyện / hoạt hình cho học sinh (truyện dân gian, truyện đời xưa). Hãy dùng segment type image với imagePrompt mô tả tranh minh hoạ phong cách hoạt hình, truyện tranh thiếu nhi (children's storybook illustration, warm colors, animated style, no text) cho hầu hết các đoạn. KHÔNG dùng segment type sgk — truyện không có hình SGK. Chỉ dùng diagram/table khi diễn biến truyện thật sự hợp (dòng thời gian, so sánh nhân vật), còn lại ưu tiên image và text.";
   }
+  const instrBlock = teacherInstructionBlock($("teacherInstr").value);
+  if (instrBlock) userPart += "\n\n" + instrBlock;
   const data = await gemini("text", {
     contents: [{ parts: [{ text: masterPrompt() + "\n\n---\n" + userPart }] }],
     generationConfig: { responseMimeType: "application/json", temperature: 0.6 }
