@@ -1,0 +1,102 @@
+{
+ "bai": "Bài 12: Truyền tin tế bào — Sinh học 10",
+ "fileNguon": "Sinh học/Khối 10/Giáo án/HK1/KHBD_Sinh_hoc_10_Bai_12_Truyen_tin_te_bao_1_tiet.docx",
+ "cauHoiPhieu": "Nội dung 1. Các hình thức truyền tin giữa các tế bào (đọc mục I trong SGK và hoàn thành bảng):",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "các tế bào truyền tín hiệu trực tiếp cho nhau qua kết nối trực tiếp như cầu sinh chất ở các tế bào thực vật, mối nối ở các tế bào động vật;",
+   "tieuChi": "Truyền tin trực tiếp",
+   "cot": "Cách truyền tín hiệu",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "tế bào tiết ra phân tử tín hiệu tác động lên các tế bào lân cận;",
+   "tieuChi": "Truyền tin cận tiết",
+   "cot": "Cách truyền tín hiệu",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 3,
+   "dapAn": "tế bào nội tiết tiết hormone vào máu, hormone được vận chuyển tới tế bào đích ở xa (ví dụ tuyến tụy tiết insulin vào máu tới tế bào gan, tế bào cơ);",
+   "tieuChi": "Truyền tin nội tiết",
+   "cot": "Cách truyền tín hiệu",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "tế bào thần kinh giải phóng chất dẫn truyền thần kinh vào khe synapse, chất này gắn vào thụ thể của tế bào sau synapse.",
+   "tieuChi": "Truyền tin qua synapse",
+   "cot": "Cách truyền tín hiệu",
+   "hang": 4,
+   "cotSo": 1
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Hình thức truyền tin",
+   "Cách truyền tín hiệu",
+   "Ví dụ minh hoạ"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Truyền tin trực tiếp",
+    "cacCot": [
+     {
+      "cot": "Cách truyền tín hiệu",
+      "noiDung": "các tế bào truyền tín hiệu trực tiếp cho nhau qua kết nối trực tiếp như cầu sinh chất ở các tế bào thực vật, mối nối ở các tế bào động vật;"
+     },
+     {
+      "cot": "Ví dụ minh hoạ",
+      "noiDung": ""
+     }
+    ]
+   },
+   {
+    "tieuChi": "Truyền tin cận tiết",
+    "cacCot": [
+     {
+      "cot": "Cách truyền tín hiệu",
+      "noiDung": "tế bào tiết ra phân tử tín hiệu tác động lên các tế bào lân cận;"
+     },
+     {
+      "cot": "Ví dụ minh hoạ",
+      "noiDung": ""
+     }
+    ]
+   },
+   {
+    "tieuChi": "Truyền tin nội tiết",
+    "cacCot": [
+     {
+      "cot": "Cách truyền tín hiệu",
+      "noiDung": "tế bào nội tiết tiết hormone vào máu, hormone được vận chuyển tới tế bào đích ở xa (ví dụ tuyến tụy tiết insulin vào máu tới tế bào gan, tế bào cơ);"
+     },
+     {
+      "cot": "Ví dụ minh hoạ",
+      "noiDung": ""
+     }
+    ]
+   },
+   {
+    "tieuChi": "Truyền tin qua synapse",
+    "cacCot": [
+     {
+      "cot": "Cách truyền tín hiệu",
+      "noiDung": "tế bào thần kinh giải phóng chất dẫn truyền thần kinh vào khe synapse, chất này gắn vào thụ thể của tế bào sau synapse."
+     },
+     {
+      "cot": "Ví dụ minh hoạ",
+      "noiDung": ""
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Đoạn Dự kiến sản phẩm (DKSP) trong cùng KHBD, mở đầu bằng nhãn của từng hàng trong bảng phiếu (trích nguyên văn)."
+ },
+ "ghiChu": " Đáp án là đoạn DKSP nguyên văn (dài hơn đáp án rút gọn kiểu mẫu tay Bài 9)."
+}
