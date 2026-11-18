@@ -268,8 +268,8 @@
 "use strict";
 /* =========================================================
    Video Bài Giảng AI — chạy thật A→Z trong trình duyệt.
-   Pipeline: kịch bản (gemini-2.5-flash) → ảnh (gemini-2.5-flash-image)
-   → slide canvas 1920x1080 → giọng đọc (gemini-2.5-flash-preview-tts)
+   Pipeline: kịch bản (model chữ tự khám phá theo từng key) → ảnh (model ảnh theo key)
+   → slide canvas 1920x1080 → giọng đọc (model TTS theo key)
    → MediaRecorder(captureStream + audio) → WebM tải về.
    ========================================================= */
 const $ = id => document.getElementById(id);
@@ -277,6 +277,10 @@ const API_BASE = "https://generativelanguage.googleapis.com/v1beta/models/";
 const MODEL_TEXT  = "gemini-2.5-flash";
 const MODEL_IMAGE = "gemini-2.5-flash-image";
 const MODEL_TTS   = "gemini-2.5-flash-preview-tts";
+/* 3 tên trên CHỈ còn là DỰ PHÒNG: bình thường app tự khám phá model theo
+   TỪNG key (key AI Studio mới không thấy model cũ — xem discoverModels). */
+const FALLBACK_MODELS = { text: MODEL_TEXT, image: MODEL_IMAGE, tts: MODEL_TTS };
+const ROLE_TXT = { text: "văn bản", image: "ảnh", tts: "giọng đọc" };
 const TTS_VOICE   = "Kore";
 const NO_AUDIO_SECONDS = 4;
 
@@ -342,11 +346,15 @@ function renderKeyList(){
     h += '<div class="row" style="align-items:center;margin-top:4px">'
        + '<span style="flex:1">' + KEY_DOT[s.st] + " <b>Key #" + (i + 1) + "</b> · " + escapeHtml(maskKey(k)) + " · " + KEY_TXT[s.st] + extra + (i === activeKeyIdx ? " · <b>⭐ đang dùng</b>" : "") + "</span>"
        + '<button class="btn-ghost shrink" data-delkey="' + i + '">✖ Xoá</button></div>';
+    const km = keyModels[keyIdOf(k)];
+    if (km) h += '<div class="small" style="margin:1px 0 3px 22px;color:#7fae95">Model: chữ ' + escapeHtml(km.text || "—") + " · ảnh " + escapeHtml(km.image || "—") + " · giọng " + escapeHtml(km.tts || "—") + "</div>";
   });
   box.innerHTML = h;
   box.querySelectorAll("[data-delkey]").forEach(b => b.addEventListener("click", () => {
     const i = parseInt(b.dataset.delkey, 10);
+    const removed = keyPool[i];
     keyPool.splice(i, 1); keyStates.splice(i, 1);
+    if (removed && keyModels[keyIdOf(removed)]){ delete keyModels[keyIdOf(removed)]; saveKeyModels(); }
     if (activeKeyIdx >= keyPool.length) activeKeyIdx = 0;
     savePool(); refreshKeyUI();
   }));
@@ -394,7 +402,25 @@ function classifyHttp(status, data, txt){
 /* ---------- Kiểm tra key: lời gọi NHẸ, không đốt quota sinh nội dung ---------- */
 async function checkOneKey(idx){
   const key = keyPool[idx];
-  const models = [MODEL_TEXT, MODEL_IMAGE, MODEL_TTS];
+  /* Bước 1: khám phá model theo CHÍNH key này (key mới không thấy model cũ) */
+  let disc;
+  try {
+    disc = await discoverModels(key, true);
+  } catch (e) {
+    if (e && e.httpStatus){
+      const c = classifyHttp(e.httpStatus, e.data, e.txt);
+      if (c.kind === "quota") return { st: "quota", note: "Khám phá model báo hết quota (429)", at: new Date().toLocaleTimeString("vi-VN") };
+      return { st: "err", note: ("Không liệt kê được model — HTTP " + e.httpStatus + ": " + (c.msg || "không rõ")).slice(0, 140), at: "" };
+    }
+    return { st: "err", note: "Lỗi mạng khi khám phá model: " + (e && e.message ? e.message : e), at: "" };
+  }
+  renderKeyList();
+  const missing = ["text", "image", "tts"].filter(r => !disc[r]);
+  if (missing.length){
+    return { st: "err", note: "Không có model " + missing.map(r => ROLE_TXT[r]).join(", ") + " cho key này", at: "" };
+  }
+  /* Bước 2: GET nhẹ từng model ĐÃ CHỌN cho key này */
+  const models = [disc.text, disc.image, disc.tts];
   for (const m of models){
     let res, txt, data = null;
     try {
@@ -410,10 +436,10 @@ async function checkOneKey(idx){
       return { st: "err", note: ("Model " + m + " — HTTP " + res.status + ": " + (c.msg || "không rõ")).slice(0, 140), at: "" };
     }
   }
-  /* 1 lần sinh văn bản siêu nhỏ để chứng minh generateContent chạy thật */
+  /* Bước 3: 1 lần sinh văn bản siêu nhỏ bằng model chữ ĐÃ CHỌN để chứng minh generateContent chạy thật */
   let res, txt, data = null;
   try {
-    res = await fetch(API_BASE + MODEL_TEXT + ":generateContent?key=" + encodeURIComponent(key), {
+    res = await fetch(API_BASE + disc.text + ":generateContent?key=" + encodeURIComponent(key), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ contents: [{ parts: [{ text: "Trả lời đúng 1 từ: OK" }] }], generationConfig: { maxOutputTokens: 5 } })
@@ -449,6 +475,86 @@ $("checkKeysBtn").addEventListener("click", async () => {
   }
 });
 loadPool();
+
+/* ---------- KHÁM PHÁ MODEL THEO TỪNG KEY ----------
+   Key AI Studio MỚI không được dùng tên model cũ ghim cứng (Google trả 404
+   "no longer available to new users"), còn key cũ lại thấy đúng model cũ.
+   → Với mỗi key, app tự GET /v1beta/models, lọc model gọi được generateContent
+   rồi chọn model theo VAI TRÒ (chữ / ảnh / giọng). Kết quả lưu theo từng key
+   nên key cũ và key mới chạy song song, mỗi key dùng đúng model của nó. */
+let keyModels = {};
+try { keyModels = JSON.parse(localStorage.getItem("vbg_key_models") || "{}"); } catch (e) { keyModels = {}; }
+if (!keyModels || typeof keyModels !== "object" || Array.isArray(keyModels)) keyModels = {};
+function keyIdOf(key){ return String(key || "").slice(-8); }
+function saveKeyModels(){ try { localStorage.setItem("vbg_key_models", JSON.stringify(keyModels)); } catch (e) {} }
+function pickTextModel(list){
+  const cand = list.map(x => x.name).filter(n => { const s = n.toLowerCase(); return s.indexOf("flash") >= 0 && s.indexOf("image") < 0 && s.indexOf("tts") < 0; });
+  if (!cand.length) return null;
+  const g3 = cand.filter(n => /^gemini-3/i.test(n)).sort().reverse();
+  if (g3.length) return g3[0];
+  if (cand.indexOf("gemini-flash-latest") >= 0) return "gemini-flash-latest";
+  if (cand.indexOf("gemini-2.5-flash") >= 0) return "gemini-2.5-flash";
+  if (cand.indexOf("gemini-2.5-flash-lite") >= 0) return "gemini-2.5-flash-lite";
+  return cand.sort().reverse()[0];
+}
+function pickImageModel(list){
+  const cand = list.filter(x => {
+    const n = x.name.toLowerCase(), s = (x.name + " " + (x.display || "")).toLowerCase();
+    return n.indexOf("flash-image") >= 0 || (n.indexOf("image") >= 0 && n.indexOf("flash") >= 0) || s.indexOf("nano banana") >= 0;
+  });
+  if (!cand.length) return null;
+  const g3 = cand.filter(x => /^gemini-3/i.test(x.name)).sort((a, b) => (a.name < b.name ? 1 : -1));
+  if (g3.length) return g3[0].name;
+  const exact = cand.filter(x => x.name === "gemini-2.5-flash-image");
+  if (exact.length) return exact[0].name;
+  return cand.map(x => x.name).sort().reverse()[0];
+}
+function pickTtsModel(list){
+  const cand = list.map(x => x.name).filter(n => n.toLowerCase().indexOf("tts") >= 0);
+  if (!cand.length) return null;
+  const p = cand.filter(n => { const s = n.toLowerCase(); return s.indexOf("2.5") >= 0 && s.indexOf("flash") >= 0; });
+  if (p.length) return p.sort().reverse()[0];
+  return cand.sort().reverse()[0];
+}
+async function discoverModels(key, force){
+  const id = keyIdOf(key);
+  if (!force && keyModels[id]) return keyModels[id];
+  const base = "https://generativelanguage.googleapis.com/v1beta/models?key=" + encodeURIComponent(key) + "&pageSize=1000";
+  let url = base, all = [];
+  for (let page = 0; page < 3 && url; page++){
+    const res = await fetch(url, { method: "GET" });
+    const txt = await res.text();
+    let data = null;
+    try { data = JSON.parse(txt); } catch (e) {}
+    if (!res.ok){
+      const err = new Error("HTTP " + res.status);
+      err.httpStatus = res.status; err.data = data; err.txt = txt;
+      throw err;
+    }
+    (data && data.models ? data.models : []).forEach(m => all.push(m));
+    url = (data && data.nextPageToken) ? (base + "&pageToken=" + encodeURIComponent(data.nextPageToken)) : null;
+  }
+  const usable = all
+    .filter(m => (m.supportedGenerationMethods || []).indexOf("generateContent") >= 0)
+    .map(m => ({ name: String(m.name || "").replace(/^models\//, ""), display: m.displayName || "" }))
+    .filter(x => x.name);
+  const picked = { text: pickTextModel(usable), image: pickImageModel(usable), tts: pickTtsModel(usable), at: new Date().toLocaleString("vi-VN") };
+  keyModels[id] = picked; saveKeyModels();
+  return picked;
+}
+/* Model cho 1 key + 1 vai trò: đã khám phá → trả kết quả đã lưu (null nghĩa là
+   key đó KHÔNG có model cho vai trò này); khám phá lỗi (mạng...) → tên dự phòng
+   để luật xoay vòng xử lý tiếp như trước. */
+async function modelForKey(key, role){
+  const id = keyIdOf(key);
+  if (keyModels[id]) return keyModels[id][role] || null;
+  try {
+    const d = await discoverModels(key);
+    return d[role] || null;
+  } catch (e) {
+    return FALLBACK_MODELS[role];
+  }
+}
 
 /* ---------- Thời lượng video tối đa (trần cứng 10 phút) ---------- */
 const DUR_SEGMENTS = { 2: [3, 4], 3: [4, 5], 5: [6, 7], 7: [8, 9], 10: [11, 13] };
@@ -504,8 +610,11 @@ function escapeHtml(s){
 }
 
 /* ---------- Gọi Gemini QUA HỒ KEY — xoay vòng tự động ----------
-   Mọi lời gọi Gemini trong app đều đi qua geminiCall():
+   Mọi lời gọi Gemini trong app đều đi qua geminiCall(role, body) — role là
+   "text" | "image" | "tts"; model dùng cho mỗi key được lấy từ kết quả khám
+   phá của CHÍNH key đó (modelForKey), không còn ghim cứng một tên cho mọi key.
    - Bắt đầu từ key đang hoạt động (sticky), key tươi (đạt/chưa kiểm tra) trước, key hết quota sau cùng.
+   - Key không có model cho vai trò đang gọi → bỏ qua key đó, chuyển key kế tiếp.
    - 429/RESOURCE_EXHAUSTED → đánh dấu key 🟡 hết quota + ghi log + thử key kế tiếp.
    - 400 API_KEY_INVALID / 403 → đánh dấu key 🔴 lỗi + chuyển key.
    - Lỗi mạng → thử lại cùng key 1 lần rồi mới chuyển.
@@ -530,7 +639,7 @@ function noteActiveKey(){
   const pn = $("progressNote");
   if (pn && keyPool.length) pn.textContent = "— Đang dùng: Key #" + (activeKeyIdx + 1) + "/" + keyPool.length;
 }
-async function geminiCall(model, body){
+async function geminiCall(role, body){
   if (!keyPool.length) throw new Error("Chưa có API key. Thầy dán key vào mục 1 ở đầu trang trước đã.");
   const start = Math.min(activeKeyIdx, keyPool.length - 1);
   const fresh = [], quotaMarked = [];
@@ -547,6 +656,12 @@ async function geminiCall(model, body){
   let lastErr = null;
   for (const idx of order){
     const key = keyPool[idx];
+    const model = await modelForKey(key, role);
+    if (!model){
+      logKeyRotate("⚠️ Key #" + (idx + 1) + " không có model " + ROLE_TXT[role] + " — tự chuyển Key kế tiếp");
+      lastErr = new Error("Key #" + (idx + 1) + " không có model " + ROLE_TXT[role] + " khả dụng");
+      continue;
+    }
     for (let attempt = 0; attempt < 2; attempt++){
       let res, txt, data = null;
       try {
@@ -592,7 +707,7 @@ async function geminiCall(model, body){
   }
   throw new Error("Đã thử hết các key trong hồ mà chưa gọi được Gemini. " + (lastErr ? lastErr.message + ". " : "") + "Trạng thái hồ key: " + keySummary());
 }
-async function gemini(model, body){ return geminiCall(model, body); }
+async function gemini(role, body){ return geminiCall(role, body); }
 function firstText(data){
   try {
     const parts = data.candidates[0].content.parts || [];
@@ -669,7 +784,7 @@ async function generateScript(){
     userPart = (t ? ("Tiêu đề gợi ý: " + t + "\n") : "") +
       "Dưới đây là nội dung câu chuyện / bài học. Hãy chuyển thành kịch bản video bài giảng bám sát nội dung này:\n\"\"\"\n" + story + "\n\"\"\"";
   }
-  const data = await gemini(MODEL_TEXT, {
+  const data = await gemini("text", {
     contents: [{ parts: [{ text: masterPrompt() + "\n\n---\n" + userPart }] }],
     generationConfig: { responseMimeType: "application/json", temperature: 0.6 }
   });
@@ -742,7 +857,7 @@ $("shortenBtn").addEventListener("click", async () => {
       "JSON gốc:",
       JSON.stringify(scriptData)
     ].join("\n");
-    const data = await gemini(MODEL_TEXT, {
+    const data = await gemini("text", {
       contents: [{ parts: [{ text: prompt }] }],
       generationConfig: { responseMimeType: "application/json", temperature: 0.4 }
     });
@@ -1163,7 +1278,7 @@ async function genImageForSegment(i){
   if (!canAI) { assets[i] = { status: "skip", img: null, source: "none", err: "" }; renderAssetRows(); return false; }
   const prompt = sg.imagePrompt || sg.imageHint || sg.heading;
   try {
-    const data = await gemini(MODEL_IMAGE, {
+    const data = await gemini("image", {
       contents: [{ parts: [{ text: prompt }] }],
       generationConfig: { responseModalities: ["TEXT", "IMAGE"] }
     });
@@ -1443,7 +1558,7 @@ async function genAudioForSegment(i){
     renderAssetRows(); return false;
   }
   try {
-    const data = await gemini(MODEL_TTS, {
+    const data = await gemini("tts", {
       contents: [{ parts: [{ text: sg.narration }] }],
       generationConfig: {
         responseModalities: ["AUDIO"],
