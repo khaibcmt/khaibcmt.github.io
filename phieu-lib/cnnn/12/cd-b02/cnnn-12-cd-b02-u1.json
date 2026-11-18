@@ -1,0 +1,134 @@
+{
+ "bai": "CÔNG NGHỆ SINH HỌC TRONG CHỌN, TẠO VÀ NHÂN GIỐNG CÂY LÂM NGHIỆP — Công nghệ nông nghiệp 12",
+ "fileNguon": "Công nghệ nông nghiệp/Khối 12/Giáo án/Chuyên đề/CN12-CD-B02_Cong_nghe_sinh_hoc_trong_chon_tao_va_nhan_giong_cay_lam_nghiep.docx",
+ "cauHoiPhieu": "PHIẾU HỌC TẬP — BÀI 2: CÔNG NGHỆ SINH HỌC TRONG CHỌN, TẠO VÀ NHÂN GIỐNG CÂY LÂM NGHIỆP Họ và tên: ………………………………………… Lớp: ………… Nhóm: …………",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Mục I.1 – Chỉ thị phân tử",
+   "tieuChi": "1",
+   "cot": "Mục / nội dung",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Giải thích vì sao khi ứng dụng chỉ thị phân tử có thể giúp rút ngắn thời gian chọn, tạo giống mới. Ghi lại số liệu năng suất của các dòng keo lai và bạch đàn lai tiêu biểu trong SGK.",
+   "tieuChi": "1",
+   "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+   "hang": 1,
+   "cotSo": 2
+  },
+  {
+   "so": 3,
+   "dapAn": "Mục I.2 – Chuyển gene",
+   "tieuChi": "2",
+   "cot": "Mục / nội dung",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Mô tả 5 bước cơ bản trong quy trình chuyển gene vào cây lâm nghiệp nhờ plasmid làm thể truyền.",
+   "tieuChi": "2",
+   "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+   "hang": 2,
+   "cotSo": 2
+  },
+  {
+   "so": 5,
+   "dapAn": "Mục I.3 – Tạo giống đa bội",
+   "tieuChi": "3",
+   "cot": "Mục / nội dung",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 6,
+   "dapAn": "Mô tả quy trình tạo giống cây lâm nghiệp tam bội bằng phương pháp gây đột biến kết hợp với lai giống; nêu thành tựu với các dòng keo lai tam bội.",
+   "tieuChi": "3",
+   "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+   "hang": 3,
+   "cotSo": 2
+  },
+  {
+   "so": 7,
+   "dapAn": "Mục II – Nhân giống",
+   "tieuChi": "4",
+   "cot": "Mục / nội dung",
+   "hang": 4,
+   "cotSo": 1
+  },
+  {
+   "so": 8,
+   "dapAn": "Mô tả các bước nhân giống cây lâm nghiệp bằng phương pháp nuôi cấy mô tế bào thực vật và phân tích vai trò của công nghệ sinh học trong nhân giống.",
+   "tieuChi": "4",
+   "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+   "hang": 4,
+   "cotSo": 2
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "STT",
+   "Mục / nội dung",
+   "Câu hỏi khám phá và nội dung cần hoàn thành"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "1",
+    "cacCot": [
+     {
+      "cot": "Mục / nội dung",
+      "noiDung": "Mục I.1 – Chỉ thị phân tử"
+     },
+     {
+      "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+      "noiDung": "Giải thích vì sao khi ứng dụng chỉ thị phân tử có thể giúp rút ngắn thời gian chọn, tạo giống mới. Ghi lại số liệu năng suất của các dòng keo lai và bạch đàn lai tiêu biểu trong SGK."
+     }
+    ]
+   },
+   {
+    "tieuChi": "2",
+    "cacCot": [
+     {
+      "cot": "Mục / nội dung",
+      "noiDung": "Mục I.2 – Chuyển gene"
+     },
+     {
+      "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+      "noiDung": "Mô tả 5 bước cơ bản trong quy trình chuyển gene vào cây lâm nghiệp nhờ plasmid làm thể truyền."
+     }
+    ]
+   },
+   {
+    "tieuChi": "3",
+    "cacCot": [
+     {
+      "cot": "Mục / nội dung",
+      "noiDung": "Mục I.3 – Tạo giống đa bội"
+     },
+     {
+      "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+      "noiDung": "Mô tả quy trình tạo giống cây lâm nghiệp tam bội bằng phương pháp gây đột biến kết hợp với lai giống; nêu thành tựu với các dòng keo lai tam bội."
+     }
+    ]
+   },
+   {
+    "tieuChi": "4",
+    "cacCot": [
+     {
+      "cot": "Mục / nội dung",
+      "noiDung": "Mục II – Nhân giống"
+     },
+     {
+      "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+      "noiDung": "Mô tả các bước nhân giống cây lâm nghiệp bằng phương pháp nuôi cấy mô tế bào thực vật và phân tích vai trò của công nghệ sinh học trong nhân giống."
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
