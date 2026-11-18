@@ -1,0 +1,105 @@
+{
+ "bai": "CẤU TRÚC VÀ CHỨC NĂNG CỦA NHIỄM SẮC THỂ — Sinh học 12",
+ "fileNguon": "Sinh học/Khối 12/Giáo án/HK1/KHBD_Sinh_hoc_12_Bai_7_Cau_truc_va_chuc_nang_cua_nhiem_sac_the_1_tiet.docx",
+ "cauHoiPhieu": "Nhiệm vụ: Các nhóm hoàn thành hai bảng sau trong giờ học, sau đó trình bày trước lớp. Bảng A. Cấu trúc siêu hiển vi của nhiễm sắc thể qua các kì",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "NST có dạng chuỗi nucleosome; mỗi nucleosome gồm lõi protein histone với 8 phân tử thuộc 4 loại khác nhau, bên ngoài quấn quanh bởi một đoạn DNA gồm 146 cặp nucleotide; vùng dị nhiễm sắc: các nucleosome nằm gần nhau; vùng nguyên nhiễm sắc: các nucleosome cách xa nhau",
+   "tieuChi": "Kì trung gian",
+   "cot": "Cấu trúc siêu hiển vi của NST",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Chuỗi nucleosome: 10 nm; NST dãn xoắn tối đa để gene có thể phiên mã và DNA tự nhân đôi",
+   "tieuChi": "Kì trung gian",
+   "cot": "Đường kính / Đặc điểm",
+   "hang": 1,
+   "cotSo": 2
+  },
+  {
+   "so": 3,
+   "dapAn": "Các protein condensin I và II làm cho các sợi NST co xoắn lại tạo nên bộ khung NST (vòng sợi 10 nm)",
+   "tieuChi": "Kì đầu",
+   "cot": "Cấu trúc siêu hiển vi của NST",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Chiều dài NST giảm mạnh, chiều rộng tăng dần",
+   "tieuChi": "Kì đầu",
+   "cot": "Đường kính / Đặc điểm",
+   "hang": 2,
+   "cotSo": 2
+  },
+  {
+   "so": 5,
+   "dapAn": "Các vòng sợi 10 nm tiếp tục co xoắn và nén lại, xếp chồng lên nhau và nhô dài ra; NST là cấu trúc kép gồm 2 chromatid",
+   "tieuChi": "Kì giữa",
+   "cot": "Cấu trúc siêu hiển vi của NST",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 6,
+   "dapAn": "Mỗi chromatid: khoảng 700 nm; chiều ngang của NST kép: tới 1400 nm",
+   "tieuChi": "Kì giữa",
+   "cot": "Đường kính / Đặc điểm",
+   "hang": 3,
+   "cotSo": 2
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Kì",
+   "Cấu trúc siêu hiển vi của NST",
+   "Đường kính / Đặc điểm"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Kì trung gian",
+    "cacCot": [
+     {
+      "cot": "Cấu trúc siêu hiển vi của NST",
+      "noiDung": "NST có dạng chuỗi nucleosome; mỗi nucleosome gồm lõi protein histone với 8 phân tử thuộc 4 loại khác nhau, bên ngoài quấn quanh bởi một đoạn DNA gồm 146 cặp nucleotide; vùng dị nhiễm sắc: các nucleosome nằm gần nhau; vùng nguyên nhiễm sắc: các nucleosome cách xa nhau"
+     },
+     {
+      "cot": "Đường kính / Đặc điểm",
+      "noiDung": "Chuỗi nucleosome: 10 nm; NST dãn xoắn tối đa để gene có thể phiên mã và DNA tự nhân đôi"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Kì đầu",
+    "cacCot": [
+     {
+      "cot": "Cấu trúc siêu hiển vi của NST",
+      "noiDung": "Các protein condensin I và II làm cho các sợi NST co xoắn lại tạo nên bộ khung NST (vòng sợi 10 nm)"
+     },
+     {
+      "cot": "Đường kính / Đặc điểm",
+      "noiDung": "Chiều dài NST giảm mạnh, chiều rộng tăng dần"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Kì giữa",
+    "cacCot": [
+     {
+      "cot": "Cấu trúc siêu hiển vi của NST",
+      "noiDung": "Các vòng sợi 10 nm tiếp tục co xoắn và nén lại, xếp chồng lên nhau và nhô dài ra; NST là cấu trúc kép gồm 2 chromatid"
+     },
+     {
+      "cot": "Đường kính / Đặc điểm",
+      "noiDung": "Mỗi chromatid: khoảng 700 nm; chiều ngang của NST kép: tới 1400 nm"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
