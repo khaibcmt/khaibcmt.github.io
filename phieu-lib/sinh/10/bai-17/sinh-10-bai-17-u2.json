@@ -1,0 +1,102 @@
+{
+ "bai": "Bài 17: Giảm phân — Sinh học 10",
+ "fileNguon": "Sinh học/Khối 10/Giáo án/HK2/KHBD_Sinh_hoc_10_Bai_17_Giam_phan_3_tiet.docx",
+ "cauHoiPhieu": "Nội dung 2. Các yếu tố ảnh hưởng đến giảm phân (đọc mục II trong SGK và hoàn thành bảng):",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "bộ nhiễm sắc thể của tế bào là đối tượng chính của quá trình giảm phân nên những bất thường về hình thái, cấu trúc, số lượng nhiễm sắc thể đều có thể ảnh hưởng tới kết quả của quá trình giảm phân; ở mỗi loài, đến độ tuổi trưởng thành nhất định, các tế bào sinh dục mới tiến hành giảm phân tạo giao tử, đánh dấu sự bắt đầu có khả năng sinh sản của cơ thể.",
+   "tieuChi": "Yếu tố di truyền",
+   "cot": "Ảnh hưởng đến quá trình giảm phân",
+   "hang": 1,
+   "cotSo": 2
+  },
+  {
+   "so": 2,
+   "dapAn": "nhiều loài cây chỉ có thể ra hoa khi gặp điều kiện thời tiết, chế độ ánh sáng thích hợp; ví dụ: để kích thích cây thanh long ra hoa trái vụ, người ta thường thắp đèn chiếu sáng vào ban đêm.",
+   "tieuChi": "Yếu tố môi trường",
+   "cot": "Ảnh hưởng đến quá trình giảm phân",
+   "hang": 2,
+   "cotSo": 2
+  },
+  {
+   "so": 3,
+   "dapAn": "đóng vai trò quan trọng trong quá trình giảm phân; để vật nuôi sinh sản theo ý muốn, người ta có thể tiêm hormone sinh dục kích thích quá trình sinh sản cho vật nuôi.",
+   "tieuChi": "Hormone sinh dục",
+   "cot": "Ảnh hưởng đến quá trình giảm phân",
+   "hang": 3,
+   "cotSo": 2
+  },
+  {
+   "so": 4,
+   "dapAn": "ở người, phụ nữ càng lớn tuổi, tỉ lệ sinh con bị hội chứng Down càng gia tăng, đặc biệt từ tuổi 35 trở lên, do càng lớn tuổi thì quá trình giảm phân hình thành giao tử càng dễ bị rối loạn, dẫn đến tỉ lệ các giao tử bất thường tăng lên (giao tử thừa một nhiễm sắc thể 21), đặc biệt ở phụ nữ (do thời gian của kì đầu giảm phân I kéo dài quá lâu, đúng bằng số tuổi của người phụ nữ khi sinh con nên dễ dẫn đến rối loạn cơ chế phân li nhiễm sắc thể).",
+   "tieuChi": "Tuổi tác",
+   "cot": "Ảnh hưởng đến quá trình giảm phân",
+   "hang": 4,
+   "cotSo": 2
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Yếu tố",
+   "Biểu hiện / ví dụ",
+   "Ảnh hưởng đến quá trình giảm phân"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Yếu tố di truyền",
+    "cacCot": [
+     {
+      "cot": "Biểu hiện / ví dụ",
+      "noiDung": ""
+     },
+     {
+      "cot": "Ảnh hưởng đến quá trình giảm phân",
+      "noiDung": "bộ nhiễm sắc thể của tế bào là đối tượng chính của quá trình giảm phân nên những bất thường về hình thái, cấu trúc, số lượng nhiễm sắc thể đều có thể ảnh hưởng tới kết quả của quá trình giảm phân; ở mỗi loài, đến độ tuổi trưởng thành nhất định, các tế bào sinh dục mới tiến hành giảm phân tạo giao tử, đánh dấu sự bắt đầu có khả năng sinh sản của cơ thể."
+     }
+    ]
+   },
+   {
+    "tieuChi": "Yếu tố môi trường",
+    "cacCot": [
+     {
+      "cot": "Biểu hiện / ví dụ",
+      "noiDung": ""
+     },
+     {
+      "cot": "Ảnh hưởng đến quá trình giảm phân",
+      "noiDung": "nhiều loài cây chỉ có thể ra hoa khi gặp điều kiện thời tiết, chế độ ánh sáng thích hợp; ví dụ: để kích thích cây thanh long ra hoa trái vụ, người ta thường thắp đèn chiếu sáng vào ban đêm."
+     }
+    ]
+   },
+   {
+    "tieuChi": "Hormone sinh dục",
+    "cacCot": [
+     {
+      "cot": "Biểu hiện / ví dụ",
+      "noiDung": ""
+     },
+     {
+      "cot": "Ảnh hưởng đến quá trình giảm phân",
+      "noiDung": "đóng vai trò quan trọng trong quá trình giảm phân; để vật nuôi sinh sản theo ý muốn, người ta có thể tiêm hormone sinh dục kích thích quá trình sinh sản cho vật nuôi."
+     }
+    ]
+   },
+   {
+    "tieuChi": "Tuổi tác",
+    "cacCot": [
+     {
+      "cot": "Biểu hiện / ví dụ",
+      "noiDung": ""
+     },
+     {
+      "cot": "Ảnh hưởng đến quá trình giảm phân",
+      "noiDung": "ở người, phụ nữ càng lớn tuổi, tỉ lệ sinh con bị hội chứng Down càng gia tăng, đặc biệt từ tuổi 35 trở lên, do càng lớn tuổi thì quá trình giảm phân hình thành giao tử càng dễ bị rối loạn, dẫn đến tỉ lệ các giao tử bất thường tăng lên (giao tử thừa một nhiễm sắc thể 21), đặc biệt ở phụ nữ (do thời gian của kì đầu giảm phân I kéo dài quá lâu, đúng bằng số tuổi của người phụ nữ khi sinh con nên dễ dẫn đến rối loạn cơ chế phân li nhiễm sắc thể)."
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Đoạn Dự kiến sản phẩm (DKSP) trong cùng KHBD, mở đầu bằng nhãn của từng hàng trong bảng phiếu (trích nguyên văn)."
+ },
+ "ghiChu": " Đáp án là đoạn DKSP nguyên văn (dài hơn đáp án rút gọn kiểu mẫu tay Bài 9)."
+}
