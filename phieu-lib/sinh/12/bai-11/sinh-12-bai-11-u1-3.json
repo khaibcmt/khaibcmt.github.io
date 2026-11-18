@@ -1,0 +1,108 @@
+{
+ "bai": "LIÊN KẾT GENE VÀ HOÁN VỊ GENE — Sinh học 12",
+ "fileNguon": "Sinh học/Khối 12/Giáo án/HK1/KHBD_Sinh_hoc_12_Bai_11_Lien_ket_gene_va_hoan_vi_gene_2_tiet.docx",
+ "cauHoiPhieu": "Nhiệm vụ: Các nhóm hoàn thành ba bảng sau trong quá trình học tập, sau đó trình bày trước lớp. Bảng A. Thí nghiệm của Morgan về liên kết gene và hoán vị gene",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Tần số hoán vị gene = (số cá thể mang kiểu hình tái tổ hợp / tổng số cá thể) × 100%; luôn nhỏ hơn hoặc bằng 50%",
+   "tieuChi": "Tần số hoán vị gene",
+   "cot": "Công thức / đơn vị",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Thí nghiệm của Morgan: (206 + 185) / 2300 × 100% = 17%",
+   "tieuChi": "Tần số hoán vị gene",
+   "cot": "Ví dụ",
+   "hang": 1,
+   "cotSo": 2,
+   "cotPhu": true
+  },
+  {
+   "so": 3,
+   "dapAn": "Sơ đồ biểu diễn trật tự sắp xếp và khoảng cách tương đối giữa các gene trên NST; đơn vị: cM (1 cM ứng với tần số hoán vị gene là 1%)",
+   "tieuChi": "Bản đồ di truyền",
+   "cot": "Công thức / đơn vị",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Ba gene A, B, C: tần số hoán vị gene giữa A và B là 8%, giữa B và C là 12% thì khoảng cách giữa A và C là 20 cM",
+   "tieuChi": "Bản đồ di truyền",
+   "cot": "Ví dụ",
+   "hang": 2,
+   "cotSo": 2,
+   "cotPhu": true
+  },
+  {
+   "so": 5,
+   "dapAn": "Dự đoán trước tần số các tổ hợp gene mới trong phép lai; hỗ trợ chọn lọc, tạo giống và nghiên cứu khoa học",
+   "tieuChi": "Ý nghĩa",
+   "cot": "Công thức / đơn vị",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 6,
+   "dapAn": "Chủ động tạo giống lúa vừa có năng suất cao vừa kháng bệnh, rút ngắn thời gian chọn giống",
+   "tieuChi": "Ý nghĩa",
+   "cot": "Ví dụ",
+   "hang": 3,
+   "cotSo": 2,
+   "cotPhu": true
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Nội dung",
+   "Công thức / đơn vị",
+   "Ví dụ"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Tần số hoán vị gene",
+    "cacCot": [
+     {
+      "cot": "Công thức / đơn vị",
+      "noiDung": "Tần số hoán vị gene = (số cá thể mang kiểu hình tái tổ hợp / tổng số cá thể) × 100%; luôn nhỏ hơn hoặc bằng 50%"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Thí nghiệm của Morgan: (206 + 185) / 2300 × 100% = 17%"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Bản đồ di truyền",
+    "cacCot": [
+     {
+      "cot": "Công thức / đơn vị",
+      "noiDung": "Sơ đồ biểu diễn trật tự sắp xếp và khoảng cách tương đối giữa các gene trên NST; đơn vị: cM (1 cM ứng với tần số hoán vị gene là 1%)"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Ba gene A, B, C: tần số hoán vị gene giữa A và B là 8%, giữa B và C là 12% thì khoảng cách giữa A và C là 20 cM"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Ý nghĩa",
+    "cacCot": [
+     {
+      "cot": "Công thức / đơn vị",
+      "noiDung": "Dự đoán trước tần số các tổ hợp gene mới trong phép lai; hỗ trợ chọn lọc, tạo giống và nghiên cứu khoa học"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Chủ động tạo giống lúa vừa có năng suất cao vừa kháng bệnh, rút ngắn thời gian chọn giống"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
