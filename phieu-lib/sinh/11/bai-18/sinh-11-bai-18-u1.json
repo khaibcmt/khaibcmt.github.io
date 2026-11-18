@@ -1,0 +1,535 @@
+{
+ "bai": "Tập tính ở động vật — Sinh học 11",
+ "fileNguon": "Sinh học/Khối 11/Giáo án/HK2/KHBD_Sinh_hoc_11_Bai_18_Tap_tinh_o_dong_vat_3_tiet.docx",
+ "cauHoiPhieu": "Họ và tên nhóm: ............................................ Lớp: ............",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Chuỗi các phản ứng của động vật trả lời các kích thích từ môi trường bên trong hoặc bên ngoài cơ thể, giúp động vật thích nghi và tồn tại",
+   "tieuChi": "Khái niệm tập tính",
+   "cot": "Đặc điểm",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Kiến tha mồi về tổ; chim xây tổ; nai chạy trốn thú dữ",
+   "tieuChi": "Khái niệm tập tính",
+   "cot": "Ví dụ",
+   "hang": 1,
+   "cotSo": 2,
+   "cotPhu": true
+  },
+  {
+   "so": 3,
+   "dapAn": "Cơ sở để động vật thích nghi với môi trường",
+   "tieuChi": "Khái niệm tập tính",
+   "cot": "Ghi chú",
+   "hang": 1,
+   "cotSo": 3,
+   "cotPhu": true
+  },
+  {
+   "so": 4,
+   "dapAn": "Sinh ra đã có, được di truyền từ bố mẹ, đặc trưng cho loài, bền vững, không cần học tập",
+   "tieuChi": "Tập tính bẩm sinh",
+   "cot": "Đặc điểm",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 5,
+   "dapAn": "Nhện giăng tơ; gà con mổ thóc; tằm nhả tơ làm kén; cá hồi vượt thác về nơi sinh sản",
+   "tieuChi": "Tập tính bẩm sinh",
+   "cot": "Ví dụ",
+   "hang": 2,
+   "cotSo": 2,
+   "cotPhu": true
+  },
+  {
+   "so": 6,
+   "dapAn": "Mang tính loài",
+   "tieuChi": "Tập tính bẩm sinh",
+   "cot": "Ghi chú",
+   "hang": 2,
+   "cotSo": 3,
+   "cotPhu": true
+  },
+  {
+   "so": 7,
+   "dapAn": "Hình thành trong quá trình sống qua học tập và rút kinh nghiệm, có thể thay đổi, dễ mất đi nếu không củng cố",
+   "tieuChi": "Tập tính học được",
+   "cot": "Đặc điểm",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 8,
+   "dapAn": "Chuột học chạy mê cung; chó học bắt tay; chim học hót; trẻ em học nói",
+   "tieuChi": "Tập tính học được",
+   "cot": "Ví dụ",
+   "hang": 3,
+   "cotSo": 2,
+   "cotPhu": true
+  },
+  {
+   "so": 9,
+   "dapAn": "Mang tính cá thể",
+   "tieuChi": "Tập tính học được",
+   "cot": "Ghi chú",
+   "hang": 3,
+   "cotSo": 3,
+   "cotPhu": true
+  },
+  {
+   "so": 10,
+   "dapAn": "Chất hoá học do động vật tiết ra, được các cá thể cùng loài sử dụng làm tín hiệu giao tiếp",
+   "tieuChi": "Pheromone",
+   "cot": "Đặc điểm",
+   "hang": 4,
+   "cotSo": 1
+  },
+  {
+   "so": 11,
+   "dapAn": "Bướm tằm cái tiết bombykol thu hút bướm đực; kiến đánh dấu đường đi; ong báo động",
+   "tieuChi": "Pheromone",
+   "cot": "Ví dụ",
+   "hang": 4,
+   "cotSo": 2,
+   "cotPhu": true
+  },
+  {
+   "so": 12,
+   "dapAn": "Tín hiệu hoá học giữa các cá thể cùng loài",
+   "tieuChi": "Pheromone",
+   "cot": "Ghi chú",
+   "hang": 4,
+   "cotSo": 3,
+   "cotPhu": true
+  },
+  {
+   "so": 13,
+   "dapAn": "Giảm dần đáp ứng với kích thích lặp lại nhiều lần mà không gây hại",
+   "tieuChi": "Quen nhờn",
+   "cot": "Đặc điểm",
+   "hang": 5,
+   "cotSo": 1
+  },
+  {
+   "so": 14,
+   "dapAn": "Chim sẻ quen dần với bù nhìn nên không bay đi nữa",
+   "tieuChi": "Quen nhờn",
+   "cot": "Ví dụ",
+   "hang": 5,
+   "cotSo": 2,
+   "cotPhu": true
+  },
+  {
+   "so": 15,
+   "dapAn": "Hình thức học tập đơn giản nhất",
+   "tieuChi": "Quen nhờn",
+   "cot": "Ghi chú",
+   "hang": 5,
+   "cotSo": 3,
+   "cotPhu": true
+  },
+  {
+   "so": 16,
+   "dapAn": "Động vật mới sinh đi theo và gắn bó với vật chuyển động đầu tiên nhìn thấy sau khi nở",
+   "tieuChi": "In vết",
+   "cot": "Đặc điểm",
+   "hang": 6,
+   "cotSo": 1
+  },
+  {
+   "so": 17,
+   "dapAn": "Gà con, vịt con đi theo gà mẹ; thí nghiệm của Lorenz",
+   "tieuChi": "In vết",
+   "cot": "Ví dụ",
+   "hang": 6,
+   "cotSo": 2,
+   "cotPhu": true
+  },
+  {
+   "so": 18,
+   "dapAn": "Chỉ xảy ra trong giai đoạn nhạy cảm sau khi sinh",
+   "tieuChi": "In vết",
+   "cot": "Ghi chú",
+   "hang": 6,
+   "cotSo": 3,
+   "cotPhu": true
+  },
+  {
+   "so": 19,
+   "dapAn": "Hình thành phản xạ có điều kiện khi kết hợp kích thích có điều kiện với kích thích không điều kiện nhiều lần",
+   "tieuChi": "Điều kiện hoá đáp ứng",
+   "cot": "Đặc điểm",
+   "hang": 7,
+   "cotSo": 1
+  },
+  {
+   "so": 20,
+   "dapAn": "Thí nghiệm của Pavlov: chó tiết nước bọt khi nghe tiếng chuông",
+   "tieuChi": "Điều kiện hoá đáp ứng",
+   "cot": "Ví dụ",
+   "hang": 7,
+   "cotSo": 2,
+   "cotPhu": true
+  },
+  {
+   "so": 21,
+   "dapAn": "Động vật thụ động nhận kích thích",
+   "tieuChi": "Điều kiện hoá đáp ứng",
+   "cot": "Ghi chú",
+   "hang": 7,
+   "cotSo": 3,
+   "cotPhu": true
+  },
+  {
+   "so": 22,
+   "dapAn": "Động vật chủ động thực hiện hành vi để nhận phần thưởng hoặc tránh hình phạt; học theo kiểu thử — sai — đúng",
+   "tieuChi": "Điều kiện hoá hành động",
+   "cot": "Đặc điểm",
+   "hang": 8,
+   "cotSo": 1
+  },
+  {
+   "so": 23,
+   "dapAn": "Thí nghiệm của Skinner: chuột nhấn cần gạt để lấy thức ăn; chó học bắt tay",
+   "tieuChi": "Điều kiện hoá hành động",
+   "cot": "Ví dụ",
+   "hang": 8,
+   "cotSo": 2,
+   "cotPhu": true
+  },
+  {
+   "so": 24,
+   "dapAn": "Động vật chủ động thực hiện hành vi",
+   "tieuChi": "Điều kiện hoá hành động",
+   "cot": "Ghi chú",
+   "hang": 8,
+   "cotSo": 3,
+   "cotPhu": true
+  },
+  {
+   "so": 25,
+   "dapAn": "Học mà không cần củng cố trực tiếp, tri thức thu được chỉ bộc lộ khi cần thiết",
+   "tieuChi": "Học ngầm",
+   "cot": "Đặc điểm",
+   "hang": 9,
+   "cotSo": 1
+  },
+  {
+   "so": 26,
+   "dapAn": "Chuột nhớ đường đi trong mê cung mà không cần phần thưởng",
+   "tieuChi": "Học ngầm",
+   "cot": "Ví dụ",
+   "hang": 9,
+   "cotSo": 2,
+   "cotPhu": true
+  },
+  {
+   "so": 27,
+   "dapAn": "Học không có phần thưởng trực tiếp",
+   "tieuChi": "Học ngầm",
+   "cot": "Ghi chú",
+   "hang": 9,
+   "cotSo": 3,
+   "cotPhu": true
+  },
+  {
+   "so": 28,
+   "dapAn": "Học qua suy luận, giải quyết vấn đề mới dựa trên kinh nghiệm đã có",
+   "tieuChi": "Học khôn",
+   "cot": "Đặc điểm",
+   "hang": 10,
+   "cotSo": 1
+  },
+  {
+   "so": 29,
+   "dapAn": "Tinh tinh dùng que khều thức ăn, dùng đá đập vỡ hạt",
+   "tieuChi": "Học khôn",
+   "cot": "Ví dụ",
+   "hang": 10,
+   "cotSo": 2,
+   "cotPhu": true
+  },
+  {
+   "so": 30,
+   "dapAn": "Chỉ có ở động vật có hệ thần kinh phát triển",
+   "tieuChi": "Học khôn",
+   "cot": "Ghi chú",
+   "hang": 10,
+   "cotSo": 3,
+   "cotPhu": true
+  },
+  {
+   "so": 31,
+   "dapAn": "Hình thành các mối liên hệ thần kinh tạm thời ở vỏ não, dựa trên cơ chế phản xạ có điều kiện; cần chú ý, lặp lại, củng cố, động cơ tích cực",
+   "tieuChi": "Cơ chế học tập ở người",
+   "cot": "Đặc điểm",
+   "hang": 11,
+   "cotSo": 1
+  },
+  {
+   "so": 32,
+   "dapAn": "Học thuộc bài thơ nhờ đọc nhiều lần; học đi xe đạp thành kĩ năng tự động",
+   "tieuChi": "Cơ chế học tập ở người",
+   "cot": "Ví dụ",
+   "hang": 11,
+   "cotSo": 2,
+   "cotPhu": true
+  },
+  {
+   "so": 33,
+   "dapAn": "Không củng cố thì tri thức bị quên dần",
+   "tieuChi": "Cơ chế học tập ở người",
+   "cot": "Ghi chú",
+   "hang": 11,
+   "cotSo": 3,
+   "cotPhu": true
+  },
+  {
+   "so": 34,
+   "dapAn": "Dạy động vật làm xiếc; dạy trẻ em học tập; chăn nuôi; bảo vệ mùa màng; ứng dụng pheromone",
+   "tieuChi": "Ứng dụng trong thực tiễn",
+   "cot": "Đặc điểm",
+   "hang": 12,
+   "cotSo": 1
+  },
+  {
+   "so": 35,
+   "dapAn": "Bẫy pheromone bắt sâu hại; bò nghe chuông về chuồng; chó làm xiếc",
+   "tieuChi": "Ứng dụng trong thực tiễn",
+   "cot": "Ví dụ",
+   "hang": 12,
+   "cotSo": 2,
+   "cotPhu": true
+  },
+  {
+   "so": 36,
+   "dapAn": "Gắn với bảo vệ môi trường, phát triển bền vững",
+   "tieuChi": "Ứng dụng trong thực tiễn",
+   "cot": "Ghi chú",
+   "hang": 12,
+   "cotSo": 3,
+   "cotPhu": true
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Nội dung",
+   "Đặc điểm",
+   "Ví dụ",
+   "Ghi chú"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Khái niệm tập tính",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm",
+      "noiDung": "Chuỗi các phản ứng của động vật trả lời các kích thích từ môi trường bên trong hoặc bên ngoài cơ thể, giúp động vật thích nghi và tồn tại"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Kiến tha mồi về tổ; chim xây tổ; nai chạy trốn thú dữ"
+     },
+     {
+      "cot": "Ghi chú",
+      "noiDung": "Cơ sở để động vật thích nghi với môi trường"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Tập tính bẩm sinh",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm",
+      "noiDung": "Sinh ra đã có, được di truyền từ bố mẹ, đặc trưng cho loài, bền vững, không cần học tập"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Nhện giăng tơ; gà con mổ thóc; tằm nhả tơ làm kén; cá hồi vượt thác về nơi sinh sản"
+     },
+     {
+      "cot": "Ghi chú",
+      "noiDung": "Mang tính loài"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Tập tính học được",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm",
+      "noiDung": "Hình thành trong quá trình sống qua học tập và rút kinh nghiệm, có thể thay đổi, dễ mất đi nếu không củng cố"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Chuột học chạy mê cung; chó học bắt tay; chim học hót; trẻ em học nói"
+     },
+     {
+      "cot": "Ghi chú",
+      "noiDung": "Mang tính cá thể"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Pheromone",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm",
+      "noiDung": "Chất hoá học do động vật tiết ra, được các cá thể cùng loài sử dụng làm tín hiệu giao tiếp"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Bướm tằm cái tiết bombykol thu hút bướm đực; kiến đánh dấu đường đi; ong báo động"
+     },
+     {
+      "cot": "Ghi chú",
+      "noiDung": "Tín hiệu hoá học giữa các cá thể cùng loài"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Quen nhờn",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm",
+      "noiDung": "Giảm dần đáp ứng với kích thích lặp lại nhiều lần mà không gây hại"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Chim sẻ quen dần với bù nhìn nên không bay đi nữa"
+     },
+     {
+      "cot": "Ghi chú",
+      "noiDung": "Hình thức học tập đơn giản nhất"
+     }
+    ]
+   },
+   {
+    "tieuChi": "In vết",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm",
+      "noiDung": "Động vật mới sinh đi theo và gắn bó với vật chuyển động đầu tiên nhìn thấy sau khi nở"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Gà con, vịt con đi theo gà mẹ; thí nghiệm của Lorenz"
+     },
+     {
+      "cot": "Ghi chú",
+      "noiDung": "Chỉ xảy ra trong giai đoạn nhạy cảm sau khi sinh"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Điều kiện hoá đáp ứng",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm",
+      "noiDung": "Hình thành phản xạ có điều kiện khi kết hợp kích thích có điều kiện với kích thích không điều kiện nhiều lần"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Thí nghiệm của Pavlov: chó tiết nước bọt khi nghe tiếng chuông"
+     },
+     {
+      "cot": "Ghi chú",
+      "noiDung": "Động vật thụ động nhận kích thích"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Điều kiện hoá hành động",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm",
+      "noiDung": "Động vật chủ động thực hiện hành vi để nhận phần thưởng hoặc tránh hình phạt; học theo kiểu thử — sai — đúng"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Thí nghiệm của Skinner: chuột nhấn cần gạt để lấy thức ăn; chó học bắt tay"
+     },
+     {
+      "cot": "Ghi chú",
+      "noiDung": "Động vật chủ động thực hiện hành vi"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Học ngầm",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm",
+      "noiDung": "Học mà không cần củng cố trực tiếp, tri thức thu được chỉ bộc lộ khi cần thiết"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Chuột nhớ đường đi trong mê cung mà không cần phần thưởng"
+     },
+     {
+      "cot": "Ghi chú",
+      "noiDung": "Học không có phần thưởng trực tiếp"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Học khôn",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm",
+      "noiDung": "Học qua suy luận, giải quyết vấn đề mới dựa trên kinh nghiệm đã có"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Tinh tinh dùng que khều thức ăn, dùng đá đập vỡ hạt"
+     },
+     {
+      "cot": "Ghi chú",
+      "noiDung": "Chỉ có ở động vật có hệ thần kinh phát triển"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Cơ chế học tập ở người",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm",
+      "noiDung": "Hình thành các mối liên hệ thần kinh tạm thời ở vỏ não, dựa trên cơ chế phản xạ có điều kiện; cần chú ý, lặp lại, củng cố, động cơ tích cực"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Học thuộc bài thơ nhờ đọc nhiều lần; học đi xe đạp thành kĩ năng tự động"
+     },
+     {
+      "cot": "Ghi chú",
+      "noiDung": "Không củng cố thì tri thức bị quên dần"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Ứng dụng trong thực tiễn",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm",
+      "noiDung": "Dạy động vật làm xiếc; dạy trẻ em học tập; chăn nuôi; bảo vệ mùa màng; ứng dụng pheromone"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Bẫy pheromone bắt sâu hại; bò nghe chuông về chuồng; chó làm xiếc"
+     },
+     {
+      "cot": "Ghi chú",
+      "noiDung": "Gắn với bảo vệ môi trường, phát triển bền vững"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
