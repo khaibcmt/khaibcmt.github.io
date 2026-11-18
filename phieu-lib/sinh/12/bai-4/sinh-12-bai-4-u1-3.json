@@ -1,0 +1,85 @@
+{
+ "bai": "ĐỘT BIẾN GENE — Sinh học 12",
+ "fileNguon": "Sinh học/Khối 12/Giáo án/HK1/KHBD_Sinh_hoc_12_Bai_4_Dot_bien_gene_2_tiet.docx",
+ "cauHoiPhieu": "Nhiệm vụ: Các nhóm hoàn thành ba bảng sau dựa vào SGK Bài 4, sau đó trình bày trước lớp. Bảng A. Các dạng đột biến điểm",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Là nguồn nguyên liệu sơ cấp cho quá trình tiến hoá; làm phong phú vốn gene của quần thể",
+   "tieuChi": "Đối với tiến hoá",
+   "cot": "Vai trò / Biện pháp",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Con người chủ động gây đột biến gene để tạo ra các giống mới có đặc tính mong muốn (ví dụ: giống lợn có thịt siêu nạc nhờ đột biến ở gene điều hòa làm tăng lượng cơ bắp)",
+   "tieuChi": "Đối với chọn giống",
+   "cot": "Vai trò / Biện pháp",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 3,
+   "dapAn": "Có thể gây ra nhiều bệnh di truyền (bệnh hồng cầu hình liềm, bệnh bạch tạng, bệnh máu khó đông); trong một số trường hợp, một bản sao gene đột biến có lợi (tăng khả năng chống sốt rét) nhưng hai bản sao lại gây bệnh",
+   "tieuChi": "Đối với con người",
+   "cot": "Vai trò / Biện pháp",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Hạn chế tiếp xúc với các tác nhân gây đột biến (tia phóng xạ, tia UV, hoá chất độc hại); bảo vệ môi trường sống; khám sức khỏe định kì, sàng lọc trước sinh và tư vấn di truyền; nghiên cứu phát triển các phương pháp điều trị mới (gene trị liệu)",
+   "tieuChi": "Biện pháp phòng tránh",
+   "cot": "Vai trò / Biện pháp",
+   "hang": 4,
+   "cotSo": 1
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Nội dung",
+   "Vai trò / Biện pháp"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Đối với tiến hoá",
+    "cacCot": [
+     {
+      "cot": "Vai trò / Biện pháp",
+      "noiDung": "Là nguồn nguyên liệu sơ cấp cho quá trình tiến hoá; làm phong phú vốn gene của quần thể"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Đối với chọn giống",
+    "cacCot": [
+     {
+      "cot": "Vai trò / Biện pháp",
+      "noiDung": "Con người chủ động gây đột biến gene để tạo ra các giống mới có đặc tính mong muốn (ví dụ: giống lợn có thịt siêu nạc nhờ đột biến ở gene điều hòa làm tăng lượng cơ bắp)"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Đối với con người",
+    "cacCot": [
+     {
+      "cot": "Vai trò / Biện pháp",
+      "noiDung": "Có thể gây ra nhiều bệnh di truyền (bệnh hồng cầu hình liềm, bệnh bạch tạng, bệnh máu khó đông); trong một số trường hợp, một bản sao gene đột biến có lợi (tăng khả năng chống sốt rét) nhưng hai bản sao lại gây bệnh"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Biện pháp phòng tránh",
+    "cacCot": [
+     {
+      "cot": "Vai trò / Biện pháp",
+      "noiDung": "Hạn chế tiếp xúc với các tác nhân gây đột biến (tia phóng xạ, tia UV, hoá chất độc hại); bảo vệ môi trường sống; khám sức khỏe định kì, sàng lọc trước sinh và tư vấn di truyền; nghiên cứu phát triển các phương pháp điều trị mới (gene trị liệu)"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
