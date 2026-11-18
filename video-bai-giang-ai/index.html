@@ -1371,9 +1371,9 @@ function renderScriptReview(){
     if (sg.type === "image") extra = "<p>Mô tả ảnh (AI sẽ vẽ): <i>" + escapeHtml(sg.imagePrompt || "") + "</i></p>";
     if (sg.type === "sgk") extra = "<p>Hình SGK cần tìm: <i>" + escapeHtml(sg.imageHint || "") + "</i></p>";
     if (sg.type === "phieu") {
-      if (sg.phKind === "open") extra = "<p>Cảnh mở: bảng phiếu <b>câm</b> — ô trống chỉ có vòng tròn đánh số, kèm câu yêu cầu của phiếu.</p>";
+      if (sg.phKind === "open") extra = "<p>Cảnh mở: bảng phiếu <b>câm</b> — ô trống chỉ có vòng tròn đánh số, kèm câu yêu cầu của phiếu và <b>ngân hàng nội dung</b> nhiều màu ở dưới bảng để học sinh chọn điền vào từng số.</p>";
       else if (sg.phKind === "fill") extra = "<p>" + escapeHtml(sg.caption || "") + "</p>";
-      else if (sg.phKind === "key") extra = "<p>Cảnh chốt: bảng đáp án đầy đủ của giáo viên để học sinh đối chiếu với bài làm.</p>";
+      else if (sg.phKind === "key") extra = "<p>Cảnh chốt: bảng đáp án đầy đủ của giáo viên — lời đọc nêu lại toàn bộ nội dung theo từng hàng (mỗi đáp án đọc một lần, đáp án trùng hệt nhau chỉ nhắc lại số), highlight chạy theo hàng đang đọc.</p>";
       else if (sg.phKind === "qr") extra = "<p>Cảnh cuối: mã QR + link làm bài tập tương tác: <i>" + escapeHtml(sg.qrUrl || "") + "</i></p>";
     }
     d.innerHTML = '<span class="tag ' + sg.type + '">' + TYPE_LABEL[sg.type] + "</span>" +
@@ -2618,6 +2618,19 @@ function phieuActiveRow(t, nRows){
   const x = Math.min(0.999999, Math.max(0, Number(t) || 0));
   return Math.floor(x * nRows);
 }
+/* Như phieuActiveRow nhưng chia tiến độ theo TRỌNG SỐ từng hàng (độ dài
+   phần lời đọc của hàng) — hàng nào lời dài thì highlight đứng lâu hơn,
+   khớp lời nêu lại ở cảnh GV. Thiếu trọng số thì lùi về chia đều. */
+function phieuActiveRowW(t, weights){
+  const ws = (weights || []).map(w => Math.max(0, Number(w) || 0));
+  if (!ws.length) return -1;
+  const total = ws.reduce((a, b) => a + b, 0);
+  if (total <= 0) return phieuActiveRow(t, ws.length);
+  const x = Math.min(0.999999, Math.max(0, Number(t) || 0)) * total;
+  let acc = 0;
+  for (let i = 0; i < ws.length; i++){ acc += ws[i]; if (x < acc) return i; }
+  return ws.length - 1;
+}
 /* Rút gọn câu hỏi phiếu cho lời MỞ: cắt ở BIÊN CÂU gần giới hạn ký tự,
    không cắt giữa câu; ngắn hơn giới hạn thì giữ nguyên văn. */
 function phieuTrimCauHoi(text, limit){
@@ -2633,6 +2646,111 @@ function phieuTrimCauHoi(text, limit){
   if (cut > 0) return s.slice(0, cut).trim();
   const sp = s.lastIndexOf(" ", limit);
   return (sp > 40 ? s.slice(0, sp) : s.slice(0, limit)).trim();
+}
+/* Mẫu câu đọc thầy chốt (19:44 ngày 18/11): "Số {k} đúng là {đáp án}." —
+   đáp án chép NGUYÊN VĂN, chỉ thêm dấu chấm cuối khi đáp án chưa có dấu
+   kết câu; tuyệt đối không cắt xén từ ngữ bên trong đáp án. */
+function phieuSoDungLa(so, dapAn){
+  const a = String(dapAn || "").trim();
+  return "Số " + so + " đúng là " + a + (/[.!?…]$/.test(a) ? "" : ".");
+}
+/* Kịch bản NÊU LẠI của cảnh bảng đáp án GV (thầy chốt 19:39): đọc lại
+   TOÀN BỘ nội dung phiếu theo từng HÀNG — tên hàng (tiêu chí) đọc đúng 1
+   lần ở đầu hàng, các ô trong hàng đọc nối tiếp "Số {k} đúng là {đáp án}."
+   Chống lặp an toàn: đáp án TRÙNG NGUYÊN VĂN hệt nhau với ô đã đọc trước
+   đó trong cùng phiếu thì không đọc lại, thay bằng "Số {k} cũng như số
+   {j}." (j = ô đầu tiên có đáp án đó). Trả về lời đọc + trọng số từng
+   hàng (độ dài phần lời của hàng) để highlight chạy khớp lời. */
+function buildPhieuKeyScript(cacO){
+  const sorted = (cacO || []).slice().sort((a, b) => a.so - b.so);
+  const byHang = {};
+  sorted.forEach(o => {
+    const h = (o.hang == null ? 1 : o.hang);
+    (byHang[h] = byHang[h] || []).push(o);
+  });
+  const hangs = Object.keys(byHang).map(Number).sort((a, b) => a - b);
+  const seen = {};
+  const rows = hangs.map(h => {
+    const cells = byHang[h];
+    const tieuChi = String(cells[0].tieuChi || "").trim();
+    const head = tieuChi ? tieuChi + (/[:.!?…]$/.test(tieuChi) ? " " : ": ") : "";
+    const parts = cells.map(o => {
+      const ans = String(o.dapAn || "").trim();
+      if (ans && Object.prototype.hasOwnProperty.call(seen, ans))
+        return "Số " + o.so + " cũng như số " + seen[ans] + ".";
+      if (ans) seen[ans] = o.so;
+      return phieuSoDungLa(o.so, o.dapAn);
+    });
+    const narr = head + parts.join(" ");
+    return { hang: h, tieuChi: tieuChi, narration: narr, weight: narr.length };
+  });
+  return { narration: rows.map(r => r.narration).join(" "), rows: rows };
+}
+/* Băm FNV-1a -> seed số: xáo trộn ngân hàng nội dung suy từ chính nội
+   dung phiếu nên ổn định giữa các lần dựng và kiểm thử được. */
+function phieuHashSeed(str){
+  let h = 2166136261;
+  const s = String(str || "");
+  for (let i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 16777619); }
+  return h >>> 0;
+}
+/* Xáo trộn Fisher–Yates bằng PRNG mulberry32 có seed cố định theo nội dung. */
+function phieuShuffleSeeded(arr, seed){
+  const a = arr.slice();
+  let s = (seed >>> 0) || 1;
+  const rnd = () => {
+    s = (s + 0x6D2B79F5) >>> 0;
+    let t = s;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+  for (let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(rnd() * (i + 1));
+    const tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+function phieuHslHex(h, s, l){
+  h = ((h % 360) + 360) % 360;
+  s = Math.max(0, Math.min(100, s)) / 100;
+  l = Math.max(0, Math.min(100, l)) / 100;
+  const c = (1 - Math.abs(2 * l - 1)) * s, x = c * (1 - Math.abs((h / 60) % 2 - 1)), m = l - c / 2;
+  let r = 0, g = 0, b = 0;
+  if (h < 60){ r = c; g = x; } else if (h < 120){ r = x; g = c; }
+  else if (h < 180){ g = c; b = x; } else if (h < 240){ g = x; b = c; }
+  else if (h < 300){ r = x; b = c; } else { r = c; b = x; }
+  const to = v => Math.round((v + m) * 255).toString(16).padStart(2, "0");
+  return "#" + to(r) + to(g) + to(b);
+}
+/* Màu ô nội dung thứ k trong NGÂN HÀNG NỘI DUNG: hue quay theo góc vàng
+   (137,5°) nên các ô liên tiếp luôn khác màu; chữ trên ô lấy qua
+   phieuContrastText nên tương phản luôn >= 4,5:1. */
+function phieuBankColor(k){
+  return phieuHslHex(k * 137.508 + 18, 72, [62, 52, 72, 58][k % 4]);
+}
+/* NGÂN HÀNG NỘI DUNG cho cảnh MỞ (thầy chốt 19:42): đúng N ô = N đáp án
+   NGUYÊN VĂN của phiếu, XÁO TRỘN thứ tự (seed theo nội dung phiếu), mỗi
+   ô một màu khác nhau. Màu ô nội dung KHÔNG được trùng màu HÀNG của
+   chính đáp án đó (tránh lộ đáp án bằng màu) và không trùng màu ô khác —
+   trùng thì dịch hue thêm 60° rồi thử lại. Trường `so` chỉ để kiểm chứng
+   dữ liệu, TUYỆT ĐỐI không vẽ lên hình. */
+function phieuBankPlan(cacO){
+  const sorted = (cacO || []).slice().sort((a, b) => a.so - b.so);
+  const seed = phieuHashSeed(sorted.map(o => String(o.so) + "=" + String(o.dapAn || "")).join("|"));
+  const order = phieuShuffleSeeded(sorted.map((_, i) => i), seed);
+  const used = {};
+  return order.map((srcIdx, k) => {
+    const o = sorted[srcIdx];
+    const rowColor = phieuRowColor((o.hang || 1) - 1);
+    let color = phieuBankColor(k), guard = 0;
+    while ((used[color] || color === rowColor) && guard < 24){
+      guard++;
+      color = phieuHslHex(k * 137.508 + 18 + guard * 60, 72, [62, 52, 72, 58][k % 4]);
+    }
+    used[color] = true;
+    return { so: o.so, text: String(o.dapAn || ""), color: color };
+  });
 }
 /* Link bài tập tương tác của 1 phiếu: <thư mục app>?bt=<id phiếu> */
 function buildExerciseUrl(id, baseHref){
@@ -2661,14 +2779,17 @@ function buildPhieuScenes(entry, data, opts){
   const instr = String(opts.instr || "").trim();
   const segs = [];
   /* Lời mở RÚT GỌN: câu hỏi phiếu (dài thì cắt ở biên câu gần 350 ký tự)
-     + đúng 1 câu hướng dẫn cố định. Không liệt kê tên các mục/hàng. */
+     + hướng dẫn điền theo số và dùng NGÂN HÀNG NỘI DUNG dưới bảng (thầy
+     chốt 19:42). Không liệt kê tên các mục/hàng. */
   let openNarr = phieuTrimCauHoi(cauHoi, 350);
   if (openNarr && !/[.!?…:]$/.test(openNarr)) openNarr += ".";
-  openNarr += " Các em hãy điền nội dung đúng vào từng ô trống theo thứ tự các số, rồi xem phần đáp án ở cuối video để đối chiếu nhé.";
+  openNarr += " Các em hãy điền nội dung đúng vào từng ô trống theo thứ tự các số. Phía dưới bảng là các ô nội dung — các em hãy chọn đúng nội dung điền vào từng số nhé! Cuối video có bảng đáp án của giáo viên để đối chiếu.";
   if (instr) openNarr += " " + instr;
-  segs.push({ type: "phieu", phKind: "open", heading: "Phiếu học tập", narration: openNarr, noAudioSec: phieuNoAudioSec(openNarr) });
+  segs.push({ type: "phieu", phKind: "open", heading: "Phiếu học tập", narration: openNarr, noAudioSec: phieuNoAudioSec(openNarr), bank: phieuBankPlan(cacO) });
   cacO.forEach(o => {
-    const narr = "Số " + o.so + ". " + o.tieuChi + ", " + o.cot + ": " + o.dapAn;
+    /* Lời điền RÚT GỌN theo mẫu thầy chốt: chỉ "Số {k} đúng là {đáp án}."
+       — không đọc tên tiêu chí/cột (đã có trên hình + caption). */
+    const narr = phieuSoDungLa(o.so, o.dapAn);
     segs.push({
       type: "phieu", phKind: "fill", fillSo: o.so,
       heading: "Đáp án số " + o.so,
@@ -2676,20 +2797,24 @@ function buildPhieuScenes(entry, data, opts){
       narration: narr, noAudioSec: phieuNoAudioSec(narr)
     });
   });
-  /* Cảnh bảng đáp án GV: lời đọc CHỈ 1 câu chốt ngắn — KHÔNG đọc lại đáp
-     án (đọc lại toàn bộ là "câu thừa", cảnh đứng yên ~2 phút). Hình thì
-     highlight chạy từng hàng ~2,5 giây/hàng; thời lượng cảnh =
-     max(câu chốt, số hàng × 2,5s), trần 40 giây. */
-  const gv = data.bangDapAnGV || { cacHang: [] };
-  const keyNarr = "Đây là bảng đáp án của giáo viên. Các em hãy đối chiếu từng ô với bài làm của mình và sửa lại những chỗ chưa đúng nhé!";
-  const keyRows = (gv.cacHang || []).length;
-  const keyFloor = Math.min(40, Math.max(phieuNoAudioSec(keyNarr), keyRows * 2.5));
-  segs.push({ type: "phieu", phKind: "key", heading: "Bảng đáp án của giáo viên", narration: keyNarr, noAudioSec: keyFloor, capSec: 40 });
+  /* Cảnh bảng đáp án GV (thầy chốt lại 19:39): lời đọc NÊU LẠI toàn bộ
+     nội dung phiếu theo từng hàng, gọn và không lặp (xem
+     buildPhieuKeyScript); highlight chạy theo HÀNG tỉ lệ với độ dài phần
+     lời của hàng đó (rowWeights). Thời lượng = max(audio, sàn theo ký
+     tự) như mọi cảnh phiếu; trần an toàn 120 giây. */
+  const keyScript = buildPhieuKeyScript(cacO);
+  const keyNarr = keyScript.narration;
+  segs.push({
+    type: "phieu", phKind: "key", heading: "Bảng đáp án của giáo viên",
+    narration: keyNarr, noAudioSec: phieuNoAudioSec(keyNarr), capSec: 120,
+    rowWeights: keyScript.rows.map(r => r.weight)
+  });
   const qrUrl = buildExerciseUrl(entry && entry.id, opts.baseHref || "");
-  /* Cảnh QR: lời đọc 1 câu ngắn; đứng ~7 giây (audio dài hơn thì theo
-     audio, trần 10 giây). */
-  const qrNarr = "Các em hãy quét mã QR trên màn hình, hoặc mở đường link ở phần mô tả của video, để làm bài tập tương tác của bài này nhé.";
-  segs.push({ type: "phieu", phKind: "qr", heading: "Bài tập tương tác", narration: qrNarr, qrUrl: qrUrl, noAudioSec: 7, capSec: 10 });
+  /* Cảnh cuối (thầy chốt 19:39): lời kêu gọi ĐĂNG KÝ KÊNH + làm bài tập;
+     mã QR giữ trên hình tối thiểu 20 GIÂY để học sinh kịp lấy điện thoại
+     quét (audio ngắn hơn thì đệm im lặng; audio dài hơn thì theo audio). */
+  const qrNarr = "Các em nhớ đăng ký kênh để không bỏ lỡ các bài học tiếp theo nhé. Giờ hãy quét mã QR trên màn hình hoặc bấm vào link dưới phần mô tả để vào làm bài tập phiếu học tập, kiểm tra xem mình hiểu bài tới đâu nào!";
+  segs.push({ type: "phieu", phKind: "qr", heading: "Bài tập tương tác", narration: qrNarr, qrUrl: qrUrl, noAudioSec: 20 });
   return segs;
 }
 /* Tiêu đề + mô tả YouTube soạn sẵn: chứa link bài tập ?bt=<id> để thầy
@@ -2698,7 +2823,7 @@ function buildYoutubeDesc(entry, data, url){
   const tenBai = (entry && entry.tenBai) || (data && data.bai) || "Bài học";
   const title = "📋 Video phiếu học tập — " + tenBai + (entry && entry.grade ? " | Lớp " + entry.grade : "");
   const desc = [
-    "Video phiếu học tập: mở bằng phiếu \"câm\" đánh số, lần lượt hiện đáp án từng ô (có đọc đầy đủ) và chốt bằng bảng đáp án của giáo viên để đối chiếu.",
+    "Video phiếu học tập: mở bằng phiếu \"câm\" đánh số kèm ngân hàng nội dung nhiều màu để học sinh tự điền, lần lượt hiện đáp án từng ô và chốt bằng bảng đáp án của giáo viên nêu lại toàn bộ nội dung để đối chiếu.",
     "Bài: " + tenBai,
     "",
     "👉 LÀM BÀI TẬP TƯƠNG TÁC CỦA BÀI NÀY TẠI ĐÂY:",
@@ -3313,6 +3438,55 @@ function drawPhieuTable(ctx, data, y0, y1, mode, current, activeRow){
   ctx.textAlign = "left"; ctx.textBaseline = "top";
   return y;
 }
+/* NGÂN HÀNG NỘI DUNG dưới bảng câm ở cảnh mở: lưới ô nội dung nhiều màu
+   (màu + nội dung từ phieuBankPlan — đã xáo trộn, không lộ đáp án theo
+   màu hàng). Số cột + cỡ chữ tự thích ứng theo số ô và độ dài chữ, cỡ
+   chữ không xuống dưới 18px; ô dài thì cao hơn (đóng gói cân bằng theo
+   cột: ô tiếp theo vào cột đang thấp nhất). */
+function drawPhieuBank(ctx, chips, y0, y1){
+  const x0 = 72, w = W - 144, gap = 14;
+  ctx.fillStyle = "#ffe9a8"; ctx.font = "700 30px " + FONT; ctx.textAlign = "left"; ctx.textBaseline = "top";
+  ctx.fillText("🧩 NGÂN HÀNG NỘI DUNG — chọn đúng nội dung điền vào từng số:", x0 + 4, y0);
+  const top = y0 + 42, availH = y1 - top;
+  if (availH < 60 || !chips.length) return;
+  const layout = (fs, cols) => {
+    const cw = Math.floor((w - (cols - 1) * gap) / cols);
+    ctx.font = "600 " + fs + "px " + FONT;
+    const colH = new Array(cols).fill(0);
+    const pos = chips.map(ch => {
+      const lines = wrapLines(ctx, ch.text, cw - 26).length;
+      const hh = lines * (fs + 7) + 16;
+      let c = 0;
+      for (let i = 1; i < cols; i++) if (colH[i] < colH[c]) c = i;
+      const p = { ch: ch, x: x0 + c * (cw + gap), y: top + colH[c], w: cw, h: hh, lines: lines };
+      colH[c] += hh + gap;
+      return p;
+    });
+    return { fs: fs, pos: pos, totalH: Math.max.apply(null, colH) - gap };
+  };
+  /* Ưu tiên cỡ chữ lớn trước; không cấu hình nào vừa thì lấy cấu hình 18px
+     có tổng chiều cao NHỎ nhất (cột hẹp nhất chưa chắc đã thấp nhất). */
+  let plan = null, bestSmall = null;
+  for (let fs = 26; fs >= 18 && !plan; fs -= 2){
+    for (let cols = 2; cols <= 6; cols++){
+      const p = layout(fs, cols);
+      if (fs === 18 && (!bestSmall || p.totalH < bestSmall.totalH)) bestSmall = p;
+      if (p.totalH <= availH){ plan = p; break; }
+    }
+  }
+  if (!plan) plan = bestSmall || layout(18, 4);
+  plan.pos.forEach(p => {
+    ctx.fillStyle = p.ch.color;
+    rr(ctx, p.x, p.y, p.w, p.h, 14); ctx.fill();
+    ctx.font = "600 " + plan.fs + "px " + FONT;
+    ctx.fillStyle = phieuContrastText(p.ch.color);
+    ctx.textAlign = "left"; ctx.textBaseline = "top";
+    const maxLines = Math.max(1, Math.floor((p.h - 10) / (plan.fs + 7)));
+    phieuFitLines(ctx, p.ch.text, p.w - 26, Math.min(p.lines, maxLines))
+      .forEach((ln, k) => ctx.fillText(ln, p.x + 13, p.y + 8 + k * (plan.fs + 7)));
+  });
+  ctx.textAlign = "left"; ctx.textBaseline = "top";
+}
 function drawPhieuQrCanvas(url){
   if (phieuQrCache.url === url && phieuQrCache.cv) return phieuQrCache.cv;
   const q = qrMatrix(url);
@@ -3347,35 +3521,45 @@ function drawPhieuScene(ctx, sg, t){
   if (sg.phKind === "qr"){
     slideBg(ctx); bar();
     ctx.textAlign = "center"; ctx.textBaseline = "top";
-    ctx.fillStyle = "#ff8fab"; ctx.font = "700 64px " + FONT;
-    ctx.fillText("🎯 BÀI TẬP TƯƠNG TÁC", W / 2, 64);
-    ctx.fillStyle = "#ffffff"; ctx.font = "400 36px " + FONT;
-    wrapLines(ctx, "Xem xong video, các em làm bài tập này để kiểm tra mức độ hiểu bài nhé!", 1500)
-      .forEach((ln, k) => ctx.fillText(ln, W / 2, 158 + k * 48));
+    ctx.fillStyle = "#ff8fab"; ctx.font = "700 58px " + FONT;
+    ctx.fillText("🎯 BÀI TẬP TƯƠNG TÁC", W / 2, 34);
+    /* Nút kêu gọi ĐĂNG KÝ KÊNH — chữ lớn trên nền đỏ như nút subscribe */
+    ctx.font = "700 46px " + FONT;
+    const dkText = "ĐĂNG KÝ KÊNH";
+    const dkW = ctx.measureText(dkText).width + 110;
+    ctx.fillStyle = "#e63946"; rr(ctx, (W - dkW) / 2, 106, dkW, 68, 34); ctx.fill();
+    ctx.fillStyle = "#ffffff";
+    ctx.fillText("▶  " + dkText, W / 2, 116);
     try {
       const qc = drawPhieuQrCanvas(sg.qrUrl || "");
-      const box = 520;
-      ctx.fillStyle = "#ffffff"; rr(ctx, (W - box) / 2, 268, box, box, 24); ctx.fill();
-      ctx.drawImage(qc, (W - box + 32) / 2 + 0, 268 + 16, box - 32, box - 32);
+      const box = 620;
+      ctx.fillStyle = "#ffffff"; rr(ctx, (W - box) / 2, 192, box, box, 24); ctx.fill();
+      ctx.drawImage(qc, (W - box + 32) / 2 + 0, 192 + 16, box - 32, box - 32);
     } catch (e) {
       ctx.fillStyle = "#ff6b6b"; ctx.font = "600 34px " + FONT;
       ctx.fillText("(Không sinh được mã QR — thầy dùng link ở phần mô tả video)", W / 2, 480);
     }
-    ctx.fillStyle = "#57b6ff"; ctx.font = "600 29px " + FONT;
-    wrapLines(ctx, sg.qrUrl || "", 1700).slice(0, 2).forEach((ln, k) => ctx.fillText(ln, W / 2, 824 + k * 40));
-    ctx.fillStyle = "#b9d6c6"; ctx.font = "400 33px " + FONT;
+    ctx.fillStyle = "#ffd166"; ctx.font = "700 52px " + FONT;
+    ctx.fillText("LÀM BÀI TẬP PHIẾU HỌC TẬP", W / 2, 832);
+    ctx.fillStyle = "#57b6ff"; ctx.font = "600 28px " + FONT;
+    const urlLines = wrapLines(ctx, sg.qrUrl || "", 1700).slice(0, 2);
+    urlLines.forEach((ln, k) => ctx.fillText(ln, W / 2, 902 + k * 38));
+    ctx.fillStyle = "#b9d6c6"; ctx.font = "400 30px " + FONT;
     wrapLines(ctx, "Quét mã QR bằng camera điện thoại, hoặc bấm vào link ở phần mô tả của video trên YouTube.", 1560)
-      .forEach((ln, k) => ctx.fillText(ln, W / 2, 916 + k * 44));
+      .forEach((ln, k) => ctx.fillText(ln, W / 2, 902 + urlLines.length * 38 + 14 + k * 40));
     ctx.textAlign = "left";
     return;
   }
   if (sg.phKind === "key"){
     slideBg(ctx); bar();
     const topY = drawHeading(ctx, "📋 BẢNG ĐÁP ÁN CỦA GIÁO VIÊN", tenBai);
-    /* highlight chạy từng hàng theo tiến độ cảnh (~2,5s/hàng theo thời
-       lượng đã chốt ở buildPhieuScenes) */
+    /* highlight chạy theo HÀNG đang được nêu lại trong lời đọc: thời
+       lượng mỗi hàng tỉ lệ với độ dài phần lời của hàng đó (rowWeights
+       từ buildPhieuKeyScript); thiếu trọng số thì chia đều như cũ. */
     const nRows = ((data.bangDapAnGV || {}).cacHang || []).length;
-    drawPhieuTable(ctx, data, topY + 18, H - 40, "key", 0, phieuActiveRow(t || 0, nRows));
+    const wts = (sg.rowWeights && sg.rowWeights.length === nRows) ? sg.rowWeights : null;
+    const activeRow = wts ? phieuActiveRowW(t || 0, wts) : phieuActiveRow(t || 0, nRows);
+    drawPhieuTable(ctx, data, topY + 18, H - 40, "key", 0, activeRow);
     return;
   }
   if (sg.phKind === "fill"){
@@ -3396,7 +3580,10 @@ function drawPhieuScene(ctx, sg, t){
     phieuFitLines(ctx, sg.caption || "", 1700, 4).forEach((ln, k) => ctx.fillText(ln, 110, bandY + 14 + k * 47));
     return;
   }
-  /* open: phiếu câm + câu yêu cầu */
+  /* open: phiếu câm + câu yêu cầu + NGÂN HÀNG NỘI DUNG nhiều màu ở dưới
+     bảng (thầy chốt 19:42) — học sinh nhìn ngân hàng để tự chọn nội dung
+     điền vào các số trên phiếu câm. Bảng thu vừa phải, vẫn là phần chính
+     ở phía trên; ngân hàng chiếm dải dưới (~44% phần còn lại). */
   slideBg(ctx); bar();
   const topY = drawHeading(ctx, "📋 Phiếu học tập", tenBai);
   let y = topY + 8;
@@ -3406,7 +3593,14 @@ function drawPhieuScene(ctx, sg, t){
     phieuFitLines(ctx, cauHoi, 1700, 3).forEach(ln => { ctx.fillText(ln, 110, y); y += 47; });
     y += 10;
   }
-  drawPhieuTable(ctx, data, y, H - 40, "open", 0, -1);
+  const bank = (sg.bank && sg.bank.length) ? sg.bank : phieuBankPlan(data.cacO || []);
+  if (bank.length){
+    const bankH = Math.round(((H - 36) - y) * 0.48);
+    drawPhieuTable(ctx, data, y, H - 36 - bankH - 14, "open", 0, -1);
+    drawPhieuBank(ctx, bank, H - 36 - bankH, H - 36);
+  } else {
+    drawPhieuTable(ctx, data, y, H - 40, "open", 0, -1);
+  }
 }
 
 /* ---------- Kho phiếu + panel chọn phiếu ---------- */
