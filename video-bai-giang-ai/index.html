@@ -3599,6 +3599,20 @@ function drawPhieuQrCanvas(url){
   phieuQrCache = { url: url, cv: cv };
   return cv;
 }
+/* [GD8] Tên thầy ở góc trên bên phải MỌI cảnh thuộc phiếu (open,
+   bank, fill, full) — thầy chốt 21:20 ngày 18/11 "hiện thêm tên thầy
+   vô phiếu nữa là ok". Vị trí nhất quán: canh lề phải W-110, hàng
+   y=60 (cùng hàng dòng "Ô k / N" của cảnh fill); riêng cảnh fill ô
+   đó đã có "Ô k / N" nên tên thầy nằm ngay DƯỚI, y=108 — vẫn trên
+   vùng bảng (bảng bắt đầu ~y=226) và trên băng caption, không đè
+   phần tử nào. KHÔNG vẽ ở cảnh qr (không thuộc phiếu). */
+const PHIEU_TEACHER_NAME = "Thầy Hồ Tấn Khải";
+function drawPhieuTeacherName(ctx, y){
+  ctx.fillStyle = "#ffe9a8"; ctx.font = "600 28px " + FONT;
+  ctx.textAlign = "right"; ctx.textBaseline = "top";
+  ctx.fillText("✍️ " + PHIEU_TEACHER_NAME, W - 110, y);
+  ctx.textAlign = "left";
+}
 function drawPhieuScene(ctx, sg, t){
   const data = phieuBuildCtx && phieuBuildCtx.data;
   if (!data){
@@ -3669,6 +3683,7 @@ function drawPhieuScene(ctx, sg, t){
        phần): tiêu đề + 1 dòng hướng dẫn tạm dừng, dưới là lưới ô nội
        dung nhiều màu chiếm trọn phần còn lại của khung hình. */
     slideBg(ctx); bar();
+    drawPhieuTeacherName(ctx, 60);
     const topY = drawHeading(ctx, "🧩 Ngân hàng nội dung", tenBai);
     ctx.fillStyle = "#ffe9a8"; ctx.font = "600 31px " + FONT; ctx.textAlign = "left"; ctx.textBaseline = "top";
     const instrLines = wrapLines(ctx, "Tạm dừng video tại đây, đọc kĩ từng nội dung rồi tự điền vào phiếu theo từng số.", 1700);
@@ -3684,6 +3699,7 @@ function drawPhieuScene(ctx, sg, t){
        hàng theo tiến độ cảnh cho mắt học sinh bám theo. Đây KHÔNG phải
        cảnh "key" đọc lại đáp án đã bỏ ở GD6. */
     slideBg(ctx); bar();
+    drawPhieuTeacherName(ctx, 60);
     const topY = drawHeading(ctx, "📋 BẢNG ĐÁP ÁN ĐẦY ĐỦ", tenBai);
     const nRows = ((data.bangDapAnGV || {}).cacHang || []).length;
     const activeRow = phieuActiveRow(t || 0, nRows);
@@ -3697,6 +3713,7 @@ function drawPhieuScene(ctx, sg, t){
     ctx.fillStyle = accent; ctx.font = "700 40px " + FONT; ctx.textAlign = "right"; ctx.textBaseline = "top";
     ctx.fillText("Ô " + sg.fillSo + " / " + n, W - 110, 60);
     ctx.textAlign = "left";
+    drawPhieuTeacherName(ctx, 108);
     /* [GD7] Băng caption rút gọn (3 dòng) để bảng có thêm chiều cao —
        bảng không còn bị ép tràn ô như ảnh thầy chụp 21:00 18/11. */
     drawPhieuTable(ctx, data, topY + 14, H - 222, "fill", sg.fillSo, -1);
@@ -3714,6 +3731,7 @@ function drawPhieuScene(ctx, sg, t){
      hàng nội dung vẽ đè ở dưới (ngân hàng đã tách thành cảnh riêng ngay
      sau cảnh mở theo khuôn 5 phần thầy chốt 21:00 ngày 18/11). */
   slideBg(ctx); bar();
+  drawPhieuTeacherName(ctx, 60);
   const topY = drawHeading(ctx, "📋 Phiếu học tập", tenBai);
   let y = topY + 8;
   const cauHoi = String(data.cauHoiPhieu || "").trim();
