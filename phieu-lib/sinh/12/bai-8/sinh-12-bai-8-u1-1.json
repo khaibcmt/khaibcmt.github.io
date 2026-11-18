@@ -1,0 +1,101 @@
+{
+ "bai": "HỌC THUYẾT DI TRUYỀN CỦA MENDEL — Sinh học 12",
+ "fileNguon": "Sinh học/Khối 12/Giáo án/HK1/KHBD_Sinh_hoc_12_Bai_8_Hoc_thuyet_di_truyen_cua_Mendel_2_tiet.docx",
+ "cauHoiPhieu": "Nhiệm vụ: Các nhóm hoàn thành hai bảng sau trong giờ học, sau đó trình bày trước lớp. Bảng A. Thí nghiệm lai một cặp tính trạng và lai hai cặp tính trạng của Mendel",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Hoa đỏ × hoa trắng",
+   "tieuChi": "Lai một cặp tính trạng (màu hoa)",
+   "cot": "P (thuần chủng)",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "100% hoa đỏ",
+   "tieuChi": "Lai một cặp tính trạng (màu hoa)",
+   "cot": "F1",
+   "hang": 1,
+   "cotSo": 2
+  },
+  {
+   "so": 3,
+   "dapAn": "705 cây hoa đỏ : 224 cây hoa trắng, xấp xỉ 3 đỏ : 1 trắng",
+   "tieuChi": "Lai một cặp tính trạng (màu hoa)",
+   "cot": "F2 (tỉ lệ kiểu hình)",
+   "hang": 1,
+   "cotSo": 3
+  },
+  {
+   "so": 4,
+   "dapAn": "Hạt vàng, trơn × hạt xanh, nhăn",
+   "tieuChi": "Lai hai cặp tính trạng (màu hạt, hình dạng hạt)",
+   "cot": "P (thuần chủng)",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 5,
+   "dapAn": "100% hạt vàng, trơn",
+   "tieuChi": "Lai hai cặp tính trạng (màu hạt, hình dạng hạt)",
+   "cot": "F1",
+   "hang": 2,
+   "cotSo": 2
+  },
+  {
+   "so": 6,
+   "dapAn": "315 vàng, trơn : 108 xanh, trơn : 101 vàng, nhăn : 32 xanh, nhăn, xấp xỉ 9 : 3 : 3 : 1",
+   "tieuChi": "Lai hai cặp tính trạng (màu hạt, hình dạng hạt)",
+   "cot": "F2 (tỉ lệ kiểu hình)",
+   "hang": 2,
+   "cotSo": 3
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Thí nghiệm",
+   "P (thuần chủng)",
+   "F1",
+   "F2 (tỉ lệ kiểu hình)"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Lai một cặp tính trạng (màu hoa)",
+    "cacCot": [
+     {
+      "cot": "P (thuần chủng)",
+      "noiDung": "Hoa đỏ × hoa trắng"
+     },
+     {
+      "cot": "F1",
+      "noiDung": "100% hoa đỏ"
+     },
+     {
+      "cot": "F2 (tỉ lệ kiểu hình)",
+      "noiDung": "705 cây hoa đỏ : 224 cây hoa trắng, xấp xỉ 3 đỏ : 1 trắng"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Lai hai cặp tính trạng (màu hạt, hình dạng hạt)",
+    "cacCot": [
+     {
+      "cot": "P (thuần chủng)",
+      "noiDung": "Hạt vàng, trơn × hạt xanh, nhăn"
+     },
+     {
+      "cot": "F1",
+      "noiDung": "100% hạt vàng, trơn"
+     },
+     {
+      "cot": "F2 (tỉ lệ kiểu hình)",
+      "noiDung": "315 vàng, trơn : 108 xanh, trơn : 101 vàng, nhăn : 32 xanh, nhăn, xấp xỉ 9 : 3 : 3 : 1"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
