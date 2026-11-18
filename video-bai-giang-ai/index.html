@@ -94,6 +94,14 @@
   .pick-grid img:hover{border-color:var(--accent)}
   .pick-grid img.sel{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue)}
   .online-thumb{width:132px;height:99px;object-fit:contain;background:#eef4ee;border-radius:8px;border:2px solid var(--blue);display:block}
+  .gal-grid{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+  .gal-cell{width:132px}
+  .gal-cell img{width:132px;height:99px;object-fit:contain;background:#eef4ee;border-radius:8px;border:2px solid var(--line);display:block}
+  .gal-cell .cap{font-size:12px;color:var(--muted);margin-top:4px;line-height:1.35;word-break:break-word}
+  .gal-cell.pickable{cursor:pointer}
+  .gal-cell.pickable:hover img{border-color:var(--accent)}
+  .gal-cell.pickable.sel img{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue)}
+  .gal-cell.pickable.sel .cap{color:var(--txt);font-weight:700}
   .obadge{display:inline-block;background:#123c5f;color:#c4e4ff;border-radius:6px;padding:2px 8px;font-size:12.5px;font-weight:700;margin-left:6px}
 </style>
 </head>
@@ -164,6 +172,7 @@
         <label>Bài học</label>
         <select id="pickLesson"><option value="">— Chọn môn và khối trước —</option></select>
         <div class="small" id="pickStatus" style="margin-top:6px">⏳ Đang tải danh sách bài từ kho SGK online…</div>
+        <div id="lessonGallery" class="hidden" style="margin-top:10px"></div>
       </div>
       <div class="small" style="margin:12px 0 2px">— hoặc <b>gõ tự do</b> (bài ngoài kho SGK, môn khác): —</div>
       <label>Tên bài học *</label>
@@ -829,6 +838,7 @@ function lessonImageLines(entries){
 /*__END_PURE_PICKER__*/
 function renderPickStatus(){
   const el = $("pickStatus"); if (!el) return;
+  renderLessonGallery();
   if (pickedLesson) {
     el.innerHTML = "✔ <b>Đã chốt bài:</b> " + escapeHtml(pickedLesson.subjectName) + " • Lớp " + pickedLesson.grade +
       " • Bài " + pickedLesson.lessonNo + (pickedLesson.topic ? " — " + escapeHtml(pickedLesson.topic) : "") +
@@ -844,6 +854,30 @@ function renderPickStatus(){
   }
   const total = Object.keys(lessonIndex).reduce((s, k) => s + lessonIndex[k].length, 0);
   el.textContent = "☁️ Kho SGK sẵn sàng: " + total + " bài (Sinh học + Công nghệ nông nghiệp, khối 10–12). Chọn môn và khối để xem danh sách bài — hoặc gõ tự do bên dưới.";
+}
+/* Lưới TOÀN BỘ hình/sơ đồ của bài đã chốt — thầy nhìn hết "vốn hình" của
+   bài ngay khi chọn, trước cả khi tạo kịch bản. */
+function renderLessonGallery(){
+  const box = $("lessonGallery"); if (!box) return;
+  if (!pickedLesson || !pickedLesson.entries || !pickedLesson.entries.length) {
+    box.classList.add("hidden"); box.innerHTML = ""; return;
+  }
+  box.classList.remove("hidden");
+  box.innerHTML = "";
+  const head = document.createElement("div"); head.className = "small";
+  head.innerHTML = "🖼 <b>Toàn bộ hình/sơ đồ của bài này trong kho SGK (" + pickedLesson.entries.length + " hình):</b>";
+  box.appendChild(head);
+  const grid = document.createElement("div"); grid.className = "gal-grid";
+  pickedLesson.entries.forEach(e => {
+    const cell = document.createElement("div"); cell.className = "gal-cell";
+    const im = document.createElement("img"); im.src = onlineImgUrl(e); im.loading = "lazy";
+    im.title = e.caption || e.path;
+    const cap = document.createElement("div"); cap.className = "cap";
+    cap.textContent = (e.figure ? ("Hình " + e.figure) : "Hình SGK") + (e.caption ? " — " + e.caption : "");
+    cell.appendChild(im); cell.appendChild(cap);
+    grid.appendChild(cell);
+  });
+  box.appendChild(grid);
 }
 function renderLessonOptions(){
   const sel = $("pickLesson"); if (!sel) return;
@@ -1334,6 +1368,7 @@ $("shortenBtn").addEventListener("click", async () => {
         sg.onlinePath = old.onlinePath; sg.onlineUrl = old.onlineUrl;
         sg.onlineFigure = old.onlineFigure; sg.onlineCaption = old.onlineCaption;
       }
+      if (old && Array.isArray(old.onlineSel) && (sg.type === "image" || sg.type === "sgk")) sg.onlineSel = old.onlineSel.slice();
     });
     scriptData = parsed;
     assets = {}; audios = {};
@@ -1580,6 +1615,82 @@ function scoreOnlineEntry(e, ctx){
   return s;
 }
 /*__END_PURE_SCORE__*/
+/*__PURE_MULTI__*/
+/* Trạng thái chọn nhiều hình của 1 đoạn nằm ở sg.onlineSel (mảng path của
+   kho online). Chưa là mảng = thầy chưa can thiệp: khởi tạo từ hình tự gán
+   (onlinePath) khi kho online đã sẵn sàng; kho chưa sẵn sàng thì để null —
+   TUYỆT ĐỐI không chốt [] sớm, kẻo chặn mất lượt tự gán khi kho tải xong. */
+function initOnlineSel(sg){
+  if (!Array.isArray(sg.onlineSel)) {
+    if (sg.onlinePath) sg.onlineSel = [sg.onlinePath];
+    else if (onlineLibReady) sg.onlineSel = [];
+    else return null;
+  }
+  return sg.onlineSel;
+}
+/* Chia đều 1 khoảng thời lượng cho n hình. */
+function splitDurations(total, n){
+  if (!(n > 0)) return [];
+  const each = total / n, out = [];
+  for (let k = 0; k < n; k++) out.push(each);
+  return out;
+}
+/* t = tiến độ 0–1 trong đoạn → chỉ số hình con đang hiện. */
+function segSubIndex(t, n){
+  if (!(n > 1)) return 0;
+  const x = Math.max(0, Math.min(0.999999, Number(t) || 0));
+  return Math.floor(x * n);
+}
+/* Tiến độ 0–1 TRONG phần của hình con (cho Ken Burns từng hình). */
+function segSubProgress(t, n){
+  if (!(n > 1)) return Math.max(0, Math.min(1, Number(t) || 0));
+  const x = Math.max(0, Math.min(0.999999, Number(t) || 0));
+  return x * n - Math.floor(x * n);
+}
+/* Kế hoạch hình của 1 đoạn khi dựng: có hình dùng được -> images + số hình;
+   không có -> text (slide chữ). */
+function segVisualPlan(sg, asset){
+  const ok = asset && asset.status === "ok";
+  const n = ok ? ((asset.imgs && asset.imgs.length) || (asset.img ? 1 : 0)) : 0;
+  return n > 0 ? { kind: "images", count: n } : { kind: "text", count: 0 };
+}
+/*__END_PURE_MULTI__*/
+/* Danh sách hình của BÀI ĐÃ CHỐT (theo danh tính _picked của kịch bản) —
+   nguồn cho lưới chọn hình từng đoạn ở luồng chọn bài. */
+function pickedLessonEntries(){
+  if (!scriptData || !scriptData._picked) return null;
+  const p = scriptData._picked;
+  const list = lessonIndex[p.subjectCode + "|" + p.grade] || [];
+  const it = list.filter(x => x.lessonCode === p.lessonCode)[0];
+  if (it) return it.entries;
+  if (pickedLesson && pickedLesson.lessonCode === p.lessonCode) return pickedLesson.entries;
+  return [];
+}
+/* Hình ứng viên cho lưới chọn của 1 đoạn: bài đã chốt -> TOÀN BỘ hình của
+   bài; gõ tự do -> nhóm hình khớp theo môn/khối/số hiệu (ứng viên điểm cao). */
+function segGridEntries(sg){
+  const pe = pickedLessonEntries();
+  if (pe) return pe;
+  return onlineCandidates(sg).slice(0, 12).map(c => {
+    const cp = Object.assign({}, c); delete cp._score; return cp;
+  });
+}
+/* Tick/bỏ tick 1 hình cho đoạn: đồng bộ cả trường gán đơn cũ (onlinePath =
+   hình đầu tiên đang chọn) để mọi đường đọc cũ vẫn nhất quán. */
+function toggleSegImage(sg, entry){
+  const sel = (initOnlineSel(sg) || []).slice();
+  const ix = sel.indexOf(entry.path);
+  if (ix >= 0) sel.splice(ix, 1); else sel.push(entry.path);
+  if (sel.length) {
+    const first = onlineLib.filter(e => e.path === sel[0])[0];
+    if (first) setOnlineAssign(sg, first);
+    delete sg.sgkImageId;
+  } else {
+    clearOnlineAssign(sg);
+  }
+  sg.onlineSel = sel;
+  renderScriptReview();
+}
 function onlineCandidates(sg){
   if (!onlineLibReady) return [];
   const ctx = { subj: ctxSubjectCode(), grade: ctxGrade(), lesson: ctxLessonNo(), fig: figOfHint(sg), picked: (scriptData && scriptData._picked) || null, hint: (sg && sg.imageHint) || "" };
@@ -1604,7 +1715,7 @@ function autoAssignOnline(){
   const used = {};
   scriptData.segments.forEach(sg => { if (sg.onlinePath) used[sg.onlinePath] = 1; });
   scriptData.segments.forEach(sg => {
-    if (sg.type !== "sgk" || sg.sgkImageId || sg.onlinePath) return;
+    if (sg.type !== "sgk" || sg.sgkImageId || sg.onlinePath || Array.isArray(sg.onlineSel)) return;   /* onlineSel đã là mảng = thầy đã tự chọn hình cho đoạn — không tự gán đè */
     const cands = onlineCandidates(sg);
     if (!cands.length) return;
     /* luân phiên: ưu tiên ứng viên chưa đoạn nào dùng, để các đoạn trong cùng
@@ -1680,6 +1791,10 @@ function mkBtn(label, cls){
 function buildAssignUI(sg, i){
   const wrap = document.createElement("div");
   wrap.style.marginTop = "8px";
+  /* Chọn NHIỀU hình cho đoạn: bật ở chế độ Theo Tên Bài (chọn bài từ danh
+     sách hoặc gõ tự do) khi kho online sẵn sàng; kể chuyện giữ cơ chế cũ. */
+  const multiOn = !demoMode && !!scriptData && scriptData._mode !== "story" && onlineLibReady;
+  if (scriptData && scriptData._mode !== "story") initOnlineSel(sg);
   const assigned = sg.sgkImageId ? library.get(sg.sgkImageId) : null;
   const st = document.createElement("div"); st.className = "small"; st.style.marginBottom = "6px";
   if (sg.onlinePath) st.innerHTML = "🖼 Trạng thái hình: ☁️ <b>Đã có hình SGK từ kho online</b>" +
@@ -1689,7 +1804,7 @@ function buildAssignUI(sg, i){
   else st.innerHTML = "🖼 Trạng thái hình: chưa gán hình SGK — nếu không gán, app sẽ <b>sinh ảnh bằng AI</b> khi dựng.";
   wrap.appendChild(st);
 
-  if (sg.onlinePath) {
+  if (sg.onlinePath && !multiOn) {
     const prow = document.createElement("div");
     prow.style.display = "flex"; prow.style.gap = "10px"; prow.style.alignItems = "flex-start"; prow.style.marginBottom = "8px";
     const th = document.createElement("img");
@@ -1708,17 +1823,43 @@ function buildAssignUI(sg, i){
         im.src = onlineImgUrl(e);
         im.title = (e.caption || e.path) + (e.figure ? " — Hình " + e.figure : "");
         if (e.path === sg.onlinePath) im.className = "sel";
-        im.addEventListener("click", () => { setOnlineAssign(sg, e); delete sg.sgkImageId; renderScriptReview(); });
+        im.addEventListener("click", () => { setOnlineAssign(sg, e); sg.onlineSel = [e.path]; delete sg.sgkImageId; renderScriptReview(); });
         opick.appendChild(im);
       });
       opick.classList.toggle("hidden");
     });
     const bOff = mkBtn("✖ Bỏ gán online", "btn-ghost");
-    bOff.addEventListener("click", () => { clearOnlineAssign(sg); renderScriptReview(); });
+    bOff.addEventListener("click", () => { clearOnlineAssign(sg); sg.onlineSel = []; renderScriptReview(); });
     btns.appendChild(bSwap); btns.appendChild(bOff);
     prow.appendChild(btns);
     wrap.appendChild(prow);
     wrap.appendChild(opick);
+  }
+
+  if (multiOn) {
+    const sel = initOnlineSel(sg) || [];
+    const entries = segGridEntries(sg);
+    const mbox = document.createElement("div"); mbox.style.marginTop = "10px";
+    const mhead = document.createElement("div"); mhead.className = "small"; mhead.style.marginBottom = "2px";
+    mhead.innerHTML = "🎞 <b>Chọn hình cho đoạn này</b> — bấm vào hình để tick/bỏ tick; khi dựng, thời lượng của đoạn được <b>chia đều</b> cho các hình đã chọn (lời đọc của đoạn không đổi). <b>Đã chọn: " + sel.length + " hình.</b>" +
+      (entries.length ? "" : " (Chưa có hình ứng viên trong kho online cho đoạn này.)");
+    mbox.appendChild(mhead);
+    if (entries.length) {
+      const grid = document.createElement("div"); grid.className = "gal-grid";
+      entries.forEach(e => {
+        const on = sel.indexOf(e.path) >= 0;
+        const cell = document.createElement("div"); cell.className = "gal-cell pickable" + (on ? " sel" : "");
+        const im = document.createElement("img"); im.src = onlineImgUrl(e); im.loading = "lazy";
+        im.title = (e.caption || e.path) + (e.figure ? " — Hình " + e.figure : "");
+        const cap = document.createElement("div"); cap.className = "cap";
+        cap.textContent = (on ? "✔ " : "") + (e.figure ? ("Hình " + e.figure) : "Hình SGK") + (e.caption ? " — " + e.caption : "");
+        cell.appendChild(im); cell.appendChild(cap);
+        cell.addEventListener("click", () => toggleSegImage(sg, e));
+        grid.appendChild(cell);
+      });
+      mbox.appendChild(grid);
+    }
+    wrap.appendChild(mbox);
   }
 
   const row = document.createElement("div"); row.className = "row";
@@ -1734,7 +1875,7 @@ function buildAssignUI(sg, i){
       picker.appendChild(lb);
       library.forEach(rec => {
         const im = document.createElement("img"); im.src = rec.dataUrl; im.title = rec.name;
-        im.addEventListener("click", () => { sg.sgkImageId = rec.id; clearOnlineAssign(sg); renderScriptReview(); });
+        im.addEventListener("click", () => { sg.sgkImageId = rec.id; clearOnlineAssign(sg); sg.onlineSel = []; renderScriptReview(); });
         picker.appendChild(im);
       });
     }
@@ -1748,7 +1889,7 @@ function buildAssignUI(sg, i){
       }
       cands.forEach(e => {
         const im = document.createElement("img"); im.src = onlineImgUrl(e); im.title = (e.caption || e.path) + (e.figure ? " — Hình " + e.figure : "");
-        im.addEventListener("click", () => { setOnlineAssign(sg, e); delete sg.sgkImageId; renderScriptReview(); });
+        im.addEventListener("click", () => { setOnlineAssign(sg, e); sg.onlineSel = [e.path]; delete sg.sgkImageId; renderScriptReview(); });
         picker.appendChild(im);
       });
     }
@@ -1805,6 +1946,26 @@ async function genImageForSegment(i){
     renderAssetRows();
     return assets[i].status === "ok";
   }
+  if (Array.isArray(sg.onlineSel) && sg.onlineSel.length > 1) {
+    /* NHIỀU HÌNH đã chọn cho đoạn: tải tất cả (theo thứ tự hình của bài),
+       hình nào tải lỗi thì bỏ qua; còn ít nhất 1 hình là đoạn dùng được.
+       Thời lượng đoạn sẽ được chia đều cho các hình ở khâu vẽ slide. */
+    const want = {};
+    sg.onlineSel.forEach(p => { want[p] = 1; });
+    const ordered = segGridEntries(sg).filter(e => want[e.path]);
+    const inGrid = {};
+    ordered.forEach(e => { inGrid[e.path] = 1; });
+    sg.onlineSel.forEach(p => {
+      if (!inGrid[p]) { const e = onlineLib.filter(x => x.path === p)[0]; if (e) ordered.push(e); }
+    });
+    const imgs = [];
+    for (const e of ordered) {
+      try { imgs.push(await loadOnlineImage(onlineImgUrl(e))); } catch (err) { /* bỏ hình lỗi, dùng các hình còn lại */ }
+    }
+    if (imgs.length) assets[i] = { status: "ok", img: imgs[0], imgs: imgs, source: "online", err: "" };
+    else assets[i] = { status: "err", img: null, source: "online", err: "Không tải được hình nào trong " + ordered.length + " hình đã chọn từ kho SGK online." };
+    renderAssetRows(); return assets[i].status === "ok";
+  }
   if (sg.onlinePath) {
     try {
       const img = await loadOnlineImage(sg.onlineUrl || ("../" + sg.onlinePath));
@@ -1848,7 +2009,7 @@ function renderAssetRows(){
     if (sg.type === "image" || sg.type === "sgk") {
       if (sg.noImg && (!a || a.status !== "ok")) imgTxt = "Hình: ⚠ không có hình — đã chuyển slide chữ";
       else if (!a) imgTxt = "Hình: chờ...";
-      else if (a.status === "ok") imgTxt = "Hình: ✔ " + (a.source === "sgk" ? "hình SGK (trong máy)" : (a.source === "online" ? "hình SGK (kho online)" : "AI sinh"));
+      else if (a.status === "ok") imgTxt = "Hình: ✔ " + (a.source === "sgk" ? "hình SGK (trong máy)" : (a.source === "online" ? "hình SGK (kho online)" : "AI sinh")) + ((a.imgs && a.imgs.length > 1) ? " ×" + a.imgs.length + " hình (chia đều thời lượng đoạn)" : "");
       else if (a.status === "skip") imgTxt = "Hình: bỏ qua (chuyển slide chữ)";
       else imgTxt = "Hình: ✖ lỗi";
     }
@@ -1949,7 +2110,21 @@ function fallbackBullets(sg){
   if (!out.length) out.push(sg.heading || "");
   return out;
 }
+/* Vẽ slide hình của 1 đoạn theo tiến độ t (0–1 trong đoạn): đoạn có NHIỀU
+   hình đã chọn (asset.imgs) thì thời lượng đoạn CHIA ĐỀU cho từng hình —
+   mỗi hình hiện đúng 1 phần; hình SGK vẽ contain nguyên vẹn như cũ, hình
+   AI giữ Ken Burns theo tiến độ riêng trong phần của nó. 1 hình -> như cũ;
+   0 hình -> slide chữ (trong drawImageSlide1). */
 function drawImageSlide(ctx, sg, asset, t){
+  const plan = segVisualPlan(sg, asset);
+  if (plan.kind === "images" && plan.count > 1 && asset.imgs) {
+    const k = segSubIndex(t, plan.count);
+    drawImageSlide1(ctx, sg, { status: "ok", img: asset.imgs[k], source: asset.source }, segSubProgress(t, plan.count));
+    return;
+  }
+  drawImageSlide1(ctx, sg, asset, t);
+}
+function drawImageSlide1(ctx, sg, asset, t){
   const has = asset && asset.status === "ok" && asset.img;
   if (has && (asset.source === "sgk" || asset.source === "online")) {
     slideBg(ctx);
@@ -2443,12 +2618,22 @@ async function buildVideo(){
       /* Đoạn nào vẫn chưa có hình thật sau mọi nguồn (kho online / thư viện
          máy / AI) → đánh dấu chuyển slide chữ + cảnh báo rõ TRƯỚC khi ghi
          hình, để video xuất ra không bao giờ dính ô "CHỜ HÌNH SGK". */
-      const noImg = [];
+      const noImg = [], noImgChosen = [];
       scriptData.segments.forEach((sg, i) => {
-        if ((sg.type === "image" || sg.type === "sgk") && (!assets[i] || assets[i].status !== "ok")) { sg.noImg = true; noImg.push(i + 1); }
+        if ((sg.type === "image" || sg.type === "sgk") && (!assets[i] || assets[i].status !== "ok")) {
+          sg.noImg = true;
+          /* Phân biệt: đoạn THẦY CHỦ ĐỘNG bỏ chọn hết hình (và không nguồn
+             nào khác được thử — status skip) khác với đoạn LỖI thật. */
+          if (assets[i] && assets[i].status === "skip" && Array.isArray(sg.onlineSel) && sg.onlineSel.length === 0) noImgChosen.push(i + 1);
+          else noImg.push(i + 1);
+        }
       });
       if (noImg.length) {
         logWarn("⚠️ <b>Đoạn " + noImg.join(", ") + " không lấy được hình thật</b> (kho SGK online, thư viện máy và AI đều không có) — app đã tự chuyển các đoạn đó sang <b>slide chữ</b> để video không dính ô chờ hình. Thầy có thể bấm <b>Thử lại ảnh</b> ở bảng chi tiết phía trên, hoặc gán hình tay ở màn hình kịch bản rồi dựng lại.");
+        renderAssetRows();
+      }
+      if (noImgChosen.length) {
+        logWarn("ℹ️ <b>Đoạn " + noImgChosen.join(", ") + " đang có 0 hình được chọn</b> và cũng không tự gán được hình nào — app chuyển các đoạn đó sang <b>slide chữ</b> khi dựng. Muốn đoạn có hình, thầy tick chọn hình cho đoạn ở màn hình kịch bản rồi dựng lại.");
         renderAssetRows();
       }
     }
