@@ -216,17 +216,20 @@
     </div>
 
     <div class="card">
-      <h3>🔑 Hồ Key Gemini (AI Studio — miễn phí)</h3>
-      <div class="small mut" style="margin-bottom:6px;">Dán key — <b style="color:#e8f4ff;">mỗi key 1 dòng</b>. Dán nhiều key (mỗi key một tài khoản/dự án Google khác nhau) để app <b style="color:#e8f4ff;">tự xoay vòng</b> khi một key hết quota — sinh ảnh không bị dừng giữa chừng:</div>
-      <textarea class="inp" id="keysInput" rows="3" placeholder="AIza... (key 1)&#10;AIza... (key 2)" autocomplete="off" spellcheck="false" style="width:100%;font-family:Consolas,monospace;font-size:12px;resize:vertical;"></textarea>
+      <div id="keySummaryBar" title="Bấm để mở / đóng khung hồ key" style="cursor:pointer;font-weight:700;font-size:14px;user-select:none;">🔑 Hồ Key Gemini</div>
+      <div id="keyBody">
+      <div class="small mut" style="margin:6px 0;">Dán key — <b style="color:#e8f4ff;">mỗi key 1 dòng</b>. Dán nhiều key (mỗi key một tài khoản/dự án Google khác nhau) để app <b style="color:#e8f4ff;">tự xoay vòng</b> khi một key hết quota — sinh ảnh không bị dừng giữa chừng. Ô dán key được <b style="color:#e8f4ff;">che như ô mật khẩu</b>; bấm Lưu là key được cất vào hồ và ô dán tự xoá trắng:</div>
+      <textarea class="inp" id="keysInput" rows="3" placeholder="AIza... (key 1)&#10;AIza... (key 2)" autocomplete="off" spellcheck="false" style="width:100%;font-family:Consolas,monospace;font-size:12px;resize:vertical;-webkit-text-security:disc;"></textarea>
       <div class="rowflex" style="margin-top:7px;">
         <button class="btn green" id="btnSaveKey">💾 Lưu Hồ Key</button>
         <button class="btn" id="btnCheckKeys">🔍 Kiểm Tra Key</button>
         <button class="btn" id="btnResetKeyState">↺ Đặt Lại</button>
+        <button class="btn" id="btnToggleKeysView">👁 Hiện key</button>
       </div>
       <div class="small mut" style="margin-top:7px;">Kiểm tra nhẹ không tốn quota sinh ảnh; key đạt = key hợp lệ và gọi được model ảnh. Key miễn phí tại <b style="color:#57b6ff;">aistudio.google.com</b> — dùng sinh ảnh DNA &amp; bối cảnh. Key chỉ lưu trong trình duyệt của bạn (localStorage), không gửi đi nơi khác ngoài Google.</div>
       <div id="keyList" style="margin-top:8px;"></div>
       <div id="keyStatus" class="small" style="margin-top:5px;"></div>
+      </div>
     </div>
 
     <div class="card">
@@ -898,9 +901,10 @@ function buildScenePrompt(s){
 let keyPool = [];        // mảng các key (string)
 let keyStates = [];      // mảng song song: {st:'unknown'|'ok'|'err'|'quota', note:'', at:''}
 let activeKeyIdx = 0;    // key đang hoạt động (sticky)
+let keyPanelOpen = null; // null = tự động: hồ rỗng thì mở sẵn, có key thì gập gọn
 const KEY_DOT = { unknown: '⚪', ok: '🟢', err: '🔴', quota: '🟡' };
 const KEY_TXT = { unknown: 'Chưa kiểm tra', ok: 'Đạt', err: 'Lỗi', quota: 'Hết quota' };
-const IMAGE_MODEL = 'gemini-2.5-flash-image';
+const IMAGE_MODEL = 'gemini-2.5-flash-image';   /* chỉ còn là DỰ PHÒNG — bình thường app tự khám phá model ảnh theo TỪNG key (xem discoverModels) */
 
 function ptEsc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
 function maskKey(k){ return k.length > 8 ? k.slice(0, 4) + '…' + k.slice(-4) : '••••'; }
@@ -938,6 +942,7 @@ function keySummary(){
 function renderKeyList(){
   const box = $('#keyList');
   if (!box) return;
+  renderKeySummary();
   if (!keyPool.length){
     box.innerHTML = '<div class="small mut">Hồ đang rỗng — dán ít nhất 1 key vào ô trên rồi bấm <b>Lưu Hồ Key</b>.</div>';
     return;
@@ -951,14 +956,17 @@ function renderKeyList(){
     h += '<div class="rowflex" style="align-items:center;margin-top:4px;gap:6px;">'
        + '<span class="small" style="flex:1;">' + KEY_DOT[s.st] + ' <b>Key #' + (i + 1) + '</b> · ' + ptEsc(maskKey(k)) + ' · ' + KEY_TXT[s.st] + extra + (i === activeKeyIdx ? ' · <b>⭐ đang dùng</b>' : '') + '</span>'
        + '<button class="btn" data-delkey="' + i + '">✖</button></div>';
+    const km = keyModels[keyIdOf(k)];
+    if (km) h += '<div class="small mut" style="margin:1px 0 3px 18px;">Model ảnh: ' + ptEsc(km.image || '—') + '</div>';
   });
   box.innerHTML = h;
   box.querySelectorAll('[data-delkey]').forEach(b => b.addEventListener('click', () => {
     const i = parseInt(b.dataset.delkey, 10);
+    const removed = keyPool[i];
     keyPool.splice(i, 1); keyStates.splice(i, 1);
+    if (removed && keyModels[keyIdOf(removed)]){ delete keyModels[keyIdOf(removed)]; saveKeyModels(); }
     if (activeKeyIdx >= keyPool.length) activeKeyIdx = 0;
     savePool(); refreshKeyUI();
-    const ta = $('#keysInput'); if (ta) ta.value = keyPool.join('\n');
   }));
 }
 function refreshKeyUI(){
@@ -972,6 +980,22 @@ function refreshKeyUI(){
   const okN = keyStates.filter(s => s.st === 'ok').length;
   el.innerHTML = '<span class="ok">✓ Hồ có ' + keyPool.length + ' key (' + okN + ' key đạt) — Đang dùng: Key #' + (activeKeyIdx + 1) + '. App tự xoay vòng khi key hết quota hoặc bị lỗi.</span>';
 }
+/* ---------- Khung hồ key GẬP gọn + ô dán key che như mật khẩu ----------
+   Đóng/mở chỉ là hiển thị — không đụng tới xoay vòng / khám phá model. */
+function keyPanelIsOpen(){
+  if (!keyPool.length) return true;                    /* hồ rỗng → mở sẵn để dán lần đầu */
+  return keyPanelOpen !== null ? keyPanelOpen : false;
+}
+function renderKeySummary(){
+  const bar = $('#keySummaryBar'); if (!bar) return;
+  const open = keyPanelIsOpen();
+  const okN = keyStates.filter(s => s.st === 'ok').length;
+  bar.textContent = keyPool.length
+    ? '🔑 Hồ Key Gemini — ' + keyPool.length + ' key đã lưu · đang dùng Key #' + (activeKeyIdx + 1) + ' · ' + okN + '/' + keyPool.length + ' đạt ' + (open ? '▾' : '▸')
+    : '🔑 Hồ Key Gemini — chưa có key nào, dán key vào khung dưới ' + (open ? '▾' : '▸');
+  const body = $('#keyBody');
+  if (body) body.style.display = open ? '' : 'none';
+}
 function markKey(idx, st, note){
   keyStates[idx] = { st: st, note: note || '', at: st === 'quota' ? new Date().toLocaleTimeString('vi-VN') : (keyStates[idx] ? keyStates[idx].at : '') };
   savePool(); refreshKeyUI();
@@ -983,12 +1007,27 @@ function classifyHttp(status, data, txt){
   if (st === 'API_KEY_INVALID' || /api key/i.test(msg) || status === 403) return { kind: 'invalid', msg: msg };
   return { kind: 'other', msg: msg };
 }
-/* Kiểm tra key: GET thông tin model ảnh — nhẹ, không đốt quota sinh ảnh */
+/* Kiểm tra key: khám phá model theo key trước, rồi GET nhẹ model ảnh ĐÃ CHỌN — không đốt quota sinh ảnh */
 async function checkOneKey(idx){
   const key = keyPool[idx];
+  let disc;
+  try {
+    disc = await discoverModels(key, true);
+  } catch (e) {
+    if (e && e.httpStatus){
+      const c = classifyHttp(e.httpStatus, e.data, e.txt);
+      if (c.kind === 'quota') return { st: 'quota', note: 'Khám phá model báo hết quota (429)', at: new Date().toLocaleTimeString('vi-VN') };
+      return { st: 'err', note: ('Không liệt kê được model — HTTP ' + e.httpStatus + ': ' + (c.msg || 'không rõ')).slice(0, 140), at: '' };
+    }
+    return { st: 'err', note: 'Lỗi mạng khi khám phá model: ' + (e && e.message ? e.message : e), at: '' };
+  }
+  renderKeyList();
+  if (!disc.image){
+    return { st: 'err', note: 'Không có model ảnh cho key này', at: '' };
+  }
   let res, txt, data = null;
   try {
-    res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + IMAGE_MODEL + '?key=' + encodeURIComponent(key), { method: 'GET' });
+    res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + disc.image + '?key=' + encodeURIComponent(key), { method: 'GET' });
     txt = await res.text();
     try { data = JSON.parse(txt); } catch (e) {}
   } catch (netErr) {
@@ -1003,7 +1042,69 @@ async function checkOneKey(idx){
 }
 loadPool();
 
+/* ---------- KHÁM PHÁ MODEL ẢNH THEO TỪNG KEY ----------
+   Key AI Studio MỚI không được dùng tên model cũ ghim cứng (Google trả 404
+   "no longer available to new users"), còn key cũ lại thấy đúng model cũ.
+   → Mỗi key tự GET /v1beta/models rồi chọn model ảnh của CHÍNH key đó,
+   lưu kết quả theo từng key (localStorage) để key cũ/mới chạy song song. */
+let keyModels = {};
+try { keyModels = JSON.parse(localStorage.getItem('phimtruong_key_models') || '{}'); } catch (e) { keyModels = {}; }
+if (!keyModels || typeof keyModels !== 'object' || Array.isArray(keyModels)) keyModels = {};
+function keyIdOf(key){ return String(key || '').slice(-8); }
+function saveKeyModels(){ try { localStorage.setItem('phimtruong_key_models', JSON.stringify(keyModels)); } catch (e) {} }
+function pickImageModel(list){
+  const cand = list.filter(x => {
+    const n = x.name.toLowerCase(), s = (x.name + ' ' + (x.display || '')).toLowerCase();
+    return n.indexOf('flash-image') >= 0 || (n.indexOf('image') >= 0 && n.indexOf('flash') >= 0) || s.indexOf('nano banana') >= 0;
+  });
+  if (!cand.length) return null;
+  const g3 = cand.filter(x => /^gemini-3/i.test(x.name)).sort((a, b) => (a.name < b.name ? 1 : -1));
+  if (g3.length) return g3[0].name;
+  const exact = cand.filter(x => x.name === 'gemini-2.5-flash-image');
+  if (exact.length) return exact[0].name;
+  return cand.map(x => x.name).sort().reverse()[0];
+}
+async function discoverModels(key, force){
+  const id = keyIdOf(key);
+  if (!force && keyModels[id]) return keyModels[id];
+  const base = 'https://generativelanguage.googleapis.com/v1beta/models?key=' + encodeURIComponent(key) + '&pageSize=1000';
+  let url = base, all = [];
+  for (let page = 0; page < 3 && url; page++){
+    const res = await fetch(url, { method: 'GET' });
+    const txt = await res.text();
+    let data = null;
+    try { data = JSON.parse(txt); } catch (e) {}
+    if (!res.ok){
+      const err = new Error('HTTP ' + res.status);
+      err.httpStatus = res.status; err.data = data; err.txt = txt;
+      throw err;
+    }
+    (data && data.models ? data.models : []).forEach(m => all.push(m));
+    url = (data && data.nextPageToken) ? (base + '&pageToken=' + encodeURIComponent(data.nextPageToken)) : null;
+  }
+  const usable = all
+    .filter(m => (m.supportedGenerationMethods || []).indexOf('generateContent') >= 0)
+    .map(m => ({ name: String(m.name || '').replace(/^models\//, ''), display: m.displayName || '' }))
+    .filter(x => x.name);
+  const picked = { image: pickImageModel(usable), at: new Date().toLocaleString('vi-VN') };
+  keyModels[id] = picked; saveKeyModels();
+  return picked;
+}
+/* Model ảnh cho 1 key: đã khám phá → kết quả đã lưu (null = key KHÔNG có model
+   ảnh); chưa khám phá → tự khám phá lặng; khám phá lỗi → tên dự phòng. */
+async function modelForKey(key){
+  const id = keyIdOf(key);
+  if (keyModels[id]) return keyModels[id].image || null;
+  try {
+    const d = await discoverModels(key);
+    return d.image || null;
+  } catch (e) {
+    return IMAGE_MODEL;
+  }
+}
+
 function openKeyGuide(){
+  keyPanelOpen = true; renderKeySummary();
   $('#keysInput').scrollIntoView({behavior:'smooth', block:'center'});
   $('#keysInput').focus();
   toast('🔑 <b>Chưa có API key Gemini.</b><br>Tạo key miễn phí trong 3 bước:<br>1) Vào <b>aistudio.google.com</b> → đăng nhập Google.<br>2) Bấm <b>"Get API key"</b> → "Create API key".<br>3) Dán key vào ô Hồ Key ở cột trái (mỗi key 1 dòng) rồi bấm <b>Lưu Hồ Key</b>.', 'err');
@@ -1035,10 +1136,16 @@ async function geminiImage(promptText, imageDataUrl){
   let lastMsg = '';
   for(const idx of order){
     const key = keyPool[idx];
+    const model = await modelForKey(key);
+    if(!model){
+      toast('⚠️ Key #' + (idx + 1) + ' không có model ảnh — tự chuyển Key kế tiếp', 'err');
+      lastMsg = 'Key #' + (idx + 1) + ' không có model ảnh khả dụng';
+      continue;
+    }
     for(let attempt = 0; attempt < 2; attempt++){
       let res, txt, data = null;
       try{
-        res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + IMAGE_MODEL + ':generateContent?key=' + encodeURIComponent(key), {
+        res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + encodeURIComponent(key), {
           method:'POST', headers:{'Content-Type':'application/json'},
           body: JSON.stringify(body)
         });
@@ -1371,19 +1478,30 @@ document.addEventListener('change', e=>{
 });
 
 /* ================= NÚT & ĐIỀU KHIỂN CHÍNH ================= */
+$('#keySummaryBar').addEventListener('click', ()=>{
+  keyPanelOpen = !keyPanelIsOpen();
+  renderKeySummary();
+});
+let keysVisible = false;
+$('#btnToggleKeysView').addEventListener('click', ()=>{
+  keysVisible = !keysVisible;
+  $('#keysInput').style.webkitTextSecurity = keysVisible ? 'none' : 'disc';
+  $('#btnToggleKeysView').textContent = keysVisible ? '🙈 Ẩn key' : '👁 Hiện key';
+});
 $('#btnSaveKey').addEventListener('click', ()=>{
   const lines = $('#keysInput').value.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
-  const uniq = [...new Set(lines)];
-  if(!uniq.length){ toast('⚠️ Ô key đang trống — dán ít nhất 1 key (mỗi key 1 dòng).', 'err'); return; }
+  if(!lines.length){ toast('⚠️ Ô key đang trống — dán ít nhất 1 key (mỗi key 1 dòng).', 'err'); return; }
   const oldMap = {};
   keyPool.forEach((k,i)=>{ oldMap[k] = keyStates[i]; });
-  keyPool = uniq;
+  let added = 0;
+  lines.forEach(k => { if(keyPool.indexOf(k) < 0){ keyPool.push(k); added++; } });   /* GỘP vào hồ cũ, không thay thế */
   keyStates = keyPool.map(k => oldMap[k] || {st:'unknown', note:'', at:''});
   if(activeKeyIdx >= keyPool.length) activeKeyIdx = 0;
   savePool();
-  $('#keysInput').value = keyPool.join('\n');
+  $('#keysInput').value = '';                    /* xoá trắng ô dán — key đầy đủ không ở lại trên màn hình */
+  keyPanelOpen = false;                          /* tự gập khung sau khi lưu */
   refreshKeyUI();
-  toast('🔑 Đã lưu hồ gồm ' + keyPool.length + ' key Gemini (chỉ ở trình duyệt này). Các nút Tạo ảnh sẽ gọi Gemini thật và tự xoay vòng key.', 'ok');
+  toast('🔑 Đã lưu hồ gồm ' + keyPool.length + ' key Gemini' + (added ? ' (thêm mới ' + added + ')' : '') + ' (chỉ ở trình duyệt này). Các nút Tạo ảnh sẽ gọi Gemini thật và tự xoay vòng key.', 'ok');
 });
 $('#btnCheckKeys').addEventListener('click', async ()=>{
   if(!keyPool.length){ toast('⚠️ Hồ đang rỗng — dán key vào ô Hồ Key và bấm Lưu Hồ Key trước đã.', 'err'); return; }
@@ -1688,7 +1806,7 @@ function syncSettingsUI(){
 /* ================= KHỞI TẠO ================= */
 (function init(){
   loadPool();
-  $('#keysInput').value = keyPool.join('\n');
+  /* Không nạp key đầy đủ vào ô dán khi mở app — ô chỉ để dán key MỚI */
   refreshKeyUI();
   $('#actorInfoText').value = SAMPLE_ACTOR_TEXT;
   $('#bgInfoText').value = SAMPLE_BG_TEXT;
