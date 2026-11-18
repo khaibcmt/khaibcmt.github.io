@@ -1,0 +1,85 @@
+{
+ "bai": "SINH SẢN Ở ĐỘNG VẬT — Sinh học 11",
+ "fileNguon": "Sinh học/Khối 11/Giáo án/HK2/KHBD_Sinh_hoc_11_Bai_27_Sinh_san_o_dong_vat_2_tiet.docx",
+ "cauHoiPhieu": "Nhiệm vụ: Các nhóm hoàn thành các bảng sau dựa vào SGK Bài 27, sau đó trình bày trước lớp.",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Sinh tinh: tinh nguyên bào giảm phân tạo 4 tinh trùng; sinh trứng: noãn nguyên bào giảm phân tạo 1 trứng",
+   "tieuChi": "Hình thành giao tử",
+   "cot": "Nội dung chính",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Tinh trùng gặp trứng ở ống dẫn trứng tạo thành hợp tử",
+   "tieuChi": "Thụ tinh",
+   "cot": "Nội dung chính",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 3,
+   "dapAn": "Hợp tử phân chia, làm tổ ở tử cung, phát triển thành phôi thai",
+   "tieuChi": "Phát triển phôi thai",
+   "cot": "Nội dung chính",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Thai nhi ra đời sau thời gian mang thai",
+   "tieuChi": "Đẻ con",
+   "cot": "Nội dung chính",
+   "hang": 4,
+   "cotSo": 1
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Giai đoạn sinh sản hữu tính ở người",
+   "Nội dung chính"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Hình thành giao tử",
+    "cacCot": [
+     {
+      "cot": "Nội dung chính",
+      "noiDung": "Sinh tinh: tinh nguyên bào giảm phân tạo 4 tinh trùng; sinh trứng: noãn nguyên bào giảm phân tạo 1 trứng"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Thụ tinh",
+    "cacCot": [
+     {
+      "cot": "Nội dung chính",
+      "noiDung": "Tinh trùng gặp trứng ở ống dẫn trứng tạo thành hợp tử"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Phát triển phôi thai",
+    "cacCot": [
+     {
+      "cot": "Nội dung chính",
+      "noiDung": "Hợp tử phân chia, làm tổ ở tử cung, phát triển thành phôi thai"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Đẻ con",
+    "cacCot": [
+     {
+      "cot": "Nội dung chính",
+      "noiDung": "Thai nhi ra đời sau thời gian mang thai"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
