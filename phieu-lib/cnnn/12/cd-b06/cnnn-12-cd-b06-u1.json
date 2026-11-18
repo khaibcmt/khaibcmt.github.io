@@ -1,0 +1,105 @@
+{
+ "bai": "MỘT SỐ ỨNG DỤNG CÔNG NGHỆ SINH HỌC TRONG CHỌN, TẠO GIỐNG THUỶ SẢN — Công nghệ nông nghiệp 12",
+ "fileNguon": "Công nghệ nông nghiệp/Khối 12/Giáo án/Chuyên đề/CN12-CD-B06_Mot_so_ung_dung_cong_nghe_sinh_hoc_trong_chon_tao_giong_thuy_san.docx",
+ "cauHoiPhieu": "PHIẾU HỌC TẬP — BÀI 6: MỘT SỐ ỨNG DỤNG CÔNG NGHỆ SINH HỌC TRONG CHỌN, TẠO GIỐNG THUỶ SẢN Họ và tên: ………………………………………… Lớp: ………… Nhóm: …………",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Mục I – Chỉ thị phân tử",
+   "tieuChi": "1",
+   "cot": "Mục / nội dung",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Quan sát Hình 6.2 và phân tích vai trò của ứng dụng chỉ thị phân tử trong chọn giống thuỷ sản; kể tên các chỉ thị phân tử phổ biến.",
+   "tieuChi": "1",
+   "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+   "hang": 1,
+   "cotSo": 2
+  },
+  {
+   "so": 3,
+   "dapAn": "Mục II – Công nghệ gene",
+   "tieuChi": "2",
+   "cot": "Mục / nội dung",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Quan sát Hình 6.4 và mô tả các bước trong quy trình chuyển gene sinh trưởng (GH) vào cá hồi đại dương; so sánh kết quả với cá không chuyển gene.",
+   "tieuChi": "2",
+   "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+   "hang": 2,
+   "cotSo": 2
+  },
+  {
+   "so": 5,
+   "dapAn": "Mục III – Giống tam bội",
+   "tieuChi": "3",
+   "cot": "Mục / nội dung",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 6,
+   "dapAn": "Quan sát Hình 6.7 và mô tả các bước tạo giống thuỷ sản tam bội; nêu ưu điểm và các đối tượng đã áp dụng.",
+   "tieuChi": "3",
+   "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+   "hang": 3,
+   "cotSo": 2
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "STT",
+   "Mục / nội dung",
+   "Câu hỏi khám phá và nội dung cần hoàn thành"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "1",
+    "cacCot": [
+     {
+      "cot": "Mục / nội dung",
+      "noiDung": "Mục I – Chỉ thị phân tử"
+     },
+     {
+      "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+      "noiDung": "Quan sát Hình 6.2 và phân tích vai trò của ứng dụng chỉ thị phân tử trong chọn giống thuỷ sản; kể tên các chỉ thị phân tử phổ biến."
+     }
+    ]
+   },
+   {
+    "tieuChi": "2",
+    "cacCot": [
+     {
+      "cot": "Mục / nội dung",
+      "noiDung": "Mục II – Công nghệ gene"
+     },
+     {
+      "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+      "noiDung": "Quan sát Hình 6.4 và mô tả các bước trong quy trình chuyển gene sinh trưởng (GH) vào cá hồi đại dương; so sánh kết quả với cá không chuyển gene."
+     }
+    ]
+   },
+   {
+    "tieuChi": "3",
+    "cacCot": [
+     {
+      "cot": "Mục / nội dung",
+      "noiDung": "Mục III – Giống tam bội"
+     },
+     {
+      "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+      "noiDung": "Quan sát Hình 6.7 và mô tả các bước tạo giống thuỷ sản tam bội; nêu ưu điểm và các đối tượng đã áp dụng."
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
