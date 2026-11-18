@@ -1,0 +1,119 @@
+{
+ "bai": "DI TRUYỀN GENE NGOÀI NHÂN — Sinh học 12",
+ "fileNguon": "Sinh học/Khối 12/Giáo án/HK1/KHBD_Sinh_hoc_12_Bai_15_Di_truyen_gene_ngoai_nhan_1_tiet.docx",
+ "cauHoiPhieu": "Nhiệm vụ: Các nhóm hoàn thành ba bảng sau trong quá trình học tập, sau đó trình bày trước lớp. Bảng A. Thí nghiệm của Correns về di truyền gene ngoài nhân",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Kết quả phép lai thuận nghịch khác nhau; tính trạng di truyền theo dòng mẹ, biểu hiện ở cả hai giới; gene ngoài nhân nằm trên DNA vòng trong ti thể, lạp thể, không thành cặp allele, phân li không đều, không tái tổ hợp",
+   "tieuChi": "Đặc điểm di truyền gene ngoài nhân",
+   "cot": "Chi tiết",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Sự di truyền không tuân theo quy luật Mendel; kết quả phép lai thuận nghịch khác nhau, đời con trong hầu hết các trường hợp đều mang kiểu hình giống mẹ không phân biệt giới tính",
+   "tieuChi": "Dấu hiệu nhận biết",
+   "cot": "Chi tiết",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 3,
+   "dapAn": "Chẩn đoán bệnh di truyền do gene ti thể (bệnh cơ ti thể, tiểu đường, tim mạch, Alzheimer, bệnh Leigh); kĩ thuật thay ti thể giúp hạn chế sinh con mắc bệnh do gene ti thể; xác định nhân thân bằng DNA ti thể",
+   "tieuChi": "Ứng dụng trong y học",
+   "cot": "Chi tiết",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Tính trạng bất thụ đực do gene ti thể quy định được ứng dụng để tạo giống lai (lúa lai, ngô lai); bảo tồn nguồn gene, đa dạng sinh học của cây trồng",
+   "tieuChi": "Ứng dụng trong nông nghiệp",
+   "cot": "Chi tiết",
+   "hang": 4,
+   "cotSo": 1
+  },
+  {
+   "so": 5,
+   "dapAn": "DNA ti thể di truyền theo dòng mẹ, ít tái tổ hợp nên được dùng để nghiên cứu nguồn gốc, quan hệ họ hàng và quá trình tiến hoá của các loài",
+   "tieuChi": "Ứng dụng trong nghiên cứu tiến hoá",
+   "cot": "Chi tiết",
+   "hang": 5,
+   "cotSo": 1
+  },
+  {
+   "so": 6,
+   "dapAn": "Không cung cấp thông tin cá nhân, thông tin sức khoẻ gia đình cho công cụ tìm kiếm, công cụ AI hay trang web lạ; chỉ dùng dữ liệu công khai, đã ẩn danh từ nguồn chính thống và ghi rõ nguồn tham khảo",
+   "tieuChi": "Bảo vệ dữ liệu cá nhân và quyền riêng tư",
+   "cot": "Chi tiết",
+   "hang": 6,
+   "cotSo": 1
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Nội dung",
+   "Chi tiết"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Đặc điểm di truyền gene ngoài nhân",
+    "cacCot": [
+     {
+      "cot": "Chi tiết",
+      "noiDung": "Kết quả phép lai thuận nghịch khác nhau; tính trạng di truyền theo dòng mẹ, biểu hiện ở cả hai giới; gene ngoài nhân nằm trên DNA vòng trong ti thể, lạp thể, không thành cặp allele, phân li không đều, không tái tổ hợp"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Dấu hiệu nhận biết",
+    "cacCot": [
+     {
+      "cot": "Chi tiết",
+      "noiDung": "Sự di truyền không tuân theo quy luật Mendel; kết quả phép lai thuận nghịch khác nhau, đời con trong hầu hết các trường hợp đều mang kiểu hình giống mẹ không phân biệt giới tính"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Ứng dụng trong y học",
+    "cacCot": [
+     {
+      "cot": "Chi tiết",
+      "noiDung": "Chẩn đoán bệnh di truyền do gene ti thể (bệnh cơ ti thể, tiểu đường, tim mạch, Alzheimer, bệnh Leigh); kĩ thuật thay ti thể giúp hạn chế sinh con mắc bệnh do gene ti thể; xác định nhân thân bằng DNA ti thể"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Ứng dụng trong nông nghiệp",
+    "cacCot": [
+     {
+      "cot": "Chi tiết",
+      "noiDung": "Tính trạng bất thụ đực do gene ti thể quy định được ứng dụng để tạo giống lai (lúa lai, ngô lai); bảo tồn nguồn gene, đa dạng sinh học của cây trồng"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Ứng dụng trong nghiên cứu tiến hoá",
+    "cacCot": [
+     {
+      "cot": "Chi tiết",
+      "noiDung": "DNA ti thể di truyền theo dòng mẹ, ít tái tổ hợp nên được dùng để nghiên cứu nguồn gốc, quan hệ họ hàng và quá trình tiến hoá của các loài"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Bảo vệ dữ liệu cá nhân và quyền riêng tư",
+    "cacCot": [
+     {
+      "cot": "Chi tiết",
+      "noiDung": "Không cung cấp thông tin cá nhân, thông tin sức khoẻ gia đình cho công cụ tìm kiếm, công cụ AI hay trang web lạ; chỉ dùng dữ liệu công khai, đã ẩn danh từ nguồn chính thống và ghi rõ nguồn tham khảo"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
