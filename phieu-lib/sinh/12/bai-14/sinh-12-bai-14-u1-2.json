@@ -1,0 +1,285 @@
+{
+ "bai": "THỰC HÀNH: QUAN SÁT MỘT SỐ DẠNG ĐỘT BIẾN NHIỄM SẮC THỂ — Sinh học 12",
+ "fileNguon": "Sinh học/Khối 12/Giáo án/HK1/KHBD_Sinh_hoc_12_Bai_14_Thuc_hanh_Quan_sat_mot_so_dang_dot_bien_nhiem_sac_the_1_tiet.docx",
+ "cauHoiPhieu": "Nhiệm vụ: Các nhóm hoàn thành ba bảng sau trong quá trình học tập, sau đó trình bày trước lớp. Bảng A. Yêu cầu cần đạt, chuẩn bị và nguyên lí quan sát đột biến nhiễm sắc thể",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "46",
+   "tieuChi": "Bộ NST bình thường của người",
+   "cot": "Số lượng NST",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "22 cặp NST thường và 1 cặp NST giới tính (XX hoặc XY), các NST tồn tại thành từng cặp tương đồng",
+   "tieuChi": "Bộ NST bình thường của người",
+   "cot": "Cấu trúc NST",
+   "hang": 1,
+   "cotSo": 2
+  },
+  {
+   "so": 3,
+   "dapAn": "Không đột biến",
+   "tieuChi": "Bộ NST bình thường của người",
+   "cot": "Dạng đột biến",
+   "hang": 1,
+   "cotSo": 3
+  },
+  {
+   "so": 4,
+   "dapAn": "Bộ NST lưỡng bội bình thường",
+   "tieuChi": "Bộ NST bình thường của người",
+   "cot": "Giải thích",
+   "hang": 1,
+   "cotSo": 4
+  },
+  {
+   "so": 5,
+   "dapAn": "47",
+   "tieuChi": "Bộ NST người mắc hội chứng Down",
+   "cot": "Số lượng NST",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 6,
+   "dapAn": "Thừa một NST số 21",
+   "tieuChi": "Bộ NST người mắc hội chứng Down",
+   "cot": "Cấu trúc NST",
+   "hang": 2,
+   "cotSo": 2
+  },
+  {
+   "so": 7,
+   "dapAn": "Thể ba NST số 21 (lệch bội)",
+   "tieuChi": "Bộ NST người mắc hội chứng Down",
+   "cot": "Dạng đột biến",
+   "hang": 2,
+   "cotSo": 3
+  },
+  {
+   "so": 8,
+   "dapAn": "Do rối loạn phân li NST số 21 trong giảm phân",
+   "tieuChi": "Bộ NST người mắc hội chứng Down",
+   "cot": "Giải thích",
+   "hang": 2,
+   "cotSo": 4
+  },
+  {
+   "so": 9,
+   "dapAn": "45",
+   "tieuChi": "Bộ NST người mắc hội chứng Turner",
+   "cot": "Số lượng NST",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 10,
+   "dapAn": "Chỉ có một NST X",
+   "tieuChi": "Bộ NST người mắc hội chứng Turner",
+   "cot": "Cấu trúc NST",
+   "hang": 3,
+   "cotSo": 2
+  },
+  {
+   "so": 11,
+   "dapAn": "Thể một NST X (lệch bội)",
+   "tieuChi": "Bộ NST người mắc hội chứng Turner",
+   "cot": "Dạng đột biến",
+   "hang": 3,
+   "cotSo": 3
+  },
+  {
+   "so": 12,
+   "dapAn": "Do rối loạn phân li NST giới tính trong giảm phân",
+   "tieuChi": "Bộ NST người mắc hội chứng Turner",
+   "cot": "Giải thích",
+   "hang": 3,
+   "cotSo": 4
+  },
+  {
+   "so": 13,
+   "dapAn": "47",
+   "tieuChi": "Bộ NST người mắc hội chứng Klinefelter",
+   "cot": "Số lượng NST",
+   "hang": 4,
+   "cotSo": 1
+  },
+  {
+   "so": 14,
+   "dapAn": "Thừa một NST X (XXY)",
+   "tieuChi": "Bộ NST người mắc hội chứng Klinefelter",
+   "cot": "Cấu trúc NST",
+   "hang": 4,
+   "cotSo": 2
+  },
+  {
+   "so": 15,
+   "dapAn": "Thể ba NST giới tính XXY (lệch bội)",
+   "tieuChi": "Bộ NST người mắc hội chứng Klinefelter",
+   "cot": "Dạng đột biến",
+   "hang": 4,
+   "cotSo": 3
+  },
+  {
+   "so": 16,
+   "dapAn": "Do rối loạn phân li NST giới tính trong giảm phân",
+   "tieuChi": "Bộ NST người mắc hội chứng Klinefelter",
+   "cot": "Giải thích",
+   "hang": 4,
+   "cotSo": 4
+  },
+  {
+   "so": 17,
+   "dapAn": "3n hoặc 4n",
+   "tieuChi": "Bộ NST thể đa bội ở thực vật",
+   "cot": "Số lượng NST",
+   "hang": 5,
+   "cotSo": 1
+  },
+  {
+   "so": 18,
+   "dapAn": "Số lượng NST gấp 3 lần hoặc 4 lần bộ đơn bội; các cơ quan sinh dưỡng to hơn hẳn cây bình thường",
+   "tieuChi": "Bộ NST thể đa bội ở thực vật",
+   "cot": "Cấu trúc NST",
+   "hang": 5,
+   "cotSo": 2
+  },
+  {
+   "so": 19,
+   "dapAn": "Đa bội (3n, 4n)",
+   "tieuChi": "Bộ NST thể đa bội ở thực vật",
+   "cot": "Dạng đột biến",
+   "hang": 5,
+   "cotSo": 3
+  },
+  {
+   "so": 20,
+   "dapAn": "Do rối loạn phân li toàn bộ bộ NST trong nguyên phân hoặc giảm phân",
+   "tieuChi": "Bộ NST thể đa bội ở thực vật",
+   "cot": "Giải thích",
+   "hang": 5,
+   "cotSo": 4
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Tiêu bản",
+   "Số lượng NST",
+   "Cấu trúc NST",
+   "Dạng đột biến",
+   "Giải thích"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Bộ NST bình thường của người",
+    "cacCot": [
+     {
+      "cot": "Số lượng NST",
+      "noiDung": "46"
+     },
+     {
+      "cot": "Cấu trúc NST",
+      "noiDung": "22 cặp NST thường và 1 cặp NST giới tính (XX hoặc XY), các NST tồn tại thành từng cặp tương đồng"
+     },
+     {
+      "cot": "Dạng đột biến",
+      "noiDung": "Không đột biến"
+     },
+     {
+      "cot": "Giải thích",
+      "noiDung": "Bộ NST lưỡng bội bình thường"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Bộ NST người mắc hội chứng Down",
+    "cacCot": [
+     {
+      "cot": "Số lượng NST",
+      "noiDung": "47"
+     },
+     {
+      "cot": "Cấu trúc NST",
+      "noiDung": "Thừa một NST số 21"
+     },
+     {
+      "cot": "Dạng đột biến",
+      "noiDung": "Thể ba NST số 21 (lệch bội)"
+     },
+     {
+      "cot": "Giải thích",
+      "noiDung": "Do rối loạn phân li NST số 21 trong giảm phân"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Bộ NST người mắc hội chứng Turner",
+    "cacCot": [
+     {
+      "cot": "Số lượng NST",
+      "noiDung": "45"
+     },
+     {
+      "cot": "Cấu trúc NST",
+      "noiDung": "Chỉ có một NST X"
+     },
+     {
+      "cot": "Dạng đột biến",
+      "noiDung": "Thể một NST X (lệch bội)"
+     },
+     {
+      "cot": "Giải thích",
+      "noiDung": "Do rối loạn phân li NST giới tính trong giảm phân"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Bộ NST người mắc hội chứng Klinefelter",
+    "cacCot": [
+     {
+      "cot": "Số lượng NST",
+      "noiDung": "47"
+     },
+     {
+      "cot": "Cấu trúc NST",
+      "noiDung": "Thừa một NST X (XXY)"
+     },
+     {
+      "cot": "Dạng đột biến",
+      "noiDung": "Thể ba NST giới tính XXY (lệch bội)"
+     },
+     {
+      "cot": "Giải thích",
+      "noiDung": "Do rối loạn phân li NST giới tính trong giảm phân"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Bộ NST thể đa bội ở thực vật",
+    "cacCot": [
+     {
+      "cot": "Số lượng NST",
+      "noiDung": "3n hoặc 4n"
+     },
+     {
+      "cot": "Cấu trúc NST",
+      "noiDung": "Số lượng NST gấp 3 lần hoặc 4 lần bộ đơn bội; các cơ quan sinh dưỡng to hơn hẳn cây bình thường"
+     },
+     {
+      "cot": "Dạng đột biến",
+      "noiDung": "Đa bội (3n, 4n)"
+     },
+     {
+      "cot": "Giải thích",
+      "noiDung": "Do rối loạn phân li toàn bộ bộ NST trong nguyên phân hoặc giảm phân"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
