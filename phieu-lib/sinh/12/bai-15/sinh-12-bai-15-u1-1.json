@@ -1,0 +1,102 @@
+{
+ "bai": "DI TRUYỀN GENE NGOÀI NHÂN — Sinh học 12",
+ "fileNguon": "Sinh học/Khối 12/Giáo án/HK1/KHBD_Sinh_hoc_12_Bai_15_Di_truyen_gene_ngoai_nhan_1_tiet.docx",
+ "cauHoiPhieu": "Nhiệm vụ: Các nhóm hoàn thành ba bảng sau trong quá trình học tập, sau đó trình bày trước lớp. Bảng A. Thí nghiệm của Correns về di truyền gene ngoài nhân",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Năm 1900: Correns, Hugo de Vries và Erich von Tschermak tái phát hiện các quy luật di truyền của Mendel trên cây đậu Hà Lan. Năm 1909: Carl Correns phát hiện hiện tượng khác thường ở cây hoa bốn giờ (Mirabilis jalapa): tính trạng màu sắc lá không tuân theo quy luật của Mendel",
+   "tieuChi": "Bối cảnh",
+   "cot": "Chi tiết",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Cây hoa bốn giờ (Mirabilis jalapa); lấy hạt phấn hoa từ cành này thụ phấn cho hoa trên cành kia theo các tổ hợp lai thuận nghịch khác nhau (3 tổ hợp, tương ứng với 6 cặp bố mẹ khác nhau về màu sắc lá: lá xanh, lá trắng, lá khảm)",
+   "tieuChi": "Đối tượng và cách tiến hành",
+   "cot": "Chi tiết",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 3,
+   "dapAn": "Phép lai thuận nghịch không tuân theo quy luật Mendel; đời con đều có kiểu hình giống mẹ: mẹ lá xanh thì con lá xanh, mẹ lá trắng thì con lá trắng; mẹ lá khảm thì đời con có lá xanh, lá trắng và lá khảm",
+   "tieuChi": "Kết quả (Bảng 15.1 SGK)",
+   "cot": "Chi tiết",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Gene quy định màu sắc lá nằm trong lục lạp (lạp thể) ở tế bào chất; khi thụ tinh, hầu hết hợp tử chỉ nhận tế bào chất từ trứng của mẹ mà không nhận tế bào chất từ tinh trùng của bố, nên đời con mang tính trạng giống mẹ",
+   "tieuChi": "Giải thích",
+   "cot": "Chi tiết",
+   "hang": 4,
+   "cotSo": 1
+  },
+  {
+   "so": 5,
+   "dapAn": "Gene không những tồn tại trong nhân (trên nhiễm sắc thể) mà còn tồn tại ngoài nhân (trong ti thể, lạp thể ở tế bào chất); tính trạng màu sắc lá ở cây hoa bốn giờ di truyền theo dòng mẹ",
+   "tieuChi": "Kết luận",
+   "cot": "Chi tiết",
+   "hang": 5,
+   "cotSo": 1
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Nội dung",
+   "Chi tiết"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Bối cảnh",
+    "cacCot": [
+     {
+      "cot": "Chi tiết",
+      "noiDung": "Năm 1900: Correns, Hugo de Vries và Erich von Tschermak tái phát hiện các quy luật di truyền của Mendel trên cây đậu Hà Lan. Năm 1909: Carl Correns phát hiện hiện tượng khác thường ở cây hoa bốn giờ (Mirabilis jalapa): tính trạng màu sắc lá không tuân theo quy luật của Mendel"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Đối tượng và cách tiến hành",
+    "cacCot": [
+     {
+      "cot": "Chi tiết",
+      "noiDung": "Cây hoa bốn giờ (Mirabilis jalapa); lấy hạt phấn hoa từ cành này thụ phấn cho hoa trên cành kia theo các tổ hợp lai thuận nghịch khác nhau (3 tổ hợp, tương ứng với 6 cặp bố mẹ khác nhau về màu sắc lá: lá xanh, lá trắng, lá khảm)"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Kết quả (Bảng 15.1 SGK)",
+    "cacCot": [
+     {
+      "cot": "Chi tiết",
+      "noiDung": "Phép lai thuận nghịch không tuân theo quy luật Mendel; đời con đều có kiểu hình giống mẹ: mẹ lá xanh thì con lá xanh, mẹ lá trắng thì con lá trắng; mẹ lá khảm thì đời con có lá xanh, lá trắng và lá khảm"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Giải thích",
+    "cacCot": [
+     {
+      "cot": "Chi tiết",
+      "noiDung": "Gene quy định màu sắc lá nằm trong lục lạp (lạp thể) ở tế bào chất; khi thụ tinh, hầu hết hợp tử chỉ nhận tế bào chất từ trứng của mẹ mà không nhận tế bào chất từ tinh trùng của bố, nên đời con mang tính trạng giống mẹ"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Kết luận",
+    "cacCot": [
+     {
+      "cot": "Chi tiết",
+      "noiDung": "Gene không những tồn tại trong nhân (trên nhiễm sắc thể) mà còn tồn tại ngoài nhân (trong ti thể, lạp thể ở tế bào chất); tính trạng màu sắc lá ở cây hoa bốn giờ di truyền theo dòng mẹ"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
