@@ -1,0 +1,85 @@
+{
+ "bai": "MÔI TRƯỜNG VÀ CÁC NHÂN TỐ SINH THÁI — Sinh học 12",
+ "fileNguon": "Sinh học/Khối 12/Giáo án/HK2/KHBD_Sinh_hoc_12_Bai_23_Moi_truong_va_cac_nhan_to_sinh_thai_2_tiet.docx",
+ "cauHoiPhieu": "PHIẾU HỌC TẬP — MÔI TRƯỜNG VÀ CÁC NHÂN TỐ SINH THÁI",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Môi trường sống là gì? Bốn loại môi trường sống và ví dụ sinh vật sống trong từng loại môi trường: Tác động qua lại giữa sinh vật và môi trường (lấy ví dụ: cây xanh quang hợp, giun đất làm tơi xốp đất):",
+   "tieuChi": "1. Môi trường sống của sinh vật",
+   "cot": "Chi tiết",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Nhân tố sinh thái là gì? Phân loại nhân tố sinh thái (vô sinh, hữu sinh, nhân tố con người): Lập bảng so sánh cây ưa sáng với cây ưa bóng: Lập bảng so sánh động vật ưa hoạt động ban ngày với động vật ưa hoạt động ban đêm: Ảnh hưởng của nhiệt độ đến sinh vật (sinh vật biến nhiệt, sinh vật đẳng nhiệt; giới hạn sinh thái về nhiệt độ của cá rô phi; nhiệt độ ấp trứng của rùa biển):",
+   "tieuChi": "2. Các nhân tố sinh thái",
+   "cot": "Chi tiết",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 3,
+   "dapAn": "Quy luật giới hạn sinh thái (khái niệm, khoảng thuận lợi, khoảng ức chế, điểm gây chết; ví dụ cá rô phi): Vẽ sơ đồ giới hạn sinh thái về nhiệt độ của cá rô phi: Quy luật tác động tổng hợp của các nhân tố sinh thái và ví dụ minh hoạ: Quy luật tác động không đồng đều của các nhân tố sinh thái và ví dụ minh hoạ (muỗi vằn và ruồi Glossina):",
+   "tieuChi": "3. Các quy luật sinh thái",
+   "cot": "Chi tiết",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Nhịp sinh học là gì? Phân loại nhịp sinh học (nhịp sinh học bên ngoài, nhịp sinh học bên trong) và ví dụ: Cơ chế hình thành và vai trò của nhịp sinh học: Tìm hiểu nhịp sinh học ngày đêm của chính cơ thể mình (giờ ngủ, giờ thức, nhịp tim, thân nhiệt):",
+   "tieuChi": "4. Nhịp sinh học",
+   "cot": "Chi tiết",
+   "hang": 4,
+   "cotSo": 1
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Nội dung",
+   "Chi tiết"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "1. Môi trường sống của sinh vật",
+    "cacCot": [
+     {
+      "cot": "Chi tiết",
+      "noiDung": "Môi trường sống là gì? Bốn loại môi trường sống và ví dụ sinh vật sống trong từng loại môi trường: Tác động qua lại giữa sinh vật và môi trường (lấy ví dụ: cây xanh quang hợp, giun đất làm tơi xốp đất):"
+     }
+    ]
+   },
+   {
+    "tieuChi": "2. Các nhân tố sinh thái",
+    "cacCot": [
+     {
+      "cot": "Chi tiết",
+      "noiDung": "Nhân tố sinh thái là gì? Phân loại nhân tố sinh thái (vô sinh, hữu sinh, nhân tố con người): Lập bảng so sánh cây ưa sáng với cây ưa bóng: Lập bảng so sánh động vật ưa hoạt động ban ngày với động vật ưa hoạt động ban đêm: Ảnh hưởng của nhiệt độ đến sinh vật (sinh vật biến nhiệt, sinh vật đẳng nhiệt; giới hạn sinh thái về nhiệt độ của cá rô phi; nhiệt độ ấp trứng của rùa biển):"
+     }
+    ]
+   },
+   {
+    "tieuChi": "3. Các quy luật sinh thái",
+    "cacCot": [
+     {
+      "cot": "Chi tiết",
+      "noiDung": "Quy luật giới hạn sinh thái (khái niệm, khoảng thuận lợi, khoảng ức chế, điểm gây chết; ví dụ cá rô phi): Vẽ sơ đồ giới hạn sinh thái về nhiệt độ của cá rô phi: Quy luật tác động tổng hợp của các nhân tố sinh thái và ví dụ minh hoạ: Quy luật tác động không đồng đều của các nhân tố sinh thái và ví dụ minh hoạ (muỗi vằn và ruồi Glossina):"
+     }
+    ]
+   },
+   {
+    "tieuChi": "4. Nhịp sinh học",
+    "cacCot": [
+     {
+      "cot": "Chi tiết",
+      "noiDung": "Nhịp sinh học là gì? Phân loại nhịp sinh học (nhịp sinh học bên ngoài, nhịp sinh học bên trong) và ví dụ: Cơ chế hình thành và vai trò của nhịp sinh học: Tìm hiểu nhịp sinh học ngày đêm của chính cơ thể mình (giờ ngủ, giờ thức, nhịp tim, thân nhiệt):"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
