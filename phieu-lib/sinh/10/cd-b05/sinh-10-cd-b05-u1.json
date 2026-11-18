@@ -1,0 +1,102 @@
+{
+ "bai": "Bài 5: Khái quát về công nghệ enzyme — Sinh học 10",
+ "fileNguon": "Sinh học/Khối 10/Giáo án/Chuyên đề/SH10-CD-B05_Khai_quat_ve_cong_nghe_enzyme.docx",
+ "cauHoiPhieu": "Nội dung 1. Tìm hiểu khái niệm và thành tựu của công nghệ enzyme (SGK tr. 27–29).",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "công nghệ enzyme là quy trình kĩ thuật tách chiết và tinh sạch enzyme, sử dụng cho mục đích nghiên cứu khoa học và ứng dụng vào thực tiễn; các chế phẩm enzyme được ứng dụng rộng rãi trong sản xuất: thuốc chữa bệnh, chế biến thức ăn cho người và gia súc, xử lí ô nhiễm môi trường, sản xuất bột giặt và các chất tẩy rửa,...",
+   "tieuChi": "Khái niệm công nghệ enzyme",
+   "cot": "Kiến thức cần nắm",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "enzyme chlorophyllase giúp chuyển hoá màu trái cây từ màu xanh thành màu vàng, màu đỏ khi quả chín; enzyme pectinase giúp phân huỷ pectin làm mềm trái cây. Ứng dụng enzyme thay thế được một số hoá chất độc hại dùng trong làm chín trái cây và chế biến thực phẩm.",
+   "tieuChi": "Enzyme làm chín trái cây, thay thế hoá chất độc hại",
+   "cot": "Kiến thức cần nắm",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 3,
+   "dapAn": "enzyme PETase và MHETase có thể phân huỷ nhựa PET (polyethylene terephthalate) thành các đơn phân trong vài ngày, trong khi nhựa trong tự nhiên phải mất hàng trăm năm mới phân huỷ được; đây được kì vọng là giải pháp sinh học cho vấn đề rác thải nhựa.",
+   "tieuChi": "Enzyme phân huỷ rác thải nhựa (PETase, MHETase)",
+   "cot": "Kiến thức cần nắm",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "enzyme giới hạn (restriction enzyme) là enzyme có khả năng nhận biết và cắt những điểm xác định (trình tự nucleotide đặc hiệu trên phân tử DNA); sự phát hiện enzyme giới hạn cùng với các enzyme nối đã tạo ra bước đột phá trong nghiên cứu khoa học sự sống và ứng dụng công nghệ enzyme trong y học, đặc biệt là công nghệ tái tổ hợp gene. Hệ thống CRISPR/Cas9 gồm phân tử protein Cas9 (một loại enzyme) và đoạn RNA dẫn đường: RNA dẫn đường nhận biết được trình tự DNA cần cắt, enzyme Cas9 cắt DNA tại trình tự xác định, nhờ đó bất hoạt gene hoặc sửa chữa những sai hỏng của DNA gây bệnh lí di truyền, biệt hoá tế bào gốc, tạo động vật, thực vật biến đổi gene.",
+   "tieuChi": "Enzyme giới hạn và hệ thống CRISPR/Cas9",
+   "cot": "Kiến thức cần nắm",
+   "hang": 4,
+   "cotSo": 1
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Nội dung",
+   "Kiến thức cần nắm",
+   "Ví dụ / ý nghĩa"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Khái niệm công nghệ enzyme",
+    "cacCot": [
+     {
+      "cot": "Kiến thức cần nắm",
+      "noiDung": "công nghệ enzyme là quy trình kĩ thuật tách chiết và tinh sạch enzyme, sử dụng cho mục đích nghiên cứu khoa học và ứng dụng vào thực tiễn; các chế phẩm enzyme được ứng dụng rộng rãi trong sản xuất: thuốc chữa bệnh, chế biến thức ăn cho người và gia súc, xử lí ô nhiễm môi trường, sản xuất bột giặt và các chất tẩy rửa,..."
+     },
+     {
+      "cot": "Ví dụ / ý nghĩa",
+      "noiDung": ""
+     }
+    ]
+   },
+   {
+    "tieuChi": "Enzyme làm chín trái cây, thay thế hoá chất độc hại",
+    "cacCot": [
+     {
+      "cot": "Kiến thức cần nắm",
+      "noiDung": "enzyme chlorophyllase giúp chuyển hoá màu trái cây từ màu xanh thành màu vàng, màu đỏ khi quả chín; enzyme pectinase giúp phân huỷ pectin làm mềm trái cây. Ứng dụng enzyme thay thế được một số hoá chất độc hại dùng trong làm chín trái cây và chế biến thực phẩm."
+     },
+     {
+      "cot": "Ví dụ / ý nghĩa",
+      "noiDung": ""
+     }
+    ]
+   },
+   {
+    "tieuChi": "Enzyme phân huỷ rác thải nhựa (PETase, MHETase)",
+    "cacCot": [
+     {
+      "cot": "Kiến thức cần nắm",
+      "noiDung": "enzyme PETase và MHETase có thể phân huỷ nhựa PET (polyethylene terephthalate) thành các đơn phân trong vài ngày, trong khi nhựa trong tự nhiên phải mất hàng trăm năm mới phân huỷ được; đây được kì vọng là giải pháp sinh học cho vấn đề rác thải nhựa."
+     },
+     {
+      "cot": "Ví dụ / ý nghĩa",
+      "noiDung": ""
+     }
+    ]
+   },
+   {
+    "tieuChi": "Enzyme giới hạn và hệ thống CRISPR/Cas9",
+    "cacCot": [
+     {
+      "cot": "Kiến thức cần nắm",
+      "noiDung": "enzyme giới hạn (restriction enzyme) là enzyme có khả năng nhận biết và cắt những điểm xác định (trình tự nucleotide đặc hiệu trên phân tử DNA); sự phát hiện enzyme giới hạn cùng với các enzyme nối đã tạo ra bước đột phá trong nghiên cứu khoa học sự sống và ứng dụng công nghệ enzyme trong y học, đặc biệt là công nghệ tái tổ hợp gene. Hệ thống CRISPR/Cas9 gồm phân tử protein Cas9 (một loại enzyme) và đoạn RNA dẫn đường: RNA dẫn đường nhận biết được trình tự DNA cần cắt, enzyme Cas9 cắt DNA tại trình tự xác định, nhờ đó bất hoạt gene hoặc sửa chữa những sai hỏng của DNA gây bệnh lí di truyền, biệt hoá tế bào gốc, tạo động vật, thực vật biến đổi gene."
+     },
+     {
+      "cot": "Ví dụ / ý nghĩa",
+      "noiDung": ""
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Đoạn Dự kiến sản phẩm (DKSP) trong cùng KHBD, mở đầu bằng nhãn của từng hàng trong bảng phiếu (trích nguyên văn)."
+ },
+ "ghiChu": " Đáp án là đoạn DKSP nguyên văn (dài hơn đáp án rút gọn kiểu mẫu tay Bài 9)."
+}
