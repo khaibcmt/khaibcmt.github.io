@@ -182,9 +182,20 @@
     </div>
 
     <div style="margin-top:16px">
+      <label>🎞 Loại video — mỗi loại một khuôn kịch bản riêng</label>
+      <div class="chips" id="typeChips" style="margin-top:6px">
+        <span class="chip type-chip" data-type="warmup">🚀 Khởi động tiết học</span>
+        <span class="chip type-chip" data-type="full">📚 Nội dung toàn bài</span>
+        <span class="chip type-chip" data-type="part">🔎 Nội dung từng phần</span>
+        <span class="chip type-chip" data-type="review">📝 Ôn tập / tổng kết</span>
+      </div>
+      <div class="small" style="margin-top:6px">Chọn 🚀 Khởi động thì app tự gợi ý thời lượng 2 phút (thầy vẫn đổi lại được ở bộ chọn thời lượng bên dưới). App tự nhớ loại video đã chọn cho lần mở sau.</div>
+    </div>
+
+    <div style="margin-top:16px">
       <label>✍️ Chỉ dẫn của thầy — muốn video làm như thế nào thì dặn ở đây</label>
       <textarea id="teacherInstr" rows="4" placeholder="VD: Giảng chậm rãi, dễ hiểu cho học sinh trung bình; nhấn mạnh phần ứng dụng thực tế; mỗi ý chính cho 1 ví dụ đời sống; kết thúc bằng phần ghi nhớ + 3 câu hỏi ôn tập..."></textarea>
-      <div class="small" style="margin-top:6px">Áp dụng cho cả 2 chế độ. Khi viết kịch bản, chỉ dẫn của thầy được ưu tiên hơn phong cách mặc định của app. App tự nhớ nội dung ô này cho lần mở sau.</div>
+      <div class="small" style="margin-top:6px">Áp dụng cho cả 2 chế độ. Ô này là chỉ đạo riêng của thầy — được ưu tiên CAO NHẤT khi viết kịch bản: thắng cả khuôn loại video ở trên khi có xung đột, để bổ sung hoặc ghi đè cho khuôn mẫu. App tự nhớ nội dung ô này cho lần mở sau.</div>
       <div style="margin-top:6px"><button class="btn-ghost" id="clearInstrBtn" type="button">🧹 Xoá chỉ dẫn</button></div>
     </div>
 
@@ -1103,6 +1114,56 @@ $("clearInstrBtn").addEventListener("click", () => {
   $("teacherInstr").focus();
 });
 
+/* ---------- Loại video: mỗi loại một khuôn cấu trúc riêng ----------
+   Mẫu sẵn là KHUNG; chỉ dẫn tự do của giáo viên là chỉ đạo ưu tiên cao
+   nhất, ghi đè/bổ sung cho khung khi xung đột. Mặc định "full" (Nội dung
+   toàn bài) = khuôn chuẩn hiện tại của app. */
+const TYPE_KEY = "vbg_video_type";
+const VIDEO_TYPE_BLOCKS = {
+  warmup: "LOẠI VIDEO: 🚀 KHỞI ĐỘNG TIẾT HỌC — đây là video khởi động đầu tiết, KHÔNG phải video giảng bài.\n" +
+    "- Mở đầu NGAY bằng một tình huống, ví dụ đời sống gần gũi hoặc một câu hỏi gây tò mò; tuyệt đối không mở đầu bằng định nghĩa hay lý thuyết.\n" +
+    "- Chỉ khơi gợi, đặt vấn đề, nối với trải nghiệm của học sinh; KHÔNG giảng nội dung chính của bài, không giải thích kiến thức mới, không kết luận đáp án.\n" +
+    "- Kết thúc bằng MỘT câu hỏi treo (chưa trả lời) dẫn vào bài mới, khiến học sinh muốn học tiếp để tìm câu trả lời.\n" +
+    "- Nhịp nhanh, sinh động, số đoạn ít theo thời lượng đã chọn.",
+  full: "LOẠI VIDEO: 📚 NỘI DUNG TOÀN BÀI — giảng trọn vẹn mạch bài học theo khuôn chuẩn.\n" +
+    "- Đoạn đầu: mở bài, nêu vấn đề và mục tiêu của bài học.\n" +
+    "- Các đoạn giữa: trình bày lần lượt các ý chính của bài, mỗi ý chính kèm hình minh hoạ, sơ đồ hoặc bảng số liệu phù hợp.\n" +
+    "- Đoạn cuối: tổng kết và phần ghi nhớ những điểm cốt lõi của bài.",
+  part: "LOẠI VIDEO: 🔎 NỘI DUNG TỪNG PHẦN — CHỈ đào sâu MỘT phần/mục duy nhất của bài (phần được nêu trong tên bài hoặc trong chỉ dẫn của giáo viên).\n" +
+    "- Dành toàn bộ thời lượng cho phần đó: giải thích chậm, kỹ, nhiều ví dụ minh hoạ và ví dụ đời sống hơn bình thường.\n" +
+    "- KHÔNG lan sang phần/mục khác của bài; nếu cần nối ý thì nhắc phần khác tối đa một câu.\n" +
+    "- Kết thúc bằng phần ghi nhớ riêng cho phần vừa học.",
+  review: "LOẠI VIDEO: 📝 ÔN TẬP / TỔNG KẾT — hệ thống hoá kiến thức đã học để học sinh ôn tập.\n" +
+    "- Ưu tiên segment dạng sơ đồ (diagram) và bảng tổng hợp (table) để hệ thống hoá, so sánh, đối chiếu các kiến thức trọng tâm.\n" +
+    "- Nhấn mạnh các điểm trọng tâm, các điểm hay ra thi và những lỗi học sinh hay nhầm.\n" +
+    "- Kết thúc bằng một vài câu hỏi TỰ KIỂM TRA (segment text) để học sinh tự đánh giá; không cần lời giải chi tiết."
+};
+let videoType = "full";
+try { videoType = localStorage.getItem(TYPE_KEY) || "full"; } catch (e) {}
+if (!VIDEO_TYPE_BLOCKS[videoType]) videoType = "full";
+function videoTypeBlock(t){
+  const b = VIDEO_TYPE_BLOCKS[t];
+  if (!b) return "";
+  return b + "\n(Đây là khuôn khung của loại video; chỉ dẫn riêng của giáo viên — nếu có ở phần sau — được ưu tiên hơn khuôn này.)";
+}
+function refreshTypeUI(){
+  document.querySelectorAll(".type-chip").forEach(c =>
+    c.classList.toggle("active", c.dataset.type === videoType));
+}
+document.querySelectorAll(".type-chip").forEach(c => c.addEventListener("click", () => {
+  videoType = c.dataset.type;
+  try { localStorage.setItem(TYPE_KEY, videoType); } catch (e) {}
+  refreshTypeUI();
+  if (videoType === "warmup") {
+    /* Khởi động thì gợi ý mặc định 2 phút — giáo viên vẫn đổi lại được ở bộ chọn thời lượng. */
+    maxMinutes = 2;
+    try { localStorage.setItem("vbg_max_minutes", "2"); } catch (e) {}
+    refreshDurUI();
+    updateDurInfo();
+  }
+}));
+refreshTypeUI();
+
 /* ---------- BƯỚC 1: viết kịch bản ---------- */
 function masterPrompt(){
   return [
@@ -1174,6 +1235,8 @@ async function generateScript(){
       "Dưới đây là nội dung câu chuyện / bài học. Hãy chuyển thành kịch bản video bài giảng bám sát nội dung này:\n\"\"\"\n" + story + "\n\"\"\"" +
       "\n\nLƯU Ý CHẾ ĐỘ KỂ CHUYỆN: đây là video kể chuyện / hoạt hình cho học sinh (truyện dân gian, truyện đời xưa). Hãy dùng segment type image với imagePrompt mô tả tranh minh hoạ phong cách hoạt hình, truyện tranh thiếu nhi (children's storybook illustration, warm colors, animated style, no text) cho hầu hết các đoạn. KHÔNG dùng segment type sgk — truyện không có hình SGK. Chỉ dùng diagram/table khi diễn biến truyện thật sự hợp (dòng thời gian, so sánh nhân vật), còn lại ưu tiên image và text.";
   }
+  const typeBlock = videoTypeBlock(videoType);
+  if (typeBlock) userPart += "\n\n" + typeBlock;
   const instrBlock = teacherInstructionBlock($("teacherInstr").value);
   if (instrBlock) userPart += "\n\n" + instrBlock;
   const data = await gemini("text", {
