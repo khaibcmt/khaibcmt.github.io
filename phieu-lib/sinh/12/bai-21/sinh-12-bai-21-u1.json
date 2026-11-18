@@ -1,0 +1,85 @@
+{
+ "bai": "HỌC THUYẾT TIẾN HÓA TỔNG HỢP HIỆN ĐẠI — Sinh học 12",
+ "fileNguon": "Sinh học/Khối 12/Giáo án/HK2/KHBD_Sinh_hoc_12_Bai_21_Hoc_thuyet_tien_hoa_tong_hop_hien_dai_2_tiet.docx",
+ "cauHoiPhieu": "PHIẾU HỌC TẬP — HỌC THUYẾT TIẾN HÓA TỔNG HỢP HIỆN ĐẠI",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Tiến hóa nhỏ là gì? Quần thể có vai trò gì trong tiến hóa nhỏ? Tiến hóa lớn là gì? Lập bảng so sánh tiến hóa nhỏ với tiến hóa lớn (quy mô, thời gian, đơn vị, kết quả): Vì sao cá thể không phải là đơn vị tiến hóa?",
+   "tieuChi": "1. Tiến hóa nhỏ và tiến hóa lớn",
+   "cot": "Chi tiết",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Liệt kê 5 nhân tố tiến hóa: Đột biến có vai trò gì? Vì sao đột biến là nguồn nguyên liệu sơ cấp cho tiến hóa? Di – nhập gene làm thay đổi tần số allele của quần thể như thế nào? Giao phối không ngẫu nhiên làm thay đổi tần số allele hay tần số kiểu gene của quần thể? Các yếu tố ngẫu nhiên (phiêu bạt di truyền) tác động mạnh ở quần thể như thế nào? Nêu ví dụ (hiệu ứng thắt cổ chai, hiệu ứng người sáng lập): Chọn lọc tự nhiên có vai trò gì? Vì sao chọn lọc tự nhiên là nhân tố duy nhất làm tăng khả năng thích nghi của sinh vật?",
+   "tieuChi": "2. Các nhân tố tiến hóa",
+   "cot": "Chi tiết",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 3,
+   "dapAn": "Thích nghi là gì? Đặc điểm thích nghi là gì? Trình bày cơ chế hình thành đặc điểm thích nghi: Vì sao các đặc điểm thích nghi chỉ hợp lí tương đối? Lấy ví dụ minh họa (sâu bướm bạch dương, gấu Bắc Cực):",
+   "tieuChi": "3. Sự hình thành đặc điểm thích nghi",
+   "cot": "Chi tiết",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Loài sinh học là gì? Trình bày cơ chế hình thành loài: Hình thành loài bằng cách li địa lí diễn ra như thế nào? Vẽ sơ đồ: Hình thành loài bằng cách li sinh sản diễn ra như thế nào? Nêu ví dụ (đa bội hóa ở thực vật): Cách li địa lí và cách li sinh sản có vai trò gì trong quá trình hình thành loài?",
+   "tieuChi": "4. Hình thành loài",
+   "cot": "Chi tiết",
+   "hang": 4,
+   "cotSo": 1
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Nội dung",
+   "Chi tiết"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "1. Tiến hóa nhỏ và tiến hóa lớn",
+    "cacCot": [
+     {
+      "cot": "Chi tiết",
+      "noiDung": "Tiến hóa nhỏ là gì? Quần thể có vai trò gì trong tiến hóa nhỏ? Tiến hóa lớn là gì? Lập bảng so sánh tiến hóa nhỏ với tiến hóa lớn (quy mô, thời gian, đơn vị, kết quả): Vì sao cá thể không phải là đơn vị tiến hóa?"
+     }
+    ]
+   },
+   {
+    "tieuChi": "2. Các nhân tố tiến hóa",
+    "cacCot": [
+     {
+      "cot": "Chi tiết",
+      "noiDung": "Liệt kê 5 nhân tố tiến hóa: Đột biến có vai trò gì? Vì sao đột biến là nguồn nguyên liệu sơ cấp cho tiến hóa? Di – nhập gene làm thay đổi tần số allele của quần thể như thế nào? Giao phối không ngẫu nhiên làm thay đổi tần số allele hay tần số kiểu gene của quần thể? Các yếu tố ngẫu nhiên (phiêu bạt di truyền) tác động mạnh ở quần thể như thế nào? Nêu ví dụ (hiệu ứng thắt cổ chai, hiệu ứng người sáng lập): Chọn lọc tự nhiên có vai trò gì? Vì sao chọn lọc tự nhiên là nhân tố duy nhất làm tăng khả năng thích nghi của sinh vật?"
+     }
+    ]
+   },
+   {
+    "tieuChi": "3. Sự hình thành đặc điểm thích nghi",
+    "cacCot": [
+     {
+      "cot": "Chi tiết",
+      "noiDung": "Thích nghi là gì? Đặc điểm thích nghi là gì? Trình bày cơ chế hình thành đặc điểm thích nghi: Vì sao các đặc điểm thích nghi chỉ hợp lí tương đối? Lấy ví dụ minh họa (sâu bướm bạch dương, gấu Bắc Cực):"
+     }
+    ]
+   },
+   {
+    "tieuChi": "4. Hình thành loài",
+    "cacCot": [
+     {
+      "cot": "Chi tiết",
+      "noiDung": "Loài sinh học là gì? Trình bày cơ chế hình thành loài: Hình thành loài bằng cách li địa lí diễn ra như thế nào? Vẽ sơ đồ: Hình thành loài bằng cách li sinh sản diễn ra như thế nào? Nêu ví dụ (đa bội hóa ở thực vật): Cách li địa lí và cách li sinh sản có vai trò gì trong quá trình hình thành loài?"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
