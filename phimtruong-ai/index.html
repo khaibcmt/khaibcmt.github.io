@@ -226,7 +226,8 @@
         <button class="btn" id="btnResetKeyState">↺ Đặt Lại</button>
         <button class="btn" id="btnToggleKeysView">👁 Hiện key</button>
       </div>
-      <div class="small mut" style="margin-top:7px;">Kiểm tra nhẹ không tốn quota sinh ảnh; key đạt = key hợp lệ và gọi được model ảnh. Key miễn phí tại <b style="color:#57b6ff;">aistudio.google.com</b> — dùng sinh ảnh DNA &amp; bối cảnh. Key chỉ lưu trong trình duyệt của bạn (localStorage), không gửi đi nơi khác ngoài Google.</div>
+      <div class="rowflex" style="margin-top:7px;"><label class="small mut" style="cursor:pointer;"><input type="checkbox" id="deepCheckImg"> 🔬 <b style="color:#e8f4ff;">Kiểm tra sâu</b>: sinh thử 1 ảnh thật cho mỗi key (tốn 1 lượt ảnh/key) — biết chắc key nào sinh được ảnh, key nào bị Google cấp 0 lượt ảnh.</label></div>
+      <div class="small mut" style="margin-top:7px;">Kiểm tra nhẹ không tốn quota sinh ảnh; key đạt = key hợp lệ và gọi được model ảnh. Muốn biết chắc key sinh được ẢNH hay không, tick "Kiểm tra sâu" trước khi bấm Kiểm Tra Key. Key miễn phí tại <b style="color:#57b6ff;">aistudio.google.com</b> — dùng sinh ảnh DNA &amp; bối cảnh. Key chỉ lưu trong trình duyệt của bạn (localStorage), không gửi đi nơi khác ngoài Google.</div>
       <div id="keyList" style="margin-top:8px;"></div>
       <div id="keyStatus" class="small" style="margin-top:5px;"></div>
       </div>
@@ -952,12 +953,18 @@ function renderKeyList(){
     const s = keyStates[i] || { st: 'unknown', note: '', at: '' };
     let extra = '';
     if (s.st === 'err' && s.note) extra = ' — <span style="color:#ff8a80;">' + ptEsc(s.note) + '</span>';
+    if (s.st === 'ok' && s.note) extra = ' — <span style="color:#ffd97a;">' + ptEsc(s.note) + '</span>';
     if (s.st === 'quota') extra = ' — bị chặn lúc ' + ptEsc(s.at || '') + (s.note ? ' (' + ptEsc(s.note) + ')' : '');
     h += '<div class="rowflex" style="align-items:center;margin-top:4px;gap:6px;">'
        + '<span class="small" style="flex:1;">' + KEY_DOT[s.st] + ' <b>Key #' + (i + 1) + '</b> · ' + ptEsc(maskKey(k)) + ' · ' + KEY_TXT[s.st] + extra + (i === activeKeyIdx ? ' · <b>⭐ đang dùng</b>' : '') + '</span>'
        + '<button class="btn" data-delkey="' + i + '">✖</button></div>';
     const km = keyModels[keyIdOf(k)];
-    if (km) h += '<div class="small mut" style="margin:1px 0 3px 18px;">Model ảnh: ' + ptEsc(km.image || '—') + '</div>';
+    if (km){
+      const capTxt = km.imgCap === 'ok' ? ' · Sinh ảnh: <span style="color:#7dd87d;">✔ được</span>'
+                   : km.imgCap === 'no' ? ' · Sinh ảnh: <span style="color:#ff9d94;">✖ không được (quota ảnh = 0)</span>'
+                   : ' · Sinh ảnh: chưa kiểm tra sâu';
+      h += '<div class="small mut" style="margin:1px 0 3px 18px;">Model ảnh: ' + ptEsc(km.image || '—') + capTxt + '</div>';
+    }
   });
   box.innerHTML = h;
   box.querySelectorAll('[data-delkey]').forEach(b => b.addEventListener('click', () => {
@@ -1007,8 +1014,37 @@ function classifyHttp(status, data, txt){
   if (st === 'API_KEY_INVALID' || /api key/i.test(msg) || status === 403) return { kind: 'invalid', msg: msg };
   return { kind: 'other', msg: msg };
 }
+/* Kiểm tra SÂU năng lực sinh ẢNH của 1 key: GET metadata KHÔNG nói được
+   quota sinh ảnh (key đời mới vẫn liệt kê model ảnh nhưng Google cấp 0
+   lượt) — chỉ sinh thử 1 ảnh thật mới phân biệt được "xanh thật/xanh giả".
+   Thử lần lượt các model ảnh ứng viên của key; trả 'ok' | 'no' | 'unknown'. */
+async function probeImageCapability(key, disc){
+  const cands = (disc && Array.isArray(disc.imageList) && disc.imageList.length) ? disc.imageList
+              : (disc && disc.image ? [disc.image] : []);
+  if (!cands.length) return 'no';
+  let sawQuota = false;
+  for (const m of cands){
+    let res, txt, data = null;
+    try {
+      res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + m + ':generateContent?key=' + encodeURIComponent(key), {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contents: [{ parts: [{ text: 'A simple red circle centered on a plain white background, minimalist flat illustration.' }] }] })
+      });
+      txt = await res.text();
+      try { data = JSON.parse(txt); } catch (e) {}
+    } catch (netErr) { continue; }
+    if (res.ok){
+      const cparts = (data && data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) || [];
+      return cparts.find(p => p.inlineData) ? 'ok' : 'unknown';
+    }
+    const c = classifyHttp(res.status, data, txt);
+    if (c.kind === 'quota' || c.kind === 'invalid' || res.status === 404) { sawQuota = true; continue; }
+    return 'unknown';
+  }
+  return sawQuota ? 'no' : 'unknown';
+}
 /* Kiểm tra key: khám phá model theo key trước, rồi GET nhẹ model ảnh ĐÃ CHỌN — không đốt quota sinh ảnh */
-async function checkOneKey(idx){
+async function checkOneKey(idx, deep){
   const key = keyPool[idx];
   let disc;
   try {
@@ -1038,6 +1074,18 @@ async function checkOneKey(idx){
     if (c.kind === 'quota') return { st: 'quota', note: 'Model ảnh báo hết quota (429)', at: new Date().toLocaleTimeString('vi-VN') };
     return { st: 'err', note: ('HTTP ' + res.status + ': ' + (c.msg || 'không rõ')).slice(0, 140), at: '' };
   }
+  /* Tuỳ chọn KIỂM TRA SÂU: sinh thử 1 ảnh thật để chấm năng lực ảnh của key */
+  if (deep){
+    const cap = await probeImageCapability(key, disc);
+    if (cap === 'ok' || cap === 'no') setImgCap(keyIdOf(key), cap);
+    renderKeyList();
+    if (cap === 'no'){
+      return { st: 'ok', note: 'Key hợp lệ nhưng KHÔNG sinh được ảnh (mọi model ảnh của key đều bị Google cấp 0 lượt hoặc đã hết hạn mức hôm nay)', at: '' };
+    }
+    if (cap === 'unknown'){
+      return { st: 'ok', note: 'Chưa kết luận được khả năng sinh ảnh (lỗi mạng hoặc lỗi khác khi sinh thử) — bấm Kiểm Tra lại sau', at: '' };
+    }
+  }
   return { st: 'ok', note: '', at: '' };
 }
 loadPool();
@@ -1052,21 +1100,54 @@ try { keyModels = JSON.parse(localStorage.getItem('phimtruong_key_models') || '{
 if (!keyModels || typeof keyModels !== 'object' || Array.isArray(keyModels)) keyModels = {};
 function keyIdOf(key){ return String(key || '').slice(-8); }
 function saveKeyModels(){ try { localStorage.setItem('phimtruong_key_models', JSON.stringify(keyModels)); } catch (e) {} }
-function pickImageModel(list){
-  const cand = list.filter(x => {
+/* Xếp hạng model ẢNH theo DANH SÁCH ứng viên (theo quota thật đã rà soát
+   18/11/2026): Nano Banana (gemini-2.5-flash-image) lên đầu — model ảnh
+   được cấp quota free phổ biến nhất; rồi các model ảnh dòng 3, rồi phần
+   còn lại. Sinh ảnh bị 429/403 ở 1 model thì app thử ứng viên kế tiếp
+   của CHÍNH key đó trước khi chuyển key. */
+function modelVer(name){
+  const m = String(name || '').match(/gemini-(\d+)(?:\.(\d+))?/i);
+  return m ? (parseInt(m[1], 10) * 100 + parseInt(m[2] || '0', 10)) : 0;
+}
+function byVerDesc(a, b){ return modelVer(b) - modelVer(a) || (a < b ? 1 : -1); }
+function imageCandFilter(list){
+  return list.filter(x => {
     const n = x.name.toLowerCase(), s = (x.name + ' ' + (x.display || '')).toLowerCase();
     return n.indexOf('flash-image') >= 0 || (n.indexOf('image') >= 0 && n.indexOf('flash') >= 0) || s.indexOf('nano banana') >= 0;
   });
-  if (!cand.length) return null;
-  const g3 = cand.filter(x => /^gemini-3/i.test(x.name)).sort((a, b) => (a.name < b.name ? 1 : -1));
-  if (g3.length) return g3[0].name;
-  const exact = cand.filter(x => x.name === 'gemini-2.5-flash-image');
-  if (exact.length) return exact[0].name;
-  return cand.map(x => x.name).sort().reverse()[0];
+}
+function pickImageList(list){
+  const cand = imageCandFilter(list).map(x => x.name);
+  const exact = cand.filter(n => n === 'gemini-2.5-flash-image');
+  const g3    = cand.filter(n => /^gemini-3/i.test(n)).sort(byVerDesc);
+  const rest  = cand.filter(n => exact.indexOf(n) < 0 && !/^gemini-3/i.test(n)).sort(byVerDesc);
+  const out = [];
+  [exact, g3, rest].forEach(g => g.forEach(n => { if (out.indexOf(n) < 0) out.push(n); }));
+  return out;
+}
+function pickImageModel(list){ const l = pickImageList(list); return l.length ? l[0] : null; }
+
+/* ---------- DẤU HẾT QUOTA THEO (KEY × VAI TRÒ) + NĂNG LỰC ẢNH ----------
+   Key cạn sạch MỌI model ảnh trong 1 lần gọi → ghi dấu (key × ảnh) để lần
+   gọi sau xếp key đó xuống cuối; dấu chỉ có giá trị trong NGÀY (quota
+   ngày tự reset). Lưu ở localStorage riêng; hồ cũ không có thì coi như
+   chưa dấu — tương thích ngược hoàn toàn. */
+let quotaMarks = {};
+try { quotaMarks = JSON.parse(localStorage.getItem('phimtruong_quota_marks') || '{}'); } catch (e) { quotaMarks = {}; }
+if (!quotaMarks || typeof quotaMarks !== 'object' || Array.isArray(quotaMarks)) quotaMarks = {};
+function saveQuotaMarks(){ try { localStorage.setItem('phimtruong_quota_marks', JSON.stringify(quotaMarks)); } catch (e) {} }
+function qmDay(){ const d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
+function isQuotaMarked(keyId, role){ const rec = quotaMarks[keyId + '|' + role]; return !!(rec && rec.day === qmDay()); }
+function markQuota(keyId, role){ quotaMarks[keyId + '|' + role] = { day: qmDay(), at: new Date().toLocaleTimeString('vi-VN') }; saveQuotaMarks(); }
+/* Ghi nhận năng lực sinh ảnh của 1 key (từ kiểm tra sâu hoặc từ lần sinh thật) */
+function setImgCap(keyId, cap){
+  const km = keyModels[keyId];
+  if (!km || !cap) return;
+  if (km.imgCap !== cap){ km.imgCap = cap; km.imgCapAt = new Date().toLocaleString('vi-VN'); saveKeyModels(); renderKeyList(); }
 }
 async function discoverModels(key, force){
   const id = keyIdOf(key);
-  if (!force && keyModels[id]) return keyModels[id];
+  if (!force && keyModels[id] && keyModels[id].v === 2) return keyModels[id];
   const base = 'https://generativelanguage.googleapis.com/v1beta/models?key=' + encodeURIComponent(key) + '&pageSize=1000';
   let url = base, all = [];
   for (let page = 0; page < 3 && url; page++){
@@ -1086,21 +1167,33 @@ async function discoverModels(key, force){
     .filter(m => (m.supportedGenerationMethods || []).indexOf('generateContent') >= 0)
     .map(m => ({ name: String(m.name || '').replace(/^models\//, ''), display: m.displayName || '' }))
     .filter(x => x.name);
-  const picked = { image: pickImageModel(usable), at: new Date().toLocaleString('vi-VN') };
+  const picked = { v: 2, imageList: pickImageList(usable), at: new Date().toLocaleString('vi-VN') };
+  picked.image = picked.imageList[0] || null;
+  const prev = keyModels[id];
+  if (prev && prev.imgCap){ picked.imgCap = prev.imgCap; picked.imgCapAt = prev.imgCapAt || ''; }   /* giữ kết quả kiểm tra sâu đã có */
   keyModels[id] = picked; saveKeyModels();
   return picked;
 }
-/* Model ảnh cho 1 key: đã khám phá → kết quả đã lưu (null = key KHÔNG có model
-   ảnh); chưa khám phá → tự khám phá lặng; khám phá lỗi → tên dự phòng. */
-async function modelForKey(key){
+/* Danh sách ứng viên model ảnh của 1 key, theo thứ tự ưu tiên. Bản ghi khám
+   phá CŨ (chưa có danh sách) → tự khám phá lại 1 lần để nâng cấp; chưa khám
+   phá → tự khám phá lặng; khám phá lỗi → tên dự phòng. */
+async function candidatesForKey(key){
   const id = keyIdOf(key);
-  if (keyModels[id]) return keyModels[id].image || null;
+  const km = keyModels[id];
+  if (km && Array.isArray(km.imageList)) return km.imageList.slice();
+  if (km && km.v === 2) return [];
   try {
     const d = await discoverModels(key);
-    return d.image || null;
+    if (d && Array.isArray(d.imageList)) return d.imageList.slice();
+    return d && d.image ? [d.image] : [];
   } catch (e) {
-    return IMAGE_MODEL;
+    return [IMAGE_MODEL];
   }
+}
+/* Model ảnh chính (ứng viên đầu) cho 1 key — null = key KHÔNG có model ảnh. */
+async function modelForKey(key){
+  const c = await candidatesForKey(key);
+  return c.length ? c[0] : null;
 }
 
 function openKeyGuide(){
@@ -1109,9 +1202,13 @@ function openKeyGuide(){
   $('#keysInput').focus();
   toast('🔑 <b>Chưa có API key Gemini.</b><br>Tạo key miễn phí trong 3 bước:<br>1) Vào <b>aistudio.google.com</b> → đăng nhập Google.<br>2) Bấm <b>"Get API key"</b> → "Create API key".<br>3) Dán key vào ô Hồ Key ở cột trái (mỗi key 1 dòng) rồi bấm <b>Lưu Hồ Key</b>.', 'err');
 }
-/* Sinh ảnh QUA HỒ KEY — xoay vòng tự động:
-   429 → đánh dấu key 🟡 hết quota + chuyển key kế; 400 API_KEY_INVALID/403 → 🔴 lỗi + chuyển key;
-   lỗi mạng → thử lại cùng key 1 lần rồi mới chuyển; hết key khả dụng → báo lỗi thật, không chạy tiếp. */
+/* Sinh ảnh QUA HỒ KEY — xoay vòng tự động theo (key × model ảnh):
+   mỗi key có DANH SÁCH model ảnh ứng viên — 429/403/404 ở 1 model thì thử
+   ứng viên kế tiếp của CHÍNH key đó trước khi chuyển key; key cạn sạch
+   model ảnh → ghi dấu (key × vai trò) để lần sau xếp xuống cuối + chấm
+   "không sinh được ảnh" cho key; 400 API_KEY_INVALID → 🔴 lỗi + chuyển
+   key; lỗi mạng → thử lại cùng ứng viên 1 lần rồi mới chuyển; hết ứng
+   viên khả dụng → báo lỗi tiếng Việt rõ ràng, không "xanh giả". */
 async function geminiImage(promptText, imageDataUrl){
   if(!keyPool.length){ openKeyGuide(); return null; }
   const parts = [{text: promptText}];
@@ -1128,65 +1225,87 @@ async function geminiImage(promptText, imageDataUrl){
     if(st === 'err') continue;
     (st === 'quota' ? quotaMarked : fresh).push(i);
   }
-  const order = fresh.concat(quotaMarked);
+  let order = fresh.concat(quotaMarked);
+  /* Key đã cạn sạch model ảnh hôm nay (dấu key × vai trò) xếp xuống cuối */
+  order = order.filter(i => !isQuotaMarked(keyIdOf(keyPool[i]), 'image'))
+               .concat(order.filter(i => isQuotaMarked(keyIdOf(keyPool[i]), 'image')));
   if(!order.length){
     toast('⛔ Tất cả key trong hồ đều đang bị đánh dấu Lỗi nên app không gọi Gemini được. Bấm <b>↺ Đặt Lại</b> ở thẻ Hồ Key hoặc dán key mới.<br><span class="small">Trạng thái hồ: ' + ptEsc(keySummary()) + '</span>', 'err');
     return null;
   }
-  let lastMsg = '';
+  let lastMsg = '', sawQuota = false;
   for(const idx of order){
     const key = keyPool[idx];
-    const model = await modelForKey(key);
-    if(!model){
+    const keyId = keyIdOf(key);
+    const models = await candidatesForKey(key);
+    if(!models.length){
       toast('⚠️ Key #' + (idx + 1) + ' không có model ảnh — tự chuyển Key kế tiếp', 'err');
       lastMsg = 'Key #' + (idx + 1) + ' không có model ảnh khả dụng';
       continue;
     }
-    for(let attempt = 0; attempt < 2; attempt++){
-      let res, txt, data = null;
-      try{
-        res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + encodeURIComponent(key), {
-          method:'POST', headers:{'Content-Type':'application/json'},
-          body: JSON.stringify(body)
-        });
-        txt = await res.text();
-        try{ data = JSON.parse(txt); }catch(e){}
-      }catch(e){
-        if(attempt === 0){ toast('⚠️ Key #' + (idx + 1) + ' lỗi mạng — thử lại cùng key 1 lần...', 'err'); continue; }
-        lastMsg = 'Lỗi mạng: ' + e.message;
-        toast('⚠️ Key #' + (idx + 1) + ' lỗi mạng 2 lần — tự chuyển Key kế tiếp', 'err');
-        break;
-      }
-      if(res.ok){
-        activeKeyIdx = idx;
-        if(keyStates[idx].st !== 'ok'){ keyStates[idx] = {st:'ok', note:'', at:''}; savePool(); refreshKeyUI(); }
-        const cparts = (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) || [];
-        const ip = cparts.find(p=>p.inlineData);
-        if(!ip){
-          toast('❌ Gemini không trả ảnh về (có thể prompt bị lọc an toàn). Hãy đổi mô tả rồi thử lại.', 'err');
-          return null;
+    let keyQuotaFails = 0, keyDead = false;
+    for(const model of models){
+      if(keyDead) break;
+      for(let attempt = 0; attempt < 2; attempt++){
+        let res, txt, data = null;
+        try{
+          res = await fetch('https://generativelanguage.googleapis.com/v1beta/models/' + model + ':generateContent?key=' + encodeURIComponent(key), {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify(body)
+          });
+          txt = await res.text();
+          try{ data = JSON.parse(txt); }catch(e){}
+        }catch(e){
+          if(attempt === 0){ toast('⚠️ Key #' + (idx + 1) + ' lỗi mạng — thử lại cùng key 1 lần...', 'err'); continue; }
+          lastMsg = 'Lỗi mạng: ' + e.message;
+          toast('⚠️ Key #' + (idx + 1) + ' lỗi mạng 2 lần — thử ứng viên kế tiếp', 'err');
+          break;
         }
-        return 'data:' + (ip.inlineData.mimeType || 'image/png') + ';base64,' + ip.inlineData.data;
+        if(res.ok){
+          activeKeyIdx = idx;
+          setImgCap(keyId, 'ok');
+          if(keyStates[idx].st !== 'ok'){ keyStates[idx] = {st:'ok', note:'', at:''}; savePool(); refreshKeyUI(); }
+          const cparts = (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts) || [];
+          const ip = cparts.find(p=>p.inlineData);
+          if(!ip){
+            toast('❌ Gemini không trả ảnh về (có thể prompt bị lọc an toàn). Hãy đổi mô tả rồi thử lại.', 'err');
+            return null;
+          }
+          return 'data:' + (ip.inlineData.mimeType || 'image/png') + ';base64,' + ip.inlineData.data;
+        }
+        const msg = (data && data.error && data.error.message) ? data.error.message : (txt || ('HTTP ' + res.status));
+        const c = classifyHttp(res.status, data, txt);
+        if(c.kind === 'quota'){
+          sawQuota = true; keyQuotaFails++;
+          toast('⚠️ Model ' + ptEsc(model) + ' (Key #' + (idx + 1) + ') hết quota — thử model ảnh kế tiếp', 'err');
+          lastMsg = msg;
+          break;
+        }
+        if(c.kind === 'invalid'){
+          markKey(idx, 'err', ('HTTP ' + res.status + ': ' + msg).slice(0, 140));
+          toast('⛔ Key #' + (idx + 1) + ' bị lỗi (' + res.status + ') — tự chuyển Key kế tiếp', 'err');
+          lastMsg = msg;
+          keyDead = true;
+          break;
+        }
+        if(res.status === 404){
+          lastMsg = msg;
+          break;   /* model không còn khả dụng cho key này → ứng viên kế tiếp */
+        }
+        toast('❌ Gemini từ chối: ' + ptEsc(msg) + '<br><span class="small">Có thể do nội dung bị lọc an toàn — hãy đổi mô tả rồi thử lại.</span>', 'err');
+        return null;
       }
-      const msg = (data && data.error && data.error.message) ? data.error.message : (txt || ('HTTP ' + res.status));
-      const c = classifyHttp(res.status, data, txt);
-      if(c.kind === 'quota'){
-        markKey(idx, 'quota', String(msg).slice(0, 120));
-        toast('⚠️ Key #' + (idx + 1) + ' hết quota — tự chuyển Key kế tiếp', 'err');
-        lastMsg = msg;
-        break;
-      }
-      if(c.kind === 'invalid'){
-        markKey(idx, 'err', ('HTTP ' + res.status + ': ' + msg).slice(0, 140));
-        toast('⛔ Key #' + (idx + 1) + ' bị lỗi (' + res.status + ') — tự chuyển Key kế tiếp', 'err');
-        lastMsg = msg;
-        break;
-      }
-      toast('❌ Gemini từ chối: ' + msg + '<br><span class="small">Có thể do hết quota miễn phí trong ngày hoặc key chưa đúng — kiểm tra lại tại aistudio.google.com.</span>', 'err');
-      return null;
+    }
+    if(models.length && keyQuotaFails >= models.length){
+      markQuota(keyId, 'image');
+      setImgCap(keyId, 'no');
     }
   }
-  toast('❌ Đã thử hết các key trong hồ mà chưa sinh được ảnh. ' + ptEsc(lastMsg) + '<br><span class="small">Trạng thái hồ key: ' + ptEsc(keySummary()) + '</span>', 'err');
+  if(sawQuota){
+    toast('❌ Không sinh được ảnh: mọi model ảnh của các key trong hồ đều đang hết hạn mức hôm nay. Với key AI Studio đời mới, Google cấp <b>0 lượt</b> cho model ảnh nên key đó không sinh được ảnh qua API — thầy thêm key có model ảnh (dùng nút 🔬 Kiểm tra sâu ở thẻ Hồ Key để chấm đúng key nào sinh được ảnh) hoặc thử lại vào ngày mai.<br><span class="small">Trạng thái hồ key: ' + ptEsc(keySummary()) + '</span>', 'err');
+  } else {
+    toast('❌ Đã thử hết các key trong hồ mà chưa sinh được ảnh. ' + ptEsc(lastMsg) + '<br><span class="small">Trạng thái hồ key: ' + ptEsc(keySummary()) + '</span>', 'err');
+  }
   return null;
 }
 function autoDl(img, name){ if(state.settings.autoDlDNA) downloadFile(name, img); }
@@ -1507,10 +1626,11 @@ $('#btnCheckKeys').addEventListener('click', async ()=>{
   if(!keyPool.length){ toast('⚠️ Hồ đang rỗng — dán key vào ô Hồ Key và bấm Lưu Hồ Key trước đã.', 'err'); return; }
   const btn = $('#btnCheckKeys');
   btn.disabled = true; btn.textContent = '⏳ Đang kiểm tra...';
+  const deep = !!($('#deepCheckImg') && $('#deepCheckImg').checked);
   try{
     for(let i = 0; i < keyPool.length; i++){
-      $('#keyStatus').innerHTML = '⏳ Đang kiểm tra Key #' + (i + 1) + '/' + keyPool.length + '...';
-      const r = await checkOneKey(i);
+      $('#keyStatus').innerHTML = '⏳ Đang kiểm tra Key #' + (i + 1) + '/' + keyPool.length + (deep ? ' (kiểm tra sâu — sinh thử ảnh)...' : '...');
+      const r = await checkOneKey(i, deep);
       keyStates[i] = { st: r.st, note: r.note || '', at: r.at || '' };
       savePool(); renderKeyList();
     }
@@ -1523,6 +1643,7 @@ $('#btnCheckKeys').addEventListener('click', async ()=>{
 });
 $('#btnResetKeyState').addEventListener('click', ()=>{
   keyStates = keyPool.map(()=>({st:'unknown', note:'', at:''}));
+  quotaMarks = {}; saveQuotaMarks();   /* xoá cả dấu hết quota theo (key × vai trò) */
   savePool(); refreshKeyUI();
   toast('↺ Đã đặt lại trạng thái tất cả key trong hồ.', 'ok');
 });
