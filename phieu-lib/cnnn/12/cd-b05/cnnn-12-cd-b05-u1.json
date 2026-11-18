@@ -1,0 +1,134 @@
+{
+ "bai": "VAI TRÒ VÀ TRIỂN VỌNG CỦA CÔNG NGHỆ SINH HỌC TRONG THUỶ SẢN — Công nghệ nông nghiệp 12",
+ "fileNguon": "Công nghệ nông nghiệp/Khối 12/Giáo án/Chuyên đề/CN12-CD-B05_Vai_tro_va_trien_vong_cua_cong_nghe_sinh_hoc_trong_thuy_san.docx",
+ "cauHoiPhieu": "PHIẾU HỌC TẬP — BÀI 5: VAI TRÒ VÀ TRIỂN VỌNG CỦA CÔNG NGHỆ SINH HỌC TRONG THUỶ SẢN Họ và tên: ………………………………………… Lớp: ………… Nhóm: …………",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Mục II.1 – Công tác giống",
+   "tieuChi": "1",
+   "cot": "Mục / nội dung",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Nêu vai trò và thành tựu của công nghệ gene trong chọn, tạo giống thuỷ sản; kể tên ít nhất ba đối tượng giống tiêu biểu kèm đặc điểm vượt trội.",
+   "tieuChi": "1",
+   "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+   "hang": 1,
+   "cotSo": 2
+  },
+  {
+   "so": 3,
+   "dapAn": "Mục II.2 – Phòng, trị bệnh",
+   "tieuChi": "2",
+   "cot": "Mục / nội dung",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Trình bày vai trò của kĩ thuật PCR trong chẩn đoán bệnh và kể tên các kit chẩn đoán, vaccine tiêu biểu đã được phát triển.",
+   "tieuChi": "2",
+   "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+   "hang": 2,
+   "cotSo": 2
+  },
+  {
+   "so": 5,
+   "dapAn": "Mục II.3 – Môi trường nuôi",
+   "tieuChi": "3",
+   "cot": "Mục / nội dung",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 6,
+   "dapAn": "Vì sao các chế phẩm sinh học lại có tác dụng bảo vệ, cải thiện môi trường nuôi thuỷ sản?",
+   "tieuChi": "3",
+   "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+   "hang": 3,
+   "cotSo": 2
+  },
+  {
+   "so": 7,
+   "dapAn": "Mục III – Triển vọng",
+   "tieuChi": "4",
+   "cot": "Mục / nội dung",
+   "hang": 4,
+   "cotSo": 1
+  },
+  {
+   "so": 8,
+   "dapAn": "Trình bày triển vọng của công nghệ sinh học trong thuỷ sản; trong tương lai, công nghệ sinh học sẽ giúp gì cho việc phát triển thuỷ sản ở địa phương em?",
+   "tieuChi": "4",
+   "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+   "hang": 4,
+   "cotSo": 2
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "STT",
+   "Mục / nội dung",
+   "Câu hỏi khám phá và nội dung cần hoàn thành"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "1",
+    "cacCot": [
+     {
+      "cot": "Mục / nội dung",
+      "noiDung": "Mục II.1 – Công tác giống"
+     },
+     {
+      "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+      "noiDung": "Nêu vai trò và thành tựu của công nghệ gene trong chọn, tạo giống thuỷ sản; kể tên ít nhất ba đối tượng giống tiêu biểu kèm đặc điểm vượt trội."
+     }
+    ]
+   },
+   {
+    "tieuChi": "2",
+    "cacCot": [
+     {
+      "cot": "Mục / nội dung",
+      "noiDung": "Mục II.2 – Phòng, trị bệnh"
+     },
+     {
+      "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+      "noiDung": "Trình bày vai trò của kĩ thuật PCR trong chẩn đoán bệnh và kể tên các kit chẩn đoán, vaccine tiêu biểu đã được phát triển."
+     }
+    ]
+   },
+   {
+    "tieuChi": "3",
+    "cacCot": [
+     {
+      "cot": "Mục / nội dung",
+      "noiDung": "Mục II.3 – Môi trường nuôi"
+     },
+     {
+      "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+      "noiDung": "Vì sao các chế phẩm sinh học lại có tác dụng bảo vệ, cải thiện môi trường nuôi thuỷ sản?"
+     }
+    ]
+   },
+   {
+    "tieuChi": "4",
+    "cacCot": [
+     {
+      "cot": "Mục / nội dung",
+      "noiDung": "Mục III – Triển vọng"
+     },
+     {
+      "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+      "noiDung": "Trình bày triển vọng của công nghệ sinh học trong thuỷ sản; trong tương lai, công nghệ sinh học sẽ giúp gì cho việc phát triển thuỷ sản ở địa phương em?"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
