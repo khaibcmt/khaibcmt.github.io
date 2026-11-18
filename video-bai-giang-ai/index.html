@@ -245,7 +245,7 @@
     </div>
     <div id="phieuPanel" class="hidden" style="margin-top:14px;border:1px dashed var(--line);border-radius:12px;padding:12px 14px;background:var(--panel2)">
       <div style="font-weight:700;font-size:16px">📋 Video Phiếu Học Tập — dựng thẳng từ kho phiếu có sẵn</div>
-      <div class="small" style="margin-top:4px">App lấy phiếu học tập + đáp án nguyên văn từ <b>kho phiếu</b> (trích sẵn từ giáo án) và dựng đúng khuôn: phiếu câm đánh số + ngân hàng nội dung → hiện đáp án lần lượt theo từng số lên khung phiếu (cảnh điền cuối cùng để lại bảng phiếu đã điền đầy đủ) → cảnh QR làm bài tập tương tác. Không qua AI viết kịch bản nên đáp án không bị sửa một chữ.</div>
+      <div class="small" style="margin-top:4px">App lấy phiếu học tập + đáp án nguyên văn từ <b>kho phiếu</b> (trích sẵn từ giáo án) và dựng đúng khuôn 5 phần: phiếu câm đánh số → ngân hàng nội dung toàn cảnh để học sinh tự điền → hiện đáp án lần lượt theo từng số lên khung phiếu → bảng đáp án đầy đủ để đối chiếu → cảnh QR làm bài tập tương tác. Không qua AI viết kịch bản nên đáp án không bị sửa một chữ.</div>
       <div id="phieuStatus" class="small" style="margin-top:8px">⏳ Đang tải kho phiếu…</div>
       <div id="phieuList" style="margin-top:4px"></div>
       <div id="phieuPreview" class="hidden" style="margin-top:12px;border-top:1px dashed var(--line);padding-top:10px"></div>
@@ -1395,8 +1395,10 @@ function renderScriptReview(){
     if (sg.type === "image") extra = "<p>Mô tả ảnh (AI sẽ vẽ): <i>" + escapeHtml(sg.imagePrompt || "") + "</i></p>";
     if (sg.type === "sgk") extra = "<p>Hình SGK cần tìm: <i>" + escapeHtml(sg.imageHint || "") + "</i></p>";
     if (sg.type === "phieu") {
-      if (sg.phKind === "open") extra = "<p>Cảnh mở: bảng phiếu <b>câm</b> — ô trống chỉ có vòng tròn đánh số, kèm câu yêu cầu của phiếu và <b>ngân hàng nội dung</b> nhiều màu ở dưới bảng để học sinh chọn điền vào từng số.</p>";
+      if (sg.phKind === "open") extra = "<p>Cảnh mở: bảng phiếu <b>câm</b> toàn khung — ô trống chỉ có vòng tròn đánh số, kèm câu yêu cầu của phiếu.</p>";
+      else if (sg.phKind === "bank") extra = "<p>Cảnh ngân hàng nội dung: toàn bộ nội dung cần điền hiện riêng một cảnh toàn khung, nhiều màu, không đánh số — học sinh tạm dừng video tại đây và tự điền vào phiếu theo từng số.</p>";
       else if (sg.phKind === "fill") extra = "<p>" + escapeHtml(sg.caption || "") + "</p>";
+      else if (sg.phKind === "full") extra = "<p>Cảnh bảng đáp án đầy đủ: bảng phiếu đã điền mọi đáp án hiện toàn khung để học sinh đối chiếu kết quả làm bài (chỉ hiện hình, không đọc lại đáp án).</p>";
       else if (sg.phKind === "qr") extra = "<p>Cảnh cuối: mã QR + link làm bài tập tương tác: <i>" + escapeHtml(sg.qrUrl || "") + "</i></p>";
     }
     d.innerHTML = '<span class="tag ' + sg.type + '">' + TYPE_LABEL[sg.type] + "</span>" +
@@ -2356,11 +2358,13 @@ function drawText(ctx, sg){
 
 /* =========================================================
    📋 VIDEO PHIẾU HỌC TẬP (Giai đoạn 2) — app tự dựng video từ KHO PHIẾU
-   (phieu-lib): phiếu câm đánh số + ngân hàng nội dung → hiện đáp án lần
-   lượt theo từng số lên khung phiếu → cảnh QR bài tập tương tác. (Từ
-   20:08 ngày 18/11: BỎ cảnh bảng đáp án giáo viên — cảnh điền cuối cùng
-   để lại bảng phiếu đã điền đầy đủ thay cho bảng chốt.) Kịch bản sinh
-   THẲNG từ dữ liệu phiếu, KHÔNG qua Gemini — đáp án giữ nguyên văn 100%.
+   (phieu-lib). Khuôn 5 PHẦN (thầy chốt 21:00 ngày 18/11): phiếu câm
+   đánh số → ngân hàng nội dung (cảnh riêng toàn khung) → hiện đáp án
+   lần lượt theo từng số lên khung phiếu → bảng đáp án đầy đủ hiện hình
+   để đối chiếu → cảnh QR bài tập tương tác. (Cảnh bảng đáp án ở đây chỉ
+   HIỆN HÌNH, không đọc lại — khác cảnh "key" đọc theo hàng đã bỏ ở đợt
+   20:08.) Kịch bản sinh THẲNG từ dữ liệu phiếu, KHÔNG qua Gemini — đáp
+   án giữ nguyên văn 100%.
    ========================================================= */
 /*__PURE_QR__*/
 /* Sinh mã QR ngay trong trang, không gọi CDN: byte mode (UTF-8), mức sửa
@@ -2723,7 +2727,8 @@ function phieuHslHex(h, s, l){
 function phieuBankColor(k){
   return phieuHslHex(k * 137.508 + 18, 72, [62, 52, 72, 58][k % 4]);
 }
-/* NGÂN HÀNG NỘI DUNG cho cảnh MỞ (thầy chốt 19:42): đúng N ô = N đáp án
+/* NGÂN HÀNG NỘI DUNG cho cảnh NGÂN HÀNG riêng (thầy chốt 19:42, tách
+   thành cảnh riêng toàn khung 21:00 ngày 18/11): đúng N ô = N đáp án
    NGUYÊN VĂN của phiếu, XÁO TRỘN thứ tự (seed theo nội dung phiếu), mỗi
    ô một màu khác nhau. Màu ô nội dung KHÔNG được trùng màu HÀNG của
    chính đáp án đó (tránh lộ đáp án bằng màu) và không trùng màu ô khác —
@@ -2762,11 +2767,14 @@ function phieuBlockReason(entry){
   if (entry.loai === "doan-van-dien") return "phiếu điền đoạn văn — chưa hỗ trợ dựng video";
   return "chưa sẵn sàng để dựng video";
 }
-/* Sinh kịch bản cảnh video phiếu từ dữ liệu phiếu — khuôn thầy chốt lại
-   20:08 ngày 18/11: mở (phiếu câm + ngân hàng nội dung) → mỗi ô 1 cảnh
-   điền lần lượt theo số → QR. KHÔNG còn cảnh bảng đáp án GV: cảnh điền
-   cuối cùng để lại bảng phiếu đã điền đầy đủ để học sinh đối chiếu.
-   Đáp án chép NGUYÊN VĂN từ dữ liệu, không qua AI, không sửa một chữ. */
+/* Sinh kịch bản cảnh video phiếu từ dữ liệu phiếu — khuôn 5 PHẦN thầy
+   chốt 21:00 ngày 18/11 (thay cấu trúc 20:08): (1) mở — bảng câm đánh số
+   toàn khung + nêu nhiệm vụ; (2) ngân hàng nội dung — cảnh RIÊNG toàn
+   khung cho học sinh tạm dừng và tự điền; (3) điền lần lượt từng số;
+   (4) bảng đáp án ĐẦY ĐỦ hiện hình để đối chiếu (KHÔNG đọc lại đáp án —
+   khác hẳn cảnh "key" đọc theo hàng đã bỏ ở GD6); (5) QR kêu gọi.
+   Tổng số cảnh = soO + 4. Đáp án chép NGUYÊN VĂN từ dữ liệu, không qua
+   AI, không sửa một chữ. */
 function buildPhieuScenes(entry, data, opts){
   opts = opts || {};
   const cacO = (data.cacO || []).slice().sort((a, b) => a.so - b.so);
@@ -2775,13 +2783,18 @@ function buildPhieuScenes(entry, data, opts){
   const instr = String(opts.instr || "").trim();
   const segs = [];
   /* Lời mở RÚT GỌN: câu hỏi phiếu (dài thì cắt ở biên câu gần 350 ký tự)
-     + hướng dẫn điền theo số và dùng NGÂN HÀNG NỘI DUNG dưới bảng (thầy
-     chốt 19:42). Không liệt kê tên các mục/hàng. */
+     + dẫn trình tự mới: xem phiếu câm -> cảnh ngân hàng kế tiếp để tự
+     điền -> đáp án hiện lần lượt -> bảng đáp án đầy đủ gần cuối để đối
+     chiếu. Không liệt kê tên các mục/hàng. */
   let openNarr = phieuTrimCauHoi(cauHoi, 350);
   if (openNarr && !/[.!?…:]$/.test(openNarr)) openNarr += ".";
-  openNarr += " Các em hãy điền nội dung đúng vào từng ô trống theo thứ tự các số. Phía dưới bảng là các ô nội dung — các em hãy chọn đúng nội dung điền vào từng số nhé! Đáp án hiện lần lượt theo từng số lên khung phiếu để đối chiếu.";
+  openNarr += " Các em hãy chú ý các ô trống đã đánh số. Cảnh tiếp theo sẽ hiện toàn bộ nội dung cần điền để các em tự điền vào từng số; đáp án hiện lần lượt theo từng số, cuối video có bảng đáp án đầy đủ để đối chiếu.";
   if (instr) openNarr += " " + instr;
-  segs.push({ type: "phieu", phKind: "open", heading: "Phiếu học tập", narration: openNarr, noAudioSec: phieuNoAudioSec(openNarr), bank: phieuBankPlan(cacO) });
+  segs.push({ type: "phieu", phKind: "open", heading: "Phiếu học tập", narration: openNarr, noAudioSec: phieuNoAudioSec(openNarr) });
+  /* Cảnh NGÂN HÀNG NỘI DUNG riêng (phần 2): lời hướng dẫn tạm dừng +
+     tự điền; đứng hình tối thiểu 12 giây cho học sinh kịp đọc/chép. */
+  const bankNarr = "Đây là toàn bộ nội dung cần điền vào phiếu. Các em hãy tạm dừng video tại đây, đọc kĩ từng nội dung rồi tự điền vào phiếu theo từng số nhé!";
+  segs.push({ type: "phieu", phKind: "bank", heading: "Ngân hàng nội dung", narration: bankNarr, noAudioSec: Math.max(12, phieuNoAudioSec(bankNarr)), bank: phieuBankPlan(cacO) });
   cacO.forEach(o => {
     /* Lời điền RÚT GỌN theo mẫu thầy chốt (20:08): chỉ "Số {k} là
        {đáp án}." — không đọc tên tiêu chí/cột (đã có trên hình + caption). */
@@ -2793,8 +2806,14 @@ function buildPhieuScenes(entry, data, opts){
       narration: narr, noAudioSec: phieuNoAudioSec(narr)
     });
   });
-  /* [20:08] Không còn cảnh bảng đáp án GV: video kết thúc phần nội dung
-     ở cảnh điền cuối cùng với bảng phiếu đã điền đầy đủ. */
+  /* Cảnh BẢNG ĐÁP ÁN ĐẦY ĐỦ (phần 4): CHỈ hiện hình để đối chiếu — lời
+     đọc đúng 1 câu ngắn, tuyệt đối không đọc lại đáp án (đừng khôi phục
+     kiểu đọc theo hàng của cảnh key đã bỏ). Thời lượng đứng hình tỉ lệ
+     số ô: clamp(làm tròn soO x 2,5 giây, 20, 90), audio dài hơn thì
+     theo audio (qua phieuSegDuration như mọi cảnh phiếu). */
+  const fullNarr = "Đây là bảng đáp án đầy đủ, các em đối chiếu với bài làm của mình.";
+  const fullSec = Math.min(90, Math.max(20, Math.round(n * 2.5)));
+  segs.push({ type: "phieu", phKind: "full", heading: "Bảng đáp án đầy đủ", narration: fullNarr, noAudioSec: fullSec });
   const qrUrl = buildExerciseUrl(entry && entry.id, opts.baseHref || "");
   /* Cảnh cuối (thầy chốt 19:39): lời kêu gọi ĐĂNG KÝ KÊNH + làm bài tập;
      mã QR giữ trên hình tối thiểu 20 GIÂY để học sinh kịp lấy điện thoại
@@ -2809,14 +2828,14 @@ function buildYoutubeDesc(entry, data, url){
   const tenBai = (entry && entry.tenBai) || (data && data.bai) || "Bài học";
   const title = "📋 Video phiếu học tập — " + tenBai + (entry && entry.grade ? " | Lớp " + entry.grade : "");
   const desc = [
-    "Video phiếu học tập: mở bằng phiếu \"câm\" đánh số kèm ngân hàng nội dung nhiều màu để học sinh tự điền, sau đó hiện đáp án lần lượt theo từng số lên khung phiếu — cảnh điền cuối cùng để lại bảng phiếu đã điền đầy đủ để đối chiếu.",
+    "Video phiếu học tập: mở bằng phiếu \"câm\" đánh số, tiếp theo là cảnh ngân hàng nội dung nhiều màu để học sinh tự điền vào phiếu, sau đó hiện đáp án lần lượt theo từng số lên khung phiếu và hiện bảng đáp án đầy đủ để học sinh đối chiếu kết quả làm bài.",
     "Bài: " + tenBai,
     "",
     "👉 LÀM BÀI TẬP TƯƠNG TÁC CỦA BÀI NÀY TẠI ĐÂY:",
     url,
     "(Hoặc quét mã QR ở cuối video.)",
     "",
-    "Cách dùng: học sinh xem video, tự điền vào phiếu theo thứ tự các số, đối chiếu với đáp án hiện lần lượt theo từng số trong video, rồi làm bài tập tương tác để kiểm tra mức độ hiểu bài."
+    "Cách dùng: học sinh xem video, khi tới cảnh ngân hàng nội dung thì tạm dừng và tự điền vào phiếu theo thứ tự các số, đối chiếu với đáp án hiện lần lượt theo từng số và bảng đáp án đầy đủ trong video, rồi làm bài tập tương tác để kiểm tra mức độ hiểu bài."
   ].join("\n");
   return { title: title, desc: desc };
 }
@@ -3286,14 +3305,15 @@ function phieuColWidths(grid, totalW){
   return ws;
 }
 /* Nội dung + trạng thái của 1 ô trong bảng phiếu.
-   mode: "open" (câm) | "fill" (đang điền tới ô current) | "key" (đáp án GV) */
+   mode: "open" (câm) | "fill" (đang điền tới ô current) | "full" (đã
+   điền đầy đủ để đối chiếu) | "key" (đáp án GV — chỉ tương thích ngược) */
 function phieuCell(grid, r, c, mode, current){
   if (c === 0) return { kind: "label", text: grid.rows[r].tieuChi || "" };
   const row = grid.rows[r];
   const cell = (row.cacCot || [])[c - 1] || { cot: "", noiDung: "" };
   const o = grid.blank[(r + 1) + "|" + c];
   if (!o) return { kind: "given", text: cell.noiDung || "" };
-  if (mode === "key" || o.so < current) return { kind: "filled", text: o.dapAn || cell.noiDung || "", so: o.so };
+  if (mode === "key" || mode === "full" || o.so < current) return { kind: "filled", text: o.dapAn || cell.noiDung || "", so: o.so };
   if (mode === "fill" && o.so === current) return { kind: "current", text: o.dapAn || cell.noiDung || "", so: o.so };
   return { kind: "blank", text: "", so: o.so };
 }
@@ -3309,77 +3329,155 @@ function phieuFitLines(ctx, text, maxW, maxLines){
   return kept;
 }
 let phieuPlanCache = { key: "", plan: null };
+/* Hình học lần vẽ bảng / ngân hàng gần nhất — phơi ra để kiểm chứng máy
+   móc (test/smoke đọc lại: mọi ô vừa trong hộp của nó, không cắt chữ). */
+let phieuLastPlan = null;
+let phieuLastBankPlan = null;
+/* Sàn cỡ chữ của ô bảng: không co xuống dưới mức này (đọc được ở 1080p). */
+const PHIEU_CELL_FS_FLOOR = 14;
+/* Lập kế hoạch vẽ bảng: cỡ chữ RIÊNG CHO TỪNG Ô + chiều cao hàng theo ô
+   cao nhất của hàng. TUYỆT ĐỐI không cắt chữ bằng "…" trong ô (bản cũ co
+   một cỡ chung + giới hạn số dòng nên đáp án dài bị tràn/cắt — ảnh thầy
+   chụp 21:00 ngày 18/11). Thuật toán: mọi ô bắt đầu ở cỡ lớn (ô đang điền
+   34, đáp án 28, nhãn 26); chừng nào tổng chiều cao còn vượt khung thì
+   co dần Ô CAO NHẤT (ô đang điền được co SAU CÙNG để hàng đang điền luôn
+   nổi bật và cao hơn) cho tới sàn 14px. Vừa rồi thì KÉO GIÃN các hàng
+   lấp đầy chiều cao cho phép để bảng luôn TO, gần hết khung hình.
+   Đo số dòng bằng ĐÚNG độ đậm lúc vẽ (nhãn/ô đang điền/hàng highlight vẽ
+   700; ở mode key/full mọi ô đáp án đo 700 cho chắc vì hàng tới lượt
+   highlight sẽ vẽ 700 — đo thiếu dòng là tràn ô). */
+function phieuComputeTablePlan(ctx, grid, mode, current, ws, textW, availH){
+  const lh = fs => Math.round(fs * 1.24);
+  const weight = cell => (cell.kind === "label" || cell.kind === "current" || mode === "key" || mode === "full") ? "700 " : "400 ";
+  const linesAt = (cell, fs) => {
+    if (!cell.text) return 0;
+    ctx.font = weight(cell) + fs + "px " + FONT;
+    return wrapLines(ctx, cell.text, textW(cell.col)).length;
+  };
+  /* Hàng tiêu đề: cỡ riêng 28 -> 18, cao theo cột nhiều dòng nhất. */
+  let headerFs = 28, headerLines = grid.headers.map(() => 1), headerH = 0;
+  for (let fs = 28; fs >= 18; fs -= 2){
+    ctx.font = "700 " + fs + "px " + FONT;
+    headerLines = grid.headers.map((h, c) => wrapLines(ctx, h, ws[c] - 24).length);
+    headerH = Math.max.apply(null, headerLines) * (fs + 10) + 24;
+    headerFs = fs;
+    if (headerH <= 110) break;
+  }
+  const rows = grid.rows.map((row, r) => {
+    const cells = [];
+    for (let c = 0; c < grid.nCols; c++){
+      const cell = phieuCell(grid, r, c, mode, current);
+      cell.col = c;
+      let fs = 28;
+      if (cell.kind === "label") fs = 26;
+      else if (cell.kind === "current") fs = 34;
+      else if (cell.kind === "blank") fs = 0;
+      cells.push({ cell: cell, fs: fs, startFs: fs, lines: linesAt(cell, fs) });
+    }
+    return { cells: cells, h: 0 };
+  });
+  const rowHeight = row => {
+    let m = 52; /* tối thiểu để vòng tròn số ô câm vẽ được */
+    row.cells.forEach(cc => { if (cc.lines > 0) m = Math.max(m, cc.lines * lh(cc.fs) + 16); });
+    return m;
+  };
+  rows.forEach(row => { row.h = rowHeight(row); });
+  let total = headerH + rows.reduce((a, r) => a + r.h, 0);
+  /* Co từng bước 2px: chỉ co Ô ĐANG QUYẾT ĐỊNH chiều cao hàng của nó,
+     ưu tiên ô mà một bước co GIẢM ĐƯỢC NHIỀU CHIỀU CAO NHẤT (thường là
+     ô sắp rớt một dòng) — tránh co đều mọi ô xuống sàn khi chỉ vài ô dài
+     gây tràn. Ô đang điền bị trừ điểm nặng nên chỉ co khi không còn ô
+     nào khác co được. */
+  let guard = 0;
+  while (total > availH && guard++ < 400){
+    let best = null;
+    rows.forEach((row, r) => row.cells.forEach((cc, c) => {
+      if (!cc.lines || cc.fs <= PHIEU_CELL_FS_FLOOR) return;
+      const need = cc.lines * lh(cc.fs);
+      if (need + 16 < row.h - 1) return;
+      const nfs = Math.max(PHIEU_CELL_FS_FLOOR, cc.fs - 2);
+      const gain = need - linesAt(cc.cell, nfs) * lh(nfs);
+      const score = gain * 1000 + need - (cc.cell.kind === "current" ? 100000000 : 0);
+      if (!best || score > best.score) best = { r: r, c: c, score: score, nfs: nfs };
+    }));
+    if (!best) break;
+    const cc = rows[best.r].cells[best.c];
+    cc.fs = best.nfs;
+    cc.lines = linesAt(cc.cell, cc.fs);
+    const nh = rowHeight(rows[best.r]);
+    total += nh - rows[best.r].h;
+    rows[best.r].h = nh;
+  }
+  /* NÂNG LẠI cỡ chữ sau khi đã vừa khung: vòng co ở trên dừng ngay khi
+     vừa, dễ để nhiều ô ở cỡ nhỏ hơn mức cần thiết. Nâng ô đang nhỏ nhất
+     trước (từng bước 2px, không vượt cỡ khởi đầu của ô), chỉ giữ bước
+     nâng khi tổng chiều cao vẫn trong khung — tận dụng hết ngân sách
+     chiều cao cho dễ đọc. */
+  let grew = true, gGuard = 0;
+  while (grew && gGuard++ < 400){
+    grew = false;
+    let cand = null;
+    rows.forEach((row, r) => row.cells.forEach((cc, c) => {
+      if (!cc.lines || cc.noGrow || cc.fs >= cc.startFs) return;
+      if (!cand || cc.fs < cand.fs) cand = { r: r, c: c, fs: cc.fs };
+    }));
+    if (!cand) break;
+    const row = rows[cand.r], cc = row.cells[cand.c];
+    const ofs = cc.fs, olines = cc.lines, oh = row.h;
+    cc.fs = Math.min(cc.startFs, cc.fs + 2);
+    cc.lines = linesAt(cc.cell, cc.fs);
+    const nh = rowHeight(row);
+    if (total + (nh - oh) <= availH){ total += nh - oh; row.h = nh; grew = true; }
+    else { cc.fs = ofs; cc.lines = olines; cc.noGrow = true; }
+  }
+  const plan = { headerFs: headerFs, headerLines: headerLines, headerH: headerH, rows: rows, total: total, fits: total <= availH };
+  if (plan.total < availH && rows.length){
+    const per = (availH - plan.total) / (rows.length + 1);
+    plan.headerH += per;
+    plan.rows.forEach(row => { row.h += per; });
+    plan.total = availH;
+  }
+  return plan;
+}
 function drawPhieuTable(ctx, data, y0, y1, mode, current, activeRow){
   const grid = phieuGridOf(data);
   const tx = 72, tw = W - 144;
   const ws = phieuColWidths(grid, tw);
   const availH = y1 - y0;
   const textW = c => ws[c] - (c === 0 ? 48 : 28);
-  /* Lập kế hoạch cỡ chữ + chiều cao hàng (có cache theo chữ ký bảng vì hàm
-     vẽ chạy mỗi khung hình khi ghi): thử cỡ chữ từ LỚN (44) xuống 20 trước,
-     vẫn tràn mới hạ dần số dòng tối đa mỗi ô — cắt chữ là lựa chọn cuối
-     cùng. Vừa rồi thì KÉO GIÃN các hàng lấp đầy chiều cao cho phép để
-     bảng luôn TO, chiếm gần hết khung hình. */
+  /* Chữ ký cache gồm kind + độ dài chữ THẬT của từng ô theo đúng mode
+     (đáp án lấy từ cacO, không phải noiDung của bảng GV). */
   const sig = mode + "|" + current + "|" + Math.round(availH) + "|" + grid.nCols + "|" +
-    grid.headers.join("~") + "|" + grid.rows.map(r => (r.tieuChi || "") + ":" +
-      (r.cacCot || []).map(c => (c.noiDung || "").length).join(",")).join("~");
+    grid.headers.join("~") + "|" + grid.rows.map((row, r) => {
+      const parts = [];
+      for (let c = 0; c < grid.nCols; c++){
+        const cell = phieuCell(grid, r, c, mode, current);
+        parts.push(cell.kind + (cell.text ? cell.text.length : 0));
+      }
+      return parts.join(",");
+    }).join("~");
   let plan = (phieuPlanCache.key === sig) ? phieuPlanCache.plan : null;
   if (!plan){
-    const planAt = (fs, cap) => {
-      ctx.font = "700 " + (fs + 4) + "px " + FONT;
-      let headerLines = 1;
-      grid.headers.forEach((h, c) => { headerLines = Math.max(headerLines, wrapLines(ctx, h, ws[c] - 24).length); });
-      const headerH = Math.max(88, headerLines * (fs + 16) + 30);
-      let total = headerH;
-      const rowHs = grid.rows.map((row, r) => {
-        let lines = 1;
-        for (let c = 0; c < grid.nCols; c++){
-          const cell = phieuCell(grid, r, c, mode, current);
-          if (cell.kind === "blank" || !cell.text) continue;
-          /* Đo bằng ĐÚNG độ đậm lúc vẽ: ô đang điền và (ở cảnh GV) mọi ô
-             đáp án đều vẽ đậm 700 khi tới lượt highlight — đo bằng chữ
-             thường sẽ thiếu dòng và bị cắt "…" oan. */
-          ctx.font = ((cell.kind === "label" || cell.kind === "current" || mode === "key") ? "700 " : "400 ") + fs + "px " + FONT;
-          lines = Math.max(lines, Math.min(cap, wrapLines(ctx, cell.text, textW(c)).length));
-        }
-        const rh = lines * (fs + 15) + 28;
-        total += rh;
-        return rh;
-      });
-      return { fs: fs, cap: cap, headerH: headerH, rowHs: rowHs, total: total };
-    };
-    for (const cap of [99, 5, 4, 3, 2]){
-      for (let fs = 44; fs >= 20; fs -= 2){
-        const p = planAt(fs, cap);
-        if (p.total <= availH){ plan = p; break; }
-      }
-      if (plan) break;
-    }
-    if (!plan) plan = planAt(20, 2);
-    if (plan.total < availH && grid.rows.length){
-      const per = (availH - plan.total) / (grid.rows.length + 1);
-      plan.headerH += per;
-      plan.rowHs = plan.rowHs.map(h => h + per);
-    }
+    plan = phieuComputeTablePlan(ctx, grid, mode, current, ws, textW, availH);
     phieuPlanCache = { key: sig, plan: plan };
   }
-  const fs = plan.fs;
+  phieuLastPlan = { y0: y0, y1: y1, mode: mode, current: current, tx: tx, ws: ws, plan: plan };
   /* Vẽ tiêu đề cột — tông xanh thép riêng của hàng tiêu đề */
   let y = y0;
   ctx.fillStyle = "#1f4470"; rr(ctx, tx, y, tw, plan.headerH, 12); ctx.fill();
   ctx.fillStyle = "#57b6ff"; ctx.fillRect(tx + 12, y + plan.headerH - 6, tw - 24, 4);
-  ctx.fillStyle = "#ffffff"; ctx.font = "700 " + (fs + 4) + "px " + FONT; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.fillStyle = "#ffffff"; ctx.font = "700 " + plan.headerFs + "px " + FONT; ctx.textAlign = "center"; ctx.textBaseline = "middle";
   grid.headers.forEach((h, c) => {
-    const lines = phieuFitLines(ctx, h, ws[c] - 24, 3);
-    const lh = fs + 16;
+    const lines = wrapLines(ctx, h, ws[c] - 24);
+    const lh = plan.headerFs + 10;
     lines.forEach((ln, k) => ctx.fillText(ln, tx + ws.slice(0, c).reduce((a, b) => a + b, 0) + ws[c] / 2, y + plan.headerH / 2 + (k - (lines.length - 1) / 2) * lh));
   });
   y += plan.headerH;
   ctx.textBaseline = "middle";
   grid.rows.forEach((row, r) => {
-    const rh = plan.rowHs[r];
+    const rh = plan.rows[r].h;
     const rowColor = phieuRowColor(r);
-    const keyActive = (mode === "key" && r === activeRow);
+    const keyActive = ((mode === "key" || mode === "full") && r === activeRow);
     let x = tx;
     for (let c = 0; c < grid.nCols; c++){
       const cell = phieuCell(grid, r, c, mode, current);
@@ -3405,13 +3503,16 @@ function drawPhieuTable(ctx, data, y0, y1, mode, current, activeRow){
         ctx.fillStyle = rowColor; ctx.font = "800 " + Math.round(rad * 1.05) + "px " + FONT; ctx.textAlign = "center";
         ctx.fillText(String(cell.so), cx, cy + 2);
       } else if (cell.text){
-        const maxLines = Math.max(1, Math.min(plan.cap, Math.floor((rh - 18) / (fs + 15))));
+        /* Vẽ bằng cỡ chữ RIÊNG của ô trong kế hoạch + ngắt dòng đầy đủ —
+           KHÔNG phieuFitLines, KHÔNG "…": kế hoạch đã bảo đảm số dòng
+           nhân chiều cao dòng vừa trong chiều cao hàng. */
+        const cc = plan.rows[r].cells[c];
         const hot = (cell.kind === "current" || keyActive);
-        ctx.font = (hot || cell.kind === "label" ? "700 " : "400 ") + fs + "px " + FONT;
-        const lines = phieuFitLines(ctx, cell.text, textW(c), maxLines);
+        ctx.font = (hot || cell.kind === "label" ? "700 " : "400 ") + cc.fs + "px " + FONT;
+        const lines = wrapLines(ctx, cell.text, textW(c));
         ctx.fillStyle = hot ? phieuContrastText(rowColor) : (cell.kind === "label" ? rowColor : "#ffffff");
         ctx.textAlign = "left";
-        const lh = fs + 15;
+        const lh = Math.round(cc.fs * 1.24);
         const txo = x + 14 + (c === 0 ? 16 : 0);
         lines.forEach((ln, k) => ctx.fillText(ln, txo, y + rh / 2 + (k - (lines.length - 1) / 2) * lh));
       }
@@ -3424,52 +3525,63 @@ function drawPhieuTable(ctx, data, y0, y1, mode, current, activeRow){
   ctx.textAlign = "left"; ctx.textBaseline = "top";
   return y;
 }
-/* NGÂN HÀNG NỘI DUNG dưới bảng câm ở cảnh mở: lưới ô nội dung nhiều màu
-   (màu + nội dung từ phieuBankPlan — đã xáo trộn, không lộ đáp án theo
-   màu hàng). Số cột + cỡ chữ tự thích ứng theo số ô và độ dài chữ, cỡ
-   chữ không xuống dưới 18px; ô dài thì cao hơn (đóng gói cân bằng theo
-   cột: ô tiếp theo vào cột đang thấp nhất). */
-function drawPhieuBank(ctx, chips, y0, y1){
-  const x0 = 72, w = W - 144, gap = 14;
-  ctx.fillStyle = "#ffe9a8"; ctx.font = "700 30px " + FONT; ctx.textAlign = "left"; ctx.textBaseline = "top";
-  ctx.fillText("🧩 NGÂN HÀNG NỘI DUNG — chọn đúng nội dung điền vào từng số:", x0 + 4, y0);
-  const top = y0 + 42, availH = y1 - top;
-  if (availH < 60 || !chips.length) return;
+/* Bố cục NGÂN HÀNG NỘI DUNG: lưới ô nội dung nhiều màu (màu + nội dung
+   từ phieuBankPlan — đã xáo trộn, không lộ đáp án theo màu hàng). Tìm
+   cấu hình (cỡ chữ, số cột) LỚN NHẤT mà TỔNG chiều cao vẫn vừa khung:
+   thử cỡ 26 -> 14 (sàn đọc được ở 1080p), mỗi cỡ thử 2..6 cột (đóng gói
+   cân bằng theo cột: ô tiếp theo vào cột đang thấp nhất; chiều cao ô
+   suy từ số dòng ngắt thật nên chữ không bao giờ bị cắt). Bản cũ dừng ở
+   18px rồi lấy cấu hình "thấp nhất" dù vẫn tràn khung — chính là lỗi ô
+   nội dung tràn đáy + đè lên bảng trong ảnh thầy chụp 21:00 18/11; nay
+   ngân hàng có cảnh RIÊNG toàn khung và bố cục bảo đảm vừa (kiểm chứng
+   máy móc trên phiếu 18 ô ở test_gd7). */
+function phieuBankLayout(ctx, chips, w, availH){
+  const gap = 14;
   const layout = (fs, cols) => {
     const cw = Math.floor((w - (cols - 1) * gap) / cols);
     ctx.font = "600 " + fs + "px " + FONT;
     const colH = new Array(cols).fill(0);
     const pos = chips.map(ch => {
-      const lines = wrapLines(ctx, ch.text, cw - 26).length;
-      const hh = lines * (fs + 7) + 16;
+      const lines = wrapLines(ctx, ch.text, cw - 26);
+      const hh = lines.length * (fs + 7) + 16;
       let c = 0;
       for (let i = 1; i < cols; i++) if (colH[i] < colH[c]) c = i;
-      const p = { ch: ch, x: x0 + c * (cw + gap), y: top + colH[c], w: cw, h: hh, lines: lines };
+      const p = { ch: ch, x: c * (cw + gap), y: colH[c], w: cw, h: hh, lines: lines };
       colH[c] += hh + gap;
       return p;
     });
-    return { fs: fs, pos: pos, totalH: Math.max.apply(null, colH) - gap };
+    return { fs: fs, cols: cols, pos: pos, totalH: Math.max.apply(null, colH) - gap };
   };
-  /* Ưu tiên cỡ chữ lớn trước; không cấu hình nào vừa thì lấy cấu hình 18px
-     có tổng chiều cao NHỎ nhất (cột hẹp nhất chưa chắc đã thấp nhất). */
-  let plan = null, bestSmall = null;
-  for (let fs = 26; fs >= 18 && !plan; fs -= 2){
+  for (let fs = 26; fs >= 14; fs -= 2){
+    let bestAtFs = null;
     for (let cols = 2; cols <= 6; cols++){
       const p = layout(fs, cols);
-      if (fs === 18 && (!bestSmall || p.totalH < bestSmall.totalH)) bestSmall = p;
-      if (p.totalH <= availH){ plan = p; break; }
+      if (p.totalH <= availH && (!bestAtFs || p.totalH < bestAtFs.totalH)) bestAtFs = p;
     }
+    if (bestAtFs) return bestAtFs;
   }
-  if (!plan) plan = bestSmall || layout(18, 4);
+  /* Không cấu hình nào vừa (không xảy ra với các phiếu hiện có): lấy
+     cấu hình 14px thấp nhất và ghi cờ fits=false để kiểm chứng bắt được. */
+  let best = null;
+  for (let cols = 2; cols <= 6; cols++){
+    const p = layout(14, cols);
+    if (!best || p.totalH < best.totalH) best = p;
+  }
+  return best;
+}
+function drawPhieuBank(ctx, chips, y0, y1){
+  const x0 = 72, w = W - 144;
+  if (!chips.length || y1 - y0 < 60) return;
+  const plan = phieuBankLayout(ctx, chips, w, y1 - y0);
+  phieuLastBankPlan = { y0: y0, y1: y1, fs: plan.fs, cols: plan.cols, totalH: plan.totalH, fits: plan.totalH <= y1 - y0,
+    pos: plan.pos.map(p => ({ x: x0 + p.x, y: y0 + p.y, w: p.w, h: p.h, lines: p.lines, text: p.ch.text })) };
   plan.pos.forEach(p => {
     ctx.fillStyle = p.ch.color;
-    rr(ctx, p.x, p.y, p.w, p.h, 14); ctx.fill();
+    rr(ctx, x0 + p.x, y0 + p.y, p.w, p.h, 14); ctx.fill();
     ctx.font = "600 " + plan.fs + "px " + FONT;
     ctx.fillStyle = phieuContrastText(p.ch.color);
     ctx.textAlign = "left"; ctx.textBaseline = "top";
-    const maxLines = Math.max(1, Math.floor((p.h - 10) / (plan.fs + 7)));
-    phieuFitLines(ctx, p.ch.text, p.w - 26, Math.min(p.lines, maxLines))
-      .forEach((ln, k) => ctx.fillText(ln, p.x + 13, p.y + 8 + k * (plan.fs + 7)));
+    p.lines.forEach((ln, k) => ctx.fillText(ln, x0 + p.x + 13, y0 + p.y + 8 + k * (plan.fs + 7)));
   });
   ctx.textAlign = "left"; ctx.textBaseline = "top";
 }
@@ -3495,9 +3607,10 @@ function drawPhieuScene(ctx, sg, t){
   }
   const entry = phieuBuildCtx.entry || {};
   const tenBai = entry.tenBai || data.bai || "";
-  /* Màu nhấn riêng cho từng loại cảnh: mở = ngọc, GV = tím, QR = hồng;
-     cảnh điền = màu của HÀNG chứa ô đang điền. Thanh nhấn vẽ trên cùng. */
-  const accents = { open: "#2bcbba", key: "#b49af5", qr: "#ff8fab" };
+  /* Màu nhấn riêng cho từng loại cảnh: mở = ngọc, ngân hàng = xanh
+     dương, bảng đầy đủ = tím, QR = hồng; cảnh điền = màu của HÀNG chứa
+     ô đang điền. Thanh nhấn vẽ trên cùng. */
+  const accents = { open: "#2bcbba", bank: "#45aaf2", full: "#b49af5", key: "#b49af5", qr: "#ff8fab" };
   let accent = accents[sg.phKind] || "#2bcbba";
   if (sg.phKind === "fill"){
     const cur = (data.cacO || []).filter(o => o.so === sg.fillSo)[0];
@@ -3551,6 +3664,32 @@ function drawPhieuScene(ctx, sg, t){
     drawPhieuTable(ctx, data, topY + 18, H - 40, "key", 0, activeRow);
     return;
   }
+  if (sg.phKind === "bank"){
+    /* Cảnh NGÂN HÀNG NỘI DUNG riêng toàn khung (phần 2 của khuôn 5
+       phần): tiêu đề + 1 dòng hướng dẫn tạm dừng, dưới là lưới ô nội
+       dung nhiều màu chiếm trọn phần còn lại của khung hình. */
+    slideBg(ctx); bar();
+    const topY = drawHeading(ctx, "🧩 Ngân hàng nội dung", tenBai);
+    ctx.fillStyle = "#ffe9a8"; ctx.font = "600 31px " + FONT; ctx.textAlign = "left"; ctx.textBaseline = "top";
+    const instrLines = wrapLines(ctx, "Tạm dừng video tại đây, đọc kĩ từng nội dung rồi tự điền vào phiếu theo từng số.", 1700);
+    instrLines.forEach((ln, k) => ctx.fillText(ln, 110, topY + 6 + k * 42));
+    const bank = (sg.bank && sg.bank.length) ? sg.bank : phieuBankPlan(data.cacO || []);
+    drawPhieuBank(ctx, bank, topY + 6 + instrLines.length * 42 + 16, H - 36);
+    return;
+  }
+  if (sg.phKind === "full"){
+    /* Cảnh BẢNG ĐÁP ÁN ĐẦY ĐỦ (phần 4): bảng đã điền MỌI đáp án hiện
+       toàn khung để học sinh đối chiếu — chỉ hiện hình, lời đọc chỉ 1
+       câu ngắn (xem buildPhieuScenes). Có dải highlight chạy nhẹ theo
+       hàng theo tiến độ cảnh cho mắt học sinh bám theo. Đây KHÔNG phải
+       cảnh "key" đọc lại đáp án đã bỏ ở GD6. */
+    slideBg(ctx); bar();
+    const topY = drawHeading(ctx, "📋 BẢNG ĐÁP ÁN ĐẦY ĐỦ", tenBai);
+    const nRows = ((data.bangDapAnGV || {}).cacHang || []).length;
+    const activeRow = phieuActiveRow(t || 0, nRows);
+    drawPhieuTable(ctx, data, topY + 18, H - 40, "full", 0, activeRow);
+    return;
+  }
   if (sg.phKind === "fill"){
     slideBg(ctx); bar();
     const n = (data.cacO || []).length;
@@ -3558,21 +3697,22 @@ function drawPhieuScene(ctx, sg, t){
     ctx.fillStyle = accent; ctx.font = "700 40px " + FONT; ctx.textAlign = "right"; ctx.textBaseline = "top";
     ctx.fillText("Ô " + sg.fillSo + " / " + n, W - 110, 60);
     ctx.textAlign = "left";
-    drawPhieuTable(ctx, data, topY + 14, H - 268, "fill", sg.fillSo, -1);
+    /* [GD7] Băng caption rút gọn (3 dòng) để bảng có thêm chiều cao —
+       bảng không còn bị ép tràn ô như ảnh thầy chụp 21:00 18/11. */
+    drawPhieuTable(ctx, data, topY + 14, H - 222, "fill", sg.fillSo, -1);
     /* băng caption dưới: đáp án đầy đủ nguyên văn + thanh màu của hàng */
-    const bandY = H - 238;
-    const g = ctx.createLinearGradient(0, bandY - 30, 0, H);
+    const bandY = H - 192;
+    const g = ctx.createLinearGradient(0, bandY - 26, 0, H);
     g.addColorStop(0, "rgba(0,0,0,0)"); g.addColorStop(0.35, "rgba(0,0,0,0.85)"); g.addColorStop(1, "rgba(0,0,0,0.94)");
-    ctx.fillStyle = g; ctx.fillRect(0, bandY - 30, W, 268);
-    ctx.fillStyle = accent; ctx.fillRect(72, bandY + 8, 10, 196);
-    ctx.fillStyle = "#ffffff"; ctx.font = "600 35px " + FONT; ctx.textAlign = "left"; ctx.textBaseline = "top";
-    phieuFitLines(ctx, sg.caption || "", 1700, 4).forEach((ln, k) => ctx.fillText(ln, 110, bandY + 14 + k * 47));
+    ctx.fillStyle = g; ctx.fillRect(0, bandY - 26, W, 218);
+    ctx.fillStyle = accent; ctx.fillRect(72, bandY + 8, 10, 168);
+    ctx.fillStyle = "#ffffff"; ctx.font = "600 33px " + FONT; ctx.textAlign = "left"; ctx.textBaseline = "top";
+    phieuFitLines(ctx, sg.caption || "", 1700, 3).forEach((ln, k) => ctx.fillText(ln, 110, bandY + 12 + k * 44));
     return;
   }
-  /* open: phiếu câm + câu yêu cầu + NGÂN HÀNG NỘI DUNG nhiều màu ở dưới
-     bảng (thầy chốt 19:42) — học sinh nhìn ngân hàng để tự chọn nội dung
-     điền vào các số trên phiếu câm. Bảng thu vừa phải, vẫn là phần chính
-     ở phía trên; ngân hàng chiếm dải dưới (~44% phần còn lại). */
+  /* open: phiếu câm + câu yêu cầu — bảng TOÀN KHUNG, không còn ngân
+     hàng nội dung vẽ đè ở dưới (ngân hàng đã tách thành cảnh riêng ngay
+     sau cảnh mở theo khuôn 5 phần thầy chốt 21:00 ngày 18/11). */
   slideBg(ctx); bar();
   const topY = drawHeading(ctx, "📋 Phiếu học tập", tenBai);
   let y = topY + 8;
@@ -3582,14 +3722,7 @@ function drawPhieuScene(ctx, sg, t){
     phieuFitLines(ctx, cauHoi, 1700, 3).forEach(ln => { ctx.fillText(ln, 110, y); y += 47; });
     y += 10;
   }
-  const bank = (sg.bank && sg.bank.length) ? sg.bank : phieuBankPlan(data.cacO || []);
-  if (bank.length){
-    const bankH = Math.round(((H - 36) - y) * 0.48);
-    drawPhieuTable(ctx, data, y, H - 36 - bankH - 14, "open", 0, -1);
-    drawPhieuBank(ctx, bank, H - 36 - bankH, H - 36);
-  } else {
-    drawPhieuTable(ctx, data, y, H - 40, "open", 0, -1);
-  }
+  drawPhieuTable(ctx, data, y, H - 40, "open", 0, -1);
 }
 
 /* ---------- Kho phiếu + panel chọn phiếu ---------- */
@@ -3654,7 +3787,7 @@ function renderPhieuPanel(){
     const ok = phieuSelectable(e);
     d.className = "phieu-item" + (ok ? "" : " dim");
     let inner = "<b>" + escapeHtml(e.tieuDePhieu || e.id) + "</b>" +
-      '<div class="small" style="margin-top:3px">Loại: ' + escapeHtml(e.loai || "") + " • Số ô điền: " + (e.soO || 0) + " ô • " + (e.soO + 3) + " cảnh video</div>";
+      '<div class="small" style="margin-top:3px">Loại: ' + escapeHtml(e.loai || "") + " • Số ô điền: " + (e.soO || 0) + " ô • " + (e.soO + 4) + " cảnh video</div>";
     if (ok){
       inner += '<div style="margin-top:8px"><button class="btn mini" type="button">✔ Chọn phiếu này để dựng video</button></div>';
       d.innerHTML = inner;
@@ -3688,7 +3821,7 @@ function renderPhieuPreview(){
   const os = (d.cacO || []).slice().sort((a, b) => a.so - b.so);
   let h = '<div style="font-weight:700;font-size:16px">📋 ' + escapeHtml(e.tieuDePhieu || "") + "</div>";
   h += '<div class="small" style="margin-top:4px">Bài: <b>' + escapeHtml(e.tenBai || d.bai || "") + "</b> • " + os.length +
-    " ô điền → video " + (os.length + 2) + " cảnh (mở phiếu câm → điền từng ô → QR bài tập). Đáp án lấy nguyên văn từ giáo án, AI không sửa.</div>";
+    " ô điền → video " + (os.length + 4) + " cảnh (mở phiếu câm → ngân hàng nội dung → điền từng ô → bảng đáp án đầy đủ → QR bài tập). Đáp án lấy nguyên văn từ giáo án, AI không sửa.</div>";
   h += '<div style="margin-top:8px">';
   os.forEach(o => {
     const da = String(o.dapAn || "");
@@ -3749,7 +3882,7 @@ function preparePhieuScript(){
     grade: String(phieuSelected.grade || ""),
     segments: segs,
     _mode: "phieu",
-    _phieu: { id: phieuSelected.id, tenBai: phieuSelected.tenBai || "", tieuDePhieu: phieuSelected.tieuDePhieu || "", soO: phieuSelected.soO || segs.length - 2 },
+    _phieu: { id: phieuSelected.id, tenBai: phieuSelected.tenBai || "", tieuDePhieu: phieuSelected.tieuDePhieu || "", soO: phieuSelected.soO || segs.length - 4 },
     _picked: pickedLesson ? {
       subjectCode: pickedLesson.subjectCode, subjectName: pickedLesson.subjectName,
       grade: pickedLesson.grade, lessonNo: pickedLesson.lessonNo,
