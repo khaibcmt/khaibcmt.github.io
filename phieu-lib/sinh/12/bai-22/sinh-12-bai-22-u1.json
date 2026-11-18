@@ -1,0 +1,102 @@
+{
+ "bai": "TIẾN HÓA VÀ QUÁ TRÌNH PHÁT SINH CHỦNG LOẠI — Sinh học 12",
+ "fileNguon": "Sinh học/Khối 12/Giáo án/HK2/KHBD_Sinh_hoc_12_Bai_22_Tien_hoa_va_qua_trinh_phat_sinh_chung_loai_2_tiet.docx",
+ "cauHoiPhieu": "PHIẾU HỌC TẬP — TIẾN HÓA VÀ QUÁ TRÌNH PHÁT SINH CHỦNG LOẠI",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Tiến hóa lớn là gì? Lập bảng so sánh tiến hóa nhỏ với tiến hóa lớn (quy mô, thời gian, kết quả, phương pháp nghiên cứu): Nêu một số minh chứng về tiến hóa lớn (hóa thạch Archaeopteryx, cơ quan tương đồng, bằng chứng phân tử): Vì sao tiến hóa lớn không nghiên cứu được bằng thực nghiệm như tiến hóa nhỏ?",
+   "tieuChi": "1. Tiến hóa lớn",
+   "cot": "Chi tiết",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Quá trình phát sinh sự sống gồm những giai đoạn nào? Tiến hóa hóa học diễn ra khi nào, có đặc điểm và kết quả gì? (Thí nghiệm Miller – Urey chứng minh điều gì? Vật chất di truyền đầu tiên là gì?) Tiến hóa tiền sinh học diễn ra khi nào, có đặc điểm và kết quả gì? (Protobiont là gì?) Tiến hóa sinh học diễn ra khi nào, có đặc điểm và kết quả gì? (Tế bào nhân sơ xuất hiện khi nào? Tế bào nhân thực được hình thành như thế nào?) Vẽ sơ đồ ba giai đoạn phát sinh sự sống trên Trái Đất:",
+   "tieuChi": "2. Quá trình phát sinh sự sống trên Trái Đất",
+   "cot": "Chi tiết",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 3,
+   "dapAn": "Lập bảng các đại địa chất (thời gian, biến cố lớn, nhóm sinh vật tiêu biểu): Đại nào xảy ra sự bùng nổ Cambri? Đại nào được gọi là kỉ nguyên của bò sát khổng lồ? Vì sao sau mỗi lần tuyệt chủng hàng loạt, sinh giới lại phát triển đa dạng hơn?",
+   "tieuChi": "3. Sự phát triển của sinh vật qua các đại địa chất",
+   "cot": "Chi tiết",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Sơ đồ cây sự sống là gì? Sơ đồ cây sự sống gồm ba lãnh giới nào? Sơ đồ cây sự sống cho thấy sinh giới có nguồn gốc như thế nào? Phân tích sự phát sinh chủng loại là kết quả của tiến hóa (tiến hóa nhỏ và tiến hóa lớn):",
+   "tieuChi": "4. Sơ đồ cây sự sống",
+   "cot": "Chi tiết",
+   "hang": 4,
+   "cotSo": 1
+  },
+  {
+   "so": 5,
+   "dapAn": "Quá trình phát sinh loài người gồm những giai đoạn chính nào? Vẽ sơ đồ các giai đoạn chính trong quá trình phát sinh loài người (kèm thời gian và đặc điểm từng giai đoạn): Loài người hiện nay (H. sapiens) đã tiến hóa từ loài vượn người nào, qua những giai đoạn trung gian nào?",
+   "tieuChi": "5. Quá trình phát sinh loài người",
+   "cot": "Chi tiết",
+   "hang": 5,
+   "cotSo": 1
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Nội dung",
+   "Chi tiết"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "1. Tiến hóa lớn",
+    "cacCot": [
+     {
+      "cot": "Chi tiết",
+      "noiDung": "Tiến hóa lớn là gì? Lập bảng so sánh tiến hóa nhỏ với tiến hóa lớn (quy mô, thời gian, kết quả, phương pháp nghiên cứu): Nêu một số minh chứng về tiến hóa lớn (hóa thạch Archaeopteryx, cơ quan tương đồng, bằng chứng phân tử): Vì sao tiến hóa lớn không nghiên cứu được bằng thực nghiệm như tiến hóa nhỏ?"
+     }
+    ]
+   },
+   {
+    "tieuChi": "2. Quá trình phát sinh sự sống trên Trái Đất",
+    "cacCot": [
+     {
+      "cot": "Chi tiết",
+      "noiDung": "Quá trình phát sinh sự sống gồm những giai đoạn nào? Tiến hóa hóa học diễn ra khi nào, có đặc điểm và kết quả gì? (Thí nghiệm Miller – Urey chứng minh điều gì? Vật chất di truyền đầu tiên là gì?) Tiến hóa tiền sinh học diễn ra khi nào, có đặc điểm và kết quả gì? (Protobiont là gì?) Tiến hóa sinh học diễn ra khi nào, có đặc điểm và kết quả gì? (Tế bào nhân sơ xuất hiện khi nào? Tế bào nhân thực được hình thành như thế nào?) Vẽ sơ đồ ba giai đoạn phát sinh sự sống trên Trái Đất:"
+     }
+    ]
+   },
+   {
+    "tieuChi": "3. Sự phát triển của sinh vật qua các đại địa chất",
+    "cacCot": [
+     {
+      "cot": "Chi tiết",
+      "noiDung": "Lập bảng các đại địa chất (thời gian, biến cố lớn, nhóm sinh vật tiêu biểu): Đại nào xảy ra sự bùng nổ Cambri? Đại nào được gọi là kỉ nguyên của bò sát khổng lồ? Vì sao sau mỗi lần tuyệt chủng hàng loạt, sinh giới lại phát triển đa dạng hơn?"
+     }
+    ]
+   },
+   {
+    "tieuChi": "4. Sơ đồ cây sự sống",
+    "cacCot": [
+     {
+      "cot": "Chi tiết",
+      "noiDung": "Sơ đồ cây sự sống là gì? Sơ đồ cây sự sống gồm ba lãnh giới nào? Sơ đồ cây sự sống cho thấy sinh giới có nguồn gốc như thế nào? Phân tích sự phát sinh chủng loại là kết quả của tiến hóa (tiến hóa nhỏ và tiến hóa lớn):"
+     }
+    ]
+   },
+   {
+    "tieuChi": "5. Quá trình phát sinh loài người",
+    "cacCot": [
+     {
+      "cot": "Chi tiết",
+      "noiDung": "Quá trình phát sinh loài người gồm những giai đoạn chính nào? Vẽ sơ đồ các giai đoạn chính trong quá trình phát sinh loài người (kèm thời gian và đặc điểm từng giai đoạn): Loài người hiện nay (H. sapiens) đã tiến hóa từ loài vượn người nào, qua những giai đoạn trung gian nào?"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
