@@ -1,0 +1,134 @@
+{
+ "bai": "Bài 2: Phương pháp nghiên cứu và học tập môn Sinh học — Sinh học 10",
+ "fileNguon": "Sinh học/Khối 10/Giáo án/HK1/KHBD_Sinh_hoc_10_Bai_2_Phuong_phap_nghien_cuu_va_hoc_tap_mon_sinh_hoc_2_tiet.docx",
+ "cauHoiPhieu": "Phụ lục 1: Phiếu học tập — Bài 2: Phương pháp nghiên cứu và học tập môn Sinh học",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Nguồn sáng điện hoặc ánh sáng mặt trời",
+   "tieuChi": "Nguồn sáng",
+   "cot": "Kính hiển vi quang học",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Các chùm electron",
+   "tieuChi": "Nguồn sáng",
+   "cot": "Kính hiển vi điện tử",
+   "hang": 1,
+   "cotSo": 2
+  },
+  {
+   "so": 3,
+   "dapAn": "1500 lần",
+   "tieuChi": "Độ phóng đại",
+   "cot": "Kính hiển vi quang học",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "50 triệu lần",
+   "tieuChi": "Độ phóng đại",
+   "cot": "Kính hiển vi điện tử",
+   "hang": 2,
+   "cotSo": 2
+  },
+  {
+   "so": 5,
+   "dapAn": "200 nm",
+   "tieuChi": "Độ phân giải",
+   "cot": "Kính hiển vi quang học",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 6,
+   "dapAn": "Nhỏ hơn 1 Å",
+   "tieuChi": "Độ phân giải",
+   "cot": "Kính hiển vi điện tử",
+   "hang": 3,
+   "cotSo": 2
+  },
+  {
+   "so": 7,
+   "dapAn": "Nghiên cứu cấu trúc hiển vi của tế bào",
+   "tieuChi": "Mục đích sử dụng",
+   "cot": "Kính hiển vi quang học",
+   "hang": 4,
+   "cotSo": 1
+  },
+  {
+   "so": 8,
+   "dapAn": "Nghiên cứu cấu trúc siêu hiển vi của tế bào cũng như cấu trúc phân tử",
+   "tieuChi": "Mục đích sử dụng",
+   "cot": "Kính hiển vi điện tử",
+   "hang": 4,
+   "cotSo": 2
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Tiêu chí",
+   "Kính hiển vi quang học",
+   "Kính hiển vi điện tử"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Nguồn sáng",
+    "cacCot": [
+     {
+      "cot": "Kính hiển vi quang học",
+      "noiDung": "Nguồn sáng điện hoặc ánh sáng mặt trời"
+     },
+     {
+      "cot": "Kính hiển vi điện tử",
+      "noiDung": "Các chùm electron"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Độ phóng đại",
+    "cacCot": [
+     {
+      "cot": "Kính hiển vi quang học",
+      "noiDung": "1500 lần"
+     },
+     {
+      "cot": "Kính hiển vi điện tử",
+      "noiDung": "50 triệu lần"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Độ phân giải",
+    "cacCot": [
+     {
+      "cot": "Kính hiển vi quang học",
+      "noiDung": "200 nm"
+     },
+     {
+      "cot": "Kính hiển vi điện tử",
+      "noiDung": "Nhỏ hơn 1 Å"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Mục đích sử dụng",
+    "cacCot": [
+     {
+      "cot": "Kính hiển vi quang học",
+      "noiDung": "Nghiên cứu cấu trúc hiển vi của tế bào"
+     },
+     {
+      "cot": "Kính hiển vi điện tử",
+      "noiDung": "Nghiên cứu cấu trúc siêu hiển vi của tế bào cũng như cấu trúc phân tử"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
