@@ -1,0 +1,81 @@
+{
+ "bai": "Bài 6: Quy trình công nghệ sản xuất enzyme — Sinh học 10",
+ "fileNguon": "Sinh học/Khối 10/Giáo án/Chuyên đề/SH10-CD-B06_Quy_trinh_cong_nghe_san_xuat_enzyme.docx",
+ "cauHoiPhieu": "Nội dung 1. Tìm hiểu quy trình tổng quát sản xuất enzyme (mục I SGK).",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "nguồn cung cấp enzyme có thể là từ các cơ quan, mô của động vật, thực vật và tế bào vi sinh vật (enzyme có mặt trong hầu hết các cơ quan, mô của cơ thể động vật và thực vật, trong mọi tế bào vi sinh vật). Nguồn thu enzyme được lựa chọn phải chứa hàm lượng enzyme lớn, cho hiệu suất thu hồi cao và dễ tinh sạch; hiện nay nguồn thu enzyme được sử dụng chủ yếu là vi sinh vật vì vi sinh vật sinh trưởng nhanh, dễ nuôi cấy ở quy mô lớn và có thể điều khiển lượng enzyme tạo thành.",
+   "tieuChi": "Giai đoạn 1: Tạo nguồn thu enzyme",
+   "cot": "Nội dung chính",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "tuỳ vị trí của enzyme (trong tế bào hay ngoài tế bào) mà áp dụng cách thu nhận phù hợp: với enzyme nội bào cần phá vỡ tế bào để giải phóng enzyme; thu dịch chứa enzyme, loại bỏ các tạp chất (mảnh vỡ tế bào, các protein khác,...) bằng các biện pháp như li tâm, lọc, kết tủa,... trong điều kiện giữ được hoạt tính của enzyme.",
+   "tieuChi": "Giai đoạn 2: Tách chiết enzyme",
+   "cot": "Nội dung chính",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 3,
+   "dapAn": "dịch enzyme được tinh sạch đến mức độ phù hợp với mục đích sử dụng, sau đó tạo chế phẩm ở các dạng tiện dùng (dạng dung dịch, dạng bột khô, dạng cố định trên chất mang,...), đóng gói, bảo quản ở điều kiện thích hợp để giữ hoạt tính và đưa ra thị trường.",
+   "tieuChi": "Giai đoạn 3: Tạo chế phẩm enzyme",
+   "cot": "Nội dung chính",
+   "hang": 3,
+   "cotSo": 1
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Giai đoạn",
+   "Nội dung chính",
+   "Yêu cầu cần lưu ý"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Giai đoạn 1: Tạo nguồn thu enzyme",
+    "cacCot": [
+     {
+      "cot": "Nội dung chính",
+      "noiDung": "nguồn cung cấp enzyme có thể là từ các cơ quan, mô của động vật, thực vật và tế bào vi sinh vật (enzyme có mặt trong hầu hết các cơ quan, mô của cơ thể động vật và thực vật, trong mọi tế bào vi sinh vật). Nguồn thu enzyme được lựa chọn phải chứa hàm lượng enzyme lớn, cho hiệu suất thu hồi cao và dễ tinh sạch; hiện nay nguồn thu enzyme được sử dụng chủ yếu là vi sinh vật vì vi sinh vật sinh trưởng nhanh, dễ nuôi cấy ở quy mô lớn và có thể điều khiển lượng enzyme tạo thành."
+     },
+     {
+      "cot": "Yêu cầu cần lưu ý",
+      "noiDung": ""
+     }
+    ]
+   },
+   {
+    "tieuChi": "Giai đoạn 2: Tách chiết enzyme",
+    "cacCot": [
+     {
+      "cot": "Nội dung chính",
+      "noiDung": "tuỳ vị trí của enzyme (trong tế bào hay ngoài tế bào) mà áp dụng cách thu nhận phù hợp: với enzyme nội bào cần phá vỡ tế bào để giải phóng enzyme; thu dịch chứa enzyme, loại bỏ các tạp chất (mảnh vỡ tế bào, các protein khác,...) bằng các biện pháp như li tâm, lọc, kết tủa,... trong điều kiện giữ được hoạt tính của enzyme."
+     },
+     {
+      "cot": "Yêu cầu cần lưu ý",
+      "noiDung": ""
+     }
+    ]
+   },
+   {
+    "tieuChi": "Giai đoạn 3: Tạo chế phẩm enzyme",
+    "cacCot": [
+     {
+      "cot": "Nội dung chính",
+      "noiDung": "dịch enzyme được tinh sạch đến mức độ phù hợp với mục đích sử dụng, sau đó tạo chế phẩm ở các dạng tiện dùng (dạng dung dịch, dạng bột khô, dạng cố định trên chất mang,...), đóng gói, bảo quản ở điều kiện thích hợp để giữ hoạt tính và đưa ra thị trường."
+     },
+     {
+      "cot": "Yêu cầu cần lưu ý",
+      "noiDung": ""
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Đoạn Dự kiến sản phẩm (DKSP) trong cùng KHBD, mở đầu bằng nhãn của từng hàng trong bảng phiếu (trích nguyên văn)."
+ },
+ "ghiChu": " Đáp án là đoạn DKSP nguyên văn (dài hơn đáp án rút gọn kiểu mẫu tay Bài 9)."
+}
