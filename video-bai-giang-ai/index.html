@@ -105,22 +105,26 @@
     <p>Chỉ cần nêu <b>tên bài</b> hoặc dán <b>câu chuyện</b> — app tự viết kịch bản, tạo hình, vẽ sơ đồ, dựng bảng số liệu, thu giọng đọc và ghép thành video.</p>
   </header>
 
-  <!-- ===== API KEY ===== -->
+  <!-- ===== HỒ KEY GEMINI ===== -->
   <div class="card" id="keyCard">
-    <h2>🔑 1. API Key Gemini (miễn phí)</h2>
-    <div class="row">
-      <input type="password" id="apiKey" placeholder="Dán Gemini API key của thầy vào đây (AIza...)" autocomplete="off">
-      <button class="btn shrink" id="saveKeyBtn">💾 Lưu Key</button>
-      <button class="btn-ghost shrink" id="toggleKeyBtn">Hiện</button>
+    <h2>🔑 1. Hồ Key Gemini (miễn phí)</h2>
+    <label>Dán key vào đây — <b>mỗi key 1 dòng</b>. Dán nhiều key (mỗi key từ một tài khoản / dự án Google khác nhau) để app <b>tự xoay vòng</b> khi một key hết quota — chạy thông suốt, không dừng giữa chừng:</label>
+    <textarea id="keysInput" rows="4" placeholder="AIza... (key 1)&#10;AIza... (key 2)&#10;AIza... (key 3)" autocomplete="off" spellcheck="false" style="font-family:Consolas,monospace;font-size:13px"></textarea>
+    <div class="row" style="margin-top:8px">
+      <button class="btn shrink" id="saveKeysBtn">💾 Lưu Hồ Key</button>
+      <button class="btn shrink" id="checkKeysBtn">🔍 Kiểm Tra Key</button>
+      <button class="btn-ghost shrink" id="resetKeyStateBtn">↺ Đặt Lại Trạng Thái</button>
     </div>
+    <div class="small" style="margin-top:6px">Kiểm tra nhẹ không tốn quota sinh ảnh/giọng; key đạt = key hợp lệ và gọi được model.</div>
+    <div id="keyList" style="margin-top:10px"></div>
     <div class="small" id="keyStatus" style="margin-top:8px">Key chỉ lưu trong trình duyệt này (localStorage), app không gửi key đi nơi nào khác ngoài Google.</div>
     <details id="keyGuide">
       <summary>Chưa có key? Xem 3 bước tạo key MIỄN PHÍ</summary>
       <div class="small" style="margin-top:8px;line-height:1.7">
         - Bước 1: Mở trang <b>aistudio.google.com</b> và đăng nhập bằng tài khoản Google.<br>
         - Bước 2: Bấm <b>"Get API key"</b> (khoá API) → <b>"Create API key"</b> (Tạo khoá API) → tạo trong dự án mới.<br>
-        - Bước 3: Sao chép dãy ký tự bắt đầu bằng <span class="kbd">AIza...</span> rồi dán vào ô phía trên và bấm <b>Lưu Key</b>.<br>
-        Gói miễn phí có hạn mức theo ngày — đủ để làm vài video bài giảng mỗi ngày.
+        - Bước 3: Sao chép dãy ký tự bắt đầu bằng <span class="kbd">AIza...</span> rồi dán vào ô phía trên (mỗi key 1 dòng) và bấm <b>Lưu Hồ Key</b>.<br>
+        Gói miễn phí có hạn mức theo ngày cho TỪNG key — dán nhiều key là app tự chuyển key khi một key hết hạn mức.
       </div>
     </details>
   </div>
@@ -283,25 +287,168 @@ let audios = {};                 // idx -> {status:'ok'|'err', buffer:AudioBuffe
 let demoMode = false;
 let building = false;
 
-/* ---------- API key ---------- */
-function getKey(){ return (localStorage.getItem("vbg_gemini_key") || "").trim(); }
-function refreshKeyUI(){
-  const k = getKey();
-  $("apiKey").value = k;
-  $("keyStatus").innerHTML = k
-    ? "✅ Đã lưu key trong trình duyệt này. App đã sẵn sàng gọi Gemini."
-    : "⚠️ Chưa có key — mở mục hướng dẫn 3 bước ở trên để tạo key miễn phí.";
+/* ---------- Hồ key Gemini: nhiều key + trạng thái + xoay vòng ---------- */
+let keyPool = [];        // mảng các key (string)
+let keyStates = [];      // mảng song song: {st:'unknown'|'ok'|'err'|'quota', note:'', at:''}
+let activeKeyIdx = 0;    // key đang hoạt động (sticky — dùng tiếp key vừa thành công)
+const KEY_DOT = { unknown: "⚪", ok: "🟢", err: "🔴", quota: "🟡" };
+const KEY_TXT = { unknown: "Chưa kiểm tra", ok: "Đạt", err: "Lỗi", quota: "Hết quota" };
+
+function maskKey(k){ return k.length > 8 ? k.slice(0, 4) + "…" + k.slice(-4) : "••••"; }
+function savePool(){
+  try {
+    localStorage.setItem("vbg_keys", JSON.stringify(keyPool));
+    localStorage.setItem("vbg_key_states", JSON.stringify(keyStates));
+  } catch (e) { /* localStorage đầy/tắt — hồ vẫn chạy trong phiên này */ }
 }
-$("saveKeyBtn").addEventListener("click", () => {
-  localStorage.setItem("vbg_gemini_key", $("apiKey").value.trim());
-  refreshKeyUI();
-  alert("Đã lưu key. Giờ thầy nhập tên bài và bấm TẠO VIDEO.");
+function loadPool(){
+  try { keyPool = JSON.parse(localStorage.getItem("vbg_keys") || "[]"); } catch (e) { keyPool = []; }
+  if (!Array.isArray(keyPool)) keyPool = [];
+  keyPool = keyPool.map(k => String(k || "").trim()).filter(Boolean);
+  if (!keyPool.length){
+    const old = (localStorage.getItem("vbg_gemini_key") || "").trim();
+    if (old) keyPool = [old];   // tự chuyển key đơn cũ thành phần tử đầu của hồ
+  }
+  try { keyStates = JSON.parse(localStorage.getItem("vbg_key_states") || "[]"); } catch (e) { keyStates = []; }
+  if (!Array.isArray(keyStates)) keyStates = [];
+  while (keyStates.length < keyPool.length) keyStates.push({ st: "unknown", note: "", at: "" });
+  keyStates.length = keyPool.length;
+  if (activeKeyIdx >= keyPool.length) activeKeyIdx = 0;
+}
+function getKey(){ return keyPool.length ? keyPool[Math.min(activeKeyIdx, keyPool.length - 1)] : ""; }
+function keySummary(){
+  if (!keyPool.length) return "hồ rỗng";
+  return keyPool.map((k, i) => {
+    const s = keyStates[i] || { st: "unknown", note: "", at: "" };
+    let t = "Key #" + (i + 1) + " " + maskKey(k) + ": " + KEY_TXT[s.st];
+    if (s.st === "err" && s.note) t += " (" + s.note + ")";
+    if (s.st === "quota") t += " (bị chặn lúc " + (s.at || "?") + ")";
+    return t;
+  }).join(" · ");
+}
+function renderKeyList(){
+  const box = $("keyList");
+  if (!box) return;
+  if (!keyPool.length){
+    box.innerHTML = '<div class="small">Hồ đang rỗng — thầy dán ít nhất 1 key vào ô trên rồi bấm <b>Lưu Hồ Key</b>.</div>';
+    return;
+  }
+  let h = '<div class="small" style="font-weight:700;margin-bottom:4px">Hồ có ' + keyPool.length + ' key — Đang dùng: Key #' + (activeKeyIdx + 1) + '</div>';
+  keyPool.forEach((k, i) => {
+    const s = keyStates[i] || { st: "unknown", note: "", at: "" };
+    let extra = "";
+    if (s.st === "err" && s.note) extra = ' — <span style="color:#b3261e">' + escapeHtml(s.note) + "</span>";
+    if (s.st === "quota") extra = " — bị chặn lúc " + escapeHtml(s.at || "") + (s.note ? " (" + escapeHtml(s.note) + ")" : "");
+    h += '<div class="row" style="align-items:center;margin-top:4px">'
+       + '<span style="flex:1">' + KEY_DOT[s.st] + " <b>Key #" + (i + 1) + "</b> · " + escapeHtml(maskKey(k)) + " · " + KEY_TXT[s.st] + extra + (i === activeKeyIdx ? " · <b>⭐ đang dùng</b>" : "") + "</span>"
+       + '<button class="btn-ghost shrink" data-delkey="' + i + '">✖ Xoá</button></div>';
+  });
+  box.innerHTML = h;
+  box.querySelectorAll("[data-delkey]").forEach(b => b.addEventListener("click", () => {
+    const i = parseInt(b.dataset.delkey, 10);
+    keyPool.splice(i, 1); keyStates.splice(i, 1);
+    if (activeKeyIdx >= keyPool.length) activeKeyIdx = 0;
+    savePool(); refreshKeyUI();
+  }));
+}
+function refreshKeyUI(){
+  const ta = $("keysInput");
+  if (ta) ta.value = keyPool.join("\n");
+  renderKeyList();
+  const el = $("keyStatus");
+  if (!el) return;
+  if (!keyPool.length){
+    el.innerHTML = "⚠️ Hồ key đang rỗng — mở mục hướng dẫn 3 bước ở trên để tạo key miễn phí, dán vào ô trên rồi bấm Lưu Hồ Key.";
+    return;
+  }
+  const okN = keyStates.filter(s => s.st === "ok").length;
+  el.innerHTML = "✅ Hồ có " + keyPool.length + " key (" + okN + " key đã kiểm tra đạt). Key chỉ lưu trong trình duyệt này, app không gửi key đi nơi nào khác ngoài Google. Khi chạy, app tự xoay vòng sang key kế tiếp nếu key đang dùng hết quota hoặc bị lỗi.";
+}
+$("saveKeysBtn").addEventListener("click", () => {
+  const lines = $("keysInput").value.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
+  const uniq = [...new Set(lines)];
+  const oldMap = {};
+  keyPool.forEach((k, i) => { oldMap[k] = keyStates[i]; });
+  keyPool = uniq;
+  keyStates = keyPool.map(k => oldMap[k] || { st: "unknown", note: "", at: "" });
+  if (!keyPool.length || activeKeyIdx >= keyPool.length) activeKeyIdx = 0;
+  savePool(); refreshKeyUI();
+  alert(keyPool.length
+    ? "Đã lưu hồ gồm " + keyPool.length + " key. Thầy bấm KIỂM TRA KEY để chắc chắn key nào đạt, rồi nhập tên bài và bấm TẠO VIDEO."
+    : "Hồ key đang rỗng — thầy dán ít nhất 1 key vào ô trên.");
 });
-$("toggleKeyBtn").addEventListener("click", () => {
-  const inp = $("apiKey");
-  inp.type = inp.type === "password" ? "text" : "password";
-  $("toggleKeyBtn").textContent = inp.type === "password" ? "Hiện" : "Ẩn";
+$("resetKeyStateBtn").addEventListener("click", () => {
+  keyStates = keyPool.map(() => ({ st: "unknown", note: "", at: "" }));
+  savePool(); refreshKeyUI();
 });
+
+/* ---------- Phân loại lỗi HTTP của Gemini ---------- */
+function classifyHttp(status, data, txt){
+  const msg = (data && data.error && data.error.message) || txt || "";
+  const st  = (data && data.error && data.error.status) || "";
+  if (status === 429 || st === "RESOURCE_EXHAUSTED" || /resource_exhausted|quota|rate limit/i.test(msg)) return { kind: "quota", msg: msg };
+  if (st === "API_KEY_INVALID" || /api key/i.test(msg) || status === 403) return { kind: "invalid", msg: msg };
+  return { kind: "other", msg: msg };
+}
+
+/* ---------- Kiểm tra key: lời gọi NHẸ, không đốt quota sinh nội dung ---------- */
+async function checkOneKey(idx){
+  const key = keyPool[idx];
+  const models = [MODEL_TEXT, MODEL_IMAGE, MODEL_TTS];
+  for (const m of models){
+    let res, txt, data = null;
+    try {
+      res = await fetch(API_BASE + m + "?key=" + encodeURIComponent(key), { method: "GET" });
+      txt = await res.text();
+      try { data = JSON.parse(txt); } catch (e) {}
+    } catch (netErr) {
+      return { st: "err", note: "Lỗi mạng khi kiểm tra model " + m + ": " + netErr.message, at: "" };
+    }
+    if (!res.ok){
+      const c = classifyHttp(res.status, data, txt);
+      if (c.kind === "quota") return { st: "quota", note: "Model " + m + " báo hết quota (429)", at: new Date().toLocaleTimeString("vi-VN") };
+      return { st: "err", note: ("Model " + m + " — HTTP " + res.status + ": " + (c.msg || "không rõ")).slice(0, 140), at: "" };
+    }
+  }
+  /* 1 lần sinh văn bản siêu nhỏ để chứng minh generateContent chạy thật */
+  let res, txt, data = null;
+  try {
+    res = await fetch(API_BASE + MODEL_TEXT + ":generateContent?key=" + encodeURIComponent(key), {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ contents: [{ parts: [{ text: "Trả lời đúng 1 từ: OK" }] }], generationConfig: { maxOutputTokens: 5 } })
+    });
+    txt = await res.text();
+    try { data = JSON.parse(txt); } catch (e) {}
+  } catch (netErr) {
+    return { st: "err", note: "Lỗi mạng khi thử sinh văn bản: " + netErr.message, at: "" };
+  }
+  if (!res.ok){
+    const c = classifyHttp(res.status, data, txt);
+    if (c.kind === "quota") return { st: "quota", note: "Sinh văn bản báo hết quota (429)", at: new Date().toLocaleTimeString("vi-VN") };
+    return { st: "err", note: ("Sinh văn bản — HTTP " + res.status + ": " + (c.msg || "không rõ")).slice(0, 140), at: "" };
+  }
+  return { st: "ok", note: "", at: "" };
+}
+$("checkKeysBtn").addEventListener("click", async () => {
+  if (!keyPool.length){ alert("Hồ đang rỗng — thầy dán key vào ô trên và bấm Lưu Hồ Key trước đã."); return; }
+  const btn = $("checkKeysBtn");
+  btn.disabled = true; btn.textContent = "⏳ Đang kiểm tra...";
+  try {
+    for (let i = 0; i < keyPool.length; i++){
+      $("keyStatus").innerHTML = "⏳ Đang kiểm tra Key #" + (i + 1) + "/" + keyPool.length + "...";
+      const r = await checkOneKey(i);
+      keyStates[i] = { st: r.st, note: r.note || "", at: r.at || "" };
+      savePool(); renderKeyList();
+    }
+    const okN = keyStates.filter(s => s.st === "ok").length;
+    $("keyStatus").innerHTML = "🔍 Kiểm tra xong: " + okN + "/" + keyPool.length + " key đạt."
+      + (okN ? " App đã sẵn sàng chạy." : " Chưa key nào đạt — thầy xem lý do lỗi ở từng key phía trên.");
+  } finally {
+    btn.disabled = false; btn.textContent = "🔍 Kiểm Tra Key";
+  }
+});
+loadPool();
 
 /* ---------- Thời lượng video tối đa (trần cứng 10 phút) ---------- */
 const DUR_SEGMENTS = { 2: [3, 4], 3: [4, 5], 5: [6, 7], 7: [8, 9], 10: [11, 13] };
@@ -356,25 +503,96 @@ function escapeHtml(s){
   return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 }
 
-/* ---------- Gọi Gemini ---------- */
-async function gemini(model, body){
-  const key = getKey();
-  if (!key) throw new Error("Chưa có API key. Thầy dán key vào mục 1 ở đầu trang trước đã.");
-  const res = await fetch(API_BASE + model + ":generateContent?key=" + encodeURIComponent(key), {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body)
-  });
-  const txt = await res.text();
-  let data = null;
-  try { data = JSON.parse(txt); } catch (e) { /* giữ nguyên text để báo lỗi */ }
-  if (!res.ok) {
-    const m = (data && data.error && data.error.message) ? data.error.message : (txt || ("HTTP " + res.status));
-    throw new Error("Gemini báo lỗi (" + res.status + "): " + m);
-  }
-  if (!data) throw new Error("Gemini trả về dữ liệu không đọc được.");
-  return data;
+/* ---------- Gọi Gemini QUA HỒ KEY — xoay vòng tự động ----------
+   Mọi lời gọi Gemini trong app đều đi qua geminiCall():
+   - Bắt đầu từ key đang hoạt động (sticky), key tươi (đạt/chưa kiểm tra) trước, key hết quota sau cùng.
+   - 429/RESOURCE_EXHAUSTED → đánh dấu key 🟡 hết quota + ghi log + thử key kế tiếp.
+   - 400 API_KEY_INVALID / 403 → đánh dấu key 🔴 lỗi + chuyển key.
+   - Lỗi mạng → thử lại cùng key 1 lần rồi mới chuyển.
+   - Lỗi không do key (nội dung, 500...) → báo thẳng, không xoay vòng.
+   - Hết sạch key khả dụng → dừng, báo lỗi thật kèm trạng thái từng key. */
+function markKey(idx, st, note){
+  keyStates[idx] = { st: st, note: note || "", at: st === "quota" ? new Date().toLocaleTimeString("vi-VN") : (keyStates[idx] ? keyStates[idx].at : "") };
+  savePool(); renderKeyList();
 }
+function logKeyRotate(html){
+  try {
+    const pc = $("progressCard"), bl = $("buildLog");
+    if (pc && bl && !pc.classList.contains("hidden")){
+      const d = document.createElement("div");
+      d.className = "small"; d.style.marginTop = "6px"; d.innerHTML = html;
+      bl.appendChild(d);
+    }
+  } catch (e) {}
+  try { console.log(html.replace(/<[^>]+>/g, "")); } catch (e) {}
+}
+function noteActiveKey(){
+  const pn = $("progressNote");
+  if (pn && keyPool.length) pn.textContent = "— Đang dùng: Key #" + (activeKeyIdx + 1) + "/" + keyPool.length;
+}
+async function geminiCall(model, body){
+  if (!keyPool.length) throw new Error("Chưa có API key. Thầy dán key vào mục 1 ở đầu trang trước đã.");
+  const start = Math.min(activeKeyIdx, keyPool.length - 1);
+  const fresh = [], quotaMarked = [];
+  for (let n = 0; n < keyPool.length; n++){
+    const i = (start + n) % keyPool.length;
+    const st = (keyStates[i] || {}).st || "unknown";
+    if (st === "err") continue;
+    (st === "quota" ? quotaMarked : fresh).push(i);
+  }
+  const order = fresh.concat(quotaMarked);
+  if (!order.length){
+    throw new Error("Tất cả key trong hồ đều đang bị đánh dấu Lỗi nên app không gọi Gemini được. Thầy bấm '↺ Đặt Lại Trạng Thái' ở mục 1 hoặc dán key mới. Trạng thái hồ: " + keySummary());
+  }
+  let lastErr = null;
+  for (const idx of order){
+    const key = keyPool[idx];
+    for (let attempt = 0; attempt < 2; attempt++){
+      let res, txt, data = null;
+      try {
+        res = await fetch(API_BASE + model + ":generateContent?key=" + encodeURIComponent(key), {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body)
+        });
+        txt = await res.text();
+        try { data = JSON.parse(txt); } catch (e) { /* giữ nguyên text để báo lỗi */ }
+      } catch (netErr) {
+        if (attempt === 0){
+          logKeyRotate("⚠️ Key #" + (idx + 1) + " lỗi mạng — thử lại cùng key 1 lần...");
+          continue;
+        }
+        lastErr = new Error("Lỗi mạng khi gọi Gemini bằng Key #" + (idx + 1) + ": " + netErr.message);
+        logKeyRotate("⚠️ Key #" + (idx + 1) + " lỗi mạng 2 lần — tự chuyển Key kế tiếp");
+        break;
+      }
+      if (res.ok){
+        if (!data) throw new Error("Gemini trả về dữ liệu không đọc được.");
+        activeKeyIdx = idx;
+        if (keyStates[idx].st !== "ok"){ keyStates[idx] = { st: "ok", note: "", at: "" }; savePool(); renderKeyList(); }
+        noteActiveKey();
+        return data;
+      }
+      const c = classifyHttp(res.status, data, txt);
+      const emsg = (data && data.error && data.error.message) ? data.error.message : (txt || ("HTTP " + res.status));
+      if (c.kind === "quota"){
+        markKey(idx, "quota", String(emsg).slice(0, 120));
+        logKeyRotate("⚠️ Key #" + (idx + 1) + " hết quota — tự chuyển Key kế tiếp");
+        lastErr = new Error("Gemini báo hết quota (429) ở Key #" + (idx + 1));
+        break;
+      }
+      if (c.kind === "invalid"){
+        markKey(idx, "err", ("HTTP " + res.status + ": " + emsg).slice(0, 140));
+        logKeyRotate("⛔ Key #" + (idx + 1) + " bị lỗi (" + res.status + ") — tự chuyển Key kế tiếp");
+        lastErr = new Error("Key #" + (idx + 1) + " lỗi (" + res.status + "): " + emsg);
+        break;
+      }
+      throw new Error("Gemini báo lỗi (" + res.status + "): " + emsg);
+    }
+  }
+  throw new Error("Đã thử hết các key trong hồ mà chưa gọi được Gemini. " + (lastErr ? lastErr.message + ". " : "") + "Trạng thái hồ key: " + keySummary());
+}
+async function gemini(model, body){ return geminiCall(model, body); }
 function firstText(data){
   try {
     const parts = data.candidates[0].content.parts || [];
@@ -1402,7 +1620,7 @@ $("createBtn").addEventListener("click", async () => {
   if (building) return;
   $("inputError").innerHTML = "";
   if (!getKey()) {
-    showErr("inputError", "Thầy chưa dán API key. Thầy tạo key miễn phí theo 3 bước ở mục 1 đầu trang, dán vào rồi bấm Lưu Key.");
+    showErr("inputError", "Hồ key đang rỗng. Thầy tạo key miễn phí theo 3 bước ở mục 1 đầu trang, dán vào (mỗi key 1 dòng) rồi bấm Lưu Hồ Key.");
     $("keyGuide").open = true;
     $("keyCard").scrollIntoView({ behavior: "smooth", block: "start" });
     return;
