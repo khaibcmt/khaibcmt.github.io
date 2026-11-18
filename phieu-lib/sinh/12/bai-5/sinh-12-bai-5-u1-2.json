@@ -1,0 +1,163 @@
+{
+ "bai": "CÔNG NGHỆ GENE — Sinh học 12",
+ "fileNguon": "Sinh học/Khối 12/Giáo án/HK1/KHBD_Sinh_hoc_12_Bai_5_Cong_nghe_di_truyen_2_tiet.docx",
+ "cauHoiPhieu": "Nhiệm vụ: Các nhóm hoàn thành ba bảng sau dựa vào SGK Bài 5, sau đó trình bày trước lớp. Bảng A. Công nghệ DNA tái tổ hợp",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Động vật chuyển gene: động vật có thêm gene từ loài khác",
+   "tieuChi": "Khái niệm",
+   "cot": "Động vật biến đổi gene",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Thực vật chuyển gene: thực vật có thêm gene từ loài khác",
+   "tieuChi": "Khái niệm",
+   "cot": "Thực vật biến đổi gene",
+   "hang": 1,
+   "cotSo": 2
+  },
+  {
+   "so": 3,
+   "dapAn": "Trứng vừa mới được thụ tinh (nhân của tinh trùng và nhân của trứng chưa hòa nhập với nhau)",
+   "tieuChi": "Tế bào nhận gene chuyển",
+   "cot": "Động vật biến đổi gene",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Tế bào thực vật (tế bào trần hoặc tế bào có thành tế bào)",
+   "tieuChi": "Tế bào nhận gene chuyển",
+   "cot": "Thực vật biến đổi gene",
+   "hang": 2,
+   "cotSo": 2
+  },
+  {
+   "so": 5,
+   "dapAn": "Vi tiêm hàng trăm bản sao gene chuyển vào trứng; hoặc gián tiếp nhờ vector có nguồn gốc từ virus (retrovirus, lentivirus), tế bào trứng, tinh trùng, tế bào gốc phôi",
+   "tieuChi": "Phương pháp chuyển gene",
+   "cot": "Động vật biến đổi gene",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 6,
+   "dapAn": "Plasmid Ti (đã làm mất khả năng gây bệnh) làm vector; súng bắn gene (hạt vàng hay vonfram bọc DNA tái tổ hợp); virus; chuyển gene qua ống phấn; vi tiêm ở tế bào trần",
+   "tieuChi": "Phương pháp chuyển gene",
+   "cot": "Thực vật biến đổi gene",
+   "hang": 3,
+   "cotSo": 2
+  },
+  {
+   "so": 7,
+   "dapAn": "Hợp tử chuyển gene nuôi cấy thành phôi nang, đưa vào tử cung của 'mẹ nuôi' cho mang thai sinh ra con vật chuyển gene",
+   "tieuChi": "Phát triển thành cá thể",
+   "cot": "Động vật biến đổi gene",
+   "hang": 4,
+   "cotSo": 1
+  },
+  {
+   "so": 8,
+   "dapAn": "Tế bào chuyển gene nuôi cấy cho tái sinh thành các cây chuyển gene",
+   "tieuChi": "Phát triển thành cá thể",
+   "cot": "Thực vật biến đổi gene",
+   "hang": 4,
+   "cotSo": 2
+  },
+  {
+   "so": 9,
+   "dapAn": "PCR, lai phân tử",
+   "tieuChi": "Chọn lọc cơ thể chuyển gene",
+   "cot": "Động vật biến đổi gene",
+   "hang": 5,
+   "cotSo": 1
+  },
+  {
+   "so": 10,
+   "dapAn": "PCR, lai phân tử",
+   "tieuChi": "Chọn lọc cơ thể chuyển gene",
+   "cot": "Thực vật biến đổi gene",
+   "hang": 5,
+   "cotSo": 2
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Nội dung",
+   "Động vật biến đổi gene",
+   "Thực vật biến đổi gene"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Khái niệm",
+    "cacCot": [
+     {
+      "cot": "Động vật biến đổi gene",
+      "noiDung": "Động vật chuyển gene: động vật có thêm gene từ loài khác"
+     },
+     {
+      "cot": "Thực vật biến đổi gene",
+      "noiDung": "Thực vật chuyển gene: thực vật có thêm gene từ loài khác"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Tế bào nhận gene chuyển",
+    "cacCot": [
+     {
+      "cot": "Động vật biến đổi gene",
+      "noiDung": "Trứng vừa mới được thụ tinh (nhân của tinh trùng và nhân của trứng chưa hòa nhập với nhau)"
+     },
+     {
+      "cot": "Thực vật biến đổi gene",
+      "noiDung": "Tế bào thực vật (tế bào trần hoặc tế bào có thành tế bào)"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Phương pháp chuyển gene",
+    "cacCot": [
+     {
+      "cot": "Động vật biến đổi gene",
+      "noiDung": "Vi tiêm hàng trăm bản sao gene chuyển vào trứng; hoặc gián tiếp nhờ vector có nguồn gốc từ virus (retrovirus, lentivirus), tế bào trứng, tinh trùng, tế bào gốc phôi"
+     },
+     {
+      "cot": "Thực vật biến đổi gene",
+      "noiDung": "Plasmid Ti (đã làm mất khả năng gây bệnh) làm vector; súng bắn gene (hạt vàng hay vonfram bọc DNA tái tổ hợp); virus; chuyển gene qua ống phấn; vi tiêm ở tế bào trần"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Phát triển thành cá thể",
+    "cacCot": [
+     {
+      "cot": "Động vật biến đổi gene",
+      "noiDung": "Hợp tử chuyển gene nuôi cấy thành phôi nang, đưa vào tử cung của 'mẹ nuôi' cho mang thai sinh ra con vật chuyển gene"
+     },
+     {
+      "cot": "Thực vật biến đổi gene",
+      "noiDung": "Tế bào chuyển gene nuôi cấy cho tái sinh thành các cây chuyển gene"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Chọn lọc cơ thể chuyển gene",
+    "cacCot": [
+     {
+      "cot": "Động vật biến đổi gene",
+      "noiDung": "PCR, lai phân tử"
+     },
+     {
+      "cot": "Thực vật biến đổi gene",
+      "noiDung": "PCR, lai phân tử"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
