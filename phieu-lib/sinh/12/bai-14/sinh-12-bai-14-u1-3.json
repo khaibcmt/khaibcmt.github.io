@@ -1,0 +1,101 @@
+{
+ "bai": "THỰC HÀNH: QUAN SÁT MỘT SỐ DẠNG ĐỘT BIẾN NHIỄM SẮC THỂ — Sinh học 12",
+ "fileNguon": "Sinh học/Khối 12/Giáo án/HK1/KHBD_Sinh_hoc_12_Bai_14_Thuc_hanh_Quan_sat_mot_so_dang_dot_bien_nhiem_sac_the_1_tiet.docx",
+ "cauHoiPhieu": "Nhiệm vụ: Các nhóm hoàn thành ba bảng sau trong quá trình học tập, sau đó trình bày trước lớp. Bảng A. Yêu cầu cần đạt, chuẩn bị và nguyên lí quan sát đột biến nhiễm sắc thể",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Chất độc hoá học sử dụng trong chiến tranh; ô nhiễm môi trường đất, nước, thực phẩm",
+   "tieuChi": "Dioxin (thành phần của chất độc màu da cam)",
+   "cot": "Nguồn phơi nhiễm",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Gây đột biến gene và nhiễm sắc thể, gây dị tật bẩm sinh, ung thư, rối loạn sinh sản, ảnh hưởng đến nhiều thế hệ",
+   "tieuChi": "Dioxin (thành phần của chất độc màu da cam)",
+   "cot": "Tác hại gây đột biến ở người",
+   "hang": 1,
+   "cotSo": 2
+  },
+  {
+   "so": 3,
+   "dapAn": "Không tiếp xúc với vùng đất, nguồn nước bị ô nhiễm dioxin; ăn uống hợp vệ sinh; khám sức khoẻ định kì; khắc phục hậu quả ô nhiễm môi trường",
+   "tieuChi": "Dioxin (thành phần của chất độc màu da cam)",
+   "cot": "Biện pháp phòng tránh",
+   "hang": 1,
+   "cotSo": 3
+  },
+  {
+   "so": 4,
+   "dapAn": "Thuốc bảo vệ thực vật sử dụng trong nông nghiệp; tồn dư trong đất, nước, nông sản",
+   "tieuChi": "Thuốc diệt cỏ 2,4D",
+   "cot": "Nguồn phơi nhiễm",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 5,
+   "dapAn": "Gây đột biến gene và nhiễm sắc thể, gây ung thư, rối loạn nội tiết, rối loạn sinh sản",
+   "tieuChi": "Thuốc diệt cỏ 2,4D",
+   "cot": "Tác hại gây đột biến ở người",
+   "hang": 2,
+   "cotSo": 2
+  },
+  {
+   "so": 6,
+   "dapAn": "Sử dụng thuốc bảo vệ thực vật đúng liều lượng, đúng cách, đeo đồ bảo hộ khi phun thuốc; không sử dụng thuốc quá hạn, thuốc cấm; rửa sạch nông sản trước khi sử dụng",
+   "tieuChi": "Thuốc diệt cỏ 2,4D",
+   "cot": "Biện pháp phòng tránh",
+   "hang": 2,
+   "cotSo": 3
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Chất độc",
+   "Nguồn phơi nhiễm",
+   "Tác hại gây đột biến ở người",
+   "Biện pháp phòng tránh"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Dioxin (thành phần của chất độc màu da cam)",
+    "cacCot": [
+     {
+      "cot": "Nguồn phơi nhiễm",
+      "noiDung": "Chất độc hoá học sử dụng trong chiến tranh; ô nhiễm môi trường đất, nước, thực phẩm"
+     },
+     {
+      "cot": "Tác hại gây đột biến ở người",
+      "noiDung": "Gây đột biến gene và nhiễm sắc thể, gây dị tật bẩm sinh, ung thư, rối loạn sinh sản, ảnh hưởng đến nhiều thế hệ"
+     },
+     {
+      "cot": "Biện pháp phòng tránh",
+      "noiDung": "Không tiếp xúc với vùng đất, nguồn nước bị ô nhiễm dioxin; ăn uống hợp vệ sinh; khám sức khoẻ định kì; khắc phục hậu quả ô nhiễm môi trường"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Thuốc diệt cỏ 2,4D",
+    "cacCot": [
+     {
+      "cot": "Nguồn phơi nhiễm",
+      "noiDung": "Thuốc bảo vệ thực vật sử dụng trong nông nghiệp; tồn dư trong đất, nước, nông sản"
+     },
+     {
+      "cot": "Tác hại gây đột biến ở người",
+      "noiDung": "Gây đột biến gene và nhiễm sắc thể, gây ung thư, rối loạn nội tiết, rối loạn sinh sản"
+     },
+     {
+      "cot": "Biện pháp phòng tránh",
+      "noiDung": "Sử dụng thuốc bảo vệ thực vật đúng liều lượng, đúng cách, đeo đồ bảo hộ khi phun thuốc; không sử dụng thuốc quá hạn, thuốc cấm; rửa sạch nông sản trước khi sử dụng"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
