@@ -1,0 +1,105 @@
+{
+ "bai": "DI TRUYỀN HỌC NGƯỜI VÀ DI TRUYỀN Y HỌC — Sinh học 12",
+ "fileNguon": "Sinh học/Khối 12/Giáo án/HK1/KHBD_Sinh_hoc_12_Bai_13_Di_truyen_hoc_nguoi_va_di_truyen_y_hoc_2_tiet.docx",
+ "cauHoiPhieu": "Nhiệm vụ: Các nhóm hoàn thành ba bảng sau trong quá trình học tập, sau đó trình bày trước lớp. Bảng A. Khái niệm và vai trò của di truyền học người và di truyền y học",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Ngành khoa học nghiên cứu về sự di truyền và biểu hiện của các tính trạng ở người",
+   "tieuChi": "Khái niệm",
+   "cot": "Di truyền học người",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Một lĩnh vực của di truyền học người, ứng dụng các thông tin di truyền vào nghiên cứu y học",
+   "tieuChi": "Khái niệm",
+   "cot": "Di truyền y học",
+   "hang": 1,
+   "cotSo": 2
+  },
+  {
+   "so": 3,
+   "dapAn": "Cung cấp thông tin về cơ chế di truyền và biến dị ở con người; phục vụ nghiên cứu y học, sự phát sinh loài người",
+   "tieuChi": "Vai trò",
+   "cot": "Di truyền học người",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Tìm hiểu nguyên nhân, cơ chế phát sinh bệnh di truyền; đề xuất biện pháp tư vấn, phòng ngừa, chẩn đoán và điều trị",
+   "tieuChi": "Vai trò",
+   "cot": "Di truyền y học",
+   "hang": 2,
+   "cotSo": 2
+  },
+  {
+   "so": 5,
+   "dapAn": "Vòng đời dài, số lượng con ít, thành thục sinh dục muộn, không được gây đột biến, chuyển gene ở người",
+   "tieuChi": "Khó khăn",
+   "cot": "Di truyền học người",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 6,
+   "dapAn": "Phải tuân thủ nguyên tắc đạo đức và pháp luật; bảo mật thông tin di truyền cá nhân",
+   "tieuChi": "Khó khăn",
+   "cot": "Di truyền y học",
+   "hang": 3,
+   "cotSo": 2
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Nội dung",
+   "Di truyền học người",
+   "Di truyền y học"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Khái niệm",
+    "cacCot": [
+     {
+      "cot": "Di truyền học người",
+      "noiDung": "Ngành khoa học nghiên cứu về sự di truyền và biểu hiện của các tính trạng ở người"
+     },
+     {
+      "cot": "Di truyền y học",
+      "noiDung": "Một lĩnh vực của di truyền học người, ứng dụng các thông tin di truyền vào nghiên cứu y học"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Vai trò",
+    "cacCot": [
+     {
+      "cot": "Di truyền học người",
+      "noiDung": "Cung cấp thông tin về cơ chế di truyền và biến dị ở con người; phục vụ nghiên cứu y học, sự phát sinh loài người"
+     },
+     {
+      "cot": "Di truyền y học",
+      "noiDung": "Tìm hiểu nguyên nhân, cơ chế phát sinh bệnh di truyền; đề xuất biện pháp tư vấn, phòng ngừa, chẩn đoán và điều trị"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Khó khăn",
+    "cacCot": [
+     {
+      "cot": "Di truyền học người",
+      "noiDung": "Vòng đời dài, số lượng con ít, thành thục sinh dục muộn, không được gây đột biến, chuyển gene ở người"
+     },
+     {
+      "cot": "Di truyền y học",
+      "noiDung": "Phải tuân thủ nguyên tắc đạo đức và pháp luật; bảo mật thông tin di truyền cá nhân"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
