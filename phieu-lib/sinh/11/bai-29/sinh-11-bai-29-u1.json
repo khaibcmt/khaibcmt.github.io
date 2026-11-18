@@ -1,0 +1,183 @@
+{
+ "bai": "MỘT SỐ NGÀNH NGHỀ LIÊN QUAN ĐẾN SINH HỌC CƠ THỂ — Sinh học 11",
+ "fileNguon": "Sinh học/Khối 11/Giáo án/HK2/KHBD_Sinh_hoc_11_Bai_29_Mot_so_nganh_nghe_lien_quan_den_sinh_hoc_co_the_1_tiet.docx",
+ "cauHoiPhieu": "Nhiệm vụ: Các nhóm hoàn thành bảng sau dựa vào SGK Bài 29, sau đó trình bày trước lớp.",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Giải phẫu, sinh lí học, sinh lí bệnh, lâm sàng là cơ sở cho chẩn đoán, điều trị bệnh, điều chế thuốc; ứng dụng tế bào gốc và thuốc hướng đích ở cấp độ nano",
+   "tieuChi": "Y học – dược học",
+   "cot": "Hiểu biết về sinh học cơ thể được ứng dụng",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Bác sĩ, bác sĩ thú y, bác sĩ pháp y, dược sĩ, kĩ thuật viên y học",
+   "tieuChi": "Y học – dược học",
+   "cot": "Một số nghề nghiệp liên quan",
+   "hang": 1,
+   "cotSo": 2
+  },
+  {
+   "so": 3,
+   "dapAn": "Ngày càng phát triển nhờ công nghệ tế bào gốc, y học cá thể hoá, trí tuệ nhân tạo hỗ trợ chẩn đoán",
+   "tieuChi": "Y học – dược học",
+   "cot": "Triển vọng",
+   "hang": 1,
+   "cotSo": 3
+  },
+  {
+   "so": 4,
+   "dapAn": "Cải tạo giống, cải thiện điều kiện nuôi dưỡng (thức ăn, nước nuôi), kiểm soát dịch bệnh",
+   "tieuChi": "Nuôi trồng thủy sản",
+   "cot": "Hiểu biết về sinh học cơ thể được ứng dụng",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 5,
+   "dapAn": "Kĩ sư thủy sản, nghiên cứu viên và kĩ thuật viên về thủy sản",
+   "tieuChi": "Nuôi trồng thủy sản",
+   "cot": "Một số nghề nghiệp liên quan",
+   "hang": 2,
+   "cotSo": 2
+  },
+  {
+   "so": 6,
+   "dapAn": "Ngành nghề quan trọng tại Việt Nam, phát triển theo hướng nuôi trồng bền vững, công nghệ cao",
+   "tieuChi": "Nuôi trồng thủy sản",
+   "cot": "Triển vọng",
+   "hang": 2,
+   "cotSo": 3
+  },
+  {
+   "so": 7,
+   "dapAn": "Lựa chọn giống phù hợp, năng suất cao; áp dụng biện pháp kĩ thuật làm tăng năng suất cây trồng, vật nuôi; chẩn đoán, phòng và trị bệnh cho vật nuôi",
+   "tieuChi": "Trồng trọt, chăn nuôi, thú y",
+   "cot": "Hiểu biết về sinh học cơ thể được ứng dụng",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 8,
+   "dapAn": "Kĩ sư chăn nuôi, khoa học cây trồng, công nghệ sinh học, công nghệ thực phẩm, bác sĩ thú y",
+   "tieuChi": "Trồng trọt, chăn nuôi, thú y",
+   "cot": "Một số nghề nghiệp liên quan",
+   "hang": 3,
+   "cotSo": 2
+  },
+  {
+   "so": 9,
+   "dapAn": "Phát triển theo hướng nông nghiệp thông minh, nông nghiệp hữu cơ, thích ứng với biến đổi khí hậu",
+   "tieuChi": "Trồng trọt, chăn nuôi, thú y",
+   "cot": "Triển vọng",
+   "hang": 3,
+   "cotSo": 3
+  },
+  {
+   "so": 10,
+   "dapAn": "Lựa chọn loài cây phù hợp để trồng rừng, trồng trong đô thị; đề ra biện pháp sinh học bảo vệ rừng và động vật quý hiếm",
+   "tieuChi": "Lâm nghiệp",
+   "cot": "Hiểu biết về sinh học cơ thể được ứng dụng",
+   "hang": 4,
+   "cotSo": 1
+  },
+  {
+   "so": 11,
+   "dapAn": "Kĩ sư lâm nghiệp, nghiên cứu viên, kĩ thuật viên lâm nghiệp",
+   "tieuChi": "Lâm nghiệp",
+   "cot": "Một số nghề nghiệp liên quan",
+   "hang": 4,
+   "cotSo": 2
+  },
+  {
+   "so": 12,
+   "dapAn": "Gắn với bảo vệ rừng, phục hồi hệ sinh thái và phát triển kinh tế lâm nghiệp bền vững",
+   "tieuChi": "Lâm nghiệp",
+   "cot": "Triển vọng",
+   "hang": 4,
+   "cotSo": 3
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Lĩnh vực",
+   "Hiểu biết về sinh học cơ thể được ứng dụng",
+   "Một số nghề nghiệp liên quan",
+   "Triển vọng"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Y học – dược học",
+    "cacCot": [
+     {
+      "cot": "Hiểu biết về sinh học cơ thể được ứng dụng",
+      "noiDung": "Giải phẫu, sinh lí học, sinh lí bệnh, lâm sàng là cơ sở cho chẩn đoán, điều trị bệnh, điều chế thuốc; ứng dụng tế bào gốc và thuốc hướng đích ở cấp độ nano"
+     },
+     {
+      "cot": "Một số nghề nghiệp liên quan",
+      "noiDung": "Bác sĩ, bác sĩ thú y, bác sĩ pháp y, dược sĩ, kĩ thuật viên y học"
+     },
+     {
+      "cot": "Triển vọng",
+      "noiDung": "Ngày càng phát triển nhờ công nghệ tế bào gốc, y học cá thể hoá, trí tuệ nhân tạo hỗ trợ chẩn đoán"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Nuôi trồng thủy sản",
+    "cacCot": [
+     {
+      "cot": "Hiểu biết về sinh học cơ thể được ứng dụng",
+      "noiDung": "Cải tạo giống, cải thiện điều kiện nuôi dưỡng (thức ăn, nước nuôi), kiểm soát dịch bệnh"
+     },
+     {
+      "cot": "Một số nghề nghiệp liên quan",
+      "noiDung": "Kĩ sư thủy sản, nghiên cứu viên và kĩ thuật viên về thủy sản"
+     },
+     {
+      "cot": "Triển vọng",
+      "noiDung": "Ngành nghề quan trọng tại Việt Nam, phát triển theo hướng nuôi trồng bền vững, công nghệ cao"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Trồng trọt, chăn nuôi, thú y",
+    "cacCot": [
+     {
+      "cot": "Hiểu biết về sinh học cơ thể được ứng dụng",
+      "noiDung": "Lựa chọn giống phù hợp, năng suất cao; áp dụng biện pháp kĩ thuật làm tăng năng suất cây trồng, vật nuôi; chẩn đoán, phòng và trị bệnh cho vật nuôi"
+     },
+     {
+      "cot": "Một số nghề nghiệp liên quan",
+      "noiDung": "Kĩ sư chăn nuôi, khoa học cây trồng, công nghệ sinh học, công nghệ thực phẩm, bác sĩ thú y"
+     },
+     {
+      "cot": "Triển vọng",
+      "noiDung": "Phát triển theo hướng nông nghiệp thông minh, nông nghiệp hữu cơ, thích ứng với biến đổi khí hậu"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Lâm nghiệp",
+    "cacCot": [
+     {
+      "cot": "Hiểu biết về sinh học cơ thể được ứng dụng",
+      "noiDung": "Lựa chọn loài cây phù hợp để trồng rừng, trồng trong đô thị; đề ra biện pháp sinh học bảo vệ rừng và động vật quý hiếm"
+     },
+     {
+      "cot": "Một số nghề nghiệp liên quan",
+      "noiDung": "Kĩ sư lâm nghiệp, nghiên cứu viên, kĩ thuật viên lâm nghiệp"
+     },
+     {
+      "cot": "Triển vọng",
+      "noiDung": "Gắn với bảo vệ rừng, phục hồi hệ sinh thái và phát triển kinh tế lâm nghiệp bền vững"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
