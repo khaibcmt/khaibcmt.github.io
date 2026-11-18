@@ -1,0 +1,406 @@
+{
+ "bai": "Khái quát về sinh trưởng và phát triển ở sinh vật — Sinh học 11",
+ "fileNguon": "Sinh học/Khối 11/Giáo án/HK2/KHBD_Sinh_hoc_11_Bai_19_Khai_quat_ve_sinh_truong_va_phat_trien_o_sinh_vat_2_tiet.docx",
+ "cauHoiPhieu": "Họ và tên nhóm: ............................................ Lớp: ............",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Quá trình tăng kích thước và khối lượng của cơ thể do tăng số lượng và kích thước tế bào",
+   "tieuChi": "Khái niệm sinh trưởng",
+   "cot": "Khái niệm / Đặc điểm",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Cây lúa tăng chiều cao, tăng số lá; trẻ em tăng chiều cao, cân nặng",
+   "tieuChi": "Khái niệm sinh trưởng",
+   "cot": "Ví dụ",
+   "hang": 1,
+   "cotSo": 2,
+   "cotPhu": true
+  },
+  {
+   "so": 3,
+   "dapAn": "Đo được bằng kích thước, khối lượng",
+   "tieuChi": "Khái niệm sinh trưởng",
+   "cot": "Ghi chú",
+   "hang": 1,
+   "cotSo": 3,
+   "cotPhu": true
+  },
+  {
+   "so": 4,
+   "dapAn": "Toàn bộ những biến đổi diễn ra trong chu kì sống của cá thể, bao gồm sự thay đổi về số lượng tế bào, cấu trúc, hình thái và trạng thái sinh lí",
+   "tieuChi": "Khái niệm phát triển",
+   "cot": "Khái niệm / Đặc điểm",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 5,
+   "dapAn": "Cây lúa ra hoa, tạo hạt; trẻ em thay răng, dậy thì",
+   "tieuChi": "Khái niệm phát triển",
+   "cot": "Ví dụ",
+   "hang": 2,
+   "cotSo": 2,
+   "cotPhu": true
+  },
+  {
+   "so": 6,
+   "dapAn": "Thể hiện ở cấu trúc, hình thái, chức năng",
+   "tieuChi": "Khái niệm phát triển",
+   "cot": "Ghi chú",
+   "hang": 2,
+   "cotSo": 3,
+   "cotPhu": true
+  },
+  {
+   "so": 7,
+   "dapAn": "Tăng số lượng tế bào (do phân bào); tăng kích thước và khối lượng tế bào (do tổng hợp và tích luỹ các chất)",
+   "tieuChi": "Dấu hiệu đặc trưng của sinh trưởng",
+   "cot": "Khái niệm / Đặc điểm",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 8,
+   "dapAn": "Số lượng tế bào tăng lên; tế bào lớn lên, khối lượng cơ thể tăng",
+   "tieuChi": "Dấu hiệu đặc trưng của sinh trưởng",
+   "cot": "Ví dụ",
+   "hang": 3,
+   "cotSo": 2,
+   "cotPhu": true
+  },
+  {
+   "so": 9,
+   "dapAn": "Sinh trưởng là cơ sở của phát triển",
+   "tieuChi": "Dấu hiệu đặc trưng của sinh trưởng",
+   "cot": "Ghi chú",
+   "hang": 3,
+   "cotSo": 3,
+   "cotPhu": true
+  },
+  {
+   "so": 10,
+   "dapAn": "Phân hoá tế bào; phát sinh hình thái cơ quan; biến đổi chức năng sinh lí; các quá trình diễn ra theo trình tự và được điều hoà",
+   "tieuChi": "Dấu hiệu đặc trưng của phát triển",
+   "cot": "Khái niệm / Đặc điểm",
+   "hang": 4,
+   "cotSo": 1
+  },
+  {
+   "so": 11,
+   "dapAn": "Tế bào phân hoá thành tế bào rễ, thân, lá; nòng nọc mọc chân, tiêu biến đuôi",
+   "tieuChi": "Dấu hiệu đặc trưng của phát triển",
+   "cot": "Ví dụ",
+   "hang": 4,
+   "cotSo": 2,
+   "cotPhu": true
+  },
+  {
+   "so": 12,
+   "dapAn": "Phát triển thúc đẩy sinh trưởng",
+   "tieuChi": "Dấu hiệu đặc trưng của phát triển",
+   "cot": "Ghi chú",
+   "hang": 4,
+   "cotSo": 3,
+   "cotPhu": true
+  },
+  {
+   "so": 13,
+   "dapAn": "Mật thiết, không tách rời, đan xen với nhau; sinh trưởng là cơ sở, tiền đề của phát triển; phát triển thúc đẩy sinh trưởng",
+   "tieuChi": "Mối quan hệ giữa sinh trưởng và phát triển",
+   "cot": "Khái niệm / Đặc điểm",
+   "hang": 5,
+   "cotSo": 1
+  },
+  {
+   "so": 14,
+   "dapAn": "Cây lúa phải sinh trưởng thì mới ra hoa, tạo hạt; khi ra hoa, tạo hạt thì sinh trưởng về chiều cao chậm lại",
+   "tieuChi": "Mối quan hệ giữa sinh trưởng và phát triển",
+   "cot": "Ví dụ",
+   "hang": 5,
+   "cotSo": 2,
+   "cotPhu": true
+  },
+  {
+   "so": 15,
+   "dapAn": "Diễn ra đồng thời trong đời sống",
+   "tieuChi": "Mối quan hệ giữa sinh trưởng và phát triển",
+   "cot": "Ghi chú",
+   "hang": 5,
+   "cotSo": 3,
+   "cotPhu": true
+  },
+  {
+   "so": 16,
+   "dapAn": "Khoảng thời gian từ khi cơ thể được sinh ra, lớn lên, trưởng thành, sinh sản tạo ra cá thể mới, già đi rồi chết; bao gồm toàn bộ sự phát triển cá thể",
+   "tieuChi": "Vòng đời của sinh vật",
+   "cot": "Khái niệm / Đặc điểm",
+   "hang": 6,
+   "cotSo": 1
+  },
+  {
+   "so": 17,
+   "dapAn": "Vòng đời của ếch: trứng đã thụ tinh → phôi → nòng nọc → nòng nọc mọc chân → ếch con → ếch trưởng thành; vòng đời của cây lúa: hạt → cây mạ → cây lúa trưởng thành → trỗ bông, tạo hạt",
+   "tieuChi": "Vòng đời của sinh vật",
+   "cot": "Ví dụ",
+   "hang": 6,
+   "cotSo": 2,
+   "cotPhu": true
+  },
+  {
+   "so": 18,
+   "dapAn": "Các cá thể cùng loài có vòng đời giống nhau",
+   "tieuChi": "Vòng đời của sinh vật",
+   "cot": "Ghi chú",
+   "hang": 6,
+   "cotSo": 3,
+   "cotPhu": true
+  },
+  {
+   "so": 19,
+   "dapAn": "Thời gian sống của một sinh vật; tuổi thọ của một loài là thời gian sống trung bình của các cá thể trong loài; do kiểu gene quy định",
+   "tieuChi": "Tuổi thọ của sinh vật",
+   "cot": "Khái niệm / Đặc điểm",
+   "hang": 7,
+   "cotSo": 1
+  },
+  {
+   "so": 20,
+   "dapAn": "Phù du sống vài giờ đến vài ngày; muỗi 1–3 tháng; cây lúa, cây ngô 1 năm; cây thông 100–300 năm; rùa khoảng 150 năm",
+   "tieuChi": "Tuổi thọ của sinh vật",
+   "cot": "Ví dụ",
+   "hang": 7,
+   "cotSo": 2,
+   "cotPhu": true
+  },
+  {
+   "so": 21,
+   "dapAn": "Tuổi thọ các loài rất khác nhau",
+   "tieuChi": "Tuổi thọ của sinh vật",
+   "cot": "Ghi chú",
+   "hang": 7,
+   "cotSo": 3,
+   "cotPhu": true
+  },
+  {
+   "so": 22,
+   "dapAn": "Trồng trọt: chăm sóc cây theo từng giai đoạn để tối đa hoá sản lượng; chăn nuôi: chăm sóc vật nuôi theo từng giai đoạn; phòng trừ sâu hại ở giai đoạn sâu non",
+   "tieuChi": "Ứng dụng vòng đời trong thực tiễn",
+   "cot": "Khái niệm / Đặc điểm",
+   "hang": 8,
+   "cotSo": 1
+  },
+  {
+   "so": 23,
+   "dapAn": "Bón phân, tưới nước cho lúa theo giai đoạn mạ non, đẻ nhánh, trỗ bông; diệt sâu non gây hại nhiều nhất",
+   "tieuChi": "Ứng dụng vòng đời trong thực tiễn",
+   "cot": "Ví dụ",
+   "hang": 8,
+   "cotSo": 2,
+   "cotPhu": true
+  },
+  {
+   "so": 24,
+   "dapAn": "Giảm lãng phí, giảm thuốc bảo vệ thực vật",
+   "tieuChi": "Ứng dụng vòng đời trong thực tiễn",
+   "cot": "Ghi chú",
+   "hang": 8,
+   "cotSo": 3,
+   "cotPhu": true
+  },
+  {
+   "so": 25,
+   "dapAn": "Kiểu gene; chế độ dinh dưỡng; môi trường sống; thói quen sinh hoạt; chăm sóc y tế",
+   "tieuChi": "Yếu tố ảnh hưởng đến tuổi thọ con người",
+   "cot": "Khái niệm / Đặc điểm",
+   "hang": 9,
+   "cotSo": 1
+  },
+  {
+   "so": 26,
+   "dapAn": "Ăn uống lành mạnh, ăn nhiều trái cây, rau củ; vận động thường xuyên; ngủ đủ giấc; không hút thuốc lá; khám sức khoẻ định kì",
+   "tieuChi": "Yếu tố ảnh hưởng đến tuổi thọ con người",
+   "cot": "Ví dụ",
+   "hang": 9,
+   "cotSo": 2,
+   "cotPhu": true
+  },
+  {
+   "so": 27,
+   "dapAn": "Nhiều yếu tố có thể thay đổi được",
+   "tieuChi": "Yếu tố ảnh hưởng đến tuổi thọ con người",
+   "cot": "Ghi chú",
+   "hang": 9,
+   "cotSo": 3,
+   "cotPhu": true
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Nội dung",
+   "Khái niệm / Đặc điểm",
+   "Ví dụ",
+   "Ghi chú"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Khái niệm sinh trưởng",
+    "cacCot": [
+     {
+      "cot": "Khái niệm / Đặc điểm",
+      "noiDung": "Quá trình tăng kích thước và khối lượng của cơ thể do tăng số lượng và kích thước tế bào"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Cây lúa tăng chiều cao, tăng số lá; trẻ em tăng chiều cao, cân nặng"
+     },
+     {
+      "cot": "Ghi chú",
+      "noiDung": "Đo được bằng kích thước, khối lượng"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Khái niệm phát triển",
+    "cacCot": [
+     {
+      "cot": "Khái niệm / Đặc điểm",
+      "noiDung": "Toàn bộ những biến đổi diễn ra trong chu kì sống của cá thể, bao gồm sự thay đổi về số lượng tế bào, cấu trúc, hình thái và trạng thái sinh lí"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Cây lúa ra hoa, tạo hạt; trẻ em thay răng, dậy thì"
+     },
+     {
+      "cot": "Ghi chú",
+      "noiDung": "Thể hiện ở cấu trúc, hình thái, chức năng"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Dấu hiệu đặc trưng của sinh trưởng",
+    "cacCot": [
+     {
+      "cot": "Khái niệm / Đặc điểm",
+      "noiDung": "Tăng số lượng tế bào (do phân bào); tăng kích thước và khối lượng tế bào (do tổng hợp và tích luỹ các chất)"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Số lượng tế bào tăng lên; tế bào lớn lên, khối lượng cơ thể tăng"
+     },
+     {
+      "cot": "Ghi chú",
+      "noiDung": "Sinh trưởng là cơ sở của phát triển"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Dấu hiệu đặc trưng của phát triển",
+    "cacCot": [
+     {
+      "cot": "Khái niệm / Đặc điểm",
+      "noiDung": "Phân hoá tế bào; phát sinh hình thái cơ quan; biến đổi chức năng sinh lí; các quá trình diễn ra theo trình tự và được điều hoà"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Tế bào phân hoá thành tế bào rễ, thân, lá; nòng nọc mọc chân, tiêu biến đuôi"
+     },
+     {
+      "cot": "Ghi chú",
+      "noiDung": "Phát triển thúc đẩy sinh trưởng"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Mối quan hệ giữa sinh trưởng và phát triển",
+    "cacCot": [
+     {
+      "cot": "Khái niệm / Đặc điểm",
+      "noiDung": "Mật thiết, không tách rời, đan xen với nhau; sinh trưởng là cơ sở, tiền đề của phát triển; phát triển thúc đẩy sinh trưởng"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Cây lúa phải sinh trưởng thì mới ra hoa, tạo hạt; khi ra hoa, tạo hạt thì sinh trưởng về chiều cao chậm lại"
+     },
+     {
+      "cot": "Ghi chú",
+      "noiDung": "Diễn ra đồng thời trong đời sống"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Vòng đời của sinh vật",
+    "cacCot": [
+     {
+      "cot": "Khái niệm / Đặc điểm",
+      "noiDung": "Khoảng thời gian từ khi cơ thể được sinh ra, lớn lên, trưởng thành, sinh sản tạo ra cá thể mới, già đi rồi chết; bao gồm toàn bộ sự phát triển cá thể"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Vòng đời của ếch: trứng đã thụ tinh → phôi → nòng nọc → nòng nọc mọc chân → ếch con → ếch trưởng thành; vòng đời của cây lúa: hạt → cây mạ → cây lúa trưởng thành → trỗ bông, tạo hạt"
+     },
+     {
+      "cot": "Ghi chú",
+      "noiDung": "Các cá thể cùng loài có vòng đời giống nhau"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Tuổi thọ của sinh vật",
+    "cacCot": [
+     {
+      "cot": "Khái niệm / Đặc điểm",
+      "noiDung": "Thời gian sống của một sinh vật; tuổi thọ của một loài là thời gian sống trung bình của các cá thể trong loài; do kiểu gene quy định"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Phù du sống vài giờ đến vài ngày; muỗi 1–3 tháng; cây lúa, cây ngô 1 năm; cây thông 100–300 năm; rùa khoảng 150 năm"
+     },
+     {
+      "cot": "Ghi chú",
+      "noiDung": "Tuổi thọ các loài rất khác nhau"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Ứng dụng vòng đời trong thực tiễn",
+    "cacCot": [
+     {
+      "cot": "Khái niệm / Đặc điểm",
+      "noiDung": "Trồng trọt: chăm sóc cây theo từng giai đoạn để tối đa hoá sản lượng; chăn nuôi: chăm sóc vật nuôi theo từng giai đoạn; phòng trừ sâu hại ở giai đoạn sâu non"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Bón phân, tưới nước cho lúa theo giai đoạn mạ non, đẻ nhánh, trỗ bông; diệt sâu non gây hại nhiều nhất"
+     },
+     {
+      "cot": "Ghi chú",
+      "noiDung": "Giảm lãng phí, giảm thuốc bảo vệ thực vật"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Yếu tố ảnh hưởng đến tuổi thọ con người",
+    "cacCot": [
+     {
+      "cot": "Khái niệm / Đặc điểm",
+      "noiDung": "Kiểu gene; chế độ dinh dưỡng; môi trường sống; thói quen sinh hoạt; chăm sóc y tế"
+     },
+     {
+      "cot": "Ví dụ",
+      "noiDung": "Ăn uống lành mạnh, ăn nhiều trái cây, rau củ; vận động thường xuyên; ngủ đủ giấc; không hút thuốc lá; khám sức khoẻ định kì"
+     },
+     {
+      "cot": "Ghi chú",
+      "noiDung": "Nhiều yếu tố có thể thay đổi được"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
