@@ -1,0 +1,163 @@
+{
+ "bai": "TƯƠNG TÁC GIỮA KIỂU GEN VỚI MÔI TRƯỜNG VÀ THÀNH TỰU CHỌN GIỐNG — Sinh học 12",
+ "fileNguon": "Sinh học/Khối 12/Giáo án/HK1/KHBD_Sinh_hoc_12_Bai_16_Tuong_tac_giua_kieu_gen_voi_moi_truong_va_thanh_tuu_chon_giong_1_tiet.docx",
+ "cauHoiPhieu": "Nhiệm vụ: Các nhóm hoàn thành ba bảng sau trong quá trình học tập, sau đó trình bày trước lớp. Bảng A. Sự tương tác giữa kiểu gene và môi trường, thường biến và mức phản ứng",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Biến dị kiểu hình",
+   "tieuChi": "Bản chất",
+   "cot": "Thường biến",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Biến đổi về kiểu gene (gene hoặc nhiễm sắc thể)",
+   "tieuChi": "Bản chất",
+   "cot": "Đột biến",
+   "hang": 1,
+   "cotSo": 2
+  },
+  {
+   "so": 3,
+   "dapAn": "Tác động của điều kiện môi trường trong quá trình phát triển của cá thể",
+   "tieuChi": "Nguyên nhân",
+   "cot": "Thường biến",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Tác động của các tác nhân gây đột biến (vật lí, hoá học, sinh học) hoặc rối loạn trong quá trình phân bào",
+   "tieuChi": "Nguyên nhân",
+   "cot": "Đột biến",
+   "hang": 2,
+   "cotSo": 2
+  },
+  {
+   "so": 5,
+   "dapAn": "Không di truyền được",
+   "tieuChi": "Tính di truyền",
+   "cot": "Thường biến",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 6,
+   "dapAn": "Di truyền được cho đời sau",
+   "tieuChi": "Tính di truyền",
+   "cot": "Đột biến",
+   "hang": 3,
+   "cotSo": 2
+  },
+  {
+   "so": 7,
+   "dapAn": "Giúp sinh vật thích nghi với những điều kiện môi trường khác nhau (sự mềm dẻo kiểu hình)",
+   "tieuChi": "Vai trò",
+   "cot": "Thường biến",
+   "hang": 4,
+   "cotSo": 1
+  },
+  {
+   "so": 8,
+   "dapAn": "Là nguồn nguyên liệu của chọn giống và tiến hoá",
+   "tieuChi": "Vai trò",
+   "cot": "Đột biến",
+   "hang": 4,
+   "cotSo": 2
+  },
+  {
+   "so": 9,
+   "dapAn": "Cây hoa anh thảo hoa màu đỏ ở 20°C, hoa màu trắng ở 30°C; tắc kè hoa thay đổi màu sắc thân",
+   "tieuChi": "Ví dụ",
+   "cot": "Thường biến",
+   "hang": 5,
+   "cotSo": 1
+  },
+  {
+   "so": 10,
+   "dapAn": "Đột biến gene gây bệnh hồng cầu hình liềm; đột biến nhiễm sắc thể gây hội chứng Down",
+   "tieuChi": "Ví dụ",
+   "cot": "Đột biến",
+   "hang": 5,
+   "cotSo": 2
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Đặc điểm",
+   "Thường biến",
+   "Đột biến"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Bản chất",
+    "cacCot": [
+     {
+      "cot": "Thường biến",
+      "noiDung": "Biến dị kiểu hình"
+     },
+     {
+      "cot": "Đột biến",
+      "noiDung": "Biến đổi về kiểu gene (gene hoặc nhiễm sắc thể)"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Nguyên nhân",
+    "cacCot": [
+     {
+      "cot": "Thường biến",
+      "noiDung": "Tác động của điều kiện môi trường trong quá trình phát triển của cá thể"
+     },
+     {
+      "cot": "Đột biến",
+      "noiDung": "Tác động của các tác nhân gây đột biến (vật lí, hoá học, sinh học) hoặc rối loạn trong quá trình phân bào"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Tính di truyền",
+    "cacCot": [
+     {
+      "cot": "Thường biến",
+      "noiDung": "Không di truyền được"
+     },
+     {
+      "cot": "Đột biến",
+      "noiDung": "Di truyền được cho đời sau"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Vai trò",
+    "cacCot": [
+     {
+      "cot": "Thường biến",
+      "noiDung": "Giúp sinh vật thích nghi với những điều kiện môi trường khác nhau (sự mềm dẻo kiểu hình)"
+     },
+     {
+      "cot": "Đột biến",
+      "noiDung": "Là nguồn nguyên liệu của chọn giống và tiến hoá"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Ví dụ",
+    "cacCot": [
+     {
+      "cot": "Thường biến",
+      "noiDung": "Cây hoa anh thảo hoa màu đỏ ở 20°C, hoa màu trắng ở 30°C; tắc kè hoa thay đổi màu sắc thân"
+     },
+     {
+      "cot": "Đột biến",
+      "noiDung": "Đột biến gene gây bệnh hồng cầu hình liềm; đột biến nhiễm sắc thể gây hội chứng Down"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
