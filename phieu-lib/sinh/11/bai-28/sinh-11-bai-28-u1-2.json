@@ -1,0 +1,102 @@
+{
+ "bai": "MỐI QUAN HỆ GIỮA CÁC QUÁ TRÌNH SINH LÍ TRONG CƠ THỂ SINH VẬT — Sinh học 11",
+ "fileNguon": "Sinh học/Khối 11/Giáo án/HK2/KHBD_Sinh_hoc_11_Bai_28_Moi_quan_he_giua_cac_qua_trinh_sinh_li_trong_co_the_sinh_vat_1_tiet.docx",
+ "cauHoiPhieu": "Nhiệm vụ: Các nhóm hoàn thành các bảng sau dựa vào SGK Bài 28, sau đó trình bày trước lớp.",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Cung cấp chất dinh dưỡng cho cơ thể",
+   "tieuChi": "Tiêu hoá",
+   "cot": "Vai trò trong mối quan hệ chung",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Cung cấp O2 cho hô hấp tế bào, thải CO2",
+   "tieuChi": "Hô hấp",
+   "cot": "Vai trò trong mối quan hệ chung",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 3,
+   "dapAn": "Vận chuyển chất dinh dưỡng, O2, hormone đến tế bào; vận chuyển CO2, chất thải đến phổi, thận",
+   "tieuChi": "Tuần hoàn",
+   "cot": "Vai trò trong mối quan hệ chung",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Thải chất thải, duy trì ổn định môi trường trong",
+   "tieuChi": "Bài tiết",
+   "cot": "Vai trò trong mối quan hệ chung",
+   "hang": 4,
+   "cotSo": 1
+  },
+  {
+   "so": 5,
+   "dapAn": "Điều hoà, phối hợp hoạt động của các hệ cơ quan; điều hoà sinh trưởng, phát triển, sinh sản",
+   "tieuChi": "Thần kinh và nội tiết",
+   "cot": "Vai trò trong mối quan hệ chung",
+   "hang": 5,
+   "cotSo": 1
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Hệ cơ quan ở động vật",
+   "Vai trò trong mối quan hệ chung"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Tiêu hoá",
+    "cacCot": [
+     {
+      "cot": "Vai trò trong mối quan hệ chung",
+      "noiDung": "Cung cấp chất dinh dưỡng cho cơ thể"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Hô hấp",
+    "cacCot": [
+     {
+      "cot": "Vai trò trong mối quan hệ chung",
+      "noiDung": "Cung cấp O2 cho hô hấp tế bào, thải CO2"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Tuần hoàn",
+    "cacCot": [
+     {
+      "cot": "Vai trò trong mối quan hệ chung",
+      "noiDung": "Vận chuyển chất dinh dưỡng, O2, hormone đến tế bào; vận chuyển CO2, chất thải đến phổi, thận"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Bài tiết",
+    "cacCot": [
+     {
+      "cot": "Vai trò trong mối quan hệ chung",
+      "noiDung": "Thải chất thải, duy trì ổn định môi trường trong"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Thần kinh và nội tiết",
+    "cacCot": [
+     {
+      "cot": "Vai trò trong mối quan hệ chung",
+      "noiDung": "Điều hoà, phối hợp hoạt động của các hệ cơ quan; điều hoà sinh trưởng, phát triển, sinh sản"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
