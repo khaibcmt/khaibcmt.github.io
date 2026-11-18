@@ -107,13 +107,15 @@
 
   <!-- ===== HỒ KEY GEMINI ===== -->
   <div class="card" id="keyCard">
-    <h2>🔑 1. Hồ Key Gemini (miễn phí)</h2>
-    <label>Dán key vào đây — <b>mỗi key 1 dòng</b>. Dán nhiều key (mỗi key từ một tài khoản / dự án Google khác nhau) để app <b>tự xoay vòng</b> khi một key hết quota — chạy thông suốt, không dừng giữa chừng:</label>
-    <textarea id="keysInput" rows="4" placeholder="AIza... (key 1)&#10;AIza... (key 2)&#10;AIza... (key 3)" autocomplete="off" spellcheck="false" style="font-family:Consolas,monospace;font-size:13px"></textarea>
+    <div id="keySummaryBar" title="Bấm để mở / đóng khung hồ key" style="cursor:pointer;font-weight:700;font-size:16px;user-select:none;padding:2px 0">🔑 Hồ Key Gemini</div>
+    <div id="keyBody">
+    <label>Dán key vào đây — <b>mỗi key 1 dòng</b>. Dán nhiều key (mỗi key từ một tài khoản / dự án Google khác nhau) để app <b>tự xoay vòng</b> khi một key hết quota — chạy thông suốt, không dừng giữa chừng. Ô dán key được <b>che như ô mật khẩu</b>; bấm Lưu là key được cất vào hồ và ô dán tự xoá trắng:</label>
+    <textarea id="keysInput" rows="4" placeholder="AIza... (key 1)&#10;AIza... (key 2)&#10;AIza... (key 3)" autocomplete="off" spellcheck="false" style="font-family:Consolas,monospace;font-size:13px;-webkit-text-security:disc"></textarea>
     <div class="row" style="margin-top:8px">
       <button class="btn shrink" id="saveKeysBtn">💾 Lưu Hồ Key</button>
       <button class="btn shrink" id="checkKeysBtn">🔍 Kiểm Tra Key</button>
       <button class="btn-ghost shrink" id="resetKeyStateBtn">↺ Đặt Lại Trạng Thái</button>
+      <button class="btn-ghost shrink" id="toggleKeysViewBtn">👁 Hiện key</button>
     </div>
     <div class="small" style="margin-top:6px">Kiểm tra nhẹ không tốn quota sinh ảnh/giọng; key đạt = key hợp lệ và gọi được model.</div>
     <div id="keyList" style="margin-top:10px"></div>
@@ -127,6 +129,7 @@
         Gói miễn phí có hạn mức theo ngày cho TỪNG key — dán nhiều key là app tự chuyển key khi một key hết hạn mức.
       </div>
     </details>
+    </div>
   </div>
 
   <!-- ===== INPUT ===== -->
@@ -295,6 +298,7 @@ let building = false;
 let keyPool = [];        // mảng các key (string)
 let keyStates = [];      // mảng song song: {st:'unknown'|'ok'|'err'|'quota', note:'', at:''}
 let activeKeyIdx = 0;    // key đang hoạt động (sticky — dùng tiếp key vừa thành công)
+let keyPanelOpen = null; // null = tự động: hồ rỗng thì mở sẵn, có key thì gập gọn
 const KEY_DOT = { unknown: "⚪", ok: "🟢", err: "🔴", quota: "🟡" };
 const KEY_TXT = { unknown: "Chưa kiểm tra", ok: "Đạt", err: "Lỗi", quota: "Hết quota" };
 
@@ -331,6 +335,7 @@ function keySummary(){
   }).join(" · ");
 }
 function renderKeyList(){
+  renderKeySummary();
   const box = $("keyList");
   if (!box) return;
   if (!keyPool.length){
@@ -360,8 +365,7 @@ function renderKeyList(){
   }));
 }
 function refreshKeyUI(){
-  const ta = $("keysInput");
-  if (ta) ta.value = keyPool.join("\n");
+  /* Không nạp lại key đầy đủ vào ô dán — ô chỉ để dán key MỚI, lưu xong là xoá trắng */
   renderKeyList();
   const el = $("keyStatus");
   if (!el) return;
@@ -374,20 +378,50 @@ function refreshKeyUI(){
 }
 $("saveKeysBtn").addEventListener("click", () => {
   const lines = $("keysInput").value.split(/\r?\n/).map(s => s.trim()).filter(Boolean);
-  const uniq = [...new Set(lines)];
   const oldMap = {};
   keyPool.forEach((k, i) => { oldMap[k] = keyStates[i]; });
-  keyPool = uniq;
+  let added = 0;
+  lines.forEach(k => { if (keyPool.indexOf(k) < 0){ keyPool.push(k); added++; } });   /* GỘP vào hồ cũ, không thay thế */
   keyStates = keyPool.map(k => oldMap[k] || { st: "unknown", note: "", at: "" });
   if (!keyPool.length || activeKeyIdx >= keyPool.length) activeKeyIdx = 0;
-  savePool(); refreshKeyUI();
+  savePool();
+  $("keysInput").value = "";                    /* xoá trắng ô dán — key đầy đủ không ở lại trên màn hình */
+  if (keyPool.length) keyPanelOpen = false;     /* tự gập khung sau khi lưu */
+  refreshKeyUI();
   alert(keyPool.length
-    ? "Đã lưu hồ gồm " + keyPool.length + " key. Thầy bấm KIỂM TRA KEY để chắc chắn key nào đạt, rồi nhập tên bài và bấm TẠO VIDEO."
+    ? "Đã lưu hồ gồm " + keyPool.length + " key" + (added ? " (thêm mới " + added + ")" : "") + ". Thầy bấm KIỂM TRA KEY để chắc chắn key nào đạt, rồi nhập tên bài và bấm TẠO VIDEO."
     : "Hồ key đang rỗng — thầy dán ít nhất 1 key vào ô trên.");
 });
 $("resetKeyStateBtn").addEventListener("click", () => {
   keyStates = keyPool.map(() => ({ st: "unknown", note: "", at: "" }));
   savePool(); refreshKeyUI();
+});
+
+/* ---------- Khung hồ key GẬP gọn + ô dán key che như mật khẩu ----------
+   Đóng/mở chỉ là hiển thị — không đụng tới xoay vòng / khám phá model. */
+function keyPanelIsOpen(){
+  if (!keyPool.length) return true;                    /* hồ rỗng → mở sẵn để dán lần đầu */
+  return keyPanelOpen !== null ? keyPanelOpen : false;
+}
+function renderKeySummary(){
+  const bar = $("keySummaryBar"); if (!bar) return;
+  const open = keyPanelIsOpen();
+  const okN = keyStates.filter(s => s.st === "ok").length;
+  bar.textContent = keyPool.length
+    ? "🔑 Hồ Key Gemini — " + keyPool.length + " key đã lưu · đang dùng Key #" + (activeKeyIdx + 1) + " · " + okN + "/" + keyPool.length + " đạt " + (open ? "▾" : "▸")
+    : "🔑 Hồ Key Gemini — chưa có key nào, dán key vào khung dưới " + (open ? "▾" : "▸");
+  const body = $("keyBody");
+  if (body) body.style.display = open ? "" : "none";
+}
+$("keySummaryBar").addEventListener("click", () => {
+  keyPanelOpen = !keyPanelIsOpen();
+  renderKeySummary();
+});
+let keysVisible = false;
+$("toggleKeysViewBtn").addEventListener("click", () => {
+  keysVisible = !keysVisible;
+  $("keysInput").style.webkitTextSecurity = keysVisible ? "none" : "disc";
+  $("toggleKeysViewBtn").textContent = keysVisible ? "🙈 Ẩn key" : "👁 Hiện key";
 });
 
 /* ---------- Phân loại lỗi HTTP của Gemini ---------- */
