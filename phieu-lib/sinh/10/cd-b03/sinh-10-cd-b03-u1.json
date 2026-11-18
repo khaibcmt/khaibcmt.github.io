@@ -1,0 +1,81 @@
+{
+ "bai": "Bài 3: Công nghệ tế bào động vật và thành tựu — Sinh học 10",
+ "fileNguon": "Sinh học/Khối 10/Giáo án/Chuyên đề/SH10-CD-B03_Cong_nghe_te_bao_dong_vat_va_thanh_tuu.docx",
+ "cauHoiPhieu": "Nội dung 1. Tìm hiểu các giai đoạn chung của công nghệ tế bào động vật (mục I SGK).",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "chuẩn bị môi trường nuôi cấy đầy đủ các chất dinh dưỡng và các yếu tố sinh trưởng; khử trùng môi trường và dụng cụ nuôi cấy (bình thuỷ tinh,...) trước khi sử dụng để đảm bảo điều kiện vô trùng.",
+   "tieuChi": "Giai đoạn 1: Chuẩn bị môi trường nuôi cấy",
+   "cot": "Nội dung thực hiện",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "tách tế bào từ cơ thể động vật, xử lí để thu được các tế bào riêng lẻ đưa vào nuôi cấy; thường chọn các tế bào dễ nuôi cấy như tế bào phôi sớm hoặc các dòng tế bào có khả năng phân chia mạnh.",
+   "tieuChi": "Giai đoạn 2: Tách tế bào từ cơ thể động vật",
+   "cot": "Nội dung thực hiện",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 3,
+   "dapAn": "chuyển tế bào vào môi trường nuôi cấy trong bình thuỷ tinh, đặt trong tủ nuôi cấy ở nhiệt độ thích hợp để tế bào phân chia, biệt hoá theo mục đích nghiên cứu. Tế bào bình thường chỉ phân chia được một số lần nhất định sau đó sẽ dừng phân chia và chết đi; tế bào ung thư tương đối dễ nuôi cấy vì chúng phân chia liên tục — dòng tế bào HeLa lấy từ khối u của Henrietta Lacks (1920–1951) được mệnh danh là \"tế bào bất tử\". Bí quyết thành công của công nghệ tế bào động vật là tìm ra các chất có tác dụng kích hoạt sự phân chia và biệt hoá của tế bào; việc giải biệt hoá tế bào chuyên hoá đưa về dạng tế bào gốc cũng là mục tiêu nghiên cứu của các nhà khoa học.",
+   "tieuChi": "Giai đoạn 3: Nuôi cấy tế bào",
+   "cot": "Nội dung thực hiện",
+   "hang": 3,
+   "cotSo": 1
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Giai đoạn",
+   "Nội dung thực hiện",
+   "Lưu ý / khó khăn"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Giai đoạn 1: Chuẩn bị môi trường nuôi cấy",
+    "cacCot": [
+     {
+      "cot": "Nội dung thực hiện",
+      "noiDung": "chuẩn bị môi trường nuôi cấy đầy đủ các chất dinh dưỡng và các yếu tố sinh trưởng; khử trùng môi trường và dụng cụ nuôi cấy (bình thuỷ tinh,...) trước khi sử dụng để đảm bảo điều kiện vô trùng."
+     },
+     {
+      "cot": "Lưu ý / khó khăn",
+      "noiDung": ""
+     }
+    ]
+   },
+   {
+    "tieuChi": "Giai đoạn 2: Tách tế bào từ cơ thể động vật",
+    "cacCot": [
+     {
+      "cot": "Nội dung thực hiện",
+      "noiDung": "tách tế bào từ cơ thể động vật, xử lí để thu được các tế bào riêng lẻ đưa vào nuôi cấy; thường chọn các tế bào dễ nuôi cấy như tế bào phôi sớm hoặc các dòng tế bào có khả năng phân chia mạnh."
+     },
+     {
+      "cot": "Lưu ý / khó khăn",
+      "noiDung": ""
+     }
+    ]
+   },
+   {
+    "tieuChi": "Giai đoạn 3: Nuôi cấy tế bào",
+    "cacCot": [
+     {
+      "cot": "Nội dung thực hiện",
+      "noiDung": "chuyển tế bào vào môi trường nuôi cấy trong bình thuỷ tinh, đặt trong tủ nuôi cấy ở nhiệt độ thích hợp để tế bào phân chia, biệt hoá theo mục đích nghiên cứu. Tế bào bình thường chỉ phân chia được một số lần nhất định sau đó sẽ dừng phân chia và chết đi; tế bào ung thư tương đối dễ nuôi cấy vì chúng phân chia liên tục — dòng tế bào HeLa lấy từ khối u của Henrietta Lacks (1920–1951) được mệnh danh là \"tế bào bất tử\". Bí quyết thành công của công nghệ tế bào động vật là tìm ra các chất có tác dụng kích hoạt sự phân chia và biệt hoá của tế bào; việc giải biệt hoá tế bào chuyên hoá đưa về dạng tế bào gốc cũng là mục tiêu nghiên cứu của các nhà khoa học."
+     },
+     {
+      "cot": "Lưu ý / khó khăn",
+      "noiDung": ""
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Đoạn Dự kiến sản phẩm (DKSP) trong cùng KHBD, mở đầu bằng nhãn của từng hàng trong bảng phiếu (trích nguyên văn)."
+ },
+ "ghiChu": " Đáp án là đoạn DKSP nguyên văn (dài hơn đáp án rút gọn kiểu mẫu tay Bài 9)."
+}
