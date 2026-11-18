@@ -1,0 +1,101 @@
+{
+ "bai": "LIÊN KẾT GENE VÀ HOÁN VỊ GENE — Sinh học 12",
+ "fileNguon": "Sinh học/Khối 12/Giáo án/HK1/KHBD_Sinh_hoc_12_Bai_11_Lien_ket_gene_va_hoan_vi_gene_2_tiet.docx",
+ "cauHoiPhieu": "Nhiệm vụ: Các nhóm hoàn thành ba bảng sau trong quá trình học tập, sau đó trình bày trước lớp. Bảng A. Thí nghiệm của Morgan về liên kết gene và hoán vị gene",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Lai ruồi cái thân xám, cánh dài thuần chủng với ruồi đực thân đen, cánh cụt; lai phân tích ruồi đực F1 với ruồi cái thân đen, cánh cụt",
+   "tieuChi": "Liên kết gene",
+   "cot": "Cách bố trí",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Đời con chỉ có 2 kiểu hình giống bố mẹ theo tỉ lệ 1 thân xám, cánh dài : 1 thân đen, cánh cụt",
+   "tieuChi": "Liên kết gene",
+   "cot": "Kết quả",
+   "hang": 1,
+   "cotSo": 2
+  },
+  {
+   "so": 3,
+   "dapAn": "Gene quy định màu thân và gene quy định kích thước cánh nằm trên cùng một NST, di truyền cùng nhau",
+   "tieuChi": "Liên kết gene",
+   "cot": "Kết luận",
+   "hang": 1,
+   "cotSo": 3
+  },
+  {
+   "so": 4,
+   "dapAn": "Lai phân tích ruồi cái F1 dị hợp với ruồi đực thân đen, cánh cụt",
+   "tieuChi": "Hoán vị gene",
+   "cot": "Cách bố trí",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 5,
+   "dapAn": "Đời con có 4 kiểu hình: 2 kiểu hình giống bố mẹ chiếm tỉ lệ lớn (khoảng 83%), 2 kiểu hình mới chiếm tỉ lệ nhỏ (khoảng 17%)",
+   "tieuChi": "Hoán vị gene",
+   "cot": "Kết quả",
+   "hang": 2,
+   "cotSo": 2
+  },
+  {
+   "so": 6,
+   "dapAn": "Các gene trên cùng một NST có thể đổi vị trí cho nhau do trao đổi chéo, tạo ra các tổ hợp gene mới",
+   "tieuChi": "Hoán vị gene",
+   "cot": "Kết luận",
+   "hang": 2,
+   "cotSo": 3
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Thí nghiệm",
+   "Cách bố trí",
+   "Kết quả",
+   "Kết luận"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Liên kết gene",
+    "cacCot": [
+     {
+      "cot": "Cách bố trí",
+      "noiDung": "Lai ruồi cái thân xám, cánh dài thuần chủng với ruồi đực thân đen, cánh cụt; lai phân tích ruồi đực F1 với ruồi cái thân đen, cánh cụt"
+     },
+     {
+      "cot": "Kết quả",
+      "noiDung": "Đời con chỉ có 2 kiểu hình giống bố mẹ theo tỉ lệ 1 thân xám, cánh dài : 1 thân đen, cánh cụt"
+     },
+     {
+      "cot": "Kết luận",
+      "noiDung": "Gene quy định màu thân và gene quy định kích thước cánh nằm trên cùng một NST, di truyền cùng nhau"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Hoán vị gene",
+    "cacCot": [
+     {
+      "cot": "Cách bố trí",
+      "noiDung": "Lai phân tích ruồi cái F1 dị hợp với ruồi đực thân đen, cánh cụt"
+     },
+     {
+      "cot": "Kết quả",
+      "noiDung": "Đời con có 4 kiểu hình: 2 kiểu hình giống bố mẹ chiếm tỉ lệ lớn (khoảng 83%), 2 kiểu hình mới chiếm tỉ lệ nhỏ (khoảng 17%)"
+     },
+     {
+      "cot": "Kết luận",
+      "noiDung": "Các gene trên cùng một NST có thể đổi vị trí cho nhau do trao đổi chéo, tạo ra các tổ hợp gene mới"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
