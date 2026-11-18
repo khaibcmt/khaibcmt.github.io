@@ -1,0 +1,76 @@
+{
+ "bai": "ỨNG DỤNG CÔNG NGHỆ SINH HỌC TRONG QUẢN LÍ MÔI TRƯỜNG NƯỚC NUÔI THUỶ SẢN — Công nghệ nông nghiệp 12",
+ "fileNguon": "Công nghệ nông nghiệp/Khối 12/Giáo án/Chuyên đề/CN12-CD-B09_Ung_dung_cong_nghe_sinh_hoc_trong_quan_li_moi_truong_nuoc_nuoi_thuy_san.docx",
+ "cauHoiPhieu": "PHIẾU HỌC TẬP — BÀI 9: ỨNG DỤNG CÔNG NGHỆ SINH HỌC TRONG QUẢN LÍ MÔI TRƯỜNG NƯỚC NUÔI THUỶ SẢN Họ và tên: ………………………………………… Lớp: ………… Nhóm: …………",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Mục I – Chế phẩm làm sạch nước",
+   "tieuChi": "1",
+   "cot": "Mục / nội dung",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Phân tích ý nghĩa của việc sử dụng chế phẩm vi sinh xử lí nước trong nuôi thuỷ sản và mô tả quy trình sản xuất chế phẩm (Hình 9.2). Liên hệ thực tiễn nuôi thuỷ sản ở địa phương em.",
+   "tieuChi": "1",
+   "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+   "hang": 1,
+   "cotSo": 2
+  },
+  {
+   "so": 3,
+   "dapAn": "Mục II – Công nghệ Biofloc",
+   "tieuChi": "2",
+   "cot": "Mục / nội dung",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Quan sát Hình 9.3 và nêu nguyên lí hoạt động của hệ thống Biofloc; phân tích vai trò của công nghệ Biofloc trong nuôi thuỷ sản và điều kiện áp dụng.",
+   "tieuChi": "2",
+   "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+   "hang": 2,
+   "cotSo": 2
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "STT",
+   "Mục / nội dung",
+   "Câu hỏi khám phá và nội dung cần hoàn thành"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "1",
+    "cacCot": [
+     {
+      "cot": "Mục / nội dung",
+      "noiDung": "Mục I – Chế phẩm làm sạch nước"
+     },
+     {
+      "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+      "noiDung": "Phân tích ý nghĩa của việc sử dụng chế phẩm vi sinh xử lí nước trong nuôi thuỷ sản và mô tả quy trình sản xuất chế phẩm (Hình 9.2). Liên hệ thực tiễn nuôi thuỷ sản ở địa phương em."
+     }
+    ]
+   },
+   {
+    "tieuChi": "2",
+    "cacCot": [
+     {
+      "cot": "Mục / nội dung",
+      "noiDung": "Mục II – Công nghệ Biofloc"
+     },
+     {
+      "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+      "noiDung": "Quan sát Hình 9.3 và nêu nguyên lí hoạt động của hệ thống Biofloc; phân tích vai trò của công nghệ Biofloc trong nuôi thuỷ sản và điều kiện áp dụng."
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
