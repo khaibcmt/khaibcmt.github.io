@@ -245,7 +245,7 @@
     </div>
     <div id="phieuPanel" class="hidden" style="margin-top:14px;border:1px dashed var(--line);border-radius:12px;padding:12px 14px;background:var(--panel2)">
       <div style="font-weight:700;font-size:16px">📋 Video Phiếu Học Tập — dựng thẳng từ kho phiếu có sẵn</div>
-      <div class="small" style="margin-top:4px">App lấy phiếu học tập + đáp án nguyên văn từ <b>kho phiếu</b> (trích sẵn từ giáo án) và dựng đúng khuôn: phiếu câm đánh số → điền dần từng ô, đọc đầy đủ đáp án → bảng đáp án của giáo viên → cảnh QR làm bài tập tương tác. Không qua AI viết kịch bản nên đáp án không bị sửa một chữ.</div>
+      <div class="small" style="margin-top:4px">App lấy phiếu học tập + đáp án nguyên văn từ <b>kho phiếu</b> (trích sẵn từ giáo án) và dựng đúng khuôn: phiếu câm đánh số + ngân hàng nội dung → hiện đáp án lần lượt theo từng số lên khung phiếu (cảnh điền cuối cùng để lại bảng phiếu đã điền đầy đủ) → cảnh QR làm bài tập tương tác. Không qua AI viết kịch bản nên đáp án không bị sửa một chữ.</div>
       <div id="phieuStatus" class="small" style="margin-top:8px">⏳ Đang tải kho phiếu…</div>
       <div id="phieuList" style="margin-top:4px"></div>
       <div id="phieuPreview" class="hidden" style="margin-top:12px;border-top:1px dashed var(--line);padding-top:10px"></div>
@@ -1067,7 +1067,31 @@ function noteActiveKey(){
   const pn = $("progressNote");
   if (pn && keyPool.length) pn.textContent = "— Đang dùng: Key #" + (activeKeyIdx + 1) + "/" + keyPool.length;
 }
+/*__PURE_TTS__*/
+/* Chuẩn hoá chữ CHỈ dành cho bản chữ gửi đi TTS (thầy chốt 20:10 ngày
+   18/11): token độc lập "SGK" -> "sách giáo khoa" để giọng đọc đọc thành
+   "sách giáo khoa" thay vì đánh vần từng chữ cái. "SGK" ở đầu câu (đầu
+   chuỗi, sau dấu kết câu . ! ? … hoặc sau xuống dòng) -> "Sách giáo
+   khoa" viết hoa chữ đầu. Biên từ chặt: "SGK." / "(SGK)" / "SGK," đều
+   thay đúng; từ dính như "XSGK" hay "SGK10" KHÔNG bị đụng. Chữ hiển
+   thị/caption/kịch bản trong app giữ nguyên "SGK" — hàm này chỉ áp lên
+   body của lời gọi TTS bên trong geminiCall, đúng 1 điểm chung cho mọi
+   pipeline (bài giảng thường + phiếu học tập). */
+function ttsSpeakText(text){
+  return String(text == null ? "" : text).replace(/(^|[.!?…]\s+|\n\s*|[^\p{L}\p{N}_])(SGK)(?![\p{L}\p{N}_])/gu,
+    (m, pre) => pre + ((pre === "" || /[.!?…]\s*$/.test(pre) || /\n\s*$/.test(pre)) ? "Sách giáo khoa" : "sách giáo khoa"));
+}
+/*__END_PURE_TTS__*/
 async function geminiCall(role, body, meta){
+  /* Lời gọi TTS: chuẩn hoá chữ đọc (SGK -> sách giáo khoa) trên BẢN SAO
+     của body — body gốc và mọi chữ hiển thị không đổi. */
+  if (role === "tts" && body && Array.isArray(body.contents)){
+    body = Object.assign({}, body, {
+      contents: body.contents.map(c => Object.assign({}, c, {
+        parts: (c.parts || []).map(p => (p && typeof p.text === "string") ? Object.assign({}, p, { text: ttsSpeakText(p.text) }) : p)
+      }))
+    });
+  }
   if (!keyPool.length) throw new Error("Chưa có API key. Thầy dán key vào mục 1 ở đầu trang trước đã.");
   const start = Math.min(activeKeyIdx, keyPool.length - 1);
   const fresh = [], quotaMarked = [];
@@ -1373,7 +1397,6 @@ function renderScriptReview(){
     if (sg.type === "phieu") {
       if (sg.phKind === "open") extra = "<p>Cảnh mở: bảng phiếu <b>câm</b> — ô trống chỉ có vòng tròn đánh số, kèm câu yêu cầu của phiếu và <b>ngân hàng nội dung</b> nhiều màu ở dưới bảng để học sinh chọn điền vào từng số.</p>";
       else if (sg.phKind === "fill") extra = "<p>" + escapeHtml(sg.caption || "") + "</p>";
-      else if (sg.phKind === "key") extra = "<p>Cảnh chốt: bảng đáp án đầy đủ của giáo viên — lời đọc nêu lại toàn bộ nội dung theo từng hàng (mỗi đáp án đọc một lần, đáp án trùng hệt nhau chỉ nhắc lại số), highlight chạy theo hàng đang đọc.</p>";
       else if (sg.phKind === "qr") extra = "<p>Cảnh cuối: mã QR + link làm bài tập tương tác: <i>" + escapeHtml(sg.qrUrl || "") + "</i></p>";
     }
     d.innerHTML = '<span class="tag ' + sg.type + '">' + TYPE_LABEL[sg.type] + "</span>" +
@@ -2333,9 +2356,11 @@ function drawText(ctx, sg){
 
 /* =========================================================
    📋 VIDEO PHIẾU HỌC TẬP (Giai đoạn 2) — app tự dựng video từ KHO PHIẾU
-   (phieu-lib): phiếu câm đánh số → điền dần từng ô + đọc đầy đủ đáp án →
-   bảng đáp án giáo viên → cảnh QR bài tập tương tác. Kịch bản sinh THẲNG
-   từ dữ liệu phiếu, KHÔNG qua Gemini — đáp án giữ nguyên văn 100%.
+   (phieu-lib): phiếu câm đánh số + ngân hàng nội dung → hiện đáp án lần
+   lượt theo từng số lên khung phiếu → cảnh QR bài tập tương tác. (Từ
+   20:08 ngày 18/11: BỎ cảnh bảng đáp án giáo viên — cảnh điền cuối cùng
+   để lại bảng phiếu đã điền đầy đủ thay cho bảng chốt.) Kịch bản sinh
+   THẲNG từ dữ liệu phiếu, KHÔNG qua Gemini — đáp án giữ nguyên văn 100%.
    ========================================================= */
 /*__PURE_QR__*/
 /* Sinh mã QR ngay trong trang, không gọi CDN: byte mode (UTF-8), mức sửa
@@ -2647,44 +2672,13 @@ function phieuTrimCauHoi(text, limit){
   const sp = s.lastIndexOf(" ", limit);
   return (sp > 40 ? s.slice(0, sp) : s.slice(0, limit)).trim();
 }
-/* Mẫu câu đọc thầy chốt (19:44 ngày 18/11): "Số {k} đúng là {đáp án}." —
-   đáp án chép NGUYÊN VĂN, chỉ thêm dấu chấm cuối khi đáp án chưa có dấu
-   kết câu; tuyệt đối không cắt xén từ ngữ bên trong đáp án. */
-function phieuSoDungLa(so, dapAn){
+/* Mẫu câu đọc thầy chốt (20:08 ngày 18/11, đơn giản hoá từ mẫu "Số {k}
+   đúng là..." của 19:44 — bỏ chữ "đúng"): "Số {k} là {đáp án}." — đáp án
+   chép NGUYÊN VĂN, chỉ thêm dấu chấm cuối khi đáp án chưa có dấu kết
+   câu; tuyệt đối không cắt xén từ ngữ bên trong đáp án. */
+function phieuSoLa(so, dapAn){
   const a = String(dapAn || "").trim();
-  return "Số " + so + " đúng là " + a + (/[.!?…]$/.test(a) ? "" : ".");
-}
-/* Kịch bản NÊU LẠI của cảnh bảng đáp án GV (thầy chốt 19:39): đọc lại
-   TOÀN BỘ nội dung phiếu theo từng HÀNG — tên hàng (tiêu chí) đọc đúng 1
-   lần ở đầu hàng, các ô trong hàng đọc nối tiếp "Số {k} đúng là {đáp án}."
-   Chống lặp an toàn: đáp án TRÙNG NGUYÊN VĂN hệt nhau với ô đã đọc trước
-   đó trong cùng phiếu thì không đọc lại, thay bằng "Số {k} cũng như số
-   {j}." (j = ô đầu tiên có đáp án đó). Trả về lời đọc + trọng số từng
-   hàng (độ dài phần lời của hàng) để highlight chạy khớp lời. */
-function buildPhieuKeyScript(cacO){
-  const sorted = (cacO || []).slice().sort((a, b) => a.so - b.so);
-  const byHang = {};
-  sorted.forEach(o => {
-    const h = (o.hang == null ? 1 : o.hang);
-    (byHang[h] = byHang[h] || []).push(o);
-  });
-  const hangs = Object.keys(byHang).map(Number).sort((a, b) => a - b);
-  const seen = {};
-  const rows = hangs.map(h => {
-    const cells = byHang[h];
-    const tieuChi = String(cells[0].tieuChi || "").trim();
-    const head = tieuChi ? tieuChi + (/[:.!?…]$/.test(tieuChi) ? " " : ": ") : "";
-    const parts = cells.map(o => {
-      const ans = String(o.dapAn || "").trim();
-      if (ans && Object.prototype.hasOwnProperty.call(seen, ans))
-        return "Số " + o.so + " cũng như số " + seen[ans] + ".";
-      if (ans) seen[ans] = o.so;
-      return phieuSoDungLa(o.so, o.dapAn);
-    });
-    const narr = head + parts.join(" ");
-    return { hang: h, tieuChi: tieuChi, narration: narr, weight: narr.length };
-  });
-  return { narration: rows.map(r => r.narration).join(" "), rows: rows };
+  return "Số " + so + " là " + a + (/[.!?…]$/.test(a) ? "" : ".");
 }
 /* Băm FNV-1a -> seed số: xáo trộn ngân hàng nội dung suy từ chính nội
    dung phiếu nên ổn định giữa các lần dựng và kiểm thử được. */
@@ -2768,8 +2762,10 @@ function phieuBlockReason(entry){
   if (entry.loai === "doan-van-dien") return "phiếu điền đoạn văn — chưa hỗ trợ dựng video";
   return "chưa sẵn sàng để dựng video";
 }
-/* Sinh kịch bản cảnh video phiếu từ dữ liệu phiếu — bám đúng khuôn mẫu đã
-   duyệt: mở (phiếu câm) → mỗi ô 1 cảnh điền → bảng đáp án GV → QR.
+/* Sinh kịch bản cảnh video phiếu từ dữ liệu phiếu — khuôn thầy chốt lại
+   20:08 ngày 18/11: mở (phiếu câm + ngân hàng nội dung) → mỗi ô 1 cảnh
+   điền lần lượt theo số → QR. KHÔNG còn cảnh bảng đáp án GV: cảnh điền
+   cuối cùng để lại bảng phiếu đã điền đầy đủ để học sinh đối chiếu.
    Đáp án chép NGUYÊN VĂN từ dữ liệu, không qua AI, không sửa một chữ. */
 function buildPhieuScenes(entry, data, opts){
   opts = opts || {};
@@ -2783,13 +2779,13 @@ function buildPhieuScenes(entry, data, opts){
      chốt 19:42). Không liệt kê tên các mục/hàng. */
   let openNarr = phieuTrimCauHoi(cauHoi, 350);
   if (openNarr && !/[.!?…:]$/.test(openNarr)) openNarr += ".";
-  openNarr += " Các em hãy điền nội dung đúng vào từng ô trống theo thứ tự các số. Phía dưới bảng là các ô nội dung — các em hãy chọn đúng nội dung điền vào từng số nhé! Cuối video có bảng đáp án của giáo viên để đối chiếu.";
+  openNarr += " Các em hãy điền nội dung đúng vào từng ô trống theo thứ tự các số. Phía dưới bảng là các ô nội dung — các em hãy chọn đúng nội dung điền vào từng số nhé! Đáp án hiện lần lượt theo từng số lên khung phiếu để đối chiếu.";
   if (instr) openNarr += " " + instr;
   segs.push({ type: "phieu", phKind: "open", heading: "Phiếu học tập", narration: openNarr, noAudioSec: phieuNoAudioSec(openNarr), bank: phieuBankPlan(cacO) });
   cacO.forEach(o => {
-    /* Lời điền RÚT GỌN theo mẫu thầy chốt: chỉ "Số {k} đúng là {đáp án}."
-       — không đọc tên tiêu chí/cột (đã có trên hình + caption). */
-    const narr = phieuSoDungLa(o.so, o.dapAn);
+    /* Lời điền RÚT GỌN theo mẫu thầy chốt (20:08): chỉ "Số {k} là
+       {đáp án}." — không đọc tên tiêu chí/cột (đã có trên hình + caption). */
+    const narr = phieuSoLa(o.so, o.dapAn);
     segs.push({
       type: "phieu", phKind: "fill", fillSo: o.so,
       heading: "Đáp án số " + o.so,
@@ -2797,18 +2793,8 @@ function buildPhieuScenes(entry, data, opts){
       narration: narr, noAudioSec: phieuNoAudioSec(narr)
     });
   });
-  /* Cảnh bảng đáp án GV (thầy chốt lại 19:39): lời đọc NÊU LẠI toàn bộ
-     nội dung phiếu theo từng hàng, gọn và không lặp (xem
-     buildPhieuKeyScript); highlight chạy theo HÀNG tỉ lệ với độ dài phần
-     lời của hàng đó (rowWeights). Thời lượng = max(audio, sàn theo ký
-     tự) như mọi cảnh phiếu; trần an toàn 120 giây. */
-  const keyScript = buildPhieuKeyScript(cacO);
-  const keyNarr = keyScript.narration;
-  segs.push({
-    type: "phieu", phKind: "key", heading: "Bảng đáp án của giáo viên",
-    narration: keyNarr, noAudioSec: phieuNoAudioSec(keyNarr), capSec: 120,
-    rowWeights: keyScript.rows.map(r => r.weight)
-  });
+  /* [20:08] Không còn cảnh bảng đáp án GV: video kết thúc phần nội dung
+     ở cảnh điền cuối cùng với bảng phiếu đã điền đầy đủ. */
   const qrUrl = buildExerciseUrl(entry && entry.id, opts.baseHref || "");
   /* Cảnh cuối (thầy chốt 19:39): lời kêu gọi ĐĂNG KÝ KÊNH + làm bài tập;
      mã QR giữ trên hình tối thiểu 20 GIÂY để học sinh kịp lấy điện thoại
@@ -2823,14 +2809,14 @@ function buildYoutubeDesc(entry, data, url){
   const tenBai = (entry && entry.tenBai) || (data && data.bai) || "Bài học";
   const title = "📋 Video phiếu học tập — " + tenBai + (entry && entry.grade ? " | Lớp " + entry.grade : "");
   const desc = [
-    "Video phiếu học tập: mở bằng phiếu \"câm\" đánh số kèm ngân hàng nội dung nhiều màu để học sinh tự điền, lần lượt hiện đáp án từng ô và chốt bằng bảng đáp án của giáo viên nêu lại toàn bộ nội dung để đối chiếu.",
+    "Video phiếu học tập: mở bằng phiếu \"câm\" đánh số kèm ngân hàng nội dung nhiều màu để học sinh tự điền, sau đó hiện đáp án lần lượt theo từng số lên khung phiếu — cảnh điền cuối cùng để lại bảng phiếu đã điền đầy đủ để đối chiếu.",
     "Bài: " + tenBai,
     "",
     "👉 LÀM BÀI TẬP TƯƠNG TÁC CỦA BÀI NÀY TẠI ĐÂY:",
     url,
     "(Hoặc quét mã QR ở cuối video.)",
     "",
-    "Cách dùng: học sinh xem video, tự điền vào phiếu theo thứ tự các số, đối chiếu với bảng đáp án ở cuối video, rồi làm bài tập tương tác để kiểm tra mức độ hiểu bài."
+    "Cách dùng: học sinh xem video, tự điền vào phiếu theo thứ tự các số, đối chiếu với đáp án hiện lần lượt theo từng số trong video, rồi làm bài tập tương tác để kiểm tra mức độ hiểu bài."
   ].join("\n");
   return { title: title, desc: desc };
 }
@@ -3047,7 +3033,7 @@ async function loadBaiTap(prm){
     }
     if (!phieuSelectable(entry)){
       btShowMsg("📋 <b>Bài tập của phiếu này chưa sẵn sàng.</b><br>Lý do: " + escapeHtml(phieuBlockReason(entry)) +
-        ".<br>Em xem lại video và đối chiếu với bảng đáp án ở cuối video nhé!");
+        ".<br>Em xem lại video và đối chiếu với đáp án hiện lần lượt theo từng số trong video nhé!");
       return;
     }
     const r2 = await fetch("../phieu-lib/" + entry.file, { cache: "no-store" });
@@ -3551,11 +3537,14 @@ function drawPhieuScene(ctx, sg, t){
     return;
   }
   if (sg.phKind === "key"){
+    /* [20:08] Khuôn video phiếu KHÔNG còn sinh cảnh "key" nữa (đã bỏ
+       cảnh bảng đáp án GV khỏi buildPhieuScenes). Nhánh vẽ này giữ lại
+       chỉ để tương thích ngược nếu mở phải danh sách cảnh cũ còn sót
+       segment loại này — luồng hiện tại không bao giờ đi vào đây. */
     slideBg(ctx); bar();
     const topY = drawHeading(ctx, "📋 BẢNG ĐÁP ÁN CỦA GIÁO VIÊN", tenBai);
-    /* highlight chạy theo HÀNG đang được nêu lại trong lời đọc: thời
-       lượng mỗi hàng tỉ lệ với độ dài phần lời của hàng đó (rowWeights
-       từ buildPhieuKeyScript); thiếu trọng số thì chia đều như cũ. */
+    /* highlight chạy theo HÀNG: thời lượng mỗi hàng tỉ lệ với trọng số
+       rowWeights có sẵn trong segment; thiếu trọng số thì chia đều. */
     const nRows = ((data.bangDapAnGV || {}).cacHang || []).length;
     const wts = (sg.rowWeights && sg.rowWeights.length === nRows) ? sg.rowWeights : null;
     const activeRow = wts ? phieuActiveRowW(t || 0, wts) : phieuActiveRow(t || 0, nRows);
@@ -3699,7 +3688,7 @@ function renderPhieuPreview(){
   const os = (d.cacO || []).slice().sort((a, b) => a.so - b.so);
   let h = '<div style="font-weight:700;font-size:16px">📋 ' + escapeHtml(e.tieuDePhieu || "") + "</div>";
   h += '<div class="small" style="margin-top:4px">Bài: <b>' + escapeHtml(e.tenBai || d.bai || "") + "</b> • " + os.length +
-    " ô điền → video " + (os.length + 3) + " cảnh (mở phiếu câm → điền từng ô → bảng đáp án GV → QR bài tập). Đáp án lấy nguyên văn từ giáo án, AI không sửa.</div>";
+    " ô điền → video " + (os.length + 2) + " cảnh (mở phiếu câm → điền từng ô → QR bài tập). Đáp án lấy nguyên văn từ giáo án, AI không sửa.</div>";
   h += '<div style="margin-top:8px">';
   os.forEach(o => {
     const da = String(o.dapAn || "");
@@ -3760,7 +3749,7 @@ function preparePhieuScript(){
     grade: String(phieuSelected.grade || ""),
     segments: segs,
     _mode: "phieu",
-    _phieu: { id: phieuSelected.id, tenBai: phieuSelected.tenBai || "", tieuDePhieu: phieuSelected.tieuDePhieu || "", soO: phieuSelected.soO || segs.length - 3 },
+    _phieu: { id: phieuSelected.id, tenBai: phieuSelected.tenBai || "", tieuDePhieu: phieuSelected.tieuDePhieu || "", soO: phieuSelected.soO || segs.length - 2 },
     _picked: pickedLesson ? {
       subjectCode: pickedLesson.subjectCode, subjectName: pickedLesson.subjectName,
       grade: pickedLesson.grade, lessonNo: pickedLesson.lessonNo,
