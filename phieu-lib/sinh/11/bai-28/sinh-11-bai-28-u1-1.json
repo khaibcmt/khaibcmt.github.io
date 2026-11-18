@@ -1,0 +1,102 @@
+{
+ "bai": "MỐI QUAN HỆ GIỮA CÁC QUÁ TRÌNH SINH LÍ TRONG CƠ THỂ SINH VẬT — Sinh học 11",
+ "fileNguon": "Sinh học/Khối 11/Giáo án/HK2/KHBD_Sinh_hoc_11_Bai_28_Moi_quan_he_giua_cac_qua_trinh_sinh_li_trong_co_the_sinh_vat_1_tiet.docx",
+ "cauHoiPhieu": "Nhiệm vụ: Các nhóm hoàn thành các bảng sau dựa vào SGK Bài 28, sau đó trình bày trước lớp.",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Cung cấp nước và chất khoáng — nguyên liệu cho quang hợp",
+   "tieuChi": "Trao đổi nước và chất khoáng",
+   "cot": "Mối quan hệ với các quá trình khác",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Tạo chất hữu cơ, tích luỹ năng lượng; nguyên liệu cho hô hấp và sinh trưởng",
+   "tieuChi": "Quang hợp",
+   "cot": "Mối quan hệ với các quá trình khác",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 3,
+   "dapAn": "Phân giải chất hữu cơ, giải phóng năng lượng cho hấp thụ nước, khoáng và sinh trưởng",
+   "tieuChi": "Hô hấp",
+   "cot": "Mối quan hệ với các quá trình khác",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Hướng sáng, hướng nước, hướng hoá giúp cây hấp thụ ánh sáng, nước, khoáng thuận lợi",
+   "tieuChi": "Cảm ứng",
+   "cot": "Mối quan hệ với các quá trình khác",
+   "hang": 4,
+   "cotSo": 1
+  },
+  {
+   "so": 5,
+   "dapAn": "Cây sinh trưởng, phát triển đến giai đoạn nhất định mới ra hoa, kết quả, tạo hạt",
+   "tieuChi": "Sinh trưởng và phát triển, sinh sản",
+   "cot": "Mối quan hệ với các quá trình khác",
+   "hang": 5,
+   "cotSo": 1
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Quá trình sinh lí ở thực vật",
+   "Mối quan hệ với các quá trình khác"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Trao đổi nước và chất khoáng",
+    "cacCot": [
+     {
+      "cot": "Mối quan hệ với các quá trình khác",
+      "noiDung": "Cung cấp nước và chất khoáng — nguyên liệu cho quang hợp"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Quang hợp",
+    "cacCot": [
+     {
+      "cot": "Mối quan hệ với các quá trình khác",
+      "noiDung": "Tạo chất hữu cơ, tích luỹ năng lượng; nguyên liệu cho hô hấp và sinh trưởng"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Hô hấp",
+    "cacCot": [
+     {
+      "cot": "Mối quan hệ với các quá trình khác",
+      "noiDung": "Phân giải chất hữu cơ, giải phóng năng lượng cho hấp thụ nước, khoáng và sinh trưởng"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Cảm ứng",
+    "cacCot": [
+     {
+      "cot": "Mối quan hệ với các quá trình khác",
+      "noiDung": "Hướng sáng, hướng nước, hướng hoá giúp cây hấp thụ ánh sáng, nước, khoáng thuận lợi"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Sinh trưởng và phát triển, sinh sản",
+    "cacCot": [
+     {
+      "cot": "Mối quan hệ với các quá trình khác",
+      "noiDung": "Cây sinh trưởng, phát triển đến giai đoạn nhất định mới ra hoa, kết quả, tạo hạt"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
