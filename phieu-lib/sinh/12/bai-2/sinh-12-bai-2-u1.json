@@ -1,0 +1,279 @@
+{
+ "bai": "GENE, QUÁ TRÌNH TRUYỀN ĐẠT THÔNG TIN DI TRUYỀN VÀ HỆ GENE — Sinh học 12",
+ "fileNguon": "Sinh học/Khối 12/Giáo án/HK1/KHBD_Sinh_hoc_12_Bai_2_Gene_qua_trinh_truyen_dat_thong_tin_di_truyen_va_he_gene_3_tiet.docx",
+ "cauHoiPhieu": "Nhiệm vụ: Các nhóm hoàn thành bảng sau dựa vào SGK Bài 2, sau đó trình bày trước lớp.",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Gồm ba vùng: vùng điều hoà (đầu 3' trên mạch khuôn, có promoter và operator), vùng mã hoá, vùng kết thúc (đầu 5' trên mạch khuôn)",
+   "tieuChi": "Cấu trúc của gene",
+   "cot": "Đặc điểm / diễn biến",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Vùng điều hoà khởi động và điều khiển phiên mã; vùng mã hoá quy định trình tự nucleotide trong RNA; vùng kết thúc mang tín hiệu kết thúc phiên mã",
+   "tieuChi": "Cấu trúc của gene",
+   "cot": "Chức năng / ý nghĩa",
+   "hang": 1,
+   "cotSo": 2
+  },
+  {
+   "so": 3,
+   "dapAn": "Nhân sơ: các gene liên quan về chức năng thành từng nhóm, chung vùng điều hoà và vùng kết thúc, vùng mã hoá liên tục; nhân thực: mỗi gene có vùng điều hoà, vùng mã hoá và vùng kết thúc riêng, vùng mã hoá phân mảnh thành exon và intron",
+   "tieuChi": "Gene ở sinh vật nhân sơ và nhân thực",
+   "cot": "Đặc điểm / diễn biến",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Phân biệt được cấu trúc gene của hai nhóm sinh vật",
+   "tieuChi": "Gene ở sinh vật nhân sơ và nhân thực",
+   "cot": "Chức năng / ý nghĩa",
+   "hang": 2,
+   "cotSo": 2
+  },
+  {
+   "so": 5,
+   "dapAn": "Khoảng 3,2 tỉ cặp nucleotide; khoảng 20.000 – 25.000 gene mã hoá protein; chỉ khoảng 1,5% hệ gene mã hoá protein",
+   "tieuChi": "Hệ gene người",
+   "cot": "Đặc điểm / diễn biến",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 6,
+   "dapAn": "Là cơ sở của chẩn đoán bệnh di truyền, y học cá thể hoá, nghiên cứu tiến hoá và bảo tồn đa dạng sinh học",
+   "tieuChi": "Hệ gene người",
+   "cot": "Chức năng / ý nghĩa",
+   "hang": 3,
+   "cotSo": 2
+  },
+  {
+   "so": 7,
+   "dapAn": "Tổng hợp RNA dựa trên mạch khuôn của gene; gồm ba bước: khởi đầu, kéo dài, kết thúc; ở nhân thực, tiền mRNA được gắn mũ 7-methyl guanine, đuôi poly A, loại bỏ intron và nối các exon thành mRNA trưởng thành",
+   "tieuChi": "Quá trình phiên mã",
+   "cot": "Đặc điểm / diễn biến",
+   "hang": 4,
+   "cotSo": 1
+  },
+  {
+   "so": 8,
+   "dapAn": "Truyền thông tin di truyền từ gene sang mRNA; một lần phiên mã tạo ra một phân tử RNA",
+   "tieuChi": "Quá trình phiên mã",
+   "cot": "Chức năng / ý nghĩa",
+   "hang": 4,
+   "cotSo": 2
+  },
+  {
+   "so": 9,
+   "dapAn": "mRNA: mạch đơn, dạng thẳng; tRNA: mạch đơn có ba thuỳ chức năng; rRNA: kết hợp với protein tạo ribosome",
+   "tieuChi": "Các loại RNA",
+   "cot": "Đặc điểm / diễn biến",
+   "hang": 5,
+   "cotSo": 1
+  },
+  {
+   "so": 10,
+   "dapAn": "mRNA làm khuôn dịch mã; tRNA vận chuyển amino acid tới ribosome; rRNA tạo nên ribosome, nơi tổng hợp protein",
+   "tieuChi": "Các loại RNA",
+   "cot": "Chức năng / ý nghĩa",
+   "hang": 5,
+   "cotSo": 2
+  },
+  {
+   "so": 11,
+   "dapAn": "Tổng hợp DNA dựa trên mạch khuôn là RNA; ví dụ virus HIV tổng hợp cDNA nhờ enzyme phiên mã ngược",
+   "tieuChi": "Phiên mã ngược",
+   "cot": "Đặc điểm / diễn biến",
+   "hang": 6,
+   "cotSo": 1
+  },
+  {
+   "so": 12,
+   "dapAn": "Là cơ chế nhân lên của một số virus; cơ sở của kĩ thuật tổng hợp cDNA trong nghiên cứu và ứng dụng công nghệ gene",
+   "tieuChi": "Phiên mã ngược",
+   "cot": "Chức năng / ý nghĩa",
+   "hang": 6,
+   "cotSo": 2
+  },
+  {
+   "so": 13,
+   "dapAn": "Một bộ các bộ ba nucleotide trên mRNA quy định các amino acid trong protein; mỗi bộ ba là một codon; đọc liên tục, không gối lên nhau",
+   "tieuChi": "Mã di truyền",
+   "cot": "Đặc điểm / diễn biến",
+   "hang": 7,
+   "cotSo": 1
+  },
+  {
+   "so": 14,
+   "dapAn": "Tính phổ biến, tính đặc hiệu, tính thoái hoá",
+   "tieuChi": "Mã di truyền",
+   "cot": "Chức năng / ý nghĩa",
+   "hang": 7,
+   "cotSo": 2
+  },
+  {
+   "so": 15,
+   "dapAn": "Tổng hợp protein dựa trên trình tự nucleotide trong mRNA; gồm hoạt hoá amino acid, khởi đầu, kéo dài, kết thúc; số amino acid = (số nucleotide vùng mã hoá / 3) – 2",
+   "tieuChi": "Quá trình dịch mã",
+   "cot": "Đặc điểm / diễn biến",
+   "hang": 8,
+   "cotSo": 1
+  },
+  {
+   "so": 16,
+   "dapAn": "Chuyển thông tin di truyền từ dạng mã di truyền trên mRNA thành các amino acid trên chuỗi polypeptide",
+   "tieuChi": "Quá trình dịch mã",
+   "cot": "Chức năng / ý nghĩa",
+   "hang": 8,
+   "cotSo": 2
+  },
+  {
+   "so": 17,
+   "dapAn": "DNA —tái bản→ DNA; DNA —phiên mã→ mRNA —dịch mã→ protein —→ tính trạng",
+   "tieuChi": "Sơ đồ liên kết ba quá trình",
+   "cot": "Đặc điểm / diễn biến",
+   "hang": 9,
+   "cotSo": 1
+  },
+  {
+   "so": 18,
+   "dapAn": "Thông tin di truyền được truyền qua các thế hệ tế bào và cơ thể, quy định các tính trạng của sinh vật",
+   "tieuChi": "Sơ đồ liên kết ba quá trình",
+   "cot": "Chức năng / ý nghĩa",
+   "hang": 9,
+   "cotSo": 2
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Nội dung",
+   "Đặc điểm / diễn biến",
+   "Chức năng / ý nghĩa"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Cấu trúc của gene",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm / diễn biến",
+      "noiDung": "Gồm ba vùng: vùng điều hoà (đầu 3' trên mạch khuôn, có promoter và operator), vùng mã hoá, vùng kết thúc (đầu 5' trên mạch khuôn)"
+     },
+     {
+      "cot": "Chức năng / ý nghĩa",
+      "noiDung": "Vùng điều hoà khởi động và điều khiển phiên mã; vùng mã hoá quy định trình tự nucleotide trong RNA; vùng kết thúc mang tín hiệu kết thúc phiên mã"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Gene ở sinh vật nhân sơ và nhân thực",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm / diễn biến",
+      "noiDung": "Nhân sơ: các gene liên quan về chức năng thành từng nhóm, chung vùng điều hoà và vùng kết thúc, vùng mã hoá liên tục; nhân thực: mỗi gene có vùng điều hoà, vùng mã hoá và vùng kết thúc riêng, vùng mã hoá phân mảnh thành exon và intron"
+     },
+     {
+      "cot": "Chức năng / ý nghĩa",
+      "noiDung": "Phân biệt được cấu trúc gene của hai nhóm sinh vật"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Hệ gene người",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm / diễn biến",
+      "noiDung": "Khoảng 3,2 tỉ cặp nucleotide; khoảng 20.000 – 25.000 gene mã hoá protein; chỉ khoảng 1,5% hệ gene mã hoá protein"
+     },
+     {
+      "cot": "Chức năng / ý nghĩa",
+      "noiDung": "Là cơ sở của chẩn đoán bệnh di truyền, y học cá thể hoá, nghiên cứu tiến hoá và bảo tồn đa dạng sinh học"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Quá trình phiên mã",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm / diễn biến",
+      "noiDung": "Tổng hợp RNA dựa trên mạch khuôn của gene; gồm ba bước: khởi đầu, kéo dài, kết thúc; ở nhân thực, tiền mRNA được gắn mũ 7-methyl guanine, đuôi poly A, loại bỏ intron và nối các exon thành mRNA trưởng thành"
+     },
+     {
+      "cot": "Chức năng / ý nghĩa",
+      "noiDung": "Truyền thông tin di truyền từ gene sang mRNA; một lần phiên mã tạo ra một phân tử RNA"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Các loại RNA",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm / diễn biến",
+      "noiDung": "mRNA: mạch đơn, dạng thẳng; tRNA: mạch đơn có ba thuỳ chức năng; rRNA: kết hợp với protein tạo ribosome"
+     },
+     {
+      "cot": "Chức năng / ý nghĩa",
+      "noiDung": "mRNA làm khuôn dịch mã; tRNA vận chuyển amino acid tới ribosome; rRNA tạo nên ribosome, nơi tổng hợp protein"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Phiên mã ngược",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm / diễn biến",
+      "noiDung": "Tổng hợp DNA dựa trên mạch khuôn là RNA; ví dụ virus HIV tổng hợp cDNA nhờ enzyme phiên mã ngược"
+     },
+     {
+      "cot": "Chức năng / ý nghĩa",
+      "noiDung": "Là cơ chế nhân lên của một số virus; cơ sở của kĩ thuật tổng hợp cDNA trong nghiên cứu và ứng dụng công nghệ gene"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Mã di truyền",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm / diễn biến",
+      "noiDung": "Một bộ các bộ ba nucleotide trên mRNA quy định các amino acid trong protein; mỗi bộ ba là một codon; đọc liên tục, không gối lên nhau"
+     },
+     {
+      "cot": "Chức năng / ý nghĩa",
+      "noiDung": "Tính phổ biến, tính đặc hiệu, tính thoái hoá"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Quá trình dịch mã",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm / diễn biến",
+      "noiDung": "Tổng hợp protein dựa trên trình tự nucleotide trong mRNA; gồm hoạt hoá amino acid, khởi đầu, kéo dài, kết thúc; số amino acid = (số nucleotide vùng mã hoá / 3) – 2"
+     },
+     {
+      "cot": "Chức năng / ý nghĩa",
+      "noiDung": "Chuyển thông tin di truyền từ dạng mã di truyền trên mRNA thành các amino acid trên chuỗi polypeptide"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Sơ đồ liên kết ba quá trình",
+    "cacCot": [
+     {
+      "cot": "Đặc điểm / diễn biến",
+      "noiDung": "DNA —tái bản→ DNA; DNA —phiên mã→ mRNA —dịch mã→ protein —→ tính trạng"
+     },
+     {
+      "cot": "Chức năng / ý nghĩa",
+      "noiDung": "Thông tin di truyền được truyền qua các thế hệ tế bào và cơ thể, quy định các tính trạng của sinh vật"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
