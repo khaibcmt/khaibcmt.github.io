@@ -1,0 +1,85 @@
+{
+ "bai": "THỰC HÀNH: QUAN SÁT MỘT SỐ DẠNG ĐỘT BIẾN NHIỄM SẮC THỂ — Sinh học 12",
+ "fileNguon": "Sinh học/Khối 12/Giáo án/HK1/KHBD_Sinh_hoc_12_Bai_14_Thuc_hanh_Quan_sat_mot_so_dang_dot_bien_nhiem_sac_the_1_tiet.docx",
+ "cauHoiPhieu": "Nhiệm vụ: Các nhóm hoàn thành ba bảng sau trong quá trình học tập, sau đó trình bày trước lớp. Bảng A. Yêu cầu cần đạt, chuẩn bị và nguyên lí quan sát đột biến nhiễm sắc thể",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Thực hành, quan sát được đột biến nhiễm sắc thể trên tiêu bản cố định và tạm thời; tìm hiểu được tác hại gây đột biến ở người của một số chất độc (dioxin, thuốc diệt cỏ 2,4D,...)",
+   "tieuChi": "Yêu cầu cần đạt",
+   "cot": "Chi tiết",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Kính hiển vi; tiêu bản cố định bộ nhiễm sắc thể bình thường và bộ nhiễm sắc thể bị đột biến ở một số loài; ảnh chụp bộ nhiễm sắc thể bình thường và bộ nhiễm sắc thể bị đột biến (karyotype)",
+   "tieuChi": "Dụng cụ, thiết bị",
+   "cot": "Chi tiết",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 3,
+   "dapAn": "Các nhiễm sắc thể trong bộ nhiễm sắc thể lưỡng bội bình thường tồn tại thành từng cặp tương đồng, gồm hai chiếc nhiễm sắc thể có hình dạng, kích thước giống nhau (trừ cặp nhiễm sắc thể giới tính); quan sát dưới kính hiển vi và so sánh hình dạng, kích thước, số lượng nhiễm sắc thể trong tiêu bản với bộ nhiễm sắc thể bình thường cùng loài để nhận biết đột biến cấu trúc (mất đoạn, lặp đoạn, chuyển đoạn) và đột biến số lượng (lệch bội, đa bội)",
+   "tieuChi": "Nguyên lí",
+   "cot": "Chi tiết",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Điều chỉnh vật kính từ độ phóng đại thấp lên cao, không để vật kính chạm vào tiêu bản; cầm tiêu bản bằng hai tay, không dùng tay trần chạm vào mặt tiêu bản; rửa tay sạch sau khi thực hành; đeo găng tay, khẩu trang, kính bảo hộ khi tiếp xúc với hoá chất; tuyệt đối không tiếp xúc với các chất độc gây đột biến (dioxin, thuốc diệt cỏ 2,4D)",
+   "tieuChi": "An toàn thực hành",
+   "cot": "Chi tiết",
+   "hang": 4,
+   "cotSo": 1
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Nội dung",
+   "Chi tiết"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Yêu cầu cần đạt",
+    "cacCot": [
+     {
+      "cot": "Chi tiết",
+      "noiDung": "Thực hành, quan sát được đột biến nhiễm sắc thể trên tiêu bản cố định và tạm thời; tìm hiểu được tác hại gây đột biến ở người của một số chất độc (dioxin, thuốc diệt cỏ 2,4D,...)"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Dụng cụ, thiết bị",
+    "cacCot": [
+     {
+      "cot": "Chi tiết",
+      "noiDung": "Kính hiển vi; tiêu bản cố định bộ nhiễm sắc thể bình thường và bộ nhiễm sắc thể bị đột biến ở một số loài; ảnh chụp bộ nhiễm sắc thể bình thường và bộ nhiễm sắc thể bị đột biến (karyotype)"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Nguyên lí",
+    "cacCot": [
+     {
+      "cot": "Chi tiết",
+      "noiDung": "Các nhiễm sắc thể trong bộ nhiễm sắc thể lưỡng bội bình thường tồn tại thành từng cặp tương đồng, gồm hai chiếc nhiễm sắc thể có hình dạng, kích thước giống nhau (trừ cặp nhiễm sắc thể giới tính); quan sát dưới kính hiển vi và so sánh hình dạng, kích thước, số lượng nhiễm sắc thể trong tiêu bản với bộ nhiễm sắc thể bình thường cùng loài để nhận biết đột biến cấu trúc (mất đoạn, lặp đoạn, chuyển đoạn) và đột biến số lượng (lệch bội, đa bội)"
+     }
+    ]
+   },
+   {
+    "tieuChi": "An toàn thực hành",
+    "cacCot": [
+     {
+      "cot": "Chi tiết",
+      "noiDung": "Điều chỉnh vật kính từ độ phóng đại thấp lên cao, không để vật kính chạm vào tiêu bản; cầm tiêu bản bằng hai tay, không dùng tay trần chạm vào mặt tiêu bản; rửa tay sạch sau khi thực hành; đeo găng tay, khẩu trang, kính bảo hộ khi tiếp xúc với hoá chất; tuyệt đối không tiếp xúc với các chất độc gây đột biến (dioxin, thuốc diệt cỏ 2,4D)"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
