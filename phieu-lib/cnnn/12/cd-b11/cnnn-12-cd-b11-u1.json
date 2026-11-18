@@ -1,0 +1,76 @@
+{
+ "bai": "NUÔI DƯỠNG VÀ CHĂM SÓC CÁ CẢNH NƯỚC NGỌT — Công nghệ nông nghiệp 12",
+ "fileNguon": "Công nghệ nông nghiệp/Khối 12/Giáo án/Chuyên đề/CN12-CD-B11_Nuoi_duong_va_cham_soc_ca_canh_nuoc_ngot.docx",
+ "cauHoiPhieu": "PHIẾU HỌC TẬP — BÀI 11: NUÔI DƯỠNG VÀ CHĂM SÓC CÁ CẢNH NƯỚC NGỌT Họ và tên: ………………………………………… Lớp: ………… Nhóm: …………",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Phần I – Cá cảnh trong bể",
+   "tieuChi": "1",
+   "cot": "Mục / nội dung",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Mô tả kĩ thuật chuẩn bị bể, chọn và thả cá, chăm sóc cá cảnh nước ngọt trong bể; nêu cách phòng, trị bệnh đốm trắng và bệnh nấm thuỷ mi.",
+   "tieuChi": "1",
+   "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+   "hang": 1,
+   "cotSo": 2
+  },
+  {
+   "so": 3,
+   "dapAn": "Phần II – Cá koi trong hồ",
+   "tieuChi": "2",
+   "cot": "Mục / nội dung",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Mô tả kĩ thuật chuẩn bị hồ, chọn và thả cá, chăm sóc cá koi; trình bày biểu hiện và cách xử lí bệnh KHV trên cá koi.",
+   "tieuChi": "2",
+   "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+   "hang": 2,
+   "cotSo": 2
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "STT",
+   "Mục / nội dung",
+   "Câu hỏi khám phá và nội dung cần hoàn thành"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "1",
+    "cacCot": [
+     {
+      "cot": "Mục / nội dung",
+      "noiDung": "Phần I – Cá cảnh trong bể"
+     },
+     {
+      "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+      "noiDung": "Mô tả kĩ thuật chuẩn bị bể, chọn và thả cá, chăm sóc cá cảnh nước ngọt trong bể; nêu cách phòng, trị bệnh đốm trắng và bệnh nấm thuỷ mi."
+     }
+    ]
+   },
+   {
+    "tieuChi": "2",
+    "cacCot": [
+     {
+      "cot": "Mục / nội dung",
+      "noiDung": "Phần II – Cá koi trong hồ"
+     },
+     {
+      "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+      "noiDung": "Mô tả kĩ thuật chuẩn bị hồ, chọn và thả cá, chăm sóc cá koi; trình bày biểu hiện và cách xử lí bệnh KHV trên cá koi."
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
