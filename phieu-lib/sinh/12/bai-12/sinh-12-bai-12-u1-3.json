@@ -1,0 +1,134 @@
+{
+ "bai": "ĐỘT BIẾN NHIỄM SẮC THỂ — Sinh học 12",
+ "fileNguon": "Sinh học/Khối 12/Giáo án/HK1/KHBD_Sinh_hoc_12_Bai_12_Dot_bien_nhiem_sac_the_3_tiet.docx",
+ "cauHoiPhieu": "Nhiệm vụ: Các nhóm hoàn thành ba bảng sau trong quá trình học tập, sau đó trình bày trước lớp. Bảng A. Các dạng đột biến cấu trúc nhiễm sắc thể",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Mất đoạn làm mất gene, thường gây chết, giảm sức sống hoặc khả năng sinh sản; lặp đoạn làm mất cân bằng gene; đảo đoạn, chuyển đoạn làm thay đổi sự biểu hiện của gene; đột biến số lượng làm mất cân bằng hệ gene (hội chứng Down, Turner, Klinefelter, bệnh bạch cầu mạn dòng tuỷ)",
+   "tieuChi": "Đối với thể đột biến",
+   "cot": "Tác hại",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Một số đột biến đa bội có lợi ở thực vật: cơ quan sinh dưỡng to, sinh trưởng nhanh, chống chịu tốt",
+   "tieuChi": "Đối với thể đột biến",
+   "cot": "Vai trò",
+   "hang": 1,
+   "cotSo": 2
+  },
+  {
+   "so": 3,
+   "dapAn": "—",
+   "tieuChi": "Trong tiến hoá",
+   "cot": "Tác hại",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Tái cấu trúc bộ nhiễm sắc thể, bổ sung vật chất di truyền, tăng kích thước hệ gene, tạo nguồn nguyên liệu cho tiến hoá; đột biến đa bội là con đường hình thành loài mới nhanh chóng",
+   "tieuChi": "Trong tiến hoá",
+   "cot": "Vai trò",
+   "hang": 2,
+   "cotSo": 2
+  },
+  {
+   "so": 5,
+   "dapAn": "—",
+   "tieuChi": "Trong chọn giống",
+   "cot": "Tác hại",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 6,
+   "dapAn": "Tạo giống mới (dưa hấu tam bội không hạt, cây đa bội năng suất cao); dùng đột biến mất đoạn để xác định vị trí gene trên nhiễm sắc thể",
+   "tieuChi": "Trong chọn giống",
+   "cot": "Vai trò",
+   "hang": 3,
+   "cotSo": 2
+  },
+  {
+   "so": 7,
+   "dapAn": "—",
+   "tieuChi": "Trong nghiên cứu di truyền",
+   "cot": "Tác hại",
+   "hang": 4,
+   "cotSo": 1
+  },
+  {
+   "so": 8,
+   "dapAn": "Xác định vị trí gene trên nhiễm sắc thể; nghiên cứu cơ chế phát sinh một số bệnh ở người (nhiễm sắc thể Philadelphia trong bệnh bạch cầu mạn dòng tuỷ)",
+   "tieuChi": "Trong nghiên cứu di truyền",
+   "cot": "Vai trò",
+   "hang": 4,
+   "cotSo": 2
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Nội dung",
+   "Tác hại",
+   "Vai trò"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Đối với thể đột biến",
+    "cacCot": [
+     {
+      "cot": "Tác hại",
+      "noiDung": "Mất đoạn làm mất gene, thường gây chết, giảm sức sống hoặc khả năng sinh sản; lặp đoạn làm mất cân bằng gene; đảo đoạn, chuyển đoạn làm thay đổi sự biểu hiện của gene; đột biến số lượng làm mất cân bằng hệ gene (hội chứng Down, Turner, Klinefelter, bệnh bạch cầu mạn dòng tuỷ)"
+     },
+     {
+      "cot": "Vai trò",
+      "noiDung": "Một số đột biến đa bội có lợi ở thực vật: cơ quan sinh dưỡng to, sinh trưởng nhanh, chống chịu tốt"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Trong tiến hoá",
+    "cacCot": [
+     {
+      "cot": "Tác hại",
+      "noiDung": "—"
+     },
+     {
+      "cot": "Vai trò",
+      "noiDung": "Tái cấu trúc bộ nhiễm sắc thể, bổ sung vật chất di truyền, tăng kích thước hệ gene, tạo nguồn nguyên liệu cho tiến hoá; đột biến đa bội là con đường hình thành loài mới nhanh chóng"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Trong chọn giống",
+    "cacCot": [
+     {
+      "cot": "Tác hại",
+      "noiDung": "—"
+     },
+     {
+      "cot": "Vai trò",
+      "noiDung": "Tạo giống mới (dưa hấu tam bội không hạt, cây đa bội năng suất cao); dùng đột biến mất đoạn để xác định vị trí gene trên nhiễm sắc thể"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Trong nghiên cứu di truyền",
+    "cacCot": [
+     {
+      "cot": "Tác hại",
+      "noiDung": "—"
+     },
+     {
+      "cot": "Vai trò",
+      "noiDung": "Xác định vị trí gene trên nhiễm sắc thể; nghiên cứu cơ chế phát sinh một số bệnh ở người (nhiễm sắc thể Philadelphia trong bệnh bạch cầu mạn dòng tuỷ)"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
