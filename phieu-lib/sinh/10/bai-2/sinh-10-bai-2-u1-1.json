@@ -1,0 +1,145 @@
+{
+ "bai": "Bài 2: Phương pháp nghiên cứu và học tập môn Sinh học — Sinh học 10",
+ "fileNguon": "Sinh học/Khối 10/Giáo án/HK1/KHBD_Sinh_hoc_10_Bai_2_Phuong_phap_nghien_cuu_va_hoc_tap_mon_sinh_hoc_2_tiet.docx",
+ "cauHoiPhieu": "Phụ lục 1: Phiếu học tập — Bài 2: Phương pháp nghiên cứu và học tập môn Sinh học",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Sử dụng giác quan để thu thập thông tin về đối tượng được quan sát; mọi công trình nghiên cứu sinh học đều bắt đầu từ các quan sát",
+   "tieuChi": "Phương pháp quan sát",
+   "cot": "Khái niệm và đặc điểm",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Lựa chọn đối tượng và phạm vi quan sát; lựa chọn công cụ quan sát; ghi chép số liệu",
+   "tieuChi": "Phương pháp quan sát",
+   "cot": "Các bước / kĩ thuật chính",
+   "hang": 1,
+   "cotSo": 2
+  },
+  {
+   "so": 3,
+   "dapAn": "Quan sát sự sinh trưởng của cây đậu, quan sát hình dạng tế bào thực vật",
+   "tieuChi": "Phương pháp quan sát",
+   "cot": "Ví dụ ứng dụng",
+   "hang": 1,
+   "cotSo": 3,
+   "cotPhu": true
+  },
+  {
+   "so": 4,
+   "dapAn": "Tuân thủ các quy định để giữ an toàn cho bản thân và các thiết bị, tài sản của phòng thí nghiệm",
+   "tieuChi": "Phương pháp làm việc trong phòng thí nghiệm",
+   "cot": "Khái niệm và đặc điểm",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 5,
+   "dapAn": "Đảm bảo an toàn (cháy nổ và hóa chất, vận hành thiết bị, trang bị cá nhân); kĩ thuật phòng thí nghiệm (giải phẫu, làm tiêu bản tế bào, nhiễm sắc thể)",
+   "tieuChi": "Phương pháp làm việc trong phòng thí nghiệm",
+   "cot": "Các bước / kĩ thuật chính",
+   "hang": 2,
+   "cotSo": 2
+  },
+  {
+   "so": 6,
+   "dapAn": "Làm tiêu bản quan sát tế bào, nhiễm sắc thể",
+   "tieuChi": "Phương pháp làm việc trong phòng thí nghiệm",
+   "cot": "Ví dụ ứng dụng",
+   "hang": 2,
+   "cotSo": 3,
+   "cotPhu": true
+  },
+  {
+   "so": 7,
+   "dapAn": "Chủ động tác động vào đối tượng nghiên cứu nhằm kiểm soát sự phát triển của chúng một cách có chủ đích",
+   "tieuChi": "Phương pháp thực nghiệm khoa học",
+   "cot": "Khái niệm và đặc điểm",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 8,
+   "dapAn": "Nghiên cứu, phân loại sinh vật; tách chiết; nuôi cấy",
+   "tieuChi": "Phương pháp thực nghiệm khoa học",
+   "cot": "Các bước / kĩ thuật chính",
+   "hang": 3,
+   "cotSo": 2
+  },
+  {
+   "so": 9,
+   "dapAn": "Nghiên cứu ảnh hưởng của kali đến sinh trưởng của cây đậu; nuôi cấy vi khuẩn",
+   "tieuChi": "Phương pháp thực nghiệm khoa học",
+   "cot": "Ví dụ ứng dụng",
+   "hang": 3,
+   "cotSo": 3,
+   "cotPhu": true
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Phương pháp",
+   "Khái niệm và đặc điểm",
+   "Các bước / kĩ thuật chính",
+   "Ví dụ ứng dụng"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Phương pháp quan sát",
+    "cacCot": [
+     {
+      "cot": "Khái niệm và đặc điểm",
+      "noiDung": "Sử dụng giác quan để thu thập thông tin về đối tượng được quan sát; mọi công trình nghiên cứu sinh học đều bắt đầu từ các quan sát"
+     },
+     {
+      "cot": "Các bước / kĩ thuật chính",
+      "noiDung": "Lựa chọn đối tượng và phạm vi quan sát; lựa chọn công cụ quan sát; ghi chép số liệu"
+     },
+     {
+      "cot": "Ví dụ ứng dụng",
+      "noiDung": "Quan sát sự sinh trưởng của cây đậu, quan sát hình dạng tế bào thực vật"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Phương pháp làm việc trong phòng thí nghiệm",
+    "cacCot": [
+     {
+      "cot": "Khái niệm và đặc điểm",
+      "noiDung": "Tuân thủ các quy định để giữ an toàn cho bản thân và các thiết bị, tài sản của phòng thí nghiệm"
+     },
+     {
+      "cot": "Các bước / kĩ thuật chính",
+      "noiDung": "Đảm bảo an toàn (cháy nổ và hóa chất, vận hành thiết bị, trang bị cá nhân); kĩ thuật phòng thí nghiệm (giải phẫu, làm tiêu bản tế bào, nhiễm sắc thể)"
+     },
+     {
+      "cot": "Ví dụ ứng dụng",
+      "noiDung": "Làm tiêu bản quan sát tế bào, nhiễm sắc thể"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Phương pháp thực nghiệm khoa học",
+    "cacCot": [
+     {
+      "cot": "Khái niệm và đặc điểm",
+      "noiDung": "Chủ động tác động vào đối tượng nghiên cứu nhằm kiểm soát sự phát triển của chúng một cách có chủ đích"
+     },
+     {
+      "cot": "Các bước / kĩ thuật chính",
+      "noiDung": "Nghiên cứu, phân loại sinh vật; tách chiết; nuôi cấy"
+     },
+     {
+      "cot": "Ví dụ ứng dụng",
+      "noiDung": "Nghiên cứu ảnh hưởng của kali đến sinh trưởng của cây đậu; nuôi cấy vi khuẩn"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
