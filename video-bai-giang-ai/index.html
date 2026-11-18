@@ -92,6 +92,9 @@
   .pick-grid{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
   .pick-grid img{width:88px;height:66px;object-fit:cover;border-radius:8px;border:2px solid var(--line);cursor:pointer}
   .pick-grid img:hover{border-color:var(--accent)}
+  .pick-grid img.sel{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue)}
+  .online-thumb{width:132px;height:99px;object-fit:contain;background:#eef4ee;border-radius:8px;border:2px solid var(--blue);display:block}
+  .obadge{display:inline-block;background:#123c5f;color:#c4e4ff;border-radius:6px;padding:2px 8px;font-size:12.5px;font-weight:700;margin-left:6px}
 </style>
 </head>
 <body>
@@ -185,6 +188,7 @@
       <input type="file" id="libFile" accept="image/*" multiple class="hidden">
     </div>
     <div id="libWarn" class="warn hidden">⚠️ Trình duyệt không mở được IndexedDB — thư viện chỉ giữ được trong phiên làm việc này, tải lại trang sẽ mất ảnh. Thầy nên dùng Chrome và không mở trang ở chế độ ẩn danh.</div>
+    <div id="onlineLibBox" class="ok-box hidden" style="margin-top:10px"></div>
     <div id="libGrid"></div>
   </div>
 
@@ -465,6 +469,7 @@ function renderScriptReview(){
   if (!scriptData) return;
   $("scriptMeta").textContent = "🎬 " + (scriptData.title || "Video bài giảng") +
     (scriptData.subject ? " — " + scriptData.subject : "") + (scriptData.grade ? " • Lớp " + scriptData.grade : "");
+  autoAssignOnline();
   const box = $("scriptSegs"); box.innerHTML = "";
   scriptData.segments.forEach((sg, i) => {
     const d = document.createElement("div"); d.className = "seg";
@@ -529,6 +534,10 @@ $("shortenBtn").addEventListener("click", async () => {
     parsed.segments.forEach((sg, i) => {   /* giữ ảnh SGK đã gán theo vị trí đoạn */
       const old = scriptData.segments[i];
       if (old && old.sgkImageId && (sg.type === "image" || sg.type === "sgk")) sg.sgkImageId = old.sgkImageId;
+      if (old && old.onlinePath && (sg.type === "image" || sg.type === "sgk")) {
+        sg.onlinePath = old.onlinePath; sg.onlineUrl = old.onlineUrl;
+        sg.onlineFigure = old.onlineFigure; sg.onlineCaption = old.onlineCaption;
+      }
     });
     scriptData = parsed;
     assets = {}; audios = {};
@@ -668,6 +677,7 @@ async function addLibraryFiles(fileList, assignIdx){
       idbPut(rec);
       if (assignIdx != null && scriptData && scriptData.segments[assignIdx]) {
         scriptData.segments[assignIdx].sgkImageId = id;
+        clearOnlineAssign(scriptData.segments[assignIdx]);
       }
     } catch (e) { /* bỏ qua file lỗi */ }
   }
@@ -703,6 +713,113 @@ const libDrop = $("libDrop");
 ["dragleave", "drop"].forEach(ev => libDrop.addEventListener(ev, e => { e.preventDefault(); libDrop.classList.remove("over"); }));
 libDrop.addEventListener("drop", e => { if (e.dataTransfer) addLibraryFiles(e.dataTransfer.files, null); });
 
+/* =========================================================
+   KHO HÌNH SGK ONLINE — sgk-lib trên cùng origin (khaibcmt.github.io/sgk-lib).
+   Khi mở app: tự fetch ../sgk-lib/manifest.json. Thành công -> tự gán hình
+   cho segment "sgk" theo số hiệu hình + môn/khối/bài. Lỗi (mở file://) ->
+   im lặng dùng thư viện IndexedDB như cũ.
+   Ưu tiên nguồn hình khi dựng: kho online > thư viện trong máy > sinh AI.
+   ========================================================= */
+let onlineLib = [];
+let onlineLibReady = false;
+function onlineImgUrl(entry){ return "../" + entry.path; }
+function normTxt(s){
+  return String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d");
+}
+function ctxSubjectCode(){
+  const raw = normTxt((scriptData && scriptData.subject) || $("lessonSubject").value || "");
+  if (raw.indexOf("nong nghiep") >= 0 || raw.indexOf("cnnn") >= 0) return "cnnn";
+  if (raw.indexOf("sinh") >= 0) return "sinh";
+  return null;
+}
+function ctxGrade(){
+  const g = parseInt((scriptData && scriptData.grade) || $("lessonGrade").value || "", 10);
+  return isNaN(g) ? null : g;
+}
+function ctxLessonNo(){
+  const hay = normTxt(($("lessonName").value || "") + " " + ((scriptData && scriptData.title) || ""));
+  const m = hay.match(/bai\s*(\d+)/);
+  return m ? parseInt(m[1], 10) : null;
+}
+function figOfHint(sg){
+  const m = String((sg && sg.imageHint) || "").match(/[Hh]ình\s+(\d+)\.(\d+)/);
+  return m ? (m[1] + "." + m[2]) : null;
+}
+function scoreOnlineEntry(e, ctx){
+  if (ctx.subj && e.subjectCode !== ctx.subj) return -1;
+  let s = 0;
+  if (ctx.fig && e.figure === ctx.fig) s += 100;
+  else if (ctx.fig && e.figure && e.figure.split(".")[0] === ctx.fig.split(".")[0]) s += 10;
+  if (ctx.lesson && e.lessonCode === "bai-" + ctx.lesson) s += 40;
+  if (ctx.grade && e.grade === ctx.grade) s += 20;
+  return s;
+}
+function onlineCandidates(sg){
+  if (!onlineLibReady) return [];
+  const ctx = { subj: ctxSubjectCode(), grade: ctxGrade(), lesson: ctxLessonNo(), fig: figOfHint(sg) };
+  return onlineLib
+    .map(e => ({ e, s: scoreOnlineEntry(e, ctx) }))
+    .filter(x => x.s >= 0)
+    .sort((a, b) => b.s - a.s)
+    .map(x => Object.assign({}, x.e, { _score: x.s }));
+}
+function setOnlineAssign(sg, entry){
+  sg.onlinePath = entry.path;
+  sg.onlineUrl = onlineImgUrl(entry);
+  sg.onlineFigure = entry.figure || null;
+  sg.onlineCaption = entry.caption || entry.path;
+}
+function clearOnlineAssign(sg){
+  delete sg.onlinePath; delete sg.onlineUrl; delete sg.onlineFigure; delete sg.onlineCaption;
+}
+function autoAssignOnline(){
+  if (!onlineLibReady || !scriptData) return;
+  scriptData.segments.forEach(sg => {
+    if (sg.type !== "sgk" || sg.sgkImageId || sg.onlinePath) return;
+    const cands = onlineCandidates(sg);
+    /* chỉ tự gán khi khớp mạnh: đúng số hiệu hình, hoặc đúng bài + khối */
+    if (cands.length && cands[0]._score >= 60) setOnlineAssign(sg, cands[0]);
+  });
+}
+async function loadOnlineImage(url){
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const blob = await res.blob();
+    const objUrl = URL.createObjectURL(blob);
+    try { return await loadImageEl(objUrl); }
+    catch (e) { URL.revokeObjectURL(objUrl); throw e; }
+  } catch (e1) {
+    /* fallback: nạp thẳng bằng thẻ Image (cùng origin nên không làm bẩn canvas) */
+    return await new Promise((res, rej) => {
+      const im = new Image();
+      im.crossOrigin = "anonymous";
+      im.onload = () => res(im);
+      im.onerror = () => rej(new Error("Không tải được ảnh từ kho online (" + url + ")"));
+      im.src = url;
+    });
+  }
+}
+async function loadOnlineLib(){
+  const box = $("onlineLibBox");
+  try {
+    const res = await fetch("../sgk-lib/manifest.json", { cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+    if (!data || !Array.isArray(data.entries) || !data.entries.length) throw new Error("manifest rỗng");
+    onlineLib = data.entries;
+    onlineLibReady = true;
+    if (box) {
+      box.classList.remove("hidden");
+      box.innerHTML = "☁️ <b>Kho Hình SGK Online: " + onlineLib.length + " ảnh sẵn sàng</b> (Sinh học + Công nghệ nông nghiệp, khối 10–12). Khi duyệt kịch bản, app <b>tự gán hình SGK</b> theo số hiệu hình và bài — thầy chỉ cần đổi lại nếu muốn.";
+    }
+    if (scriptData) renderScriptReview();
+  } catch (e) {
+    /* mở bằng file:// hoặc mất mạng: im lặng dùng thư viện trong máy như cũ */
+    onlineLibReady = false;
+  }
+}
+
 /* ---------- UI gán hình cho từng segment (ở màn hình kịch bản) ---------- */
 function mkBtn(label, cls){
   const b = document.createElement("button");
@@ -714,22 +831,73 @@ function buildAssignUI(sg, i){
   wrap.style.marginTop = "8px";
   const assigned = sg.sgkImageId ? library.get(sg.sgkImageId) : null;
   const st = document.createElement("div"); st.className = "small"; st.style.marginBottom = "6px";
-  if (assigned) st.innerHTML = "🖼 Trạng thái hình: ✅ <b>Đã có hình SGK</b> — " + escapeHtml(assigned.name);
+  if (sg.onlinePath) st.innerHTML = "🖼 Trạng thái hình: ☁️ <b>Đã có hình SGK từ kho online</b>" +
+    '<span class="obadge">☁️ Tự gán: ' + escapeHtml(sg.onlineFigure ? ("Hình " + sg.onlineFigure + " SGK") : (sg.onlineCaption || "hình SGK")) + " ✓</span>";
+  else if (assigned) st.innerHTML = "🖼 Trạng thái hình: ✅ <b>Đã có hình SGK</b> — " + escapeHtml(assigned.name);
   else if (sg.type === "sgk") st.innerHTML = "🖼 Trạng thái hình: ⚠️ <b>Chưa có hình</b> — chọn hình SGK bên dưới, hoặc bật sinh AI dự phòng, hoặc bỏ qua (slide sẽ hiện ô trống kèm tiêu đề).";
   else st.innerHTML = "🖼 Trạng thái hình: chưa gán hình SGK — nếu không gán, app sẽ <b>sinh ảnh bằng AI</b> khi dựng.";
   wrap.appendChild(st);
+
+  if (sg.onlinePath) {
+    const prow = document.createElement("div");
+    prow.style.display = "flex"; prow.style.gap = "10px"; prow.style.alignItems = "flex-start"; prow.style.marginBottom = "8px";
+    const th = document.createElement("img");
+    th.className = "online-thumb"; th.src = sg.onlineUrl || ("../" + sg.onlinePath);
+    th.title = sg.onlineCaption || sg.onlinePath;
+    prow.appendChild(th);
+    const opick = document.createElement("div"); opick.className = "pick-grid hidden";
+    const btns = document.createElement("div"); btns.className = "row";
+    const bSwap = mkBtn("🔁 Đổi hình khác (kho online)", "btn");
+    bSwap.addEventListener("click", () => {
+      opick.innerHTML = "";
+      const cands = onlineCandidates(sg).slice(0, 12);
+      if (!cands.length) opick.innerHTML = '<span class="small">Không tìm thấy ứng viên khác trong kho online.</span>';
+      cands.forEach(e => {
+        const im = document.createElement("img");
+        im.src = onlineImgUrl(e);
+        im.title = (e.caption || e.path) + (e.figure ? " — Hình " + e.figure : "");
+        if (e.path === sg.onlinePath) im.className = "sel";
+        im.addEventListener("click", () => { setOnlineAssign(sg, e); delete sg.sgkImageId; renderScriptReview(); });
+        opick.appendChild(im);
+      });
+      opick.classList.toggle("hidden");
+    });
+    const bOff = mkBtn("✖ Bỏ gán online", "btn-ghost");
+    bOff.addEventListener("click", () => { clearOnlineAssign(sg); renderScriptReview(); });
+    btns.appendChild(bSwap); btns.appendChild(bOff);
+    prow.appendChild(btns);
+    wrap.appendChild(prow);
+    wrap.appendChild(opick);
+  }
 
   const row = document.createElement("div"); row.className = "row";
   const picker = document.createElement("div"); picker.className = "pick-grid hidden";
   const bPick = mkBtn("📚 Chọn hình SGK", "btn");
   bPick.addEventListener("click", () => {
     picker.innerHTML = "";
-    if (!library.size) {
+    if (!library.size && !onlineLibReady) {
       picker.innerHTML = '<span class="small">Thư viện đang trống — thầy nạp ảnh SGK ở mục Thư Viện Hình SGK phía trên trước.</span>';
-    } else {
+    }
+    if (library.size) {
+      const lb = document.createElement("div"); lb.className = "small"; lb.style.width = "100%"; lb.textContent = "📚 Hình trong máy:";
+      picker.appendChild(lb);
       library.forEach(rec => {
         const im = document.createElement("img"); im.src = rec.dataUrl; im.title = rec.name;
-        im.addEventListener("click", () => { sg.sgkImageId = rec.id; renderScriptReview(); });
+        im.addEventListener("click", () => { sg.sgkImageId = rec.id; clearOnlineAssign(sg); renderScriptReview(); });
+        picker.appendChild(im);
+      });
+    }
+    if (onlineLibReady) {
+      const lb2 = document.createElement("div"); lb2.className = "small"; lb2.style.width = "100%"; lb2.textContent = "☁️ Kho SGK online (gợi ý theo môn/bài/số hiệu hình):";
+      picker.appendChild(lb2);
+      const cands = onlineCandidates(sg).slice(0, 12);
+      if (!cands.length) {
+        const s2 = document.createElement("span"); s2.className = "small"; s2.textContent = "Chưa có ứng viên phù hợp trong kho online.";
+        picker.appendChild(s2);
+      }
+      cands.forEach(e => {
+        const im = document.createElement("img"); im.src = onlineImgUrl(e); im.title = (e.caption || e.path) + (e.figure ? " — Hình " + e.figure : "");
+        im.addEventListener("click", () => { setOnlineAssign(sg, e); delete sg.sgkImageId; renderScriptReview(); });
         picker.appendChild(im);
       });
     }
@@ -760,6 +928,15 @@ function buildAssignUI(sg, i){
 /* ---------- BƯỚC 2: hình cho từng segment ---------- */
 async function genImageForSegment(i){
   const sg = scriptData.segments[i];
+  if (sg.onlinePath) {
+    try {
+      const img = await loadOnlineImage(sg.onlineUrl || ("../" + sg.onlinePath));
+      assets[i] = { status: "ok", img, source: "online", err: "" };
+    } catch (e) {
+      assets[i] = { status: "err", img: null, source: "online", err: "Không tải được hình từ kho SGK online: " + e.message };
+    }
+    renderAssetRows(); return assets[i].status === "ok";
+  }
   if (sg.sgkImageId && library.get(sg.sgkImageId) && library.get(sg.sgkImageId).img) {
     assets[i] = { status: "ok", img: library.get(sg.sgkImageId).img, source: "sgk", err: "" };
     renderAssetRows(); return true;
@@ -793,7 +970,7 @@ function renderAssetRows(){
     let imgTxt = "—";
     if (sg.type === "image" || sg.type === "sgk") {
       if (!a) imgTxt = "Hình: chờ...";
-      else if (a.status === "ok") imgTxt = "Hình: ✔ " + (a.source === "sgk" ? "hình SGK" : "AI sinh");
+      else if (a.status === "ok") imgTxt = "Hình: ✔ " + (a.source === "sgk" ? "hình SGK (trong máy)" : (a.source === "online" ? "hình SGK (kho online)" : "AI sinh"));
       else if (a.status === "skip") imgTxt = "Hình: bỏ qua (ô trống)";
       else imgTxt = "Hình: ✖ lỗi";
     }
@@ -881,7 +1058,7 @@ function drawContain(ctx, img, x, y, w, h){
 }
 function drawImageSlide(ctx, sg, asset, t){
   const has = asset && asset.status === "ok" && asset.img;
-  if (has && asset.source === "sgk") {
+  if (has && (asset.source === "sgk" || asset.source === "online")) {
     slideBg(ctx);
     drawContain(ctx, asset.img, 90, 60, W - 180, H - 300);
   } else if (has) {
@@ -1151,7 +1328,12 @@ async function buildVideo(){
       const sg = scriptData.segments[i];
       if (sg.type !== "image" && sg.type !== "sgk") { assets[i] = { status: "skip", img: null, source: "none", err: "" }; continue; }
       if (demoMode) {
-        if (sg.sgkImageId && library.get(sg.sgkImageId) && library.get(sg.sgkImageId).img) {
+        if (sg.onlinePath) {
+          try {
+            const oimg = await loadOnlineImage(sg.onlineUrl || ("../" + sg.onlinePath));
+            assets[i] = { status: "ok", img: oimg, source: "online", err: "" }; usedLib = true;
+          } catch (e) { assets[i] = { status: "skip", img: null, source: "none", err: "" }; }
+        } else if (sg.sgkImageId && library.get(sg.sgkImageId) && library.get(sg.sgkImageId).img) {
           assets[i] = { status: "ok", img: library.get(sg.sgkImageId).img, source: "sgk", err: "" }; usedLib = true;
         } else assets[i] = { status: "skip", img: null, source: "none", err: "" };
         renderAssetRows();
@@ -1286,6 +1468,7 @@ $("againBtn").addEventListener("click", () => {
 refreshKeyUI();
 refreshDurUI();
 idbLoadAll();
+loadOnlineLib();
 </script>
 </body>
 </html>
