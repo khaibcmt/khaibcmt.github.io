@@ -1,0 +1,105 @@
+{
+ "bai": "GIỚI THIỆU CHUNG VỀ CÁ CẢNH — Công nghệ nông nghiệp 12",
+ "fileNguon": "Công nghệ nông nghiệp/Khối 12/Giáo án/Chuyên đề/CN12-CD-B10_Gioi_thieu_chung_ve_ca_canh.docx",
+ "cauHoiPhieu": "PHIẾU HỌC TẬP — BÀI 10: GIỚI THIỆU CHUNG VỀ CÁ CẢNH Họ và tên: ………………………………………… Lớp: ………… Nhóm: …………",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Mục I – Khái niệm cá cảnh",
+   "tieuChi": "1",
+   "cot": "Mục / nội dung",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Nêu khái niệm cá cảnh và kể tên ít nhất 5 loài cá cảnh phổ biến.",
+   "tieuChi": "1",
+   "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+   "hang": 1,
+   "cotSo": 2
+  },
+  {
+   "so": 3,
+   "dapAn": "Mục II – Đặc điểm sinh vật học",
+   "tieuChi": "2",
+   "cot": "Mục / nội dung",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Mô tả đặc điểm sinh vật học của cá cảnh về màu sắc, hình dạng, kích cỡ; cho ví dụ minh hoạ từng đặc điểm.",
+   "tieuChi": "2",
+   "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+   "hang": 2,
+   "cotSo": 2
+  },
+  {
+   "so": 5,
+   "dapAn": "Mục III – Yêu cầu ngoại cảnh",
+   "tieuChi": "3",
+   "cot": "Mục / nội dung",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 6,
+   "dapAn": "Trình bày yêu cầu của cá cảnh về nguồn nước, nhiệt độ, ánh sáng và oxygen hoà tan.",
+   "tieuChi": "3",
+   "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+   "hang": 3,
+   "cotSo": 2
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "STT",
+   "Mục / nội dung",
+   "Câu hỏi khám phá và nội dung cần hoàn thành"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "1",
+    "cacCot": [
+     {
+      "cot": "Mục / nội dung",
+      "noiDung": "Mục I – Khái niệm cá cảnh"
+     },
+     {
+      "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+      "noiDung": "Nêu khái niệm cá cảnh và kể tên ít nhất 5 loài cá cảnh phổ biến."
+     }
+    ]
+   },
+   {
+    "tieuChi": "2",
+    "cacCot": [
+     {
+      "cot": "Mục / nội dung",
+      "noiDung": "Mục II – Đặc điểm sinh vật học"
+     },
+     {
+      "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+      "noiDung": "Mô tả đặc điểm sinh vật học của cá cảnh về màu sắc, hình dạng, kích cỡ; cho ví dụ minh hoạ từng đặc điểm."
+     }
+    ]
+   },
+   {
+    "tieuChi": "3",
+    "cacCot": [
+     {
+      "cot": "Mục / nội dung",
+      "noiDung": "Mục III – Yêu cầu ngoại cảnh"
+     },
+     {
+      "cot": "Câu hỏi khám phá và nội dung cần hoàn thành",
+      "noiDung": "Trình bày yêu cầu của cá cảnh về nguồn nước, nhiệt độ, ánh sáng và oxygen hoà tan."
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
