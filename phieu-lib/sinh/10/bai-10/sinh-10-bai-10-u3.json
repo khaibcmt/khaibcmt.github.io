@@ -1,0 +1,81 @@
+{
+ "bai": "Bài 10: Trao đổi chất qua màng tế bào — Sinh học 10",
+ "fileNguon": "Sinh học/Khối 10/Giáo án/HK1/KHBD_Sinh_hoc_10_Bai_10_Trao_doi_chat_qua_mang_te_bao_2_tiet.docx",
+ "cauHoiPhieu": "Nội dung 3. Trình bày hiện tượng nhập bào và xuất bào:",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "nhập các chất rắn, vi khuẩn (bạch cầu thực bào vi khuẩn gây bệnh).",
+   "tieuChi": "Thực bào",
+   "cot": "Cách thức (thông qua biến dạng của màng sinh chất)",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "nhập các giọt dịch chứa chất tan.",
+   "tieuChi": "Ẩm bào",
+   "cot": "Cách thức (thông qua biến dạng của màng sinh chất)",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 3,
+   "dapAn": "các chất có kích thước lớn (protein, polysaccharide, vi khuẩn...) được vận chuyển qua màng nhờ biến dạng của màng sinh chất, tiêu tốn năng lượng ATP.",
+   "tieuChi": "Xuất bào",
+   "cot": "Cách thức (thông qua biến dạng của màng sinh chất)",
+   "hang": 3,
+   "cotSo": 1
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Hiện tượng",
+   "Cách thức (thông qua biến dạng của màng sinh chất)",
+   "Ví dụ minh hoạ"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Thực bào",
+    "cacCot": [
+     {
+      "cot": "Cách thức (thông qua biến dạng của màng sinh chất)",
+      "noiDung": "nhập các chất rắn, vi khuẩn (bạch cầu thực bào vi khuẩn gây bệnh)."
+     },
+     {
+      "cot": "Ví dụ minh hoạ",
+      "noiDung": ""
+     }
+    ]
+   },
+   {
+    "tieuChi": "Ẩm bào",
+    "cacCot": [
+     {
+      "cot": "Cách thức (thông qua biến dạng của màng sinh chất)",
+      "noiDung": "nhập các giọt dịch chứa chất tan."
+     },
+     {
+      "cot": "Ví dụ minh hoạ",
+      "noiDung": ""
+     }
+    ]
+   },
+   {
+    "tieuChi": "Xuất bào",
+    "cacCot": [
+     {
+      "cot": "Cách thức (thông qua biến dạng của màng sinh chất)",
+      "noiDung": "các chất có kích thước lớn (protein, polysaccharide, vi khuẩn...) được vận chuyển qua màng nhờ biến dạng của màng sinh chất, tiêu tốn năng lượng ATP."
+     },
+     {
+      "cot": "Ví dụ minh hoạ",
+      "noiDung": ""
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Đoạn Dự kiến sản phẩm (DKSP) trong cùng KHBD, mở đầu bằng nhãn của từng hàng trong bảng phiếu (trích nguyên văn)."
+ },
+ "ghiChu": " Đáp án là đoạn DKSP nguyên văn (dài hơn đáp án rút gọn kiểu mẫu tay Bài 9)."
+}
