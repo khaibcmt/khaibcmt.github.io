@@ -2580,6 +2580,60 @@ function qrMatrix(text){
 function phieuNoAudioSec(narration){
   return Math.max(4, Math.ceil(String(narration || "").length / 13));
 }
+/* Bảng màu theo HÀNG nội dung của phiếu: mỗi hàng một màu nhấn riêng, xoay
+   vòng 8 màu hài hoà trên nền tối — dùng cho viền trái của hàng, vòng tròn
+   số ô, nền ô đang điền / hàng đang highlight. Chữ trên nền màu lấy qua
+   phieuContrastText để luôn đọc rõ. */
+const PHIEU_ROW_COLORS = ["#f7b731", "#2bcbba", "#fc5c65", "#45aaf2", "#a55eea", "#26de81", "#fd9644", "#fed330"];
+function phieuRowColor(r){
+  const n = PHIEU_ROW_COLORS.length;
+  return PHIEU_ROW_COLORS[((Math.floor(Number(r) || 0) % n) + n) % n];
+}
+/* Độ sáng tương đối (WCAG) của màu hex #rrggbb. */
+function phieuLuminance(hex){
+  const m = /^#?([0-9a-f]{6})$/i.exec(String(hex || ""));
+  if (!m) return 0;
+  const v = parseInt(m[1], 16);
+  const f = c => { c /= 255; return c <= 0.03928 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4); };
+  return 0.2126 * f((v >> 16) & 255) + 0.7152 * f((v >> 8) & 255) + 0.0722 * f(v & 255);
+}
+/* Chữ đặt trên nền `hex`: đen hoặc trắng — phía nào tương phản cao hơn. */
+function phieuContrastText(hex){
+  const L = phieuLuminance(hex);
+  return (L + 0.05) / 0.05 >= 1.05 / (L + 0.05) ? "#000000" : "#ffffff";
+}
+/* Thời lượng THẬT của 1 cảnh phiếu: KHÔNG BAO GIỜ sụp về ~0 giây — luôn là
+   max(thời lượng audio thật, sàn theo độ dài lời đọc). Audio rỗng / ngắn
+   bất thường (TTS lỗi một phần) thì cảnh đứng đủ sàn, phần thiếu là im
+   lặng đệm khi ghi. seg.capSec (nếu có) là trần cứng của cảnh. */
+function phieuSegDuration(audioDur, seg){
+  let d = Math.max(Number(audioDur) || 0, (seg && Number(seg.noAudioSec)) || 0);
+  if (seg && seg.capSec) d = Math.min(d, Number(seg.capSec));
+  return d;
+}
+/* Hàng đang highlight trong cảnh bảng đáp án GV theo tiến độ t (0–1):
+   highlight chạy đều qua từng hàng trong suốt thời lượng cảnh. */
+function phieuActiveRow(t, nRows){
+  if (!nRows || nRows < 1) return -1;
+  const x = Math.min(0.999999, Math.max(0, Number(t) || 0));
+  return Math.floor(x * nRows);
+}
+/* Rút gọn câu hỏi phiếu cho lời MỞ: cắt ở BIÊN CÂU gần giới hạn ký tự,
+   không cắt giữa câu; ngắn hơn giới hạn thì giữ nguyên văn. */
+function phieuTrimCauHoi(text, limit){
+  const s = String(text || "").replace(/\s+/g, " ").trim();
+  limit = limit || 350;
+  if (s.length <= limit) return s;
+  let cut = -1, m;
+  const re = /[.!?…]+(?=\s|$)/g;
+  while ((m = re.exec(s)) !== null){
+    const end = m.index + m[0].length;
+    if (end <= limit) cut = end; else break;
+  }
+  if (cut > 0) return s.slice(0, cut).trim();
+  const sp = s.lastIndexOf(" ", limit);
+  return (sp > 40 ? s.slice(0, sp) : s.slice(0, limit)).trim();
+}
 /* Link bài tập tương tác của 1 phiếu: <thư mục app>?bt=<id phiếu> */
 function buildExerciseUrl(id, baseHref){
   const clean = String(baseHref || "").split(/[?#]/)[0];
@@ -2606,9 +2660,11 @@ function buildPhieuScenes(entry, data, opts){
   const cauHoi = String(data.cauHoiPhieu || "").trim();
   const instr = String(opts.instr || "").trim();
   const segs = [];
-  let openNarr = cauHoi;
+  /* Lời mở RÚT GỌN: câu hỏi phiếu (dài thì cắt ở biên câu gần 350 ký tự)
+     + đúng 1 câu hướng dẫn cố định. Không liệt kê tên các mục/hàng. */
+  let openNarr = phieuTrimCauHoi(cauHoi, 350);
   if (openNarr && !/[.!?…:]$/.test(openNarr)) openNarr += ".";
-  openNarr += " Các em hãy quan sát bảng phiếu học tập: những ô có sẵn nội dung đã được in sẵn, còn các ô trống được đánh số thứ tự trong vòng tròn. Hãy điền nội dung đúng vào từng ô, theo thứ tự từ số 1 đến số " + n + ".";
+  openNarr += " Các em hãy điền nội dung đúng vào từng ô trống theo thứ tự các số, rồi xem phần đáp án ở cuối video để đối chiếu nhé.";
   if (instr) openNarr += " " + instr;
   segs.push({ type: "phieu", phKind: "open", heading: "Phiếu học tập", narration: openNarr, noAudioSec: phieuNoAudioSec(openNarr) });
   cacO.forEach(o => {
@@ -2620,15 +2676,20 @@ function buildPhieuScenes(entry, data, opts){
       narration: narr, noAudioSec: phieuNoAudioSec(narr)
     });
   });
+  /* Cảnh bảng đáp án GV: lời đọc CHỈ 1 câu chốt ngắn — KHÔNG đọc lại đáp
+     án (đọc lại toàn bộ là "câu thừa", cảnh đứng yên ~2 phút). Hình thì
+     highlight chạy từng hàng ~2,5 giây/hàng; thời lượng cảnh =
+     max(câu chốt, số hàng × 2,5s), trần 40 giây. */
   const gv = data.bangDapAnGV || { cacHang: [] };
-  const keyParts = (gv.cacHang || []).map(r =>
-    r.tieuChi + ": " + (r.cacCot || []).map(c => c.cot + ": " + c.noiDung).join("; "));
-  const keyNarr = "Sau đây là bảng đáp án của giáo viên. " + keyParts.join(". ") +
-    ". Các em hãy đối chiếu với bài làm của mình và sửa lại những chỗ chưa đúng nhé!";
-  segs.push({ type: "phieu", phKind: "key", heading: "Bảng đáp án của giáo viên", narration: keyNarr, noAudioSec: phieuNoAudioSec(keyNarr) });
+  const keyNarr = "Đây là bảng đáp án của giáo viên. Các em hãy đối chiếu từng ô với bài làm của mình và sửa lại những chỗ chưa đúng nhé!";
+  const keyRows = (gv.cacHang || []).length;
+  const keyFloor = Math.min(40, Math.max(phieuNoAudioSec(keyNarr), keyRows * 2.5));
+  segs.push({ type: "phieu", phKind: "key", heading: "Bảng đáp án của giáo viên", narration: keyNarr, noAudioSec: keyFloor, capSec: 40 });
   const qrUrl = buildExerciseUrl(entry && entry.id, opts.baseHref || "");
-  const qrNarr = "Cuối cùng, để kiểm tra xem mình đã hiểu bài chưa, các em hãy quét mã QR trên màn hình, hoặc mở đường link ở dưới phần mô tả của video, để làm bài tập tương tác của bài này nhé.";
-  segs.push({ type: "phieu", phKind: "qr", heading: "Bài tập tương tác", narration: qrNarr, qrUrl: qrUrl, noAudioSec: phieuNoAudioSec(qrNarr) });
+  /* Cảnh QR: lời đọc 1 câu ngắn; đứng ~7 giây (audio dài hơn thì theo
+     audio, trần 10 giây). */
+  const qrNarr = "Các em hãy quét mã QR trên màn hình, hoặc mở đường link ở phần mô tả của video, để làm bài tập tương tác của bài này nhé.";
+  segs.push({ type: "phieu", phKind: "qr", heading: "Bài tập tương tác", narration: qrNarr, qrUrl: qrUrl, noAudioSec: 7, capSec: 10 });
   return segs;
 }
 /* Tiêu đề + mô tả YouTube soạn sẵn: chứa link bài tập ?bt=<id> để thầy
@@ -3136,52 +3197,87 @@ function phieuFitLines(ctx, text, maxW, maxLines){
   kept[maxLines - 1] = last + "…";
   return kept;
 }
-function drawPhieuTable(ctx, data, y0, y1, mode, current){
+let phieuPlanCache = { key: "", plan: null };
+function drawPhieuTable(ctx, data, y0, y1, mode, current, activeRow){
   const grid = phieuGridOf(data);
-  const tx = 110, tw = W - 220;
+  const tx = 72, tw = W - 144;
   const ws = phieuColWidths(grid, tw);
   const availH = y1 - y0;
-  let fs = 34, plan = null;
-  for (; fs >= 18; fs -= 2){
-    ctx.font = "400 " + fs + "px " + FONT;
-    let headerLines = 1;
-    grid.headers.forEach((h, c) => { headerLines = Math.max(headerLines, wrapLines(ctx, h, ws[c] - 24).length); });
-    const headerH = Math.max(84, headerLines * (fs + 12) + 26);
-    let total = headerH;
-    const rowHs = [];
-    grid.rows.forEach((row, r) => {
-      let lines = 1;
-      for (let c = 0; c < grid.nCols; c++){
-        const cell = phieuCell(grid, r, c, mode, current);
-        if (cell.kind !== "blank") lines = Math.max(lines, wrapLines(ctx, cell.text, ws[c] - 28).length);
+  const textW = c => ws[c] - (c === 0 ? 48 : 28);
+  /* Lập kế hoạch cỡ chữ + chiều cao hàng (có cache theo chữ ký bảng vì hàm
+     vẽ chạy mỗi khung hình khi ghi): thử cỡ chữ từ LỚN (44) xuống 20 trước,
+     vẫn tràn mới hạ dần số dòng tối đa mỗi ô — cắt chữ là lựa chọn cuối
+     cùng. Vừa rồi thì KÉO GIÃN các hàng lấp đầy chiều cao cho phép để
+     bảng luôn TO, chiếm gần hết khung hình. */
+  const sig = mode + "|" + current + "|" + Math.round(availH) + "|" + grid.nCols + "|" +
+    grid.headers.join("~") + "|" + grid.rows.map(r => (r.tieuChi || "") + ":" +
+      (r.cacCot || []).map(c => (c.noiDung || "").length).join(",")).join("~");
+  let plan = (phieuPlanCache.key === sig) ? phieuPlanCache.plan : null;
+  if (!plan){
+    const planAt = (fs, cap) => {
+      ctx.font = "700 " + (fs + 4) + "px " + FONT;
+      let headerLines = 1;
+      grid.headers.forEach((h, c) => { headerLines = Math.max(headerLines, wrapLines(ctx, h, ws[c] - 24).length); });
+      const headerH = Math.max(88, headerLines * (fs + 16) + 30);
+      let total = headerH;
+      const rowHs = grid.rows.map((row, r) => {
+        let lines = 1;
+        for (let c = 0; c < grid.nCols; c++){
+          const cell = phieuCell(grid, r, c, mode, current);
+          if (cell.kind === "blank" || !cell.text) continue;
+          /* Đo bằng ĐÚNG độ đậm lúc vẽ: ô đang điền và (ở cảnh GV) mọi ô
+             đáp án đều vẽ đậm 700 khi tới lượt highlight — đo bằng chữ
+             thường sẽ thiếu dòng và bị cắt "…" oan. */
+          ctx.font = ((cell.kind === "label" || cell.kind === "current" || mode === "key") ? "700 " : "400 ") + fs + "px " + FONT;
+          lines = Math.max(lines, Math.min(cap, wrapLines(ctx, cell.text, textW(c)).length));
+        }
+        const rh = lines * (fs + 15) + 28;
+        total += rh;
+        return rh;
+      });
+      return { fs: fs, cap: cap, headerH: headerH, rowHs: rowHs, total: total };
+    };
+    for (const cap of [99, 5, 4, 3, 2]){
+      for (let fs = 44; fs >= 20; fs -= 2){
+        const p = planAt(fs, cap);
+        if (p.total <= availH){ plan = p; break; }
       }
-      const rh = lines * (fs + 13) + 24;
-      rowHs.push(rh); total += rh;
-    });
-    plan = { headerH: headerH, rowHs: rowHs };
-    if (total <= availH) break;
+      if (plan) break;
+    }
+    if (!plan) plan = planAt(20, 2);
+    if (plan.total < availH && grid.rows.length){
+      const per = (availH - plan.total) / (grid.rows.length + 1);
+      plan.headerH += per;
+      plan.rowHs = plan.rowHs.map(h => h + per);
+    }
+    phieuPlanCache = { key: sig, plan: plan };
   }
-  if (!plan) plan = { headerH: 84, rowHs: grid.rows.map(() => 60) };
-  /* Vẽ tiêu đề cột */
+  const fs = plan.fs;
+  /* Vẽ tiêu đề cột — tông xanh thép riêng của hàng tiêu đề */
   let y = y0;
-  ctx.fillStyle = "#14532d"; rr(ctx, tx, y, tw, plan.headerH, 12); ctx.fill();
-  ctx.fillStyle = "#ffd94d"; ctx.font = "700 " + (fs + 2) + "px " + FONT; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.fillStyle = "#1f4470"; rr(ctx, tx, y, tw, plan.headerH, 12); ctx.fill();
+  ctx.fillStyle = "#57b6ff"; ctx.fillRect(tx + 12, y + plan.headerH - 6, tw - 24, 4);
+  ctx.fillStyle = "#ffffff"; ctx.font = "700 " + (fs + 4) + "px " + FONT; ctx.textAlign = "center"; ctx.textBaseline = "middle";
   grid.headers.forEach((h, c) => {
     const lines = phieuFitLines(ctx, h, ws[c] - 24, 3);
-    const lh = fs + 12;
+    const lh = fs + 16;
     lines.forEach((ln, k) => ctx.fillText(ln, tx + ws.slice(0, c).reduce((a, b) => a + b, 0) + ws[c] / 2, y + plan.headerH / 2 + (k - (lines.length - 1) / 2) * lh));
   });
   y += plan.headerH;
   ctx.textBaseline = "middle";
   grid.rows.forEach((row, r) => {
     const rh = plan.rowHs[r];
+    const rowColor = phieuRowColor(r);
+    const keyActive = (mode === "key" && r === activeRow);
     let x = tx;
     for (let c = 0; c < grid.nCols; c++){
       const cell = phieuCell(grid, r, c, mode, current);
       const cw = ws[c];
-      if (cell.kind === "current"){
-        ctx.fillStyle = "#ffd94d"; ctx.fillRect(x, y, cw, rh);
-        ctx.strokeStyle = "#ff8c1a"; ctx.lineWidth = 6; ctx.strokeRect(x + 3, y + 3, cw - 6, rh - 6);
+      if (cell.kind === "current" || keyActive){
+        /* ô đang điền / hàng đang highlight: nền màu của hàng + viền trắng sáng */
+        ctx.fillStyle = rowColor; ctx.fillRect(x, y, cw, rh);
+        ctx.strokeStyle = "#ffffff"; ctx.lineWidth = cell.kind === "current" ? 6 : 4;
+        ctx.strokeRect(x + 3, y + 3, cw - 6, rh - 6);
       } else if (cell.kind === "filled"){
         ctx.fillStyle = "rgba(255,255,255,0.13)"; ctx.fillRect(x, y, cw, rh);
         ctx.strokeStyle = "rgba(255,255,255,0.22)"; ctx.lineWidth = 2; ctx.strokeRect(x, y, cw, rh);
@@ -3191,23 +3287,27 @@ function drawPhieuTable(ctx, data, y0, y1, mode, current){
         ctx.strokeStyle = "rgba(255,255,255,0.22)"; ctx.lineWidth = 2; ctx.strokeRect(x, y, cw, rh);
       }
       if (cell.kind === "blank"){
-        /* ô câm: vòng tròn đánh số ở giữa ô */
-        const cx = x + cw / 2, cy = y + rh / 2, rad = Math.min(30, rh / 2 - 8, cw / 2 - 8);
-        ctx.strokeStyle = "#ffd94d"; ctx.lineWidth = 4;
+        /* ô câm: vòng tròn đánh số ở giữa ô, theo màu của hàng */
+        const cx = x + cw / 2, cy = y + rh / 2, rad = Math.min(32, rh / 2 - 8, cw / 2 - 8);
+        ctx.strokeStyle = rowColor; ctx.lineWidth = 4;
         ctx.beginPath(); ctx.arc(cx, cy, rad, 0, Math.PI * 2); ctx.stroke();
-        ctx.fillStyle = "#ffd94d"; ctx.font = "800 " + Math.round(rad * 1.05) + "px " + FONT; ctx.textAlign = "center";
+        ctx.fillStyle = rowColor; ctx.font = "800 " + Math.round(rad * 1.05) + "px " + FONT; ctx.textAlign = "center";
         ctx.fillText(String(cell.so), cx, cy + 2);
       } else if (cell.text){
-        const maxLines = Math.max(1, Math.floor((rh - 20) / (fs + 13)));
-        ctx.font = (cell.kind === "current" ? "700 " : "400 ") + fs + "px " + FONT;
-        const lines = phieuFitLines(ctx, cell.text, cw - 28, maxLines);
-        ctx.fillStyle = cell.kind === "current" ? "#20301f" : (cell.kind === "label" ? "#ffe9a8" : "#ffffff");
+        const maxLines = Math.max(1, Math.min(plan.cap, Math.floor((rh - 18) / (fs + 15))));
+        const hot = (cell.kind === "current" || keyActive);
+        ctx.font = (hot || cell.kind === "label" ? "700 " : "400 ") + fs + "px " + FONT;
+        const lines = phieuFitLines(ctx, cell.text, textW(c), maxLines);
+        ctx.fillStyle = hot ? phieuContrastText(rowColor) : (cell.kind === "label" ? rowColor : "#ffffff");
         ctx.textAlign = "left";
-        const lh = fs + 13;
-        lines.forEach((ln, k) => ctx.fillText(ln, x + 14, y + rh / 2 + (k - (lines.length - 1) / 2) * lh));
+        const lh = fs + 15;
+        const txo = x + 14 + (c === 0 ? 16 : 0);
+        lines.forEach((ln, k) => ctx.fillText(ln, txo, y + rh / 2 + (k - (lines.length - 1) / 2) * lh));
       }
       x += cw;
     }
+    /* viền trái theo màu của hàng */
+    ctx.fillStyle = rowColor; ctx.fillRect(tx, y, 10, rh);
     y += rh;
   });
   ctx.textAlign = "left"; ctx.textBaseline = "top";
@@ -3227,7 +3327,7 @@ function drawPhieuQrCanvas(url){
   phieuQrCache = { url: url, cv: cv };
   return cv;
 }
-function drawPhieuScene(ctx, sg){
+function drawPhieuScene(ctx, sg, t){
   const data = phieuBuildCtx && phieuBuildCtx.data;
   if (!data){
     drawText(ctx, { heading: sg.heading, bullets: [sg.caption || sg.narration || ""] });
@@ -3235,10 +3335,19 @@ function drawPhieuScene(ctx, sg){
   }
   const entry = phieuBuildCtx.entry || {};
   const tenBai = entry.tenBai || data.bai || "";
+  /* Màu nhấn riêng cho từng loại cảnh: mở = ngọc, GV = tím, QR = hồng;
+     cảnh điền = màu của HÀNG chứa ô đang điền. Thanh nhấn vẽ trên cùng. */
+  const accents = { open: "#2bcbba", key: "#b49af5", qr: "#ff8fab" };
+  let accent = accents[sg.phKind] || "#2bcbba";
+  if (sg.phKind === "fill"){
+    const cur = (data.cacO || []).filter(o => o.so === sg.fillSo)[0];
+    if (cur) accent = phieuRowColor((cur.hang || 1) - 1);
+  }
+  const bar = () => { ctx.fillStyle = accent; ctx.fillRect(0, 0, W, 12); };
   if (sg.phKind === "qr"){
-    slideBg(ctx);
+    slideBg(ctx); bar();
     ctx.textAlign = "center"; ctx.textBaseline = "top";
-    ctx.fillStyle = "#ffd94d"; ctx.font = "700 64px " + FONT;
+    ctx.fillStyle = "#ff8fab"; ctx.font = "700 64px " + FONT;
     ctx.fillText("🎯 BÀI TẬP TƯƠNG TÁC", W / 2, 64);
     ctx.fillStyle = "#ffffff"; ctx.font = "400 36px " + FONT;
     wrapLines(ctx, "Xem xong video, các em làm bài tập này để kiểm tra mức độ hiểu bài nhé!", 1500)
@@ -3261,30 +3370,34 @@ function drawPhieuScene(ctx, sg){
     return;
   }
   if (sg.phKind === "key"){
-    slideBg(ctx);
+    slideBg(ctx); bar();
     const topY = drawHeading(ctx, "📋 BẢNG ĐÁP ÁN CỦA GIÁO VIÊN", tenBai);
-    drawPhieuTable(ctx, data, topY + 18, H - 56, "key", 0);
+    /* highlight chạy từng hàng theo tiến độ cảnh (~2,5s/hàng theo thời
+       lượng đã chốt ở buildPhieuScenes) */
+    const nRows = ((data.bangDapAnGV || {}).cacHang || []).length;
+    drawPhieuTable(ctx, data, topY + 18, H - 40, "key", 0, phieuActiveRow(t || 0, nRows));
     return;
   }
   if (sg.phKind === "fill"){
-    slideBg(ctx);
+    slideBg(ctx); bar();
     const n = (data.cacO || []).length;
     const topY = drawHeading(ctx, "Đáp án số " + sg.fillSo, tenBai);
-    ctx.fillStyle = "#ffd94d"; ctx.font = "700 40px " + FONT; ctx.textAlign = "right"; ctx.textBaseline = "top";
+    ctx.fillStyle = accent; ctx.font = "700 40px " + FONT; ctx.textAlign = "right"; ctx.textBaseline = "top";
     ctx.fillText("Ô " + sg.fillSo + " / " + n, W - 110, 60);
     ctx.textAlign = "left";
-    drawPhieuTable(ctx, data, topY + 14, H - 268, "fill", sg.fillSo);
-    /* băng caption dưới: đáp án đầy đủ nguyên văn */
+    drawPhieuTable(ctx, data, topY + 14, H - 268, "fill", sg.fillSo, -1);
+    /* băng caption dưới: đáp án đầy đủ nguyên văn + thanh màu của hàng */
     const bandY = H - 238;
     const g = ctx.createLinearGradient(0, bandY - 30, 0, H);
     g.addColorStop(0, "rgba(0,0,0,0)"); g.addColorStop(0.35, "rgba(0,0,0,0.85)"); g.addColorStop(1, "rgba(0,0,0,0.94)");
     ctx.fillStyle = g; ctx.fillRect(0, bandY - 30, W, 268);
+    ctx.fillStyle = accent; ctx.fillRect(72, bandY + 8, 10, 196);
     ctx.fillStyle = "#ffffff"; ctx.font = "600 35px " + FONT; ctx.textAlign = "left"; ctx.textBaseline = "top";
     phieuFitLines(ctx, sg.caption || "", 1700, 4).forEach((ln, k) => ctx.fillText(ln, 110, bandY + 14 + k * 47));
     return;
   }
   /* open: phiếu câm + câu yêu cầu */
-  slideBg(ctx);
+  slideBg(ctx); bar();
   const topY = drawHeading(ctx, "📋 Phiếu học tập", tenBai);
   let y = topY + 8;
   const cauHoi = String(data.cauHoiPhieu || "").trim();
@@ -3293,7 +3406,7 @@ function drawPhieuScene(ctx, sg){
     phieuFitLines(ctx, cauHoi, 1700, 3).forEach(ln => { ctx.fillText(ln, 110, y); y += 47; });
     y += 10;
   }
-  drawPhieuTable(ctx, data, y, H - 56, "open", 0);
+  drawPhieuTable(ctx, data, y, H - 40, "open", 0, -1);
 }
 
 /* ---------- Kho phiếu + panel chọn phiếu ---------- */
@@ -3502,7 +3615,7 @@ function initPhieu(){
 }
 
 function drawSlide(ctx, sg, asset, t){
-  if (sg.type === "phieu") { drawPhieuScene(ctx, sg); return; }
+  if (sg.type === "phieu") { drawPhieuScene(ctx, sg, t || 0); return; }
   if (sg.type === "image" || sg.type === "sgk") drawImageSlide(ctx, sg, asset, t || 0);
   else if (sg.type === "diagram") drawDiagram(ctx, sg);
   else if (sg.type === "table") drawTable(ctx, sg);
@@ -3758,10 +3871,16 @@ function recordVideo(){
     const segs = scriptData.segments;
     const durations = segs.map((sg, i) => {
       const a = audios[i];
+      if (sg.type === "phieu") {
+        /* Cảnh phiếu: thời lượng KHÔNG BAO GIỜ sụp về ~0 — luôn là
+           max(audio thật, sàn theo độ dài lời đọc). Audio rỗng / ngắn bất
+           thường (TTS lỗi một phần, buffer gần 0 giây) thì cảnh đứng đủ
+           sàn bằng im lặng đệm, lời và hình khớp nhau. */
+        return phieuSegDuration((a && a.status === "ok" && a.buffer) ? a.buffer.duration : 0, sg);
+      }
       if (a && a.status === "ok" && a.buffer) return a.buffer.duration;
-      /* Cảnh phiếu học tập không có tiếng: đứng theo độ dài lời đọc của
-         chính cảnh đó (sg.noAudioSec). Đoạn thường không có trường này
-         nên vẫn giữ NO_AUDIO_SECONDS như cũ — luồng cũ không đổi. */
+      /* Đoạn thường không có tiếng: giữ NO_AUDIO_SECONDS như cũ — luồng
+         ngoài pipeline phiếu không đổi hành vi. */
       return sg.noAudioSec ? sg.noAudioSec : NO_AUDIO_SECONDS;
     });
     const total = durations.reduce((s, d) => s + d, 0);
@@ -3799,7 +3918,20 @@ function recordVideo(){
         if (el < acc + durations[i]) { idx = i; localT = el - acc; break; }
         acc += durations[i];
       }
-      drawSlide(ctx, segs[idx], assets[idx], durations[idx] ? localT / durations[idx] : 0);
+      const frac = durations[idx] ? localT / durations[idx] : 0;
+      /* Chuyển cảnh trong pipeline phiếu: fade NGẮN 150ms giữa hai cảnh
+         phiếu liên tiếp để khỏi chồng chữ mờ; ngoài pipeline phiếu giữ
+         nguyên cắt thẳng như cũ. */
+      const fadeIn = (segs[idx].type === "phieu" && idx > 0 && segs[idx - 1].type === "phieu" && localT < 0.15)
+        ? Math.max(0, localT / 0.15) : 1;
+      if (fadeIn < 1) {
+        drawSlide(ctx, segs[idx - 1], assets[idx - 1], 1);
+        ctx.save(); ctx.globalAlpha = fadeIn;
+        drawSlide(ctx, segs[idx], assets[idx], frac);
+        ctx.restore();
+      } else {
+        drawSlide(ctx, segs[idx], assets[idx], frac);
+      }
       $("renderProg").value = Math.min(100, (el / total) * 100);
       $("renderNote").textContent = "Đang ghi: đoạn " + (idx + 1) + "/" + segs.length + " — " + segs[idx].heading +
         "  (" + Math.round(el) + "s / " + Math.round(total) + "s)";
