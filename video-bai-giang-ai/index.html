@@ -2284,6 +2284,24 @@ function recordVideo(){
   });
 }
 
+/* ---------- Tên file tải xuống: ĐỒNG BỘ với danh tính bài đã chốt ----------
+   Bài chọn từ kho: Video_<Môn>_Lop<khối>_Bai<số>_<TênBài> — bỏ dấu tiếng
+   Việt, PascalCase, chỉ ký tự an toàn cho mọi hệ điều hành, đuôi theo đúng
+   định dạng đã ghi. Kể chuyện / gõ tự do: lấy theo tiêu đề video. */
+function slugPascal(s, maxLen){
+  const t = normTxt(s).replace(/[^a-z0-9]+/g, " ").trim();
+  let out = t.split(" ").filter(Boolean).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join("");
+  if (maxLen && out.length > maxLen) out = out.slice(0, maxLen);
+  return out;
+}
+function buildDownloadName(sd, ext){
+  if (sd && sd._picked) {
+    const p = sd._picked;
+    return "Video_" + (slugPascal(p.subjectName || "", 24) || "MonHoc") + "_Lop" + p.grade + "_Bai" + p.lessonNo + "_" + (slugPascal(p.topic || sd.title || "", 60) || "BaiHoc") + ext;
+  }
+  return "Video_" + (slugPascal((sd && sd.title) || "", 70) || "BaiGiang") + ext;
+}
+
 /* ---------- Điều phối: bấm DỰNG VIDEO NGAY ---------- */
 function logWarn(html){
   const d = document.createElement("div");
@@ -2377,7 +2395,7 @@ async function buildVideo(){
     $("resultVideo").src = url;
     const dl = $("downloadLink");
     dl.href = url;
-    dl.setAttribute("download", (scriptData.title || "video-bai-giang").replace(/[^\p{L}\p{N}]+/gu, "-") + fmt.ext);
+    dl.setAttribute("download", buildDownloadName(scriptData, fmt.ext));
     const dlBtn = dl.querySelector("button");
     if (dlBtn) dlBtn.textContent = "⬇ TẢI VIDEO (" + fmt.ext + ")";
     const fnote = $("formatNote");
