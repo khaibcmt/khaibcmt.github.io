@@ -1,0 +1,102 @@
+{
+ "bai": "Bài 1: Công nghệ tế bào thực vật và thành tựu — Sinh học 10",
+ "fileNguon": "Sinh học/Khối 10/Giáo án/Chuyên đề/SH10-CD-B01_Cong_nghe_te_bao_thuc_vat_va_thanh_tuu.docx",
+ "cauHoiPhieu": "Nội dung 1. Tìm hiểu tính toàn năng của tế bào và quy trình công nghệ tế bào thực vật (mục I, II SGK).",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "là đặc tính của tế bào có khả năng phân chia, biệt hoá thành các loại tế bào khác nhau và phát triển thành một cơ thể hoàn chỉnh trong điều kiện thích hợp. Tế bào toàn năng chứa hệ gene mang đầy đủ thông tin di truyền của cơ thể. Thí nghiệm nuôi cấy mô tế bào rễ, thân, lá của nhiều loài thực vật cho thấy tế bào chuyên hoá vẫn còn tính toàn năng.",
+   "tieuChi": "Tính toàn năng của tế bào",
+   "cot": "Kiến thức cần nắm",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "môi trường dinh dưỡng nuôi cấy mô tế bào thực vật gồm nhiều thành phần khác nhau, trong đó thành phần không thể thiếu là hai loại hormone thực vật auxin và cytokinin; tỉ lệ của hai loại hormone này thay đổi tuỳ theo từng loài cây. Toàn bộ môi trường và dụng cụ nuôi cấy mô cần được khử trùng trước khi sử dụng.",
+   "tieuChi": "Giai đoạn 1: Chuẩn bị môi trường dinh dưỡng",
+   "cot": "Kiến thức cần nắm",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 3,
+   "dapAn": "mô lấy từ cây để nuôi cấy cần được khử trùng trước khi đưa vào môi trường nuôi cấy trong đĩa Petri hoặc các bình thuỷ tinh, đảm bảo điều kiện vô trùng trong suốt quá trình nuôi cấy.",
+   "tieuChi": "Giai đoạn 2: Khử trùng mô nuôi cấy",
+   "cot": "Kiến thức cần nắm",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "mô nuôi cấy được đặt trong tủ hoặc phòng nuôi cấy mô có nhiệt độ và chế độ quang chu kì thích hợp; các tế bào giải biệt hoá, phân chia tạo ra mô gồm các tế bào chưa phân hoá gọi là mô sẹo; tế bào mô sẹo sau đó tái biệt hoá thành các loại tế bào chuyên hoá khác nhau; từ mô sẹo hình thành nên rễ, chồi và thành cây con hoàn chỉnh. Toàn bộ thời gian cho quy trình nuôi cấy từ mô đến hình thành cây con cần từ 6 tuần đến 8 tuần hoặc hơn tuỳ thuộc từng loài.",
+   "tieuChi": "Giai đoạn 3: Tái sinh cây (mô sẹo → rễ, chồi, cây con)",
+   "cot": "Kiến thức cần nắm",
+   "hang": 4,
+   "cotSo": 1
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Nội dung",
+   "Kiến thức cần nắm",
+   "Ghi chú / ví dụ"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Tính toàn năng của tế bào",
+    "cacCot": [
+     {
+      "cot": "Kiến thức cần nắm",
+      "noiDung": "là đặc tính của tế bào có khả năng phân chia, biệt hoá thành các loại tế bào khác nhau và phát triển thành một cơ thể hoàn chỉnh trong điều kiện thích hợp. Tế bào toàn năng chứa hệ gene mang đầy đủ thông tin di truyền của cơ thể. Thí nghiệm nuôi cấy mô tế bào rễ, thân, lá của nhiều loài thực vật cho thấy tế bào chuyên hoá vẫn còn tính toàn năng."
+     },
+     {
+      "cot": "Ghi chú / ví dụ",
+      "noiDung": ""
+     }
+    ]
+   },
+   {
+    "tieuChi": "Giai đoạn 1: Chuẩn bị môi trường dinh dưỡng",
+    "cacCot": [
+     {
+      "cot": "Kiến thức cần nắm",
+      "noiDung": "môi trường dinh dưỡng nuôi cấy mô tế bào thực vật gồm nhiều thành phần khác nhau, trong đó thành phần không thể thiếu là hai loại hormone thực vật auxin và cytokinin; tỉ lệ của hai loại hormone này thay đổi tuỳ theo từng loài cây. Toàn bộ môi trường và dụng cụ nuôi cấy mô cần được khử trùng trước khi sử dụng."
+     },
+     {
+      "cot": "Ghi chú / ví dụ",
+      "noiDung": ""
+     }
+    ]
+   },
+   {
+    "tieuChi": "Giai đoạn 2: Khử trùng mô nuôi cấy",
+    "cacCot": [
+     {
+      "cot": "Kiến thức cần nắm",
+      "noiDung": "mô lấy từ cây để nuôi cấy cần được khử trùng trước khi đưa vào môi trường nuôi cấy trong đĩa Petri hoặc các bình thuỷ tinh, đảm bảo điều kiện vô trùng trong suốt quá trình nuôi cấy."
+     },
+     {
+      "cot": "Ghi chú / ví dụ",
+      "noiDung": ""
+     }
+    ]
+   },
+   {
+    "tieuChi": "Giai đoạn 3: Tái sinh cây (mô sẹo → rễ, chồi, cây con)",
+    "cacCot": [
+     {
+      "cot": "Kiến thức cần nắm",
+      "noiDung": "mô nuôi cấy được đặt trong tủ hoặc phòng nuôi cấy mô có nhiệt độ và chế độ quang chu kì thích hợp; các tế bào giải biệt hoá, phân chia tạo ra mô gồm các tế bào chưa phân hoá gọi là mô sẹo; tế bào mô sẹo sau đó tái biệt hoá thành các loại tế bào chuyên hoá khác nhau; từ mô sẹo hình thành nên rễ, chồi và thành cây con hoàn chỉnh. Toàn bộ thời gian cho quy trình nuôi cấy từ mô đến hình thành cây con cần từ 6 tuần đến 8 tuần hoặc hơn tuỳ thuộc từng loài."
+     },
+     {
+      "cot": "Ghi chú / ví dụ",
+      "noiDung": ""
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Đoạn Dự kiến sản phẩm (DKSP) trong cùng KHBD, mở đầu bằng nhãn của từng hàng trong bảng phiếu (trích nguyên văn)."
+ },
+ "ghiChu": " Đáp án là đoạn DKSP nguyên văn (dài hơn đáp án rút gọn kiểu mẫu tay Bài 9)."
+}
