@@ -1,0 +1,134 @@
+{
+ "bai": "DI TRUYỀN HỌC NGƯỜI VÀ DI TRUYỀN Y HỌC — Sinh học 12",
+ "fileNguon": "Sinh học/Khối 12/Giáo án/HK1/KHBD_Sinh_hoc_12_Bai_13_Di_truyen_hoc_nguoi_va_di_truyen_y_hoc_2_tiet.docx",
+ "cauHoiPhieu": "Nhiệm vụ: Các nhóm hoàn thành ba bảng sau trong quá trình học tập, sau đó trình bày trước lớp. Bảng A. Khái niệm và vai trò của di truyền học người và di truyền y học",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Xác định nguy cơ sinh con mắc bệnh di truyền; tư vấn về hôn nhân cận huyết",
+   "tieuChi": "Tư vấn trước hôn nhân",
+   "cot": "Hình thức / phương pháp",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Giúp các cặp vợ chồng chủ động phòng ngừa bệnh di truyền cho con; tránh hôn nhân cận huyết làm tăng nguy cơ sinh con mắc bệnh do gene lặn",
+   "tieuChi": "Tư vấn trước hôn nhân",
+   "cot": "Ý nghĩa",
+   "hang": 1,
+   "cotSo": 2
+  },
+  {
+   "so": 3,
+   "dapAn": "Chẩn đoán trước sinh bằng chọc ối, sinh thiết gai nhau, xét nghiệm máu mẹ",
+   "tieuChi": "Tư vấn trước khi sinh (sàng lọc trước sinh)",
+   "cot": "Hình thức / phương pháp",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Phát hiện sớm các bệnh di truyền ở thai nhi (hội chứng Down, thiếu máu hồng cầu hình liềm); chuẩn bị phương án chăm sóc, điều trị kịp thời",
+   "tieuChi": "Tư vấn trước khi sinh (sàng lọc trước sinh)",
+   "cot": "Ý nghĩa",
+   "hang": 2,
+   "cotSo": 2
+  },
+  {
+   "so": 5,
+   "dapAn": "Sàng lọc sơ sinh để phát hiện sớm các bệnh di truyền",
+   "tieuChi": "Tư vấn sau khi sinh (sàng lọc sơ sinh)",
+   "cot": "Hình thức / phương pháp",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 6,
+   "dapAn": "Phát hiện sớm bệnh phenylketon niệu (điều trị bằng chế độ ăn kiêng phenylalanine), suy giáp bẩm sinh (điều trị bằng hormone tuyến giáp)",
+   "tieuChi": "Tư vấn sau khi sinh (sàng lọc sơ sinh)",
+   "cot": "Ý nghĩa",
+   "hang": 3,
+   "cotSo": 2
+  },
+  {
+   "so": 7,
+   "dapAn": "Đưa gene lành vào tế bào của người bệnh để thay thế gene bị đột biến hoặc bổ sung gene bị thiếu; công nghệ CRISPR/Cas",
+   "tieuChi": "Liệu pháp gene",
+   "cot": "Hình thức / phương pháp",
+   "hang": 4,
+   "cotSo": 1
+  },
+  {
+   "so": 8,
+   "dapAn": "Điều trị bệnh thiếu máu hồng cầu hình liềm, máu khó đông, SCID; mở ra triển vọng chữa khỏi bệnh di truyền thay vì chỉ làm giảm triệu chứng",
+   "tieuChi": "Liệu pháp gene",
+   "cot": "Ý nghĩa",
+   "hang": 4,
+   "cotSo": 2
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Nội dung",
+   "Hình thức / phương pháp",
+   "Ý nghĩa"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "Tư vấn trước hôn nhân",
+    "cacCot": [
+     {
+      "cot": "Hình thức / phương pháp",
+      "noiDung": "Xác định nguy cơ sinh con mắc bệnh di truyền; tư vấn về hôn nhân cận huyết"
+     },
+     {
+      "cot": "Ý nghĩa",
+      "noiDung": "Giúp các cặp vợ chồng chủ động phòng ngừa bệnh di truyền cho con; tránh hôn nhân cận huyết làm tăng nguy cơ sinh con mắc bệnh do gene lặn"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Tư vấn trước khi sinh (sàng lọc trước sinh)",
+    "cacCot": [
+     {
+      "cot": "Hình thức / phương pháp",
+      "noiDung": "Chẩn đoán trước sinh bằng chọc ối, sinh thiết gai nhau, xét nghiệm máu mẹ"
+     },
+     {
+      "cot": "Ý nghĩa",
+      "noiDung": "Phát hiện sớm các bệnh di truyền ở thai nhi (hội chứng Down, thiếu máu hồng cầu hình liềm); chuẩn bị phương án chăm sóc, điều trị kịp thời"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Tư vấn sau khi sinh (sàng lọc sơ sinh)",
+    "cacCot": [
+     {
+      "cot": "Hình thức / phương pháp",
+      "noiDung": "Sàng lọc sơ sinh để phát hiện sớm các bệnh di truyền"
+     },
+     {
+      "cot": "Ý nghĩa",
+      "noiDung": "Phát hiện sớm bệnh phenylketon niệu (điều trị bằng chế độ ăn kiêng phenylalanine), suy giáp bẩm sinh (điều trị bằng hormone tuyến giáp)"
+     }
+    ]
+   },
+   {
+    "tieuChi": "Liệu pháp gene",
+    "cacCot": [
+     {
+      "cot": "Hình thức / phương pháp",
+      "noiDung": "Đưa gene lành vào tế bào của người bệnh để thay thế gene bị đột biến hoặc bổ sung gene bị thiếu; công nghệ CRISPR/Cas"
+     },
+     {
+      "cot": "Ý nghĩa",
+      "noiDung": "Điều trị bệnh thiếu máu hồng cầu hình liềm, máu khó đông, SCID; mở ra triển vọng chữa khỏi bệnh di truyền thay vì chỉ làm giảm triệu chứng"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
