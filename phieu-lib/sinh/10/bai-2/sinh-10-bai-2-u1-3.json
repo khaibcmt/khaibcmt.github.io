@@ -1,0 +1,192 @@
+{
+ "bai": "Bài 2: Phương pháp nghiên cứu và học tập môn Sinh học — Sinh học 10",
+ "fileNguon": "Sinh học/Khối 10/Giáo án/HK1/KHBD_Sinh_hoc_10_Bai_2_Phuong_phap_nghien_cuu_va_hoc_tap_mon_sinh_hoc_2_tiet.docx",
+ "cauHoiPhieu": "Phụ lục 1: Phiếu học tập — Bài 2: Phương pháp nghiên cứu và học tập môn Sinh học",
+ "cacO": [
+  {
+   "so": 1,
+   "dapAn": "Quan sát đối tượng theo logic, thu thập và lưu giữ dữ liệu",
+   "tieuChi": "1. Quan sát và thu thập dữ liệu",
+   "cot": "Nội dung công việc",
+   "hang": 1,
+   "cotSo": 1
+  },
+  {
+   "so": 2,
+   "dapAn": "Dữ liệu quan sát đầy đủ, trung thực",
+   "tieuChi": "1. Quan sát và thu thập dữ liệu",
+   "cot": "Kết quả cần đạt",
+   "hang": 1,
+   "cotSo": 2
+  },
+  {
+   "so": 3,
+   "dapAn": "Đặt câu hỏi về hiện tượng đã quan sát",
+   "tieuChi": "2. Đặt câu hỏi",
+   "cot": "Nội dung công việc",
+   "hang": 2,
+   "cotSo": 1
+  },
+  {
+   "so": 4,
+   "dapAn": "Câu hỏi nghiên cứu rõ ràng",
+   "tieuChi": "2. Đặt câu hỏi",
+   "cot": "Kết quả cần đạt",
+   "hang": 2,
+   "cotSo": 2
+  },
+  {
+   "so": 5,
+   "dapAn": "Dùng suy luận logic diễn giải để hình thành giả thuyết",
+   "tieuChi": "3. Hình thành giả thuyết",
+   "cot": "Nội dung công việc",
+   "hang": 3,
+   "cotSo": 1
+  },
+  {
+   "so": 6,
+   "dapAn": "Giả thuyết có thể kiểm chứng",
+   "tieuChi": "3. Hình thành giả thuyết",
+   "cot": "Kết quả cần đạt",
+   "hang": 3,
+   "cotSo": 2
+  },
+  {
+   "so": 7,
+   "dapAn": "Thiết kế thí nghiệm có nhóm đối chứng và nhóm thực nghiệm, tiến hành thí nghiệm",
+   "tieuChi": "4. Thiết kế và tiến hành thí nghiệm kiểm chứng",
+   "cot": "Nội dung công việc",
+   "hang": 4,
+   "cotSo": 1
+  },
+  {
+   "so": 8,
+   "dapAn": "Thí nghiệm được tiến hành đúng thiết kế",
+   "tieuChi": "4. Thiết kế và tiến hành thí nghiệm kiểm chứng",
+   "cot": "Kết quả cần đạt",
+   "hang": 4,
+   "cotSo": 2
+  },
+  {
+   "so": 9,
+   "dapAn": "Phân tích kết quả, xử lí dữ liệu thu được",
+   "tieuChi": "5. Phân tích kết quả nghiên cứu và xử lí dữ liệu",
+   "cot": "Nội dung công việc",
+   "hang": 5,
+   "cotSo": 1
+  },
+  {
+   "so": 10,
+   "dapAn": "Kết quả được phân tích, trình bày rõ ràng",
+   "tieuChi": "5. Phân tích kết quả nghiên cứu và xử lí dữ liệu",
+   "cot": "Kết quả cần đạt",
+   "hang": 5,
+   "cotSo": 2
+  },
+  {
+   "so": 11,
+   "dapAn": "Bác bỏ giả thuyết hoặc chấp nhận giả thuyết",
+   "tieuChi": "6. Rút ra kết luận",
+   "cot": "Nội dung công việc",
+   "hang": 6,
+   "cotSo": 1
+  },
+  {
+   "so": 12,
+   "dapAn": "Kết luận có căn cứ khoa học",
+   "tieuChi": "6. Rút ra kết luận",
+   "cot": "Kết quả cần đạt",
+   "hang": 6,
+   "cotSo": 2
+  }
+ ],
+ "bangDapAnGV": {
+  "tieuDeCot": [
+   "Bước",
+   "Nội dung công việc",
+   "Kết quả cần đạt"
+  ],
+  "cacHang": [
+   {
+    "tieuChi": "1. Quan sát và thu thập dữ liệu",
+    "cacCot": [
+     {
+      "cot": "Nội dung công việc",
+      "noiDung": "Quan sát đối tượng theo logic, thu thập và lưu giữ dữ liệu"
+     },
+     {
+      "cot": "Kết quả cần đạt",
+      "noiDung": "Dữ liệu quan sát đầy đủ, trung thực"
+     }
+    ]
+   },
+   {
+    "tieuChi": "2. Đặt câu hỏi",
+    "cacCot": [
+     {
+      "cot": "Nội dung công việc",
+      "noiDung": "Đặt câu hỏi về hiện tượng đã quan sát"
+     },
+     {
+      "cot": "Kết quả cần đạt",
+      "noiDung": "Câu hỏi nghiên cứu rõ ràng"
+     }
+    ]
+   },
+   {
+    "tieuChi": "3. Hình thành giả thuyết",
+    "cacCot": [
+     {
+      "cot": "Nội dung công việc",
+      "noiDung": "Dùng suy luận logic diễn giải để hình thành giả thuyết"
+     },
+     {
+      "cot": "Kết quả cần đạt",
+      "noiDung": "Giả thuyết có thể kiểm chứng"
+     }
+    ]
+   },
+   {
+    "tieuChi": "4. Thiết kế và tiến hành thí nghiệm kiểm chứng",
+    "cacCot": [
+     {
+      "cot": "Nội dung công việc",
+      "noiDung": "Thiết kế thí nghiệm có nhóm đối chứng và nhóm thực nghiệm, tiến hành thí nghiệm"
+     },
+     {
+      "cot": "Kết quả cần đạt",
+      "noiDung": "Thí nghiệm được tiến hành đúng thiết kế"
+     }
+    ]
+   },
+   {
+    "tieuChi": "5. Phân tích kết quả nghiên cứu và xử lí dữ liệu",
+    "cacCot": [
+     {
+      "cot": "Nội dung công việc",
+      "noiDung": "Phân tích kết quả, xử lí dữ liệu thu được"
+     },
+     {
+      "cot": "Kết quả cần đạt",
+      "noiDung": "Kết quả được phân tích, trình bày rõ ràng"
+     }
+    ]
+   },
+   {
+    "tieuChi": "6. Rút ra kết luận",
+    "cacCot": [
+     {
+      "cot": "Nội dung công việc",
+      "noiDung": "Bác bỏ giả thuyết hoặc chấp nhận giả thuyết"
+     },
+     {
+      "cot": "Kết quả cần đạt",
+      "noiDung": "Kết luận có căn cứ khoa học"
+     }
+    ]
+   }
+  ],
+  "nguonDapAn": "Bản phiếu đã điền sẵn trong Phụ lục của chính KHBD (bản giáo viên); phiếu câm suy ra bằng cách làm trống các ô dữ liệu."
+ },
+ "ghiChu": "phieu-da-dien"
+}
