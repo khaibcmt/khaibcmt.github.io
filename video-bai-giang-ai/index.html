@@ -394,7 +394,7 @@
       <select id="voiceSourceSel" style="flex:1;min-width:240px">
         <option value="gemini">Gemini (Google) — MC Nữ Kore + MC Nam Charon · cần key · có hạn mức ngày</option>
         <option value="edge">Edge TTS (Microsoft) — MC Nữ HoaiMy + MC Nam NamMinh · miễn phí · không cần key</option>
-        <option value="fpt">FPT.AI (Việt Nam) — giọng miền Nam · cần API key FPT · free 100.000 ký tự/tháng</option>
+        <option value="fpt">FPT.AI (Việt Nam) — MC Nữ miền Nam + MC Nam miền Bắc · cần API key FPT · free 100.000 ký tự/tháng</option>
       </select>
     </div>
     <div class="small" id="voiceSourceNote" style="margin-top:6px"></div>
@@ -1607,7 +1607,7 @@ function generateSecMsGec(unixTimestamp){
 const EDGE_VOICES = { male: "vi-VN-NamMinhNeural", female: "vi-VN-HoaiMyNeural" };
 /* Ánh xạ MC -> tên giọng theo NGUỒN: edge = cặp giọng Microsoft,
    còn lại = cặp Gemini của GD13. */
-const FPT_VOICES = { male: "giahuy", female: "lannhi" };
+const FPT_VOICES = { male: "leminh", female: "lannhi" };
 function mcVoiceNameFor(source, mc){
   if (source === "edge") return EDGE_VOICES[mc] || EDGE_VOICES.female;
   if (source === "fpt") return FPT_VOICES[mc] || FPT_VOICES.female;
@@ -1802,7 +1802,7 @@ function renderVoiceSourceNote(){
   if (voiceSource === "edge"){
     note.innerHTML = "🆓 Đang dùng <b>Edge TTS (Microsoft)</b>: giọng lấy trực tiếp từ máy chủ Microsoft — phần giọng <b>không cần key Gemini, không tốn hạn mức</b>. Cần mạng ổn định lúc dựng; đoạn nào lỗi kết nối sẽ im lặng như khi hết hạn mức (app tự ngắt sau nhiều lỗi liên tiếp và báo rõ).";
   } else if (voiceSource === "fpt"){
-    note.innerHTML = "🇻🇳 Đang dùng <b>FPT.AI</b>: giọng Việt của FPT — cần dán API key FPT ở khung riêng phía trên. Gói miễn phí 100.000 ký tự/tháng; app đếm ký tự đã dùng ngay dưới đây.";
+    note.innerHTML = "🇻🇳 Đang dùng <b>FPT.AI</b>: MC Nữ <b>Lan Nhi (miền Nam)</b> + MC Nam <b>Lê Minh (miền Bắc)</b> — FPT chưa có giọng nam miền Nam. Cần dán API key FPT ở khung riêng phía trên. Gói miễn phí 100.000 ký tự/tháng; app đếm ký tự đã dùng ngay dưới đây.";
   } else {
     note.innerHTML = "";
   }
