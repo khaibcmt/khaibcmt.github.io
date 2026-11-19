@@ -2930,7 +2930,19 @@ function phieuContrastText(hex){
    bất thường (TTS lỗi một phần) thì cảnh đứng đủ sàn, phần thiếu là im
    lặng đệm khi ghi. seg.capSec (nếu có) là trần cứng của cảnh. */
 function phieuSegDuration(audioDur, seg){
-  let d = Math.max(Number(audioDur) || 0, (seg && Number(seg.noAudioSec)) || 0);
+  const a = Number(audioDur) || 0;
+  const floor = (seg && Number(seg.noAudioSec)) || 0;
+  /* GD13-sync: sàn noAudioSec là ƯỚC LƯỢNG ở tốc độ ~13 ký tự/giây, trong
+     khi Gemini đọc thật nhanh hơn hẳn — bản cũ max(audio, sàn) khiến gần
+     như MỌI cảnh phiếu/chữa đề bị đệm 3–17 giây im lặng ở cuối (đo thật
+     trên video thầy dựng: lặng 17,3s ở 0:33–0:50, lặp lại suốt video).
+     Nay: audio KHỎE (đạt ≥ 60% sàn, tức tốc độ đọc ≤ ~21 ký tự/giây) thì
+     theo đúng audio; audio rỗng/quá ngắn (TTS lỗi, trả thiếu) vẫn giữ
+     sàn chống sụp cảnh như cũ. Cảnh giữ hình có chủ đích mang holdSec
+     (ngân hàng nội dung, bảng đầy đủ, QR) — holdSec là sàn cứng riêng. */
+  let d = (a > 0 && floor > 0 && a >= floor * 0.6) ? a : Math.max(a, floor);
+  const hold = (seg && Number(seg.holdSec)) || 0;
+  if (hold) d = Math.max(d, hold);
   if (seg && seg.capSec) d = Math.min(d, Number(seg.capSec));
   return d;
 }
@@ -3088,7 +3100,7 @@ function buildPhieuScenes(entry, data, opts){
   /* Cảnh NGÂN HÀNG NỘI DUNG riêng (phần 2): lời hướng dẫn tạm dừng +
      tự điền; đứng hình tối thiểu 12 giây cho học sinh kịp đọc/chép. */
   const bankNarr = "Đây là toàn bộ nội dung cần điền vào phiếu. Các em hãy tạm dừng video tại đây, đọc kĩ từng nội dung rồi tự điền vào phiếu theo từng số nhé!";
-  segs.push({ type: "phieu", phKind: "bank", heading: "Ngân hàng nội dung", narration: bankNarr, noAudioSec: Math.max(12, phieuNoAudioSec(bankNarr)), bank: phieuBankPlan(cacO) });
+  segs.push({ type: "phieu", phKind: "bank", heading: "Ngân hàng nội dung", narration: bankNarr, noAudioSec: Math.max(12, phieuNoAudioSec(bankNarr)), holdSec: 12, bank: phieuBankPlan(cacO) });
   cacO.forEach(o => {
     /* Lời điền RÚT GỌN theo mẫu thầy chốt (20:08): chỉ "Số {k} là
        {đáp án}." — không đọc tên tiêu chí/cột (đã có trên hình + caption). */
@@ -3107,13 +3119,13 @@ function buildPhieuScenes(entry, data, opts){
      theo audio (qua phieuSegDuration như mọi cảnh phiếu). */
   const fullNarr = "Đây là bảng đáp án đầy đủ, các em đối chiếu với bài làm của mình.";
   const fullSec = Math.min(90, Math.max(20, Math.round(n * 2.5)));
-  segs.push({ type: "phieu", phKind: "full", heading: "Bảng đáp án đầy đủ", narration: fullNarr, noAudioSec: fullSec });
+  segs.push({ type: "phieu", phKind: "full", heading: "Bảng đáp án đầy đủ", narration: fullNarr, noAudioSec: fullSec, holdSec: fullSec });
   const qrUrl = buildExerciseUrl(entry && entry.id, opts.baseHref || "");
   /* Cảnh cuối (thầy chốt 19:39): lời kêu gọi ĐĂNG KÝ KÊNH + làm bài tập;
      mã QR giữ trên hình tối thiểu 20 GIÂY để học sinh kịp lấy điện thoại
      quét (audio ngắn hơn thì đệm im lặng; audio dài hơn thì theo audio). */
   const qrNarr = "Các em nhớ đăng ký kênh để không bỏ lỡ các bài học tiếp theo nhé. Giờ hãy quét mã QR trên màn hình hoặc bấm vào link dưới phần mô tả để vào làm bài tập phiếu học tập, kiểm tra xem mình hiểu bài tới đâu nào!";
-  segs.push({ type: "phieu", phKind: "qr", heading: "Bài tập tương tác", narration: qrNarr, qrUrl: qrUrl, noAudioSec: 20 });
+  segs.push({ type: "phieu", phKind: "qr", heading: "Bài tập tương tác", narration: qrNarr, qrUrl: qrUrl, noAudioSec: 20, holdSec: 20 });
   return segs;
 }
 /* Tiêu đề + mô tả YouTube soạn sẵn: chứa link bài tập ?bt=<id> để thầy
@@ -3316,7 +3328,7 @@ function buildChuadeScenes(entry, data, opts){
     ". Làm lại ngay lúc này thì mới nhớ lâu được. Cố lên các em!";
   segs.push({
     type: "chuade", cdKind: "qr", heading: "Làm lại đề này ngay tại đây",
-    narration: qrNarr, qrUrl: tgt.url, guide: tgt.guide, noAudioSec: 20
+    narration: qrNarr, qrUrl: tgt.url, guide: tgt.guide, noAudioSec: 20, holdSec: 20
   });
   return segs;
 }
@@ -5849,7 +5861,8 @@ function recordVideo(){
       }
       off += durations[i];
     });
-    const vStream = canvas.captureStream(30);
+    const vStream = canvas.captureStream(0);
+    const vTrack = vStream.getVideoTracks()[0];
     const stream = new MediaStream([].concat(vStream.getVideoTracks(), dest.stream.getAudioTracks()));
     const fmt = pickRecorderMime(t => MediaRecorder.isTypeSupported(t));
     let rec;
@@ -5860,12 +5873,38 @@ function recordVideo(){
     rec.ondataavailable = e => { if (e.data && e.data.size) chunks.push(e.data); };
     rec.onstop = () => resolve({ blob: new Blob(chunks, { type: (fmt.mime || "video/webm").split(";")[0] }), fmt: fmt });
     rec.onerror = () => reject(new Error("MediaRecorder gặp lỗi khi ghi."));
-    const startT = performance.now();
-    function frame(){
-      const el = (performance.now() - startT) / 1000;
+    /* GD13-sync: BƠM KHUNG HÌNH KHÔNG PHỤ THUỘC TAB ĐANG HIỆN.
+       Gốc rễ lỗi lệch hình/tiếng (video thầy dựng 19/11: hình 411,7s —
+       tiếng 1.528s): bản cũ vẽ cảnh bằng requestAnimationFrame và lấy
+       khung qua captureStream(30), cả hai đều đứng khi tab bị ẩn/che
+       (thầy chuyển tab trong lúc dựng video dài); còn tiếng được lên
+       lịch theo đồng hồ AudioContext nên vẫn chạy đủ thời lượng thật.
+       Bộ muxer chỉ nhận được khung của những lúc tab hiện → đường hình
+       bị nén lại bằng đúng tổng thời gian tab hiện.
+       Bản mới: (1) mốc thời gian lấy theo ĐỒNG HỒ AudioContext — đúng
+       đồng hồ của tiếng; (2) captureStream(0) + requestFrame() ép từng
+       khung thủ công ngay sau khi vẽ; (3) bộ gõ nhịp phụ từ Web Worker
+       (không bị bóp khi tab ẩn) gọi cùng hàm bơm với rAF — tab ẩn thì
+       rAF nghỉ nhưng worker vẫn gõ 200ms/lần, hình vẫn chảy đều và
+       dừng ghi cũng theo đồng hồ audio. */
+    let stopped = false;
+    let rafId = 0, tickWorker = null, tickTimer = null, lastFrameAt = -1, lastIdx = -1;
+    function stopAll(){
+      if (stopped) return;
+      stopped = true;
+      if (rafId) cancelAnimationFrame(rafId);
+      if (tickWorker) { try { tickWorker.terminate(); } catch (e) {} tickWorker = null; }
+      if (tickTimer) { clearInterval(tickTimer); tickTimer = null; }
+      if (rec.state !== "inactive") rec.stop();
+    }
+    function pump(){
+      if (stopped) return;
+      const el = actx.currentTime - t0;
+      if (el >= total + 0.3) { stopAll(); return; }
+      const elc = Math.max(0, el);
       let acc = 0, idx = segs.length - 1, localT = durations[idx] || 0;
       for (let i = 0; i < segs.length; i++) {
-        if (el < acc + durations[i]) { idx = i; localT = el - acc; break; }
+        if (elc < acc + durations[i]) { idx = i; localT = elc - acc; break; }
         acc += durations[i];
       }
       const frac = durations[idx] ? localT / durations[idx] : 0;
@@ -5882,14 +5921,26 @@ function recordVideo(){
       } else {
         drawSlide(ctx, segs[idx], assets[idx], frac);
       }
-      $("renderProg").value = Math.min(100, (el / total) * 100);
+      if (vTrack && vTrack.requestFrame && (elc - lastFrameAt >= 0.03 || idx !== lastIdx)) {
+        try { vTrack.requestFrame(); } catch (e) {}
+        lastFrameAt = elc; lastIdx = idx;
+      }
+      $("renderProg").value = Math.min(100, (elc / total) * 100);
       $("renderNote").textContent = "Đang ghi: đoạn " + (idx + 1) + "/" + segs.length + " — " + segs[idx].heading +
-        "  (" + Math.round(el) + "s / " + Math.round(total) + "s)";
-      if (el < total + 0.3) requestAnimationFrame(frame);
+        "  (" + Math.round(elc) + "s / " + Math.round(total) + "s)";
     }
+    function rafLoop(){ if (stopped) return; pump(); rafId = requestAnimationFrame(rafLoop); }
     rec.start(250);
-    requestAnimationFrame(frame);
-    setTimeout(() => { if (rec.state !== "inactive") rec.stop(); }, (total + 0.7) * 1000);
+    pump();
+    rafId = requestAnimationFrame(rafLoop);
+    try {
+      const wurl = URL.createObjectURL(new Blob(["setInterval(function(){ postMessage(1); }, 200);"], { type: "text/javascript" }));
+      tickWorker = new Worker(wurl);
+      tickWorker.onmessage = () => pump();
+    } catch (e) {
+      tickTimer = setInterval(pump, 200);
+    }
+    setTimeout(stopAll, (total + 2.5) * 1000);
   });
 }
 
