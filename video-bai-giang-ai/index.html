@@ -145,6 +145,55 @@
   .bt-result{border-radius:12px;padding:14px 16px;margin-top:16px;font-size:16px;line-height:1.6;display:none}
   .bt-result.show{display:block}
   .bt-msg{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:24px 18px;margin-top:26px;font-size:16.5px;line-height:1.65;text-align:center}
+  /* ===== Trang LÀM ĐỀ cho học sinh (?de=) — giao diện HỌC SINH, mobile là chính ===== */
+  .de-wrap{max-width:860px;margin:0 auto;padding:14px 12px 56px}
+  .de-head{text-align:center;padding:10px 0 2px}
+  .de-head h1{font-size:25px;margin:0}
+  .de-sub{color:var(--muted);font-size:15px;margin-top:5px;line-height:1.55}
+  .de-badge{display:inline-block;background:#123c5f;color:#c4e4ff;border-radius:999px;padding:3px 12px;font-size:13px;font-weight:700}
+  .de-title{font-size:19px;font-weight:700;color:var(--accent);margin-top:10px;line-height:1.4}
+  .de-meta{color:var(--muted);font-size:14.5px;margin-top:5px;line-height:1.55}
+  .de-teacher{margin-top:8px;font-size:15px;font-weight:700;color:#ffe9a8}
+  .de-sec{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin-top:16px}
+  .de-sec h2{margin:0 0 6px;font-size:18px;color:var(--accent)}
+  .de-hint{font-size:14px;color:var(--muted);line-height:1.5;margin:2px 0 10px}
+  .de-q{border:1px solid var(--line);border-radius:12px;padding:12px 13px;margin-top:11px;background:var(--panel2)}
+  .de-q.de-ok{border-color:var(--green);box-shadow:inset 0 0 0 1.5px var(--green)}
+  .de-q.de-bad{border-color:var(--red);box-shadow:inset 0 0 0 1.5px var(--red)}
+  .de-qt{font-weight:700;font-size:15.5px;line-height:1.55;white-space:pre-wrap;word-break:break-word}
+  .de-stem{font-size:15px;line-height:1.55;white-space:pre-wrap;word-break:break-word}
+  .de-img{display:block;max-width:100%;height:auto;border:1px solid var(--line);border-radius:10px;margin-top:10px;background:#fff}
+  .de-tblwrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:10px}
+  table.de-tbl{border-collapse:collapse;width:100%;background:var(--panel)}
+  .de-tbl th,.de-tbl td{border:1px solid var(--line);padding:8px 9px;font-size:14px;line-height:1.45;text-align:left;vertical-align:top}
+  .de-tbl th{background:#14532d;color:#eafff2}
+  .de-opt{display:flex;gap:10px;align-items:flex-start;width:100%;text-align:left;margin-top:8px;background:var(--panel);color:var(--txt);border:1.5px solid var(--line);border-radius:10px;padding:11px 12px;font-size:15px;line-height:1.5;min-height:48px;cursor:pointer}
+  .de-opt .de-letter{font-weight:800;color:var(--accent);flex:none}
+  .de-opt.sel{border-color:var(--accent);background:#5b4a00}
+  .de-opt.ok{border-color:var(--green);background:#14532d}
+  .de-opt.bad{border-color:var(--red);background:#5f1d1d}
+  .de-opt:disabled{cursor:default;opacity:1}
+  .de-tf-item{border-top:1px dashed rgba(255,255,255,.18);padding:10px 0 4px;margin-top:10px}
+  .de-tf-text{font-size:15px;line-height:1.55;white-space:pre-wrap;word-break:break-word}
+  .de-tf-btns{display:flex;gap:8px;margin-top:8px}
+  .de-tf-btn{flex:1;min-height:48px;border-radius:10px;border:1.5px solid var(--line);background:var(--panel);color:var(--txt);font-size:15.5px;font-weight:700;cursor:pointer;padding:10px}
+  .de-tf-btn.sel{border-color:var(--accent);background:#5b4a00}
+  .de-tf-btn.ok{border-color:var(--green);background:#14532d}
+  .de-tf-btn.bad{border-color:var(--red);background:#5f1d1d}
+  .de-tf-btn:disabled{cursor:default;opacity:1}
+  .de-tf-verdict{margin-top:7px;font-size:14px;font-weight:700}
+  .de-sa-input{width:100%;box-sizing:border-box;margin-top:10px;padding:13px 12px;min-height:48px;font-size:16px;border-radius:10px;border:1.5px solid var(--line);background:var(--panel);color:var(--txt)}
+  .de-sa-input.ok{border-color:var(--green);background:#14532d}
+  .de-sa-input.bad{border-color:var(--red);background:#5f1d1d}
+  .de-ansline{margin-top:9px;font-size:14px;line-height:1.5;color:#ffd7d7;border-top:1px dashed rgba(255,255,255,.25);padding-top:7px}
+  .de-ansline b{color:#b6ffd2}
+  .de-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+  .de-result{border-radius:12px;padding:14px 16px;margin-top:16px;font-size:16px;line-height:1.6;display:none}
+  .de-result.show{display:block}
+  .de-msg{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:24px 18px;margin-top:26px;font-size:16.5px;line-height:1.65;text-align:center}
+  .de-pick label{display:block;margin-top:12px;font-weight:700;font-size:15px}
+  .de-pick select{width:100%;box-sizing:border-box;margin-top:6px;padding:12px;min-height:48px;font-size:16px;border-radius:10px}
+  .de-topbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-top:12px}
 </style>
 </head>
 <body>
@@ -394,6 +443,18 @@
     </div>
     <div id="btMain"></div>
     <div class="small" style="text-align:center;margin-top:22px;color:#7fae95">Bài tập tương tác — Video Bài Giảng AI</div>
+  </div>
+</div>
+
+<!-- ===== TRANG LÀM ĐỀ CHO HỌC SINH (?de=<khoá bộ trong de-lib>) — chỉ hiện khi link có ?de= ===== -->
+<div id="deRoot" class="hidden">
+  <div class="de-wrap">
+    <div class="de-head">
+      <h1>📝 Làm Đề</h1>
+      <p class="de-sub">Chọn đáp án cho từng câu rồi bấm Nộp bài để xem điểm ngay nhé!</p>
+    </div>
+    <div id="deMain"></div>
+    <div class="small" style="text-align:center;margin-top:22px;color:#7fae95">Làm đề — Video Bài Giảng AI</div>
   </div>
 </div>
 
@@ -1445,7 +1506,7 @@ function renderScriptReview(){
       else if (sg.cdKind === "q") extra = "<p>" + chuadeUnitSummaryHtml(sg.unit) + " — hiện CHƯA lộ đáp án.</p>";
       else if (sg.cdKind === "a") extra = "<p><b>Đáp án: " + chuadeAnswerSummaryHtml(sg.unit) + "</b> — sửa giải thích ở ô dưới đây, lời đọc tự cập nhật.</p>";
       else if (sg.cdKind === "end") extra = "<p>Cảnh tổng kết ngắn trước cảnh QR.</p>";
-      else if (sg.cdKind === "qr") extra = "<p>Cảnh QR (tối thiểu 20 giây): học sinh quét để vào Học Liệu Vip Pro làm lại đề. " + escapeHtml(sg.guide || "") + "</p>";
+      else if (sg.cdKind === "qr") extra = "<p>Cảnh QR (tối thiểu 20 giây): học sinh quét để làm lại đề ngay trong app này. " + escapeHtml(sg.guide || "") + "</p>";
     }
     d.innerHTML = '<span class="tag ' + sg.type + '">' + TYPE_LABEL[sg.type] + "</span>" +
       "<h4>Đoạn " + (i + 1) + ": " + escapeHtml(sg.heading) + "</h4>" +
@@ -2910,22 +2971,36 @@ function buildYoutubeDesc(entry, data, url){
    Khuôn video (thầy duyệt qua video mẫu tối 18/11 + bổ sung 06:30
    ngày 19/11): mở → mỗi đơn vị 2 cảnh (hiện câu hỏi CHƯA lộ đáp án
    → chốt đáp án tô nổi bật + giải thích) → kết tổng kết ngắn → cảnh
-   QR cuối (kêu gọi + QR to + tối thiểu 20 giây) để học sinh vào Học
-   Liệu Vip Pro LÀM LẠI chính bộ câu vừa chữa.
+   QR cuối (kêu gọi + QR to + tối thiểu 20 giây) để học sinh LÀM LẠI
+   chính bộ câu vừa chữa ngay trong app này (trang làm đề ?de= — GD10).
    Tổng cảnh = 2 × N + 3 (N = tổng số đơn vị câu/chùm).
    ============================================================ */
 const CHUADE_HOC_LIEU_URL = "https://khaibcmt.github.io/hoc-lieu/";
-/* Đích QR + dòng hướng dẫn làm lại đề theo NGUỒN. Đã rà kỹ trong
-   hoc-lieu-site/index.html: Thi Online KHÔNG có link sâu mở thẳng
-   bài luyện (chỉ có ?hs=1 và ?task=<id bài giao link do GV tạo trên
-   Firebase, không suy ra được từ môn/khối/bài) → QR trỏ TRANG CHÍNH
-   Học Liệu + in dòng hướng dẫn đường đi tới đúng bộ câu. */
-function chuadePracticeTarget(entry){
-  const url = CHUADE_HOC_LIEU_URL;
-  if (!entry) return { url: url, guide: "Vào mục Thi Online trên Học Liệu Vip Pro để làm lại bộ câu này." };
-  if (entry.source === "tn") return { url: url, guide: "Vào mục Thi Online → Thi tốt nghiệp → " + (entry.tenBai || "") };
-  if (entry.source === "vip") return { url: url, guide: "Vào mục Thi Online → Ôn Tập Vip → " + (entry.tenBai || "") };
-  return { url: url, guide: "Vào mục Thi Online → Chọn bài → " + (entry.mon || "") + " lớp " + (entry.khoi || "") + " → Bài " + (entry.bai == null ? "" : entry.bai) };
+/* [GD10] Link LÀM ĐỀ ngay trong app này: <thư mục app>?de=<khoá bộ
+   trong de-lib>. baseHref rỗng (test/không rõ gốc) thì dùng địa chỉ
+   app đã phát hành. */
+const DE_APP_URL = "https://khaibcmt.github.io/video-bai-giang-ai/";
+function buildDeUrl(key, baseHref){
+  const clean = String(baseHref || "").split(/[?#]/)[0];
+  const dir = clean ? clean.replace(/[^/]*$/, "") : DE_APP_URL;
+  return dir + "?de=" + encodeURIComponent(String(key || ""));
+}
+/* Đích QR + dòng hướng dẫn làm lại đề theo NGUỒN. [GD10] Kho đề đã
+   đem hết qua de-lib và app đã có trang làm đề cho học sinh (?de=)
+   nên QR trỏ THẲNG vào đúng bộ đang chữa ngay trong app này — học
+   sinh quét là làm lại được ngay (GD9 phải vòng qua trang chính Học
+   Liệu + dòng chỉ đường vì Học Liệu không có link sâu mở thẳng bài
+   luyện). guide in trên cảnh QR ghi nguồn + tên bộ để học sinh đối
+   chiếu đúng bộ mình vừa xem chữa; label là danh tính gọn của bộ
+   dùng trong lời đọc. */
+function chuadePracticeTarget(entry, baseHref){
+  const url = buildDeUrl(entry && entry.key, baseHref);
+  if (!entry) return { url: url, guide: "Quét mã để làm lại bộ câu này ngay tại đây.", label: "bộ câu này" };
+  const label = entry.source === "bank"
+    ? (entry.mon || "") + " lớp " + (entry.khoi || "") + " — " + (entry.tenBai || ("Bài " + (entry.bai == null ? "" : entry.bai)))
+    : (entry.tenBai || "");
+  const srcWord = entry.source === "tn" ? "Đề thi tốt nghiệp — " : entry.source === "vip" ? "Ôn Tập Vip — " : "";
+  return { url: url, guide: srcWord + "Quét mã để làm lại đề này ngay tại đây: " + label, label: label };
 }
 /* URL hình của 1 đơn vị: nguồn bank → kho qimg của repo hoc-lieu;
    nguồn tn/vip → media trong chính de-lib (đường tương đối so với
@@ -3060,12 +3135,12 @@ function buildChuadeScenes(entry, data, opts){
     cdTitle: title, cdSub: sub, cdComp: compParts.join(" • "),
     narration: endNarr, noAudioSec: phieuNoAudioSec(endNarr)
   });
-  const tgt = chuadePracticeTarget(entry);
+  const tgt = chuadePracticeTarget(entry, opts.baseHref);
   const qrNarr = "Các em nhớ đăng ký kênh để không bỏ lỡ các video chữa đề tiếp theo nhé. " +
-    "Giờ hãy quét mã QR trên màn hình để vào Học Liệu Vip Pro làm lại chính bộ câu này. " + tgt.guide +
+    "Giờ hãy quét mã QR trên màn hình để làm lại chính bộ câu này ngay tại đây: " + tgt.label +
     ". Làm lại ngay lúc này thì mới nhớ lâu được. Cố lên các em!";
   segs.push({
-    type: "chuade", cdKind: "qr", heading: "Làm lại đề trên Học Liệu Vip Pro",
+    type: "chuade", cdKind: "qr", heading: "Làm lại đề này ngay tại đây",
     narration: qrNarr, qrUrl: tgt.url, guide: tgt.guide, noAudioSec: 20
   });
   return segs;
@@ -3148,12 +3223,12 @@ function buildChuadeYoutubeDesc(entry, target){
     "Video chữa đề: từng câu được hiện lên để học sinh tự làm trước, sau đó thầy chốt đáp án và giải thích vì sao đúng. " + srcNote + ".",
     "Đề: " + ((entry && entry.tenBai) || ""),
     "",
-    "👉 LÀM LẠI BỘ CÂU NÀY TRÊN HỌC LIỆU VIP PRO:",
+    "👉 LÀM LẠI BỘ CÂU NÀY NGAY TẠI ĐÂY:",
     target.url,
     target.guide + " — làm lại ngay sau khi xem chữa để nhớ lâu.",
     "(Hoặc quét mã QR ở cuối video.)",
     "",
-    "Cách dùng: xem tới mỗi câu hỏi thì tạm dừng và tự làm, nghe phần chốt đáp án + giải thích, cuối video quét QR vào Học Liệu Vip Pro làm lại toàn bộ đề và xem điểm của mình."
+    "Cách dùng: xem tới mỗi câu hỏi thì tạm dừng và tự làm, nghe phần chốt đáp án + giải thích, cuối video quét QR (hoặc bấm link trên) để làm lại toàn bộ đề ngay tại đây và xem điểm của mình."
   ].join("\n");
   return { title: title, desc: desc };
 }
@@ -3331,6 +3406,140 @@ function btGradeQuick(questions, chosen){
   return { correct: correct, total: (questions || []).length };
 }
 /*__END_PURE_BT__*/
+/*__PURE_DE__*/
+/* ============================================================
+   [GD10] Logic THUẦN của trang LÀM ĐỀ cho học sinh (?de=<khoá
+   bộ trong de-lib>). Không chạm DOM/mạng — test Node trích khối
+   chạy độc lập như các khối PURE khác. Dữ liệu: kho de-lib (cùng
+   schema GD9: entry {key, source, mon, khoi, bai, tenBai, mc[],
+   tf[], sa[]}; mc.answer là chữ cái "A".."D"; tf.items[].answer
+   là boolean; sa.answer là chuỗi đáp án). Chấm theo Ý: MC 1 ý,
+   mỗi ý Đ/S 1 ý, TLN 1 ý; điểm = ý đúng / tổng ý × 10, làm tròn
+   1 số lẻ. Điểm KHÔNG lưu đi đâu — làm tại chỗ để ôn tập.
+   ============================================================ */
+/* Đọc tham số: link có MẶT tham số "de" (dù rỗng) là vào chế độ
+   học sinh; rỗng hoặc không tìm thấy bộ thì trang hiện bộ chọn. */
+function deParseParams(search){
+  let qs = String(search == null ? "" : search);
+  if (qs.charAt(0) === "?") qs = qs.slice(1);
+  const p = new URLSearchParams(qs);
+  return { has: p.has("de"), de: String(p.get("de") || "").trim() };
+}
+function deSourceLabel(source){
+  if (source === "tn") return "🎓 Đề thi tốt nghiệp";
+  if (source === "vip") return "⭐ Ôn Tập Vip";
+  return "📚 Theo bài";
+}
+/* Tìm bộ theo khoá trong manifest: trả {subject, entry} hoặc null. */
+function deFindSet(manifest, key){
+  if (!manifest || !Array.isArray(manifest.subjects) || !key) return null;
+  for (let i = 0; i < manifest.subjects.length; i++){
+    const s = manifest.subjects[i];
+    const list = (s && s.entries) || [];
+    for (let j = 0; j < list.length; j++){
+      if (list[j] && list[j].key === key) return { subject: s, entry: list[j] };
+    }
+  }
+  return null;
+}
+/* Dữ liệu cho bộ chọn học sinh (Nguồn → Môn → Khối → Bài/Đề): các
+   danh sách được lọc theo lựa chọn hiện tại; lựa chọn không còn
+   hợp lệ thì tự kẹp về phần tử đầu hợp lệ và trả kèm lựa chọn đã
+   kẹp (source/subjectId/khoi) để DOM hiển thị nhất quán. */
+function dePickerData(manifest, source, subjectId, khoi){
+  const out = { sources: [], subjects: [], grades: [], entries: [], source: "bank", subjectId: "", khoi: null };
+  if (!manifest || !Array.isArray(manifest.subjects)) return out;
+  const seen = {};
+  manifest.subjects.forEach(s => ((s && s.entries) || []).forEach(e => { if (e && e.source) seen[e.source] = true; }));
+  ["bank", "tn", "vip"].forEach(x => { if (seen[x]) out.sources.push(x); });
+  const src = out.sources.indexOf(source) >= 0 ? source : (out.sources[0] || "bank");
+  out.source = src;
+  out.subjects = manifest.subjects.filter(s => ((s && s.entries) || []).some(e => e.source === src));
+  const subj = out.subjects.filter(s => s.id === subjectId)[0] || out.subjects[0];
+  if (!subj) return out;
+  out.subjectId = subj.id;
+  const inSrc = (subj.entries || []).filter(e => e.source === src);
+  out.grades = Array.from(new Set(inSrc.map(e => e.khoi))).sort((a, b) => a - b);
+  const g = out.grades.indexOf(khoi) >= 0 ? khoi : out.grades[0];
+  out.khoi = g;
+  out.entries = inSrc.filter(e => e.khoi === g);
+  return out;
+}
+/* Đếm ĐƠN VỊ (câu/chùm) và số Ý chấm: MC = 1 đơn vị/1 ý; chùm
+   Đ/S = 1 đơn vị, số ý = số mệnh đề trong chùm; TLN = 1/1. */
+function deCountItems(data){
+  const mc = (data && data.mc) || [], tf = (data && data.tf) || [], sa = (data && data.sa) || [];
+  let tfItems = 0;
+  tf.forEach(u => { tfItems += ((u && u.items) || []).length; });
+  return { mc: mc.length, tf: tf.length, tfItems: tfItems, sa: sa.length,
+           units: mc.length + tf.length + sa.length, items: mc.length + tfItems + sa.length };
+}
+/* Chuẩn hoá chữ cho câu TLN: gộp khoảng trắng thừa, bỏ khoảng
+   trắng hai đầu, thường hoá (hoa/thường không làm sai đáp án). */
+function deNormStr(s){
+  return String(s == null ? "" : s).replace(/\s+/g, " ").trim().toLowerCase();
+}
+/* Đọc 1 chuỗi thành SỐ (chấp nhận dấu phẩy thập phân kiểu VN,
+   dấu chấm cuối thừa): không phải số -> null. */
+function deParseNum(s){
+  let t = deNormStr(s).replace(/,/g, ".").replace(/\s+/g, "");
+  if (t.charAt(t.length - 1) === ".") t = t.slice(0, -1);
+  if (!/^-?\d+(\.\d+)?$/.test(t)) return null;
+  const n = parseFloat(t);
+  return isFinite(n) ? n : null;
+}
+/* So đáp án TLN: cả hai đều là số -> so số (6 = 6.0 = 6,0); còn
+   lại so chuỗi đã chuẩn hoá. */
+function deAnswerMatch(given, answer){
+  const a = deParseNum(given), b = deParseNum(answer);
+  if (a !== null && b !== null) return Math.abs(a - b) < 1e-9;
+  return deNormStr(given) === deNormStr(answer);
+}
+/* Chấm toàn bộ bài. ans = { mc: {i: "A"}, tf: {i: {j: true}},
+   sa: {i: "chữ học sinh gõ"} } — phần thiếu = chưa làm = sai. */
+function deGrade(data, ans){
+  ans = ans || {};
+  const aMc = ans.mc || {}, aTf = ans.tf || {}, aSa = ans.sa || {};
+  const perMc = [], perTf = [], perSa = [];
+  let correct = 0, total = 0;
+  ((data && data.mc) || []).forEach((u, i) => {
+    const okQ = aMc[i] != null && String(aMc[i]) === String(u.answer || "");
+    perMc.push(okQ); total++; if (okQ) correct++;
+  });
+  ((data && data.tf) || []).forEach((u, i) => {
+    const row = [];
+    ((u && u.items) || []).forEach((it, j) => {
+      const got = aTf[i] ? aTf[i][j] : undefined;
+      const okIt = got != null && !!got === !!it.answer;
+      row.push(okIt); total++; if (okIt) correct++;
+    });
+    perTf.push(row);
+  });
+  ((data && data.sa) || []).forEach((u, i) => {
+    const okQ = aSa[i] != null && deAnswerMatch(aSa[i], u.answer);
+    perSa.push(okQ); total++; if (okQ) correct++;
+  });
+  const score = total ? Math.round(correct / total * 100) / 10 : 0;
+  return { perMc: perMc, perTf: perTf, perSa: perSa, correct: correct, total: total, score: score };
+}
+/* Đếm ĐƠN VỊ chưa làm xong (MC chưa chọn; chùm Đ/S còn ý chưa
+   chọn; TLN để trống) — dùng cho hộp xác nhận trước khi nộp,
+   đúng luật bên Học Liệu: còn câu chưa làm thì hỏi lại. */
+function deUnanswered(data, ans){
+  ans = ans || {};
+  const aMc = ans.mc || {}, aTf = ans.tf || {}, aSa = ans.sa || {};
+  let n = 0;
+  ((data && data.mc) || []).forEach((u, i) => { if (aMc[i] == null) n++; });
+  ((data && data.tf) || []).forEach((u, i) => {
+    const items = (u && u.items) || [];
+    for (let j = 0; j < items.length; j++){
+      if (!aTf[i] || aTf[i][j] == null) { n++; return; }
+    }
+  });
+  ((data && data.sa) || []).forEach((u, i) => { if (deNormStr(aSa[i] || "") === "") n++; });
+  return n;
+}
+/*__END_PURE_DE__*/
 /* ---------- Trang BÀI TẬP TƯƠNG TÁC cho học sinh (?bt=<id phiếu>) ----------
    Học sinh mở link trong mô tả YouTube / quét QR ở cuối video → app chuyển
    hẳn sang giao diện học sinh gọn: (tuỳ chọn) video nhúng + kéo/thả thẻ đáp
@@ -3349,6 +3558,7 @@ function btShowMsg(html, retryFn){
 function initBaiTap(){
   const prm = btParseParams(location.search);
   if (!prm.bt) return;
+  if (window.__deActive) return;
   const wrap = document.querySelector(".wrap");
   if (wrap) wrap.classList.add("hidden");
   const root = $("btRoot");
@@ -3596,6 +3806,276 @@ function btGradeAll(){
     (btCtx.questions.length ? "<br><b>Phần 2 (câu hỏi nhanh): " + g2.correct + "/" + g2.total + " câu đúng</b>" : "") +
     "<br>👉 Tổng: <b>" + totalC + "/" + totalQ + "</b>. " + msg +
     '<div class="small" style="margin-top:6px">Bài tập này làm tại chỗ để ôn tập — điểm không được lưu lại hay gửi đi đâu cả.</div>';
+  res.scrollIntoView({ behavior: "smooth", block: "center" });
+}
+
+/* ---------- Trang LÀM ĐỀ cho học sinh (?de=<khoá bộ trong de-lib>) ----------
+   [GD10] Học sinh quét mã QR ở cuối video chữa đề (hoặc bấm link
+   trong mô tả YouTube) → vào THẲNG đúng bộ câu vừa xem chữa và làm
+   ngay trong app này: chọn đáp án → nộp → chấm tại chỗ theo ý, tô
+   đúng/sai + hiện đáp án đúng. Điểm KHÔNG lưu đi đâu cả. Mở link
+   ?de= trống hoặc sai khoá thì trang hiện bộ chọn Nguồn → Môn →
+   Khối → Bài/Đề cho học sinh tự chọn bộ. */
+let deManifest = null;
+let deSubjectCache = {};
+let deCtx = null;   // {subject, entry, ans:{mc:{},tf:{},sa:{}}, graded}
+function deShowMsg(html, retryFn){
+  const main = $("deMain");
+  if (!main) return;
+  main.innerHTML = '<div class="de-msg">' + html + "</div>";
+  if (retryFn){
+    const b = main.querySelector("#deRetryBtn");
+    if (b) b.addEventListener("click", retryFn);
+  }
+}
+function initLamDe(){
+  const prm = deParseParams(location.search);
+  if (!prm.has) return;
+  window.__deActive = true;
+  const wrap = document.querySelector(".wrap");
+  if (wrap) wrap.classList.add("hidden");
+  const root = $("deRoot");
+  if (root) root.classList.remove("hidden");
+  document.title = "📝 Làm đề";
+  loadLamDe(prm);
+}
+async function loadLamDe(prm){
+  deShowMsg("⏳ Đang tải kho đề, em chờ một chút nhé…");
+  try {
+    const res = await fetch("../de-lib/manifest.json", { cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const man = await res.json();
+    if (!man || !Array.isArray(man.subjects)) throw new Error("manifest kho đề không hợp lệ");
+    deManifest = man;
+    if (prm.de){
+      const found = deFindSet(man, prm.de);
+      if (found){ loadDeSet(found); return; }
+      renderDePicker("😢 Không tìm thấy bộ đề trong đường link này. Em tự chọn một bộ bên dưới để làm nhé!");
+      return;
+    }
+    renderDePicker("");
+  } catch (e) {
+    deShowMsg("⚠️ <b>Không tải được kho đề</b> — có thể do mạng chập chờn.<br><br>" +
+      '<button class="btn-accent" id="deRetryBtn" type="button" style="padding:12px 22px">↻ Thử lại</button>',
+      () => loadLamDe(prm));
+  }
+}
+async function loadDeSet(found){
+  deShowMsg("⏳ Đang tải bộ câu, em chờ một chút nhé…");
+  try {
+    if (!deSubjectCache[found.subject.id]){
+      const res = await fetch("../de-lib/" + found.subject.file, { cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      deSubjectCache[found.subject.id] = await res.json();
+    }
+    const full = ((deSubjectCache[found.subject.id] || {}).entries || []).filter(e => e.key === found.entry.key)[0];
+    if (!full) throw new Error("không tìm thấy bộ câu trong file môn");
+    deCtx = { subject: found.subject, entry: full, ans: { mc: {}, tf: {}, sa: {} }, graded: false };
+    renderDeExam();
+  } catch (e) {
+    renderDePicker("⚠️ Không tải được bộ câu này (" + escapeHtml(e.message) + "). Em chọn một bộ khác bên dưới nhé!");
+  }
+}
+function renderDePicker(notice){
+  const main = $("deMain");
+  if (!main || !deManifest) return;
+  deCtx = null;
+  document.title = "📝 Làm đề — chọn bộ câu";
+  const cur = { source: "bank", subjectId: "", khoi: null };
+  let h = "";
+  if (notice) h += '<div class="de-msg" style="margin-top:14px">' + notice + "</div>";
+  h += '<div class="de-sec de-pick"><h2>📚 Chọn bộ câu để làm</h2>' +
+    '<p class="de-hint">Chọn nguồn, môn, lớp rồi chọn bài/đề — xong bấm Bắt đầu làm bài.</p>' +
+    '<label for="deSrc">Nguồn</label><select id="deSrc"></select>' +
+    '<label for="deSubj">Môn</label><select id="deSubj"></select>' +
+    '<label for="deGrade">Lớp</label><select id="deGrade"></select>' +
+    '<label for="deEntry">Bài / Đề</label><select id="deEntry"></select>' +
+    '<div class="de-actions"><button class="btn-accent" id="deStart" type="button" style="flex:1;padding:15px;font-size:17px">▶ Bắt đầu làm bài</button></div></div>';
+  main.innerHTML = h;
+  const selSrc = $("deSrc"), selSubj = $("deSubj"), selGrade = $("deGrade"), selEntry = $("deEntry");
+  function refresh(){
+    const pd = dePickerData(deManifest, cur.source, cur.subjectId, cur.khoi);
+    cur.source = pd.source; cur.subjectId = pd.subjectId; cur.khoi = pd.khoi;
+    selSrc.innerHTML = pd.sources.map(s => '<option value="' + s + '">' + deSourceLabel(s) + "</option>").join("");
+    selSrc.value = cur.source;
+    selSubj.innerHTML = pd.subjects.map(s => '<option value="' + escapeHtml(s.id) + '">' + escapeHtml(s.mon) + "</option>").join("");
+    selSubj.value = cur.subjectId;
+    selGrade.innerHTML = pd.grades.map(g => '<option value="' + g + '">Lớp ' + g + "</option>").join("");
+    selGrade.value = String(cur.khoi);
+    selEntry.innerHTML = pd.entries.map(e => '<option value="' + escapeHtml(e.key) + '">' + escapeHtml(cdEntryLabel(e)) + "</option>").join("");
+  }
+  selSrc.addEventListener("change", () => { cur.source = selSrc.value; cur.subjectId = ""; cur.khoi = null; refresh(); });
+  selSubj.addEventListener("change", () => { cur.subjectId = selSubj.value; cur.khoi = null; refresh(); });
+  selGrade.addEventListener("change", () => { cur.khoi = Number(selGrade.value); refresh(); });
+  refresh();
+  $("deStart").addEventListener("click", () => {
+    const key = selEntry.value;
+    if (!key) return;
+    try { history.replaceState(null, "", "?de=" + encodeURIComponent(key)); } catch (e) {}
+    const found = deFindSet(deManifest, key);
+    if (found) loadDeSet(found);
+  });
+}
+/* Hình + bảng số liệu của 1 đơn vị câu trong thẻ câu hỏi: hình lấy
+   qua chuadeImgUrls (bank -> kho qimg của hoc-lieu; tn/vip ->
+   media của de-lib), bảng qtbl vẽ thành bảng HTML thật. */
+function deMediaHtml(entry, unit){
+  let h = "";
+  chuadeImgUrls(entry, unit).forEach(u => {
+    h += '<img class="de-img" src="' + escapeHtml(u) + '" alt="Hình câu hỏi" loading="lazy">';
+  });
+  if (unit.qtbl && unit.qtbl.length){
+    h += '<div class="de-tblwrap"><table class="de-tbl">';
+    unit.qtbl.forEach((row, ri) => {
+      h += "<tr>" + (row || []).map(c => ri === 0 ? "<th>" + escapeHtml(c) + "</th>" : "<td>" + escapeHtml(c) + "</td>").join("") + "</tr>";
+    });
+    h += "</table></div>";
+  }
+  return h;
+}
+function renderDeExam(){
+  const main = $("deMain");
+  if (!main || !deCtx) return;
+  const e = deCtx.entry;
+  const cnt = deCountItems(e);
+  document.title = "📝 " + (e.tenBai || "Làm đề");
+  let h = "";
+  h += '<div class="de-topbar"><span class="de-badge">' + deSourceLabel(e.source) + '</span>' +
+    '<button class="btn-ghost shrink" id="dePickBtn" type="button">📚 Chọn bộ khác</button></div>';
+  h += '<div class="de-title">' + escapeHtml(e.tenBai || "Bộ câu hỏi") + "</div>";
+  h += '<div class="de-meta">' + escapeHtml(e.mon || "") + (e.khoi ? " • Lớp " + e.khoi : "") +
+    " • Tổng số câu: <b>" + cnt.units + "</b> (" + cnt.items + " ý chấm điểm)</div>";
+  h += '<div class="de-teacher">✍️ Thầy Hồ Tấn Khải</div>';
+  const partName = p => p === 1 ? "Phần I — Trắc nghiệm" : p === 2 ? "Phần II — Đúng / Sai" : "Phần III — Trả lời ngắn";
+  const partHint = p => p === 1 ? "Chạm để chọn 1 đáp án đúng cho mỗi câu."
+    : p === 2 ? "Mỗi ý hãy chọn Đúng hoặc Sai." : "Gõ đáp án của em vào ô trống.";
+  [1, 2, 3].forEach(p => {
+    const list = p === 1 ? (e.mc || []) : p === 2 ? (e.tf || []) : (e.sa || []);
+    if (!list.length) return;
+    h += '<div class="de-sec"><h2>' + partName(p) + '</h2><p class="de-hint">' + partHint(p) + "</p>";
+    list.forEach((u, i) => {
+      if (p === 1){
+        h += '<div class="de-q" data-kind="mc" data-i="' + i + '"><div class="de-qt">Câu ' + (i + 1) + ". " + escapeHtml(u.q || "") + "</div>" +
+          deMediaHtml(e, u) +
+          (u.options || []).map((o, oi) => '<button class="de-opt" type="button" data-i="' + i + '" data-v="' + "ABCD"[oi] + '"><span class="de-letter">' + "ABCD"[oi] + '</span><span>' + escapeHtml(o) + "</span></button>").join("") +
+          '<div class="de-ansline hidden"></div></div>';
+      } else if (p === 2){
+        h += '<div class="de-q" data-kind="tf" data-i="' + i + '"><div class="de-qt">Câu ' + (i + 1) + ".</div>" +
+          '<div class="de-stem">' + escapeHtml(u.stem || "") + "</div>" + deMediaHtml(e, u);
+        (u.items || []).forEach((it, j) => {
+          h += '<div class="de-tf-item"><div class="de-tf-text">' + "abcd"[j] + ") " + escapeHtml(it.text || "") + "</div>" +
+            '<div class="de-tf-btns"><button class="de-tf-btn" type="button" data-i="' + i + '" data-j="' + j + '" data-v="1">✔ Đúng</button>' +
+            '<button class="de-tf-btn" type="button" data-i="' + i + '" data-j="' + j + '" data-v="0">✘ Sai</button></div>' +
+            '<div class="de-tf-verdict hidden"></div></div>';
+        });
+        h += "</div>";
+      } else {
+        h += '<div class="de-q" data-kind="sa" data-i="' + i + '"><div class="de-qt">Câu ' + (i + 1) + ". " + escapeHtml(u.q || "") + "</div>" +
+          deMediaHtml(e, u) +
+          '<input class="de-sa-input" data-i="' + i + '" type="text" placeholder="Gõ đáp án của em…" autocomplete="off">' +
+          '<div class="de-ansline hidden"></div></div>';
+      }
+    });
+    h += "</div>";
+  });
+  h += '<div class="de-actions"><button class="btn-accent" id="deSubmit" type="button" style="flex:2;padding:15px;font-size:18px">✔ Nộp bài — Chấm điểm</button>' +
+    '<button class="btn shrink" id="deReset" type="button">↺ Làm lại</button></div>';
+  h += '<div class="de-result" id="deResult"></div>';
+  main.innerHTML = h;
+  wireDeExam();
+}
+function wireDeExam(){
+  if (!deCtx) return;
+  $("dePickBtn").addEventListener("click", () => renderDePicker(""));
+  document.querySelectorAll(".de-opt").forEach(btn => {
+    btn.addEventListener("click", () => {
+      if (!deCtx || deCtx.graded) return;
+      const i = +btn.dataset.i;
+      deCtx.ans.mc[i] = btn.dataset.v;
+      document.querySelectorAll('.de-opt[data-i="' + i + '"]').forEach(b => b.classList.toggle("sel", b === btn));
+    });
+  });
+  document.querySelectorAll(".de-tf-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      if (!deCtx || deCtx.graded) return;
+      const i = +btn.dataset.i, j = +btn.dataset.j;
+      if (!deCtx.ans.tf[i]) deCtx.ans.tf[i] = {};
+      deCtx.ans.tf[i][j] = btn.dataset.v === "1";
+      document.querySelectorAll('.de-tf-btn[data-i="' + i + '"][data-j="' + j + '"]').forEach(b => b.classList.toggle("sel", b === btn));
+    });
+  });
+  document.querySelectorAll(".de-sa-input").forEach(inp => {
+    inp.addEventListener("input", () => { if (deCtx) deCtx.ans.sa[+inp.dataset.i] = inp.value; });
+  });
+  $("deSubmit").addEventListener("click", deSubmitExam);
+  $("deReset").addEventListener("click", () => {
+    if (!deCtx) return;
+    deCtx.ans = { mc: {}, tf: {}, sa: {} };
+    deCtx.graded = false;
+    renderDeExam();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+}
+function deSubmitExam(){
+  if (!deCtx || deCtx.graded) return;
+  const e = deCtx.entry;
+  const left = deUnanswered(e, deCtx.ans);
+  if (left > 0 && !window.confirm("Còn " + left + " câu chưa làm. Em có chắc muốn nộp bài không?")) return;
+  deCtx.graded = true;
+  const g = deGrade(e, deCtx.ans);
+  document.querySelectorAll('.de-q[data-kind="mc"]').forEach(card => {
+    const i = +card.dataset.i, u = (e.mc || [])[i];
+    card.classList.add(g.perMc[i] ? "de-ok" : "de-bad");
+    card.querySelectorAll(".de-opt").forEach(b => {
+      if (b.dataset.v === String(u.answer || "")) b.classList.add("ok");
+      else if (deCtx.ans.mc[i] === b.dataset.v) b.classList.add("bad");
+      b.classList.remove("sel");
+      b.disabled = true;
+    });
+    const line = card.querySelector(".de-ansline");
+    if (line){ line.innerHTML = "Đáp án đúng: <b>" + escapeHtml(String(u.answer || "")) + "</b>"; line.classList.remove("hidden"); }
+  });
+  document.querySelectorAll('.de-q[data-kind="tf"]').forEach(card => {
+    const i = +card.dataset.i, u = (e.tf || [])[i];
+    const rowOk = (g.perTf[i] || []).length > 0 && (g.perTf[i] || []).every(x => x);
+    card.classList.add(rowOk ? "de-ok" : "de-bad");
+    card.querySelectorAll(".de-tf-item").forEach((item, j) => {
+      const it = (u.items || [])[j];
+      item.querySelectorAll(".de-tf-btn").forEach(b => {
+        const v = b.dataset.v === "1";
+        if (v === !!it.answer) b.classList.add("ok");
+        else if (deCtx.ans.tf[i] && deCtx.ans.tf[i][j] === v) b.classList.add("bad");
+        b.classList.remove("sel");
+        b.disabled = true;
+      });
+      const vd = item.querySelector(".de-tf-verdict");
+      if (vd){
+        const okIt = (g.perTf[i] || [])[j];
+        vd.textContent = okIt ? "✔ Đúng rồi!" : "✘ Chưa đúng — đáp án: " + (it.answer ? "ĐÚNG" : "SAI");
+        vd.style.color = okIt ? "#7be495" : "#ff9c9c";
+        vd.classList.remove("hidden");
+      }
+    });
+  });
+  document.querySelectorAll('.de-q[data-kind="sa"]').forEach(card => {
+    const i = +card.dataset.i, u = (e.sa || [])[i];
+    card.classList.add(g.perSa[i] ? "de-ok" : "de-bad");
+    const inp = card.querySelector(".de-sa-input");
+    if (inp){ inp.classList.add(g.perSa[i] ? "ok" : "bad"); inp.disabled = true; }
+    const line = card.querySelector(".de-ansline");
+    if (line){ line.innerHTML = "Đáp án đúng: <b>" + escapeHtml(String(u.answer == null ? "" : u.answer)) + "</b>"; line.classList.remove("hidden"); }
+  });
+  const ratio = g.total ? g.correct / g.total : 0;
+  let msg;
+  if (g.total && ratio === 1) msg = "🎉 Xuất sắc! Em làm đúng hết — đã nắm chắc bộ câu này rồi!";
+  else if (ratio >= 0.7) msg = "👍 Khá tốt! Em xem lại các câu tô đỏ và đối chiếu đáp án đúng nhé.";
+  else if (ratio >= 0.4) msg = "💪 Em làm đúng được một phần rồi. Xem lại video chữa đề, chú ý các chỗ tô đỏ, rồi bấm Làm lại để thử lần nữa nhé!";
+  else msg = "🌱 Đừng nản nhé! Em xem lại video chữa đề từ đầu, làm theo từng câu, rồi quay lại làm lại bộ này.";
+  const scoreTxt = (Math.round(g.score * 10) / 10).toString().replace(".", ",");
+  const res = $("deResult");
+  res.className = "de-result show ok-box";
+  res.innerHTML = "🎯 <b>Điểm của em: " + scoreTxt + "/10</b> — đúng <b>" + g.correct + "/" + g.total + " ý</b>.<br>" + msg +
+    '<div class="small" style="margin-top:6px">Bài làm tại chỗ để ôn tập — điểm không được lưu lại hay gửi đi đâu cả.</div>';
   res.scrollIntoView({ behavior: "smooth", block: "center" });
 }
 
@@ -4568,9 +5048,9 @@ function cdDrawQr(ctx, sg){
     ctx.fillStyle = "#ff6b6b"; ctx.font = "600 34px " + FONT;
     ctx.fillText("(Không sinh được mã QR — thầy dùng link ở phần mô tả video)", W / 2, 480);
   }
-  const mFit = cdFit(ctx, "LÀM LẠI ĐỀ TRÊN HỌC LIỆU VIP PRO", 1700, 46, 30, 1, 700);
+  const mFit = cdFit(ctx, "LÀM LẠI ĐỀ NÀY NGAY TẠI ĐÂY", 1700, 46, 30, 1, 700);
   ctx.fillStyle = "#ffd166"; ctx.font = "700 " + mFit.px + "px " + FONT;
-  ctx.fillText("LÀM LẠI ĐỀ TRÊN HỌC LIỆU VIP PRO", W / 2, 828);
+  ctx.fillText("LÀM LẠI ĐỀ NÀY NGAY TẠI ĐÂY", W / 2, 828);
   ctx.fillStyle = "#57b6ff"; ctx.font = "600 28px " + FONT;
   ctx.fillText(sg.qrUrl || "", W / 2, 890);
   ctx.fillStyle = "#ffe9a8"; ctx.font = "600 31px " + FONT;
@@ -4724,9 +5204,9 @@ function renderChuadePreview(){
 function fillChuadeYt(){
   const box = $("chuadeYtBox");
   if (!box || !chuadeData) return;
-  const yt = buildChuadeYoutubeDesc(chuadeData, chuadePracticeTarget(chuadeData));
+  const yt = buildChuadeYoutubeDesc(chuadeData, chuadePracticeTarget(chuadeData, location.href));
   box.innerHTML = '<label>Tiêu đề video gợi ý</label><input type="text" id="cdYtTitle" readonly>' +
-    '<label style="margin-top:8px">Mô tả — dán vào phần mô tả khi đăng YouTube (KHÔNG chứa đáp án; đã có sẵn link + đường đi làm lại đề)</label>' +
+    '<label style="margin-top:8px">Mô tả — dán vào phần mô tả khi đăng YouTube (KHÔNG chứa đáp án; đã có sẵn link làm lại đề ngay trong app)</label>' +
     '<textarea id="cdYtDesc" rows="9" readonly></textarea>' +
     '<div style="margin-top:8px"><button class="btn mini" id="cdYtCopy" type="button">📋 Sao chép tiêu đề + mô tả</button> <span class="small" id="cdYtMsg"></span></div>';
   box.classList.remove("hidden");
@@ -4814,7 +5294,7 @@ async function prepareChuadeScript(){
     im.onerror = () => { imgErr.push(rel); res(); };
     im.src = abs;
   })));
-  const segs = buildChuadeScenes(entry, entry, { expl: expl || undefined });
+  const segs = buildChuadeScenes(entry, entry, { expl: expl || undefined, baseHref: location.href });
   scriptData = {
     title: "Chữa đề thi — " + (entry.tenBai || ""),
     subject: entry.mon || "",
@@ -5504,6 +5984,7 @@ try { idbLoadAll(); } catch (e) {}
 try { loadOnlineLib(); } catch (e) {}
 try { initPhieu(); } catch (e) {}
 try { initChuade(); } catch (e) {}
+try { initLamDe(); } catch (e) {}
 try { initBaiTap(); } catch (e) {}
 </script>
 </body>
