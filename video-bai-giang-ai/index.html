@@ -291,7 +291,7 @@
         <span class="chip type-chip" data-type="phieu">📋 Phiếu Học Tập</span>
         <span class="chip type-chip" data-type="chuade">🎯 Chữa Đề Thi</span>
       </div>
-      <div class="small" style="margin-top:6px">Chọn 🚀 Khởi động thì app tự gợi ý thời lượng 2 phút (thầy vẫn đổi lại được ở bộ chọn thời lượng bên dưới). App tự nhớ loại video đã chọn cho lần mở sau.</div>
+      <div class="small" style="margin-top:6px">App tự nhớ loại video đã chọn cho lần mở sau.</div>
     </div>
     <div id="phieuPanel" class="hidden" style="margin-top:14px;border:1px dashed var(--line);border-radius:12px;padding:12px 14px;background:var(--panel2)">
       <div style="font-weight:700;font-size:16px">📋 Video Phiếu Học Tập — dựng thẳng từ kho phiếu có sẵn</div>
@@ -330,15 +330,7 @@
     </div>
 
     <div style="margin-top:18px">
-      <label>⏱ Thời lượng video tối đa</label>
-      <div class="chips" id="durChips" style="margin-top:6px">
-        <span class="chip dur-chip" data-min="2">2 phút</span>
-        <span class="chip dur-chip" data-min="3">3 phút</span>
-        <span class="chip dur-chip" data-min="5">5 phút</span>
-        <span class="chip dur-chip" data-min="7">7 phút</span>
-        <span class="chip dur-chip" data-min="10">10 phút</span>
-      </div>
-      <div class="small" style="margin-top:8px">Dựng video chạy theo thời gian thật — video 10 phút cần khoảng 10 phút giữ tab mở.</div>
+      <div class="small">⏱ Video chạy theo <b>độ dài tự nhiên của nội dung</b> — không còn giới hạn số phút. Dựng video là ghi theo thời gian thật; thầy cứ để app chạy, có chuyển tab thì hình và tiếng vẫn khớp nhau.</div>
     </div>
 
     <div style="margin-top:16px">
@@ -388,13 +380,6 @@
     <h2>📜 4. Kịch bản — thầy duyệt trước khi dựng</h2>
     <div id="scriptMeta" style="font-size:17px;font-weight:700"></div>
     <div id="durInfo" class="small" style="margin-top:6px"></div>
-    <div id="durWarn" class="warn hidden">
-      ⚠️ Kịch bản đang dài hơn mức tối đa đã chọn. Thầy có thể bấm <b>Rút Gọn Kịch Bản</b> để AI viết lại lời đọc ngắn hơn (giữ nguyên số đoạn, loại slide và số liệu), hoặc cứ để vậy rồi dựng tiếp.
-      <div style="margin-top:8px">
-        <button class="btn shrink" id="shortenBtn">✂️ Rút Gọn Kịch Bản</button>
-        <span class="small" id="shortenMsg"></span>
-      </div>
-    </div>
     <div id="scriptSegs"></div>
     <details>
       <summary>✏️ Xem / sửa kịch bản dạng JSON</summary>
@@ -900,21 +885,12 @@ function setImgCap(keyId, cap){
   if (km.imgCap !== cap){ km.imgCap = cap; km.imgCapAt = new Date().toLocaleString("vi-VN"); saveKeyModels(); renderKeyList(); }
 }
 
-/* ---------- Thời lượng video tối đa (trần cứng 10 phút) ---------- */
-const DUR_SEGMENTS = { 2: [3, 4], 3: [4, 5], 5: [6, 7], 7: [8, 9], 10: [11, 13] };
-let maxMinutes = parseInt(localStorage.getItem("vbg_max_minutes") || "5", 10);
-if (!DUR_SEGMENTS[maxMinutes]) maxMinutes = 5;
-function charBudget(){ return maxMinutes * 780; }   /* ~13 ký tự/giây đọc */
-function refreshDurUI(){
-  document.querySelectorAll(".dur-chip").forEach(c =>
-    c.classList.toggle("active", parseInt(c.dataset.min, 10) === maxMinutes));
-}
-document.querySelectorAll(".dur-chip").forEach(c => c.addEventListener("click", () => {
-  maxMinutes = parseInt(c.dataset.min, 10);
-  localStorage.setItem("vbg_max_minutes", String(maxMinutes));
-  refreshDurUI();
-  updateDurInfo();
-}));
+/* ---------- Độ dài video: THEO NỘI DUNG TỰ NHIÊN (GD13) ----------
+   Cơ chế giới hạn số phút cũ (bộ chọn 2/3/5/7/10 phút + ngân sách chữ
+   theo phút + trần cứng) ĐÃ GỠ theo lệnh thầy 19/11/2026: kịch bản viết
+   theo độ đầy đủ tự nhiên của bài, thời lượng cảnh = thời lượng audio
+   thật. Khoá lưu cũ của bộ chọn phút không còn được đọc — nằm im vô hại
+   trong trình duyệt của người dùng, không ảnh hưởng gì. */
 
 /* ---------- Tabs & ví dụ ---------- */
 function setMode(m){
@@ -1533,13 +1509,6 @@ document.querySelectorAll(".type-chip").forEach(c => c.addEventListener("click",
   videoType = c.dataset.type;
   try { localStorage.setItem(TYPE_KEY, videoType); } catch (e) {}
   refreshTypeUI();
-  if (videoType === "warmup") {
-    /* Khởi động thì gợi ý mặc định 2 phút — giáo viên vẫn đổi lại được ở bộ chọn thời lượng. */
-    maxMinutes = 2;
-    try { localStorage.setItem("vbg_max_minutes", "2"); } catch (e) {}
-    refreshDurUI();
-    updateDurInfo();
-  }
 }));
 refreshTypeUI();
 
@@ -1561,10 +1530,10 @@ function masterPrompt(){
     "  ]",
     "}",
     "QUY TẮC BẮT BUỘC:",
-    "- Video này có thời lượng TỐI ĐA " + maxMinutes + " phút. Hãy tạo từ " + DUR_SEGMENTS[maxMinutes][0] + " đến " + DUR_SEGMENTS[maxMinutes][1] + " segments. Đoạn đầu là image hoặc sgk mở bài, đoạn cuối là text hoặc image tổng kết.",
+    "- Số segments tuỳ theo độ đầy đủ tự nhiên của nội dung bài: phủ đủ các phần chính của bài, KHÔNG cắt xén ý để vừa một độ dài định sẵn (video chạy theo độ dài thật của nội dung). Đoạn đầu là image hoặc sgk mở bài, đoạn cuối là text hoặc image tổng kết.",
     "- Có ÍT NHẤT 1 segment diagram (sơ đồ dòng chảy 3–6 bước) và ÍT NHẤT 1 segment table (bảng số liệu).",
     "- ƯU TIÊN segment type sgk cho nội dung mà sách giáo khoa thường có sẵn hình hoặc sơ đồ minh hoạ (cấu tạo, quá trình, thí nghiệm...). Segment sgk PHẢI có trường imageHint mô tả chính xác hình SGK cần tìm, ví dụ: Hình 12.3 SGK — sơ đồ quang hợp. Nếu bài có hình SGK quen thuộc, hãy dùng ít nhất 1–2 segment sgk.",
-    '- narration: lời đọc tiếng Việt tự nhiên cho học sinh nghe. TỔNG độ dài narration của TẤT CẢ các đoạn cộng lại KHÔNG được vượt quá ' + charBudget() + ' ký tự (tương đương tối đa ' + maxMinutes + ' phút đọc thành tiếng). Hãy viết súc tích, đủ ý chính, mỗi câu văn phải trọn vẹn hoàn chỉnh — TUYỆT ĐỐI không viết dở dang rồi cắt cụt câu để vừa ngân sách; thà bỏ bớt ý phụ còn hơn cắt cụt. Mọi con số, phân số, công thức trong narration PHẢI viết thành dạng đọc được bằng chữ (ví dụ: "sáu phân tử", "một phần hai", "hai mươi phần trăm"), KHÔNG dùng ký hiệu như CO2, %, 1/2.',
+    '- narration: lời đọc tiếng Việt tự nhiên cho học sinh nghe. Hãy viết ĐẦY ĐỦ ý chính của bài theo mạch nội dung tự nhiên — không giới hạn độ dài, mỗi câu văn phải trọn vẹn hoàn chỉnh, không viết dở dang. Mọi con số, phân số, công thức trong narration PHẢI viết thành dạng đọc được bằng chữ (ví dụ: "sáu phân tử", "một phần hai", "hai mươi phần trăm"), KHÔNG dùng ký hiệu như CO2, %, 1/2.',
     "- imagePrompt: tiếng Anh, mô tả ảnh minh hoạ giáo dục rõ ràng, thân thiện học sinh, ghi rõ no text, no watermark. Chỉ có ở segment type image.",
     "- Số liệu trong table: chỉ dùng số liệu đúng kiến thức sách giáo khoa phổ thông. Nếu không chắc chắn về một con số cụ thể, PHẢI ghi rõ trong caption là số liệu minh hoạ (ví dụ caption bắt đầu bằng: Số liệu minh hoạ — ...).",
     "- Nội dung bám sát chương trình phổ thông Việt Nam, chính xác, không bịa kiến thức.",
@@ -1706,68 +1675,14 @@ function fmtDur(totalSec){
   return m > 0 ? ("~" + m + " phút " + sec + " giây") : ("~" + sec + " giây");
 }
 function updateDurInfo(){
-  const info = $("durInfo"), warn = $("durWarn");
-  if (!info || !warn) return;
-  if (!scriptData) { info.textContent = ""; warn.classList.add("hidden"); return; }
-  if (scriptData._mode === "chuade") {
-    const totalSecC = narrationChars(scriptData) / 13;
-    info.textContent = "⏱ Ước tính thời lượng đọc: " + fmtDur(totalSecC) + " — video chữa đề đọc đầy đủ câu hỏi + đáp án + giải thích nên không áp mức thời lượng tối đa ở trên; thời lượng thật đi theo giọng đọc của từng cảnh.";
-    warn.classList.add("hidden");
-    return;
-  }
-  if (scriptData._mode === "phieu") {
-    const totalSecP = narrationChars(scriptData) / 13;
-    info.textContent = "⏱ Ước tính thời lượng đọc: " + fmtDur(totalSecP) + " — video phiếu đọc ĐẦY ĐỦ đáp án nên không áp mức thời lượng tối đa ở trên; thời lượng thật đi theo giọng đọc của từng cảnh.";
-    warn.classList.add("hidden");
-    return;
-  }
-  const totalSec = narrationChars(scriptData) / 13;   /* tốc độ đọc ~13 ký tự/giây */
-  info.textContent = "⏱ Ước tính thời lượng: " + fmtDur(totalSec) + " (mức tối đa đã chọn: " + maxMinutes + " phút)";
-  const over = totalSec > maxMinutes * 60 * 1.1;      /* chỉ cảnh báo khi vượt quá 10% */
-  warn.classList.toggle("hidden", !over || demoMode);
-  if (!over) $("shortenMsg").textContent = "";
+  const info = $("durInfo");
+  if (!info) return;
+  if (!scriptData) { info.textContent = ""; return; }
+  const totalSec = narrationChars(scriptData) / 13;   /* ước tính theo tốc độ đọc ~13 ký tự/giây */
+  info.textContent = "⏱ Ước tính thời lượng đọc: " + fmtDur(totalSec) + " — video chạy theo độ dài tự nhiên của nội dung (không còn giới hạn số phút); thời lượng thật đi theo giọng đọc của từng cảnh.";
 }
-$("shortenBtn").addEventListener("click", async () => {
-  if (!scriptData || demoMode || building) return;
-  if (scriptData._mode === "chuade") { $("shortenMsg").textContent = "ℹ️ Kịch bản chữa đề lấy câu hỏi + đáp án nguyên văn từ kho đề nên không rút gọn bằng AI — thầy sửa giải thích ngay trong ô của từng cảnh chốt."; return; }
-  const btn = $("shortenBtn");
-  btn.disabled = true;
-  $("shortenMsg").textContent = "Đang nhờ AI rút gọn lời đọc...";
-  try {
-    const prompt = [
-      "Dưới đây là kịch bản video bài giảng dạng JSON. Tổng lời đọc (mọi trường narration) hiện quá dài.",
-      "Hãy RÚT GỌN các trường narration sao cho TỔNG số ký tự của mọi narration KHÔNG vượt quá " + charBudget() + " ký tự (tương đương tối đa " + maxMinutes + " phút đọc). Giữ trọn ý chính, câu văn hoàn chỉnh, không cắt cụt câu.",
-      "GIỮ NGUYÊN TUYỆT ĐỐI: số đoạn và thứ tự đoạn, các trường type, heading, diagram, table (kể cả mọi số liệu), bullets, imagePrompt, imageHint. CHỈ được sửa các trường narration.",
-      "Trả về DUY NHẤT JSON đã rút gọn, đúng cấu trúc cũ, không kèm bất kỳ chữ nào khác.",
-      "JSON gốc:",
-      JSON.stringify(scriptData)
-    ].join("\n");
-    const data = await gemini("text", {
-      contents: [{ parts: [{ text: prompt }] }],
-      generationConfig: { responseMimeType: "application/json", temperature: 0.4 }
-    });
-    let txt = firstText(data).trim();
-    txt = txt.replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/```\s*$/i, "").trim();
-    const parsed = validateScript(JSON.parse(txt));
-    parsed._mode = scriptData._mode; parsed._picked = scriptData._picked;   /* giữ chế độ + bài đã chốt */
-    parsed.segments.forEach((sg, i) => {   /* giữ ảnh SGK đã gán theo vị trí đoạn */
-      const old = scriptData.segments[i];
-      if (old && old.sgkImageId && (sg.type === "image" || sg.type === "sgk")) sg.sgkImageId = old.sgkImageId;
-      if (old && old.onlinePath && (sg.type === "image" || sg.type === "sgk")) {
-        sg.onlinePath = old.onlinePath; sg.onlineUrl = old.onlineUrl;
-        sg.onlineFigure = old.onlineFigure; sg.onlineCaption = old.onlineCaption;
-      }
-      if (old && Array.isArray(old.onlineSel) && (sg.type === "image" || sg.type === "sgk")) sg.onlineSel = old.onlineSel.slice();
-    });
-    scriptData = parsed;
-    assets = {}; audios = {};
-    renderScriptReview();
-  } catch (e) {
-    $("shortenMsg").textContent = "❌ Rút gọn chưa được: " + e.message;
-  } finally {
-    btn.disabled = false;
-  }
-});
+/* Nút Rút Gọn Kịch Bản đã gỡ cùng cơ chế giới hạn số phút (GD13) —
+   kịch bản không còn bị co theo ngân sách chữ nữa. */
 $("applyJsonBtn").addEventListener("click", () => {
   if (scriptData && scriptData._mode === "phieu") {
     $("jsonMsg").textContent = "ℹ️ Kịch bản phiếu học tập sinh thẳng từ dữ liệu phiếu trong kho nên không sửa bằng JSON — muốn đổi nội dung, thầy chọn phiếu khác.";
@@ -6190,7 +6105,6 @@ $("againBtn").addEventListener("click", () => {
    Mỗi bước khởi tạo bọc try/catch riêng: một bước vấp (dữ liệu cũ, IndexedDB
    lỗi...) không được kéo sập các bước còn lại hay làm trắng trang. */
 try { refreshKeyUI(); } catch (e) {}
-try { refreshDurUI(); } catch (e) {}
 try { renderLessonOptions(); renderPickStatus(); } catch (e) {}
 try { idbLoadAll(); } catch (e) {}
 try { loadOnlineLib(); } catch (e) {}
