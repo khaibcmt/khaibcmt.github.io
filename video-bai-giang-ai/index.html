@@ -249,8 +249,8 @@
           <div><label>Môn học</label>
             <select id="pickSubject">
               <option value="">— Chọn môn —</option>
-              <option value="sinh">Sinh học</option>
               <option value="cnnn">Công nghệ nông nghiệp</option>
+              <option value="sinh">Sinh học</option>
             </select></div>
           <div><label>Khối lớp</label>
             <select id="pickGrade">
@@ -936,6 +936,65 @@ let pickedLesson = null;        // {subjectCode, subjectName, grade, lessonNo, l
 let lessonIndex = {};           // "sinh|11" -> [{lessonNo, lessonCode, topic, count, entries}] đã sắp theo số bài
 let onlineLibState = "loading"; // "loading" | "ready" | "error" — trạng thái tải manifest kho SGK
 const SUBJECT_NAMES = { sinh: "Sinh học", cnnn: "Công nghệ nông nghiệp" };
+/*__PURE_SUBJ__*/
+/* ============================================================
+   [GD11] THỨ TỰ MÔN ƯU TIÊN (thầy chốt 08:52 ngày 19/11/2026):
+   Công nghệ nông nghiệp → Sinh học → Vật lí → Toán → các môn
+   còn lại GIỮ NGUYÊN thứ tự tương đối → Công nghệ công nghiệp
+   LUÔN Ở CUỐI CÙNG. Một hàm dùng chung cho MỌI bộ chọn môn của
+   app: bộ chọn bài SGK + phiếu (pickSubject), Chữa Đề Thi
+   (cdSubject) và bộ chọn của học sinh ở trang ?de= (deSubj).
+   Chỉ đổi THỨ TỰ HIỂN THỊ — không đổi dữ liệu/khoá/lựa chọn đã
+   lưu của người dùng. Tên môn đối chiếu đúng như trong các
+   manifest: sgk-lib/phieu-lib dùng mã "sinh"/"cnnn" (tên hiển
+   thị qua SUBJECT_NAMES), de-lib dùng trường "mon" ("Công nghệ
+   nông nghiệp", "Sinh học", "Vật lí", "Toán", "Công nghệ công
+   nghiệp", "Địa lí", "Hoá học", "Kinh tế & Pháp luật", "Lịch
+   sử", "Tiếng Anh", "Tin học", "Tin học (UD)").
+   ============================================================ */
+const SUBJECT_PRIORITY_HEAD = ["Công nghệ nông nghiệp", "Sinh học", "Vật lí", "Toán"];
+const SUBJECT_PRIORITY_LAST = "Công nghệ công nghiệp";
+/* Biệt danh: mã môn (sgk-lib/phieu-lib) + id (de-lib) + biến thể
+   chính tả — phòng khi nơi gọi truyền mã/id thay vì tên môn. */
+const SUBJECT_PRIORITY_ALIAS = {
+  "cnnn": "Công nghệ nông nghiệp", "cong-nghe-nong-nghiep": "Công nghệ nông nghiệp",
+  "sinh": "Sinh học", "sinh-hoc": "Sinh học",
+  "vat-li": "Vật lí", "vat-ly": "Vật lí", "Vật lý": "Vật lí",
+  "toan": "Toán",
+  "cncn": "Công nghệ công nghiệp", "cong-nghe-cong-nghiep": "Công nghệ công nghiệp"
+};
+/* Hạng ưu tiên: 0..3 = nhóm đầu theo đúng thứ tự thầy chốt;
+   1000 = nhóm giữa (không phân hạng — giữ thứ tự tương đối);
+   1000000 = Công nghệ công nghiệp, luôn cuối cùng. */
+function subjectPriorityRank(name){
+  let n = String(name == null ? "" : name).trim();
+  if (Object.prototype.hasOwnProperty.call(SUBJECT_PRIORITY_ALIAS, n)) n = SUBJECT_PRIORITY_ALIAS[n];
+  const i = SUBJECT_PRIORITY_HEAD.indexOf(n);
+  if (i >= 0) return i;
+  if (n === SUBJECT_PRIORITY_LAST) return 1000000;
+  return 1000;
+}
+/* Sắp xếp ỔN ĐỊNH theo hạng ưu tiên: trả MẢNG MỚI (không sửa
+   mảng gốc/manifest); môn ngoài bảng ưu tiên giữ nguyên thứ tự
+   tương đối với nhau. nameOf(item) -> tên môn (hoặc mã/id môn). */
+function sortSubjectsByPriority(list, nameOf){
+  const get = typeof nameOf === "function" ? nameOf : function(x){ return x; };
+  return (list || []).map(function(item, idx){ return { item: item, idx: idx, rank: subjectPriorityRank(get(item)) }; })
+    .sort(function(a, b){ return (a.rank - b.rank) || (a.idx - b.idx); })
+    .map(function(x){ return x.item; });
+}
+/*__END_PURE_SUBJ__*/
+/* [GD11] Sắp lại các option môn của bộ chọn bài SGK/phiếu theo
+   thứ tự ưu tiên ngay khi nạp trang (option placeholder và giá
+   trị đang chọn được giữ nguyên). */
+(function sortPickSubjectOptions(){
+  const sel = document.getElementById("pickSubject");
+  if (!sel) return;
+  const cur = sel.value;
+  const opts = Array.prototype.slice.call(sel.options).filter(function(o){ return o.value !== ""; });
+  sortSubjectsByPriority(opts, function(o){ return o.textContent; }).forEach(function(o){ sel.appendChild(o); });
+  sel.value = cur;
+})();
 /*__PURE_PICKER__*/
 function lessonTopicOf(entries){
   const cnt = {};
@@ -3454,7 +3513,8 @@ function dePickerData(manifest, source, subjectId, khoi){
   ["bank", "tn", "vip"].forEach(x => { if (seen[x]) out.sources.push(x); });
   const src = out.sources.indexOf(source) >= 0 ? source : (out.sources[0] || "bank");
   out.source = src;
-  out.subjects = manifest.subjects.filter(s => ((s && s.entries) || []).some(e => e.source === src));
+  /* [GD11] Môn theo thứ tự ưu tiên của thầy (CNNN → Sinh → Lí → Toán → … → CNCN cuối). */
+  out.subjects = sortSubjectsByPriority(manifest.subjects.filter(s => ((s && s.entries) || []).some(e => e.source === src)), s => s && s.mon);
   const subj = out.subjects.filter(s => s.id === subjectId)[0] || out.subjects[0];
   if (!subj) return out;
   out.subjectId = subj.id;
@@ -5111,7 +5171,8 @@ async function loadChuadeLib(){
 }
 function chuadeSubjectsForSource(){
   if (!chuadeManifest) return [];
-  return chuadeManifest.subjects.filter(s => (s.entries || []).some(e => e.source === chuadeSource));
+  /* [GD11] Môn theo thứ tự ưu tiên của thầy (CNNN → Sinh → Lí → Toán → … → CNCN cuối). */
+  return sortSubjectsByPriority(chuadeManifest.subjects.filter(s => (s.entries || []).some(e => e.source === chuadeSource)), s => s.mon);
 }
 function cdEntryLabel(e){
   let s = e.tenBai || ("Bài " + e.bai);
