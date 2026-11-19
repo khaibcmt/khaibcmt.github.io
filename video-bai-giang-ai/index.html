@@ -338,8 +338,6 @@
       <div class="small" style="margin-top:8px;text-align:center">App sẽ viết kịch bản trước để thầy xem và duyệt — đó là điểm dừng duy nhất. Duyệt xong, app tự chạy hết các bước còn lại.</div>
       <div style="text-align:center;margin-top:10px">
         <button class="btn-ghost" id="demoBtn">👀 Xem Thử Không Cần Key</button>
-        <button class="btn-ghost" id="voiceTestBtn2" type="button" style="margin-left:8px">🎧 Test Giọng Tổng Hợp</button>
-        <div class="small">Dựng 1 video ngắn 6 cảnh — mỗi cảnh một giọng khác nhau (Gemini Kore/Charon · Edge HoaiMy/NamMinh · FPT.AI lannhi/leminh) để thầy nghe và so sánh một lượt.</div>
         <div class="small">Chạy thử toàn bộ quy trình bằng kịch bản mẫu "Quang hợp" dựng sẵn — không gọi API, không có giọng đọc, để thầy thấy sản phẩm cuối trước khi tạo key.</div>
       </div>
     </div>
@@ -408,9 +406,6 @@
         <button class="btn-ghost" id="fptKeySaveBtn" type="button">💾 Lưu key FPT</button>
       </div>
       <div class="small" id="fptUsageNote" style="margin-top:6px"></div>
-    </div>
-    <div class="row" style="margin-top:12px">
-      <button class="btn-ghost" id="voiceTestBtn" type="button" style="flex:1">🎧 Test giọng tổng hợp — dựng 1 video nghe đủ 6 giọng (Gemini · Edge · FPT.AI)</button>
     </div>
     <div class="row" style="margin-top:14px">
       <button class="btn-accent" id="buildBtn" style="flex:2;padding:15px;font-size:18px">▶ DỰNG VIDEO NGAY</button>
@@ -1407,39 +1402,13 @@ function filterCandsForPin(cands, pin){
   return (cands || []).filter(m => m === pin);
 }
 /*__END_PURE_VOICE__*/
-/*__PURE_VTEST__*/
-/* GD16 — TEST GIỌNG TỔNG HỢP + NGUỒN "TRỘN HẾT": logic thuần (không DOM).
-   Test giọng: 6 cảnh cố định, mỗi cảnh 1 cặp (nguồn, giọng); mọi cảnh đọc
-   CHUNG một câu mẫu để thầy so sánh công bằng, trước đó là câu tự giới
-   thiệu thay tên/nguồn theo cảnh. Trộn: vai MC giữ luật GD13, giọng của
-   mỗi MC xoay vòng qua các nguồn theo thứ tự ưu tiên MIỄN PHÍ TRƯỚC:
-   Edge (không key, không quota) -> FPT (key, free 100.000 ký tự/tháng)
-   -> Gemini (key, quota ngày). */
-const VOICE_TEST_SAMPLE = "Quang hợp là quá trình cây xanh sử dụng ánh sáng mặt trời để tạo ra chất hữu cơ và giải phóng khí ô-xi.";
-const VOICE_TEST_SCENES = [
-  { src: "gemini", mc: "female", srcName: "Gemini", voiceName: "Kore", gender: "nữ", intro: "Đây là giọng Kore của Gemini." },
-  { src: "gemini", mc: "male", srcName: "Gemini", voiceName: "Charon", gender: "nam", intro: "Đây là giọng Charon của Gemini." },
-  { src: "edge", mc: "female", srcName: "Edge TTS", voiceName: "HoaiMy", gender: "nữ", intro: "Đây là giọng HoaiMy của Edge TTS." },
-  { src: "edge", mc: "male", srcName: "Edge TTS", voiceName: "NamMinh", gender: "nam", intro: "Đây là giọng NamMinh của Edge TTS." },
-  { src: "fpt", mc: "female", srcName: "FPT.AI", voiceName: "lannhi", gender: "nữ", region: "miền Nam", intro: "Đây là giọng lannhi của FPT.AI." },
-  { src: "fpt", mc: "male", srcName: "FPT.AI", voiceName: "leminh", gender: "nam", region: "miền Bắc", intro: "Đây là giọng leminh của FPT.AI." }
-];
-function voiceTestLabel(k){
-  const d = VOICE_TEST_SCENES[k];
-  return "Giọng " + (k + 1) + "/" + VOICE_TEST_SCENES.length + " — " + d.srcName + " · " + d.voiceName + " (" + d.gender + ")";
-}
-function buildVoiceTestScript(){
-  return {
-    title: "Test giọng tổng hợp — 6 giọng đọc",
-    subject: "", grade: "",
-    segments: VOICE_TEST_SCENES.map((d, k) => ({
-      type: "vtest",
-      heading: voiceTestLabel(k),
-      narration: d.intro + " " + VOICE_TEST_SAMPLE,
-      vt: { src: d.src, mc: d.mc, label: voiceTestLabel(k) }
-    }))
-  };
-}
+/*__PURE_MIX__*/
+/* GD16 — NGUỒN "TRỘN HẾT": logic thuần (không DOM). Vai MC giữ luật
+   GD13, giọng của mỗi MC xoay vòng qua các nguồn theo thứ tự ưu tiên
+   MIỄN PHÍ TRƯỚC: Edge (không key, không quota) -> FPT (key, free
+   100.000 ký tự/tháng) -> Gemini (key, quota ngày).
+   (Phần test giọng của GD16 đã GỠ ở GD18 theo lệnh thầy 19/11/2026 —
+   chỉ giữ phần Trộn cho video thật.) */
 const MIX_SOURCE_ORDER = ["edge", "fpt", "gemini"];
 const MIX_SOURCE_NAMES = { edge: "Edge TTS", fpt: "FPT.AI", gemini: "Gemini" };
 /* Nguồn khả dụng cho vòng xoay trộn: Edge luôn có (không cần key);
@@ -1467,7 +1436,7 @@ function mixAttemptOrder(assignedSrc, avail){
   for (let j = 0; j < avail.length; j++) out.push(avail[(k + j) % avail.length]);
   return out;
 }
-/*__END_PURE_VTEST__*/
+/*__END_PURE_MIX__*/
 /* ==== GD14: NGUỒN GIỌNG THỨ HAI — EDGE TTS (MICROSOFT) ====
    Thầy chốt 19/11: thêm Edge TTS làm nguồn giọng chọn được bên cạnh
    Gemini (vẫn mặc định). Cặp MC giữ nguyên luật luân phiên GD13, chỉ
@@ -1982,11 +1951,8 @@ let ttsBuildExhausted = false;
 let buildMcRoles = null;
 /* GD16: định tuyến giọng theo TỪNG ĐOẠN cho lượt dựng đang chạy —
    buildSegRoutes[i] = { src, mc } ghi đè nguồn toàn cục cho đoạn i
-   (chế độ Test giọng tổng hợp + chế độ Trộn). Ngoài 2 chế độ đó luôn
-   null -> hành vi cũ nguyên vẹn. voiceTestMode: lượt dựng hiện tại là
-   video test giọng (đặt bởi startVoiceTest, buildVideo tự tắt cuối lượt). */
+   (chế độ Trộn). Ngoài chế độ đó luôn null -> hành vi cũ nguyên vẹn. */
 let buildSegRoutes = null;
-let voiceTestMode = false;
 function segRouteFor(i){
   if (buildSegRoutes && buildSegRoutes[i]) return buildSegRoutes[i];
   return null;
@@ -3280,32 +3246,6 @@ function drawText(ctx, sg){
   });
 }
 
-/* GD16: slide TEST GIỌNG — NHÃN GIỌNG thật lớn ở giữa khung + câu mẫu
-   chung để thầy vừa nghe vừa đối chiếu. Cảnh không có tiếng (thiếu key /
-   nguồn lỗi, cờ sg.vtSilent do Bước 4 đặt sau khi thu giọng) ghi rõ ngay
-   trên slide kèm dòng lỗi cụ thể ở dưới. */
-function drawVoiceTestSlide(ctx, sg){
-  slideBg(ctx);
-  const label = (sg.vt && sg.vt.label) || sg.heading || "";
-  ctx.textAlign = "center"; ctx.textBaseline = "top";
-  ctx.fillStyle = "#ffd94d";
-  ctx.font = "800 92px " + FONT;
-  wrapLines(ctx, label, 1720).slice(0, 2).forEach((ln, k) => ctx.fillText(ln, W / 2, 110 + k * 112));
-  ctx.fillStyle = "#37d67a"; ctx.fillRect(W / 2 - 130, 368, 260, 8);
-  ctx.fillStyle = "#ffffff";
-  ctx.font = "400 54px " + FONT;
-  wrapLines(ctx, VOICE_TEST_SAMPLE, 1560).slice(0, 5).forEach((ln, k) => ctx.fillText(ln, W / 2, 452 + k * 76));
-  if (sg.vtSilent) {
-    ctx.fillStyle = "#ff9d5c";
-    ctx.font = "700 50px " + FONT;
-    ctx.fillText("⚠️ Chưa có key / nguồn lỗi — cảnh này không có tiếng", W / 2, 884);
-    if (sg.vtErr) {
-      ctx.fillStyle = "#f3c9ae"; ctx.font = "400 33px " + FONT;
-      wrapLines(ctx, String(sg.vtErr), 1640).slice(0, 2).forEach((ln, k) => ctx.fillText(ln, W / 2, 958 + k * 44));
-    }
-  }
-  ctx.textAlign = "left";
-}
 
 /* =========================================================
    📋 VIDEO PHIẾU HỌC TẬP (Giai đoạn 2) — app tự dựng video từ KHO PHIẾU
@@ -6258,7 +6198,6 @@ function initChuade(){
 }
 
 function drawSlide(ctx, sg, asset, t){
-  if (sg.type === "vtest") { drawVoiceTestSlide(ctx, sg); return; }
   if (sg.type === "phieu") { drawPhieuScene(ctx, sg, t || 0); return; }
   if (sg.type === "chuade") { drawChuadeScene(ctx, sg, t || 0); return; }
   if (sg.type === "image" || sg.type === "sgk") drawImageSlide(ctx, sg, asset, t || 0);
@@ -6826,15 +6765,7 @@ async function buildVideo(){
       edgeConsecutiveFails = 0; edgeBuildDown = false;
       fptConsecutiveFails = 0; fptBuildDown = false;
       let mixCtx = null;
-      if (voiceTestMode) {
-        /* GD16: TEST GIỌNG TỔNG HỢP — mỗi cảnh 1 (nguồn, giọng) cố định
-           trong sg.vt; thu TỪNG ĐOẠN một (không gộp qua ranh giới
-           nguồn/giọng). Cảnh thiếu key/lỗi nguồn -> im lặng như đoạn lỗi
-           thường + ghi rõ trên slide, KHÔNG sập cả video. */
-        ttsPinModel = keyPool.length ? await pickPrimaryTtsModel() : null;
-        buildSegRoutes = scriptData.segments.map(sg => (sg.vt ? { src: sg.vt.src, mc: sg.vt.mc } : null));
-        logWarn("🎧 <b>TEST GIỌNG TỔNG HỢP</b> — video này có <b>6 cảnh, mỗi cảnh một giọng khác nhau</b>: " + scriptData.segments.map(sg => sg.heading).join(" · ") + ". Cảnh nào chưa có key hoặc nguồn lỗi sẽ im lặng " + NO_AUDIO_SECONDS + " giây và có ghi rõ trên slide.");
-      } else if (voiceSource === "mix") {
+      if (voiceSource === "mix") {
         /* GD16: TRỘN HẾT (ưu tiên miễn phí trước) — vai MC giữ nguyên
            luật GD13; GIỌNG của mỗi MC xoay vòng qua các nguồn KHẢ DỤNG
            theo từng đoạn của MC đó. Nguồn thiếu key bị loại khỏi vòng
@@ -6857,11 +6788,7 @@ async function buildVideo(){
         ttsPinModel = await pickPrimaryTtsModel();
         if (ttsPinModel) logWarn("🎙️ Video này đọc bằng <b>2 giọng Gemini luân phiên theo vai</b> — MC Nam (" + MC_VOICES.male + ") và MC Nữ (" + MC_VOICES.female + ") — trên <b>một model duy nhất: " + ttsPinModel + "</b> (chỉ xoay key, không đổi model giữa chừng).");
       }
-      if (voiceTestMode) {
-        for (let i = 0; i < scriptData.segments.length; i++) await genAudioForSegment(i);
-        /* Cảnh nào không có tiếng: gắn cờ để slide của cảnh đó ghi rõ. */
-        scriptData.segments.forEach((sg, i) => { if (!audios[i] || audios[i].status !== "ok") { sg.vtSilent = true; sg.vtErr = (audios[i] && audios[i].err) || ""; } });
-      } else if (mixCtx) {
+      if (mixCtx) {
         /* Trộn: thu TỪNG ĐOẠN theo đúng nguồn đã phân (không gộp qua
            ranh giới nguồn/giọng); đoạn lỗi ở nguồn được phân thì thử lần
            lượt các nguồn còn lại trong vòng cho RIÊNG đoạn đó — lỗi
@@ -6882,21 +6809,14 @@ async function buildVideo(){
         const mcGroups = groupByMc(buildMcRoles, 3);
         for (const grp of mcGroups) await genAudioGroup(grp);
       }
-      if (!voiceTestMode && !mixCtx && ttsBuildExhausted) logWarn("🔇 <b>Đã hết hạn mức giọng hôm nay</b> — model giọng chính (" + ttsPinModel + ") đã cạn trên mọi key trong hồ. Các đoạn chưa có tiếng sẽ im lặng " + NO_AUDIO_SECONDS + " giây như trước giờ; thầy thử lại vào ngày mai hoặc thêm key mới vào hồ.");
-      if (!voiceTestMode && !mixCtx && voiceSource === "edge" && edgeBuildDown) logWarn("🔇 <b>Edge TTS mất kết nối</b> — app đã ngừng gọi thêm sau nhiều lần lỗi liên tiếp. Các đoạn chưa có tiếng sẽ im lặng " + NO_AUDIO_SECONDS + " giây; thầy kiểm tra mạng rồi dựng lại, hoặc đổi nguồn giọng sang Gemini.");
-      if (!voiceTestMode && !mixCtx && voiceSource === "fpt" && fptBuildDown) logWarn("🔇 <b>FPT.AI lỗi liên tiếp</b> — app đã ngừng gọi thêm trong lượt dựng này. Các đoạn chưa có tiếng sẽ im lặng " + NO_AUDIO_SECONDS + " giây; thầy kiểm tra API key FPT/mạng rồi dựng lại, hoặc đổi nguồn giọng.");
+      if (!mixCtx && ttsBuildExhausted) logWarn("🔇 <b>Đã hết hạn mức giọng hôm nay</b> — model giọng chính (" + ttsPinModel + ") đã cạn trên mọi key trong hồ. Các đoạn chưa có tiếng sẽ im lặng " + NO_AUDIO_SECONDS + " giây như trước giờ; thầy thử lại vào ngày mai hoặc thêm key mới vào hồ.");
+      if (!mixCtx && voiceSource === "edge" && edgeBuildDown) logWarn("🔇 <b>Edge TTS mất kết nối</b> — app đã ngừng gọi thêm sau nhiều lần lỗi liên tiếp. Các đoạn chưa có tiếng sẽ im lặng " + NO_AUDIO_SECONDS + " giây; thầy kiểm tra mạng rồi dựng lại, hoặc đổi nguồn giọng sang Gemini.");
+      if (!mixCtx && voiceSource === "fpt" && fptBuildDown) logWarn("🔇 <b>FPT.AI lỗi liên tiếp</b> — app đã ngừng gọi thêm trong lượt dựng này. Các đoạn chưa có tiếng sẽ im lặng " + NO_AUDIO_SECONDS + " giây; thầy kiểm tra API key FPT/mạng rồi dựng lại, hoặc đổi nguồn giọng.");
       ttsPinModel = null;
       buildMcRoles = null;
       buildSegRoutes = null;
       scriptData.segments.forEach((sg, i) => { if (!audios[i] || audios[i].status !== "ok") auErr.push(i + 1); });
-      if (voiceTestMode) {
-        /* GD16: tổng kết test giọng theo TỪNG CẢNH — giọng nào đọc được,
-           giọng nào không, để thầy biết đường bổ key / thử lại nguồn. */
-        const vtOk = [], vtBad = [];
-        scriptData.segments.forEach((sg, i) => { ((audios[i] && audios[i].status === "ok") ? vtOk : vtBad).push(sg.heading); });
-        logWarn("🎧 <b>Tổng kết test giọng:</b>" + (vtOk.length ? " ✅ Có tiếng: " + vtOk.join(" · ") + "." : "") + (vtBad.length ? " ⚠️ Không có tiếng: " + vtBad.join(" · ") + " (chưa có key hoặc nguồn lỗi — trên slide của cảnh đó có ghi rõ)." : " Cả 6 giọng đều đọc được ✅."));
-        setStep(4, auErr.length === scriptData.segments.length ? "err" : "done");
-      } else if (mixCtx) {
+      if (mixCtx) {
         if (auErr.length === scriptData.segments.length) {
           setStep(4, "err");
           logWarn("❌ <b>Không thu được giọng đọc cho đoạn nào</b> ở chế độ Trộn — mọi nguồn trong vòng xoay đều không đọc được (Edge mất kết nối; FPT/Gemini thiếu key hoặc lỗi). Video vẫn sẽ được dựng nhưng <b>KHÔNG có tiếng</b>. Thầy kiểm tra mạng/key rồi dựng lại, hoặc chọn một nguồn giọng cố định.");
@@ -6951,7 +6871,7 @@ async function buildVideo(){
   }
   building = false;
   ttsPinModel = null; ttsBuildExhausted = false; buildMcRoles = null;
-  buildSegRoutes = null; voiceTestMode = false;
+  buildSegRoutes = null;
   $("buildBtn").disabled = false; $("cancelScriptBtn").disabled = false; $("createBtn").disabled = false;
 }
 $("buildBtn").addEventListener("click", buildVideo);
@@ -7009,30 +6929,6 @@ $("createBtn").addEventListener("click", async () => {
   }
 });
 
-/* ---------- GD16: Test giọng tổng hợp ----------
-   Một lần bấm -> kịch bản demo cố định 6 cảnh (mỗi cảnh 1 cặp
-   nguồn/giọng khác nhau) -> dựng thẳng bằng pipeline hiện tại. Nguồn
-   nào thiếu key/lỗi thì chỉ cảnh đó im lặng, video vẫn ra đầy đủ. */
-async function startVoiceTest(){
-  if (building) return;
-  demoMode = false;
-  voiceTestMode = true;
-  scriptData = buildVoiceTestScript();
-  assets = {}; audios = {};
-  $("inputError").innerHTML = "";
-  $("resultCard").classList.add("hidden");
-  $("renderCard").classList.add("hidden");
-  $("assetBox").classList.add("hidden");
-  $("buildLog").innerHTML = "";
-  $("progressCard").classList.remove("hidden");
-  $("progressCard").scrollIntoView({ behavior: "smooth", block: "start" });
-  resetSteps(); setStep(1, "done");
-  $("progressNote").textContent = "— 🎧 TEST GIỌNG TỔNG HỢP (6 cảnh, mỗi cảnh 1 giọng khác nhau)";
-  const dn2 = $("demoNote"); if (dn2) dn2.classList.add("hidden");
-  await buildVideo();
-}
-if ($("voiceTestBtn")) $("voiceTestBtn").addEventListener("click", startVoiceTest);
-if ($("voiceTestBtn2")) $("voiceTestBtn2").addEventListener("click", startVoiceTest);
 
 /* ---------- Chế độ xem thử không cần key ---------- */
 $("demoBtn").addEventListener("click", () => {
