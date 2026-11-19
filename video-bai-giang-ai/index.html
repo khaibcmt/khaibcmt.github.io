@@ -984,6 +984,122 @@ function sortSubjectsByPriority(list, nameOf){
     .map(function(x){ return x.item; });
 }
 /*__END_PURE_SUBJ__*/
+/*__PURE_ENC__*/
+/* ============================================================
+   [GD12] MÃ HOÁ NHẸ KHO DỮ LIỆU de-lib + phieu-lib (thầy chốt
+   08:59 ngày 19/11/2026: "mã hoá nhẹ kho đề luôn — cho chắc cú
+   vì mình cực khổ soạn không nên cho ai tải về"). File dữ liệu
+   trên web từ nay là envelope {"enc":"vbg1","gz":1,"data":…}:
+   data = base64( XOR( gzip( utf8(json gốc) ) ) ) — ai tải file
+   thô về mở ra chỉ thấy ký tự lạ, không đọc được câu hỏi/đáp
+   án; app tự giải mã trong suốt khi chạy.
+   ĐÂY LÀ KHOÁ MỀM: khoá nằm trong chính app (chạy trên máy
+   người dùng) nên người rành kỹ thuật vẫn lần ra được — mức
+   bảo vệ đúng như đã báo thầy, không hứa tuyệt đối.
+   GIẢI MÃ HAI CHIỀU (bắt buộc): gặp envelope thì giải mã, gặp
+   JSON thô thì parse như cũ — nhờ vậy app mới chạy được cả
+   trước và sau khi dữ liệu live được mã hoá, và test cũ chạy
+   bằng dữ liệu thô vẫn xanh.
+   ============================================================ */
+const VBG_ENC_TAG = "vbg1";
+const VBG_ENC_KEY = "vbg1::video-bai-giang-ai::khoa-mem::2026-11-19";
+const VBG_B64_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+const VBG_B64_REV = (function(){ const m = {}; for (let i = 0; i < VBG_B64_ALPHABET.length; i++) m[VBG_B64_ALPHABET.charAt(i)] = i; return m; })();
+/* Keystream XOR: xorshift32 gieo hạt bằng FNV-1a của khoá chuỗi.
+   XOR đối xứng — cùng hàm cho cả mã hoá lẫn giải mã. */
+function vbgEncKeystream(len){
+  let h = 0x811c9dc5;
+  for (let i = 0; i < VBG_ENC_KEY.length; i++){ h ^= VBG_ENC_KEY.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
+  let s = (h ^ 0x9e3779b9) >>> 0;
+  if (!s) s = 0x2545f491;
+  const out = new Uint8Array(len);
+  for (let i = 0; i < len; i++){
+    s = (s ^ ((s << 13) >>> 0)) >>> 0;
+    s = (s ^ (s >>> 17)) >>> 0;
+    s = (s ^ ((s << 5) >>> 0)) >>> 0;
+    out[i] = (s >>> 16) & 255;
+  }
+  return out;
+}
+function vbgEncXor(bytes){
+  const ks = vbgEncKeystream(bytes.length);
+  const out = new Uint8Array(bytes.length);
+  for (let i = 0; i < bytes.length; i++) out[i] = bytes[i] ^ ks[i];
+  return out;
+}
+function vbgBytesToB64(bytes){
+  let out = "";
+  for (let i = 0; i < bytes.length; i += 3){
+    const b0 = bytes[i];
+    const b1 = i + 1 < bytes.length ? bytes[i + 1] : 0;
+    const b2 = i + 2 < bytes.length ? bytes[i + 2] : 0;
+    const n = (b0 << 16) | (b1 << 8) | b2;
+    out += VBG_B64_ALPHABET.charAt((n >> 18) & 63) + VBG_B64_ALPHABET.charAt((n >> 12) & 63) +
+      (i + 1 < bytes.length ? VBG_B64_ALPHABET.charAt((n >> 6) & 63) : "=") +
+      (i + 2 < bytes.length ? VBG_B64_ALPHABET.charAt(n & 63) : "=");
+  }
+  return out;
+}
+function vbgB64ToBytes(str){
+  const clean = String(str == null ? "" : str).replace(/[^A-Za-z0-9+/=]/g, "");
+  const out = [];
+  for (let i = 0; i < clean.length; i += 4){
+    const ch2 = clean.charAt(i + 2), ch3 = clean.charAt(i + 3);
+    const c0 = VBG_B64_REV[clean.charAt(i)] || 0;
+    const c1 = VBG_B64_REV[clean.charAt(i + 1)] || 0;
+    const c2 = (ch2 === "=" || ch2 === "") ? 0 : (VBG_B64_REV[ch2] || 0);
+    const c3 = (ch3 === "=" || ch3 === "") ? 0 : (VBG_B64_REV[ch3] || 0);
+    const n = (c0 << 18) | (c1 << 12) | (c2 << 6) | c3;
+    out.push((n >> 16) & 255);
+    if (ch2 !== "=" && ch2 !== "") out.push((n >> 8) & 255);
+    if (ch3 !== "=" && ch3 !== "") out.push(n & 255);
+  }
+  return new Uint8Array(out);
+}
+async function vbgStreamBytes(bytes, stream){
+  const buf = await new Response(new Blob([bytes]).stream().pipeThrough(stream)).arrayBuffer();
+  return new Uint8Array(buf);
+}
+/* Mã hoá một chuỗi JSON thành envelope vbg1 (dùng bởi script
+   sinh dữ liệu + test; app khi chạy chỉ cần chiều giải mã). */
+async function vbgEncodeLibText(jsonText){
+  let bytes = new TextEncoder().encode(String(jsonText));
+  let gz = 0;
+  if (typeof CompressionStream !== "undefined"){
+    try { const c = await vbgStreamBytes(bytes, new CompressionStream("gzip")); bytes = c; gz = 1; } catch (e) {}
+  }
+  return JSON.stringify({ enc: VBG_ENC_TAG, gz: gz, data: vbgBytesToB64(vbgEncXor(bytes)) });
+}
+/* Nếu text là envelope vbg1 -> trả chuỗi JSON gốc đã giải mã;
+   không phải envelope -> trả null (để nơi gọi parse như cũ).
+   Envelope hỏng (base64/gzip lỗi) -> ném lỗi cho nơi gọi bắt. */
+async function vbgDecodeLibText(text){
+  let head = null;
+  try { head = JSON.parse(String(text)); } catch (e) { return null; }
+  if (!head || typeof head !== "object" || head.enc !== VBG_ENC_TAG || typeof head.data !== "string") return null;
+  let bytes = vbgEncXor(vbgB64ToBytes(head.data));
+  if (head.gz){
+    if (typeof DecompressionStream === "undefined") throw new Error("Thiết bị không hỗ trợ giải mã kho dữ liệu");
+    bytes = await vbgStreamBytes(bytes, new DecompressionStream("gzip"));
+  }
+  return new TextDecoder("utf-8").decode(bytes);
+}
+/* Parse JSON kho dữ liệu HAI CHIỀU: envelope -> giải mã rồi
+   parse; JSON thô -> parse thẳng. Text hỏng -> JSON.parse ném
+   lỗi như cũ (nơi gọi đã có try/catch hiện thông báo). */
+async function vbgParseLibJson(text){
+  const dec = await vbgDecodeLibText(text);
+  return JSON.parse(dec !== null ? dec : String(text));
+}
+/*__END_PURE_ENC__*/
+/* [GD12] Hàm tải JSON DÙNG CHUNG cho de-lib + phieu-lib: fetch
+   text rồi qua vbgParseLibJson (tự giải mã envelope nếu có).
+   Giữ nguyên ngữ nghĩa lỗi "HTTP <status>" như các đoạn fetch cũ. */
+async function vbgFetchJson(url){
+  const res = await fetch(url, { cache: "no-store" });
+  if (!res.ok) throw new Error("HTTP " + res.status);
+  return vbgParseLibJson(await res.text());
+}
 /* [GD11] Sắp lại các option môn của bộ chọn bài SGK/phiếu theo
    thứ tự ưu tiên ngay khi nạp trang (option placeholder và giá
    trị đang chọn được giữ nguyên). */
@@ -3629,9 +3745,7 @@ function initBaiTap(){
 async function loadBaiTap(prm){
   btShowMsg("⏳ Đang tải bài tập, em chờ một chút nhé…");
   try {
-    const res = await fetch("../phieu-lib/manifest.json", { cache: "no-store" });
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    const man = await res.json();
+    const man = await vbgFetchJson("../phieu-lib/manifest.json");
     if (!man || !Array.isArray(man.entries)) throw new Error("manifest phiếu không hợp lệ");
     const entry = btFindEntry(man.entries, prm.bt);
     if (!entry){
@@ -3643,9 +3757,7 @@ async function loadBaiTap(prm){
         ".<br>Em xem lại video và đối chiếu với đáp án hiện lần lượt theo từng số trong video nhé!");
       return;
     }
-    const r2 = await fetch("../phieu-lib/" + entry.file, { cache: "no-store" });
-    if (!r2.ok) throw new Error("HTTP " + r2.status);
-    const data = await r2.json();
+    const data = await vbgFetchJson("../phieu-lib/" + entry.file);
     renderBaiTap(entry, data, prm.yt);
   } catch (e) {
     btShowMsg("⚠️ <b>Không tải được bài tập</b> — có thể do mạng chập chờn.<br><br>" +
@@ -3902,9 +4014,7 @@ function initLamDe(){
 async function loadLamDe(prm){
   deShowMsg("⏳ Đang tải kho đề, em chờ một chút nhé…");
   try {
-    const res = await fetch("../de-lib/manifest.json", { cache: "no-store" });
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    const man = await res.json();
+    const man = await vbgFetchJson("../de-lib/manifest.json");
     if (!man || !Array.isArray(man.subjects)) throw new Error("manifest kho đề không hợp lệ");
     deManifest = man;
     if (prm.de){
@@ -3924,9 +4034,7 @@ async function loadDeSet(found){
   deShowMsg("⏳ Đang tải bộ câu, em chờ một chút nhé…");
   try {
     if (!deSubjectCache[found.subject.id]){
-      const res = await fetch("../de-lib/" + found.subject.file, { cache: "no-store" });
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      deSubjectCache[found.subject.id] = await res.json();
+      deSubjectCache[found.subject.id] = await vbgFetchJson("../de-lib/" + found.subject.file);
     }
     const full = ((deSubjectCache[found.subject.id] || {}).entries || []).filter(e => e.key === found.entry.key)[0];
     if (!full) throw new Error("không tìm thấy bộ câu trong file môn");
@@ -4611,9 +4719,7 @@ async function loadPhieuLib(){
   phieuLibState = "loading";
   renderPhieuPanel();
   try {
-    const res = await fetch("../phieu-lib/manifest.json", { cache: "no-store" });
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    const data = await res.json();
+    const data = await vbgFetchJson("../phieu-lib/manifest.json");
     if (!data || !Array.isArray(data.entries)) throw new Error("manifest phiếu không hợp lệ");
     phieuLibEntries = data.entries;
     phieuLibState = "ready";
@@ -4681,9 +4787,7 @@ async function selectPhieu(entry){
   pv.classList.remove("hidden");
   pv.innerHTML = '<div class="small">⏳ Đang tải dữ liệu phiếu…</div>';
   try {
-    const res = await fetch("../phieu-lib/" + entry.file, { cache: "no-store" });
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    phieuData = await res.json();
+    phieuData = await vbgFetchJson("../phieu-lib/" + entry.file);
   } catch (e) {
     pv.innerHTML = '<div class="warn">⚠️ Không tải được dữ liệu phiếu (' + escapeHtml(e.message) + "). Thầy thử lại.</div>";
     return;
@@ -5157,9 +5261,7 @@ async function loadChuadeLib(){
   chuadeLibState = "loading";
   renderChuadePanel();
   try {
-    const res = await fetch("../de-lib/manifest.json", { cache: "no-store" });
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    const data = await res.json();
+    const data = await vbgFetchJson("../de-lib/manifest.json");
     if (!data || !Array.isArray(data.subjects)) throw new Error("manifest kho đề không hợp lệ");
     chuadeManifest = data;
     chuadeLibState = "ready";
@@ -5223,9 +5325,7 @@ async function selectChuadeEntry(subj, slim){
   pv.innerHTML = '<div class="small">⏳ Đang tải bộ câu…</div>';
   try {
     if (!chuadeSubjectCache[subj.id]) {
-      const res = await fetch("../de-lib/" + subj.file, { cache: "no-store" });
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      chuadeSubjectCache[subj.id] = await res.json();
+      chuadeSubjectCache[subj.id] = await vbgFetchJson("../de-lib/" + subj.file);
     }
     const full = (chuadeSubjectCache[subj.id].entries || []).filter(e => e.key === slim.key)[0];
     if (!full) throw new Error("không tìm thấy bộ câu trong file môn");
