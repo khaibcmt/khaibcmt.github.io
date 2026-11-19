@@ -400,11 +400,15 @@
     </div>
     <div class="small" id="voiceSourceNote" style="margin-top:6px"></div>
     <div id="fptKeyBox" style="display:none;margin-top:10px">
-      <label for="fptKeyInput" style="font-weight:700">🔑 API key FPT.AI (chỉ lưu trên máy này)</label>
+      <label for="fptKeysInput" style="font-weight:700">🔑 Hồ key FPT.AI (chỉ lưu trên máy này)</label>
+      <div class="small" style="margin-top:4px">Dán key FPT vào đây — <b>mỗi key 1 dòng</b>. Dán nhiều key (mỗi key từ một tài khoản / dự án FPT khác nhau) để app <b>tự xoay vòng</b> khi một key cạn ký tự tháng này hoặc bị báo key sai — key hỏng app tự bỏ qua, tự thử key kế tiếp. Ô dán key được <b>che như ô mật khẩu</b>; bấm Lưu là key được cất vào hồ và ô dán tự xoá trắng:</div>
+      <textarea id="fptKeysInput" rows="3" placeholder="Key FPT 1&#10;Key FPT 2&#10;Key FPT 3" autocomplete="off" spellcheck="false" style="font-family:Consolas,monospace;font-size:13px;-webkit-text-security:disc;margin-top:6px"></textarea>
       <div class="row" style="gap:8px;margin-top:6px">
-        <input type="password" id="fptKeyInput" placeholder="Dán API key FPT.AI vào đây (console.fpt.ai → Text To Speech)" style="flex:1" autocomplete="off">
-        <button class="btn-ghost" id="fptKeySaveBtn" type="button">💾 Lưu key FPT</button>
+        <button class="btn-ghost" id="fptKeySaveBtn" type="button">💾 Lưu Hồ Key FPT</button>
+        <button class="btn-ghost" id="fptKeyResetBtn" type="button">↺ Đặt Lại Trạng Thái Key</button>
+        <button class="btn-ghost" id="toggleFptKeysViewBtn" type="button">👁 Hiện key</button>
       </div>
+      <div id="fptKeyList" style="margin-top:8px"></div>
       <div class="small" id="fptUsageNote" style="margin-top:6px"></div>
     </div>
     <div class="row" style="margin-top:14px">
@@ -1733,6 +1737,79 @@ async function fptPollUntilReady(fetchFn, url, opts){
   throw new Error("Chờ file quá lâu (" + Math.round(tries * intervalMs / 1000) + " giây) mà FPT.AI chưa tạo xong file.");
 }
 /*__END_PURE_EDGE__*/
+/*__PURE_FPTPOOL__*/
+/* GD19 — HỒ KEY FPT XOAY VÒNG: logic thuần (không DOM).
+   Hồ gồm nhiều key; mỗi lượt gọi FPT lấy key kế tiếp theo vòng trong số
+   key còn KHẢ DỤNG (chưa cạn ký tự tháng này, chưa bị FPT báo key sai).
+   Đếm ký tự TÁCH THEO TỪNG KEY: khoá localStorage =
+   vbg_fpt_usage_<năm>-<tháng>_<mã băm ngắn của key> — chỉ lưu mã băm,
+   tuyệt đối không lưu key thô vào tên khoá. */
+/* Mã băm FNV-1a 32-bit của key -> 8 ký tự hex. Chỉ để phân biệt key trong
+   tên khoá đếm ký tự, KHÔNG phải mã hoá bảo mật. */
+function fptKeyHash(key){
+  const s = String(key || "");
+  let h = 0x811c9dc5;
+  for (let i = 0; i < s.length; i++){
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return ("0000000" + (h >>> 0).toString(16)).slice(-8);
+}
+function fptUsageKeyForKey(key, date){
+  return fptUsageKeyFor(date) + "_" + fptKeyHash(key);
+}
+/* Tách văn bản dán vào hồ: mỗi dòng 1 key, bỏ dòng trống, khử trùng giữ
+   đúng thứ tự dán. */
+function fptPoolParse(text){
+  const out = [];
+  String(text == null ? "" : text).split(/\r?\n/).forEach(line => {
+    const k = line.trim();
+    if (k && out.indexOf(k) < 0) out.push(k);
+  });
+  return out;
+}
+/* Nhãn tháng ("2026-11") — dấu "cạn" của một key chỉ có hiệu lực trong
+   đúng tháng bị cạn, sang tháng sau tự hết hiệu lực. */
+function fptMonthTag(date){
+  const d = date || new Date();
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
+}
+/* Key còn khả dụng không: state = {st:'ok'|'quota'|'err', mk:'<tháng>'};
+   'err' (FPT báo key sai, HTTP 401) = hỏng hẳn; 'quota' chỉ chặn trong
+   tháng mk; ký tự app đã đếm cho key trong tháng >= mức miễn phí = cạn. */
+function fptKeyUsable(state, usedChars, curMonthTag){
+  if (state && state.st === "err") return false;
+  if (state && state.st === "quota" && state.mk === curMonthTag) return false;
+  if ((usedChars || 0) >= FPT_MONTHLY_FREE_CHARS) return false;
+  return true;
+}
+/* Chỉ số key khả dụng KẾ TIẾP theo vòng xoay, bắt đầu từ fromIdx, bỏ qua
+   các chỉ số đã đánh dấu trong exclude. usedByHash tra cứu theo
+   fptKeyHash(key). Trả -1 khi không còn key nào khả dụng. */
+function fptPoolNextIndex(pool, states, usedByHash, fromIdx, exclude, curMonthTag){
+  const n = (pool || []).length;
+  if (!n) return -1;
+  const start = (((fromIdx || 0) % n) + n) % n;
+  for (let step = 0; step < n; step++){
+    const i = (start + step) % n;
+    if (exclude && exclude[i]) continue;
+    const used = usedByHash ? (usedByHash[fptKeyHash(pool[i])] || 0) : 0;
+    if (fptKeyUsable(states ? states[i] : null, used, curMonthTag)) return i;
+  }
+  return -1;
+}
+/* Phân loại lỗi FPT theo HTTP status + thông điệp:
+   'quota' = hết hạn mức (HTTP 429, hoặc thông điệp nhắc quota/limit/hết
+   mức); 'auth' = key sai / không có quyền (HTTP 401, 403); 'other' =
+   lỗi còn lại (mạng, máy chủ, tải file...) — không đổ tội cho key. */
+function fptClassifyError(status, message){
+  const msg = String(message || "");
+  if (status === 429) return "quota";
+  if (/quota|limit|exceed|insufficient|balance|credit|hết hạn mức|hết ký tự|vượt mức/i.test(msg)) return "quota";
+  if (status === 401 || status === 403) return "auth";
+  return "other";
+}
+/*__END_PURE_FPTPOOL__*/
 function edgeConnectId(){
   const b = new Uint8Array(16);
   (window.crypto || {}).getRandomValues ? crypto.getRandomValues(b) : b.forEach((_, i) => b[i] = Math.floor(Math.random() * 256));
@@ -1839,9 +1916,9 @@ function renderVoiceSourceNote(){
   if (voiceSource === "edge"){
     note.innerHTML = "🆓 Đang dùng <b>Edge TTS (Microsoft)</b>: giọng lấy trực tiếp từ máy chủ Microsoft — phần giọng <b>không cần key Gemini, không tốn hạn mức</b>. Cần mạng ổn định lúc dựng; đoạn nào lỗi kết nối sẽ im lặng như khi hết hạn mức (app tự ngắt sau nhiều lỗi liên tiếp và báo rõ).";
   } else if (voiceSource === "fpt"){
-    note.innerHTML = "🇻🇳 Đang dùng <b>FPT.AI</b>: MC Nữ <b>Lan Nhi (miền Nam)</b> + MC Nam <b>Lê Minh (miền Bắc)</b> — FPT chưa có giọng nam miền Nam. Cần dán API key FPT ở khung riêng phía trên. Gói miễn phí 100.000 ký tự/tháng; app đếm ký tự đã dùng ngay dưới đây.";
+    note.innerHTML = "🇻🇳 Đang dùng <b>FPT.AI</b>: MC Nữ <b>Lan Nhi (miền Nam)</b> + MC Nam <b>Lê Minh (miền Bắc)</b> — FPT chưa có giọng nam miền Nam. Cần dán key FPT vào HỒ KEY ở khung riêng phía trên — dán nhiều key (mỗi key một tài khoản / dự án FPT khác nhau) app sẽ tự xoay vòng, key cạn/hỏng tự bỏ qua. Gói miễn phí 100.000 ký tự/tháng MỖI key; app đếm ký tự riêng từng key ngay dưới đây.";
   } else if (voiceSource === "mix"){
-    note.innerHTML = "🔀 Đang dùng <b>Trộn hết (ưu tiên miễn phí trước)</b>: giọng của mỗi MC <b>xoay vòng theo từng đoạn</b> qua <b>Edge</b> (miễn phí, không key) → <b>FPT.AI</b> (free 100.000 ký tự/tháng, cần key FPT ở khung riêng phía trên) → <b>Gemini</b> (key, hạn mức ngày). Nguồn nào <b>chưa có key thì tự loại khỏi vòng xoay</b>; đoạn nào lỗi ở một nguồn, app tự thử nguồn kế tiếp cho đoạn đó và ghi nhận cuối lượt dựng.";
+    note.innerHTML = "🔀 Đang dùng <b>Trộn hết (ưu tiên miễn phí trước)</b>: giọng của mỗi MC <b>xoay vòng theo từng đoạn</b> qua <b>Edge</b> (miễn phí, không key) → <b>FPT.AI</b> (free 100.000 ký tự/tháng mỗi key, cần key FPT ở HỒ KEY phía trên — app tự xoay vòng các key) → <b>Gemini</b> (key, hạn mức ngày). Nguồn nào <b>chưa có key thì tự loại khỏi vòng xoay</b>; đoạn nào lỗi ở một nguồn, app tự thử nguồn kế tiếp cho đoạn đó và ghi nhận cuối lượt dựng.";
   } else {
     note.innerHTML = "";
   }
@@ -1864,9 +1941,78 @@ function setVoiceSource(src){
 if ($("voiceSourceSel")) $("voiceSourceSel").addEventListener("change", e => setVoiceSource(e.target.value));
 renderVoiceSourceNote();
 
-/* ---- GD14: FPT.AI — client + key riêng + đếm ký tự tháng (phần cần trình duyệt) ---- */
-let fptApiKey = "";
-try { fptApiKey = localStorage.getItem("vbg_fpt_key") || ""; } catch (e) {}
+/* ---- GD14 + GD19: FPT.AI — client + HỒ KEY XOAY VÒNG + đếm ký tự
+   tháng TÁCH THEO TỪNG KEY (phần cần trình duyệt) ---- */
+let fptPool = [];         // mảng các key FPT (string)
+let fptKeyStates = [];    // mảng song song: {st:'ok'|'quota'|'err', note:'', at:'', mk:''}
+let fptPoolIdx = 0;       // con trỏ xoay vòng: key sẽ được thử trước ở lượt gọi kế tiếp
+function saveFptPool(){
+  try {
+    localStorage.setItem("vbg_fpt_keys", JSON.stringify(fptPool));
+    localStorage.setItem("vbg_fpt_key_states", JSON.stringify(fptKeyStates));
+  } catch (e) { /* localStorage đầy/tắt — hồ vẫn chạy trong phiên này */ }
+}
+function loadFptPool(){
+  try { fptPool = JSON.parse(localStorage.getItem("vbg_fpt_keys") || "[]"); } catch (e) { fptPool = []; }
+  if (!Array.isArray(fptPool)) fptPool = [];
+  fptPool = fptPool.map(k => String(k || "").trim()).filter(Boolean);
+  fptPool = fptPool.filter((k, i) => fptPool.indexOf(k) === i);
+  if (!fptPool.length){
+    /* Di trú GD19: key đơn cũ trong vbg_fpt_key (GD14) tự thành key đầu
+       tiên của hồ; số ký tự tháng này đã đếm dồn cho key đơn cũng chuyển
+       theo đúng key đó để không mất dấu đã dùng. */
+    let old = "";
+    try { old = (localStorage.getItem("vbg_fpt_key") || "").trim(); } catch (e) {}
+    if (old) {
+      fptPool = [old];
+      try {
+        const agg = localStorage.getItem(fptUsageKeyFor(new Date()));
+        if (agg && !localStorage.getItem(fptUsageKeyForKey(old, new Date())))
+          localStorage.setItem(fptUsageKeyForKey(old, new Date()), agg);
+      } catch (e) {}
+    }
+  }
+  try { fptKeyStates = JSON.parse(localStorage.getItem("vbg_fpt_key_states") || "[]"); } catch (e) { fptKeyStates = []; }
+  if (!Array.isArray(fptKeyStates)) fptKeyStates = [];
+  while (fptKeyStates.length < fptPool.length) fptKeyStates.push({ st: "ok", note: "", at: "", mk: "" });
+  fptKeyStates.length = fptPool.length;
+  if (fptPoolIdx >= fptPool.length) fptPoolIdx = 0;
+  if (fptPool.length) saveFptPool();
+}
+loadFptPool();
+/* Hàm DUY NHẤT để mọi nơi trong app hỏi về key FPT (GD19): hồ còn key
+   không / còn key khả dụng không / đếm ký tự — không nơi nào đọc thẳng
+   biến hồ nữa. */
+function fptHasKey(){ return fptPool.length > 0; }
+function fptUsedCharsForKey(key){
+  try { return parseInt(localStorage.getItem(fptUsageKeyForKey(key, new Date())) || "0", 10) || 0; } catch (e) { return 0; }
+}
+function fptUsedChars(){
+  /* Tổng ký tự tháng này của CẢ hồ (giữ tên hàm GD14 cho nơi hiển thị). */
+  return fptPool.reduce((s, k) => s + fptUsedCharsForKey(k), 0);
+}
+function fptUsedByHash(){
+  const m = {};
+  fptPool.forEach(k => { m[fptKeyHash(k)] = fptUsedCharsForKey(k); });
+  return m;
+}
+function fptHasUsableKey(){
+  return fptPoolNextIndex(fptPool, fptKeyStates, fptUsedByHash(), 0, null, fptMonthTag()) >= 0;
+}
+/* Chọn chỉ số key cho lượt gọi KẾ TIẾP: xoay vòng từ con trỏ fptPoolIdx,
+   bỏ qua key cạn/hỏng và các key trong exclude (đã thử hỏng ở lượt này). */
+function fptPickKeyIndex(exclude){
+  return fptPoolNextIndex(fptPool, fptKeyStates, fptUsedByHash(), fptPoolIdx, exclude || null, fptMonthTag());
+}
+function fptMarkKey(idx, st, note){
+  if (!fptKeyStates[idx]) fptKeyStates[idx] = { st: "ok", note: "", at: "", mk: "" };
+  fptKeyStates[idx].st = st;
+  fptKeyStates[idx].note = note || "";
+  fptKeyStates[idx].at = new Date().toLocaleString("vi-VN");
+  fptKeyStates[idx].mk = fptMonthTag();
+  saveFptPool();
+  renderFptKeyList();
+}
 let fptConsecutiveFails = 0;   /* số lượt gọi FPT lỗi LIÊN TIẾP trong lượt dựng */
 let fptBuildDown = false;      /* đã ngắt mạch FPT trong lượt dựng này */
 function noteFptFailure(){
@@ -1882,28 +2028,62 @@ async function fetchWithTimeout(url, opts, timeoutMs){
     throw e;
   } finally { clearTimeout(t); }
 }
-function fptUsedChars(){
-  try { return parseInt(localStorage.getItem(fptUsageKeyFor(new Date())) || "0", 10) || 0; } catch (e) { return 0; }
-}
-function fptAddUsage(n){
-  try { localStorage.setItem(fptUsageKeyFor(new Date()), String(fptUsedChars() + (n || 0))); } catch (e) {}
+function fptAddUsage(key, n){
+  try { localStorage.setItem(fptUsageKeyForKey(key, new Date()), String(fptUsedCharsForKey(key) + (n || 0))); } catch (e) {}
   renderFptUsageNote();
+  renderFptKeyList();
 }
 function renderFptUsageNote(){
   const el = $("fptUsageNote");
   if (!el) return;
+  if (!fptPool.length){
+    el.innerHTML = "📊 Hồ key FPT đang rỗng — thầy dán ít nhất 1 key FPT vào ô trên rồi bấm <b>Lưu Hồ Key FPT</b>. Gói miễn phí của FPT: <b>" + FPT_MONTHLY_FREE_CHARS.toLocaleString("vi-VN") + " ký tự/tháng cho MỖI key</b> (tính theo tài khoản / dự án của key đó).";
+    return;
+  }
   const used = fptUsedChars();
-  const lvl = fptUsageLevel(used);
-  el.innerHTML = "📊 Ký tự FPT.AI đã dùng trong tháng (app tự đếm = tổng số ký tự của mọi đoạn ĐÃ GỬI cho FPT, tính cả lượt FPT báo lỗi sau khi đã nhận yêu cầu; đoạn lấy từ cache giọng thì không tốn ký tự): <b>" +
-    used.toLocaleString("vi-VN") + "</b> / " + FPT_MONTHLY_FREE_CHARS.toLocaleString("vi-VN") + " ký tự miễn phí" +
-    (lvl === "over" ? " — <b>⚠️ ĐÃ VƯỢT mức miễn phí</b>: FPT có thể từ chối đọc tiếp hoặc tính phí tuỳ gói của thầy." :
-     lvl === "warn" ? " — <b>⚠️ Sắp cạn</b> (đã dùng ≥80%): cân nhắc để dành hoặc đổi nguồn giọng cho video dài." : ".");
+  const cap = fptPool.length * FPT_MONTHLY_FREE_CHARS;
+  const overN = fptPool.filter(k => fptUsedCharsForKey(k) >= FPT_MONTHLY_FREE_CHARS).length;
+  const warnN = fptPool.filter(k => { const u = fptUsedCharsForKey(k); return u >= FPT_MONTHLY_FREE_CHARS * 0.8 && u < FPT_MONTHLY_FREE_CHARS; }).length;
+  el.innerHTML = "📊 Ký tự FPT.AI đã dùng trong tháng (app tự đếm RIÊNG TỪNG KEY = tổng số ký tự của mọi đoạn ĐÃ GỬI cho FPT bằng key đó, tính cả lượt FPT báo lỗi sau khi đã nhận yêu cầu; đoạn lấy từ cache giọng thì không tốn ký tự): cả hồ <b>" +
+    used.toLocaleString("vi-VN") + "</b> / " + cap.toLocaleString("vi-VN") + " ký tự miễn phí (" + fptPool.length + " key × " + FPT_MONTHLY_FREE_CHARS.toLocaleString("vi-VN") + ")" +
+    (overN ? " — <b>⚠️ " + overN + " key đã cạn mức miễn phí tháng này</b>, app tự bỏ qua các key đó khi xoay vòng." : "") +
+    (warnN ? " — ⚠️ " + warnN + " key đã dùng ≥80% mức miễn phí." : ".");
 }
-async function fptSynthesize(text, voice){
-  const key = (fptApiKey || "").trim();
-  if (!key) throw new Error("Chưa có API key FPT.AI — thầy dán key vào ô 'API key FPT.AI' ngay dưới bộ chọn nguồn giọng (lấy miễn phí ở console.fpt.ai → Text to Speech) rồi bấm Lưu.");
-  if (!text || text.trim().length < 3) throw new Error("Đoạn đọc quá ngắn cho FPT.AI (tối thiểu 3 ký tự).");
-  if (text.length > 5000) throw new Error("Đoạn đọc dài hơn 5.000 ký tự — vượt giới hạn 1 yêu cầu của FPT.AI.");
+function renderFptKeyList(){
+  renderFptUsageNote();
+  const box = $("fptKeyList");
+  if (!box) return;
+  if (!fptPool.length){
+    box.innerHTML = '<div class="small">Hồ FPT đang rỗng — thầy dán ít nhất 1 key vào ô trên rồi bấm <b>Lưu Hồ Key FPT</b>.</div>';
+    return;
+  }
+  const tag = fptMonthTag();
+  let h = '<div class="small" style="font-weight:700;margin-bottom:4px">Hồ FPT có ' + fptPool.length + ' key — tổng đã dùng tháng này: ' + fptUsedChars().toLocaleString("vi-VN") + ' ký tự</div>';
+  fptPool.forEach((k, i) => {
+    const s = fptKeyStates[i] || { st: "ok", note: "", at: "", mk: "" };
+    const used = fptUsedCharsForKey(k);
+    const lvl = fptUsageLevel(used);
+    let dot = "🟢", txt = "Sẵn sàng";
+    if (s.st === "err"){ dot = "🔴"; txt = "Key hỏng — FPT báo key sai" + (s.note ? " (" + escapeHtml(s.note) + ")" : ""); }
+    else if (s.st === "quota" && s.mk === tag){ dot = "🟡"; txt = "Đã cạn hạn mức tháng này" + (s.note ? " (" + escapeHtml(s.note) + ")" : ""); }
+    else if (lvl === "over"){ dot = "🟡"; txt = "Đã dùng hết mức miễn phí app đếm tháng này"; }
+    else if (lvl === "warn"){ dot = "🟡"; txt = "Sắp cạn (đã dùng ≥80%)"; }
+    h += '<div class="row" style="align-items:center;margin-top:4px">'
+       + '<span style="flex:1">' + dot + " <b>Key FPT #" + (i + 1) + "</b> · " + escapeHtml(maskKey(k)) + " · " + txt + " · đã dùng <b>" + used.toLocaleString("vi-VN") + "</b>/" + FPT_MONTHLY_FREE_CHARS.toLocaleString("vi-VN") + " ký tự" + (i === fptPoolIdx ? " · <b>⭐ lượt kế tiếp</b>" : "") + "</span>"
+       + '<button class="btn-ghost shrink" data-delfptkey="' + i + '">✖ Xoá</button></div>';
+  });
+  box.innerHTML = h;
+  box.querySelectorAll("[data-delfptkey]").forEach(b => b.addEventListener("click", () => {
+    const i = parseInt(b.dataset.delfptkey, 10);
+    fptPool.splice(i, 1); fptKeyStates.splice(i, 1);
+    if (fptPoolIdx >= fptPool.length) fptPoolIdx = 0;
+    saveFptPool(); renderFptKeyList();
+  }));
+}
+/* Một lượt đọc FPT bằng ĐÚNG một key: POST bất đồng bộ -> poll URL MP3
+   -> tải về. Lỗi được gắn fptKind ('quota'|'auth'|'other') theo phân
+   loại thuần để tầng xoay vòng quyết định có thử key kế tiếp hay không. */
+async function fptSynthesizeWithKey(text, voice, key){
   let resp;
   try {
     resp = await fetchWithTimeout("https://api.fpt.ai/hmi/tts/v5", {
@@ -1914,11 +2094,20 @@ async function fptSynthesize(text, voice){
   } catch (e) {
     throw new Error("Không gọi được FPT.AI (" + e.message + ") — kiểm tra mạng rồi thử lại.");
   }
-  fptAddUsage(text.length);   /* FPT đã nhận yêu cầu -> tính ký tự ngay */
+  fptAddUsage(key, text.length);   /* FPT đã nhận yêu cầu -> tính ký tự ngay cho ĐÚNG key vừa gửi */
   let data = null;
   try { data = await resp.json(); } catch (e) {}
-  if (!resp.ok) throw new Error("FPT.AI trả lỗi HTTP " + resp.status + (data && data.message ? " — " + data.message : "") + ".");
-  if (!data || data.error !== 0 || !data.async) throw new Error("FPT.AI từ chối yêu cầu" + (data && data.message ? ": " + data.message : "") + ".");
+  const msg = (data && data.message) ? String(data.message) : "";
+  if (!resp.ok) {
+    const err = new Error("FPT.AI trả lỗi HTTP " + resp.status + (msg ? " — " + msg : "") + ".");
+    err.fptKind = fptClassifyError(resp.status, msg);
+    throw err;
+  }
+  if (!data || data.error !== 0 || !data.async) {
+    const err = new Error("FPT.AI từ chối yêu cầu" + (msg ? ": " + msg : "") + ".");
+    err.fptKind = fptClassifyError(resp.status, msg);
+    throw err;
+  }
   let got = null;
   try {
     got = await fptPollUntilReady(async (u) => {
@@ -1932,17 +2121,67 @@ async function fptSynthesize(text, voice){
   if (!got || !got.buf || !got.buf.length) throw new Error("File MP3 FPT.AI trả về rỗng.");
   return got.buf;
 }
-if ($("fptKeyInput")) $("fptKeyInput").value = fptApiKey;
+/* Đọc một đoạn/cụm bằng FPT.AI với HỒ KEY XOAY VÒNG (GD19):
+   - Mỗi lượt gọi lấy key khả dụng kế tiếp theo vòng (round-robin).
+   - Key bị báo hết hạn mức -> đánh dấu "cạn tháng này", thử lại CHÍNH
+     đoạn đó bằng key kế tiếp; key sai (401) -> đánh dấu hỏng, bỏ qua.
+   - Mọi key đều cạn/hỏng -> ném lỗi gộp rõ ràng (hành vi như GD14 khi
+     FPT hết đường: đoạn im lặng; ở chế độ Trộn, tầng Trộn tự rơi xuống
+     nguồn kế tiếp theo luật GD16). */
+async function fptSynthesize(text, voice){
+  if (!text || text.trim().length < 3) throw new Error("Đoạn đọc quá ngắn cho FPT.AI (tối thiểu 3 ký tự).");
+  if (text.length > 5000) throw new Error("Đoạn đọc dài hơn 5.000 ký tự — vượt giới hạn 1 yêu cầu của FPT.AI.");
+  if (!fptPool.length) throw new Error("Chưa có API key FPT.AI — thầy dán key vào khung 'Hồ key FPT.AI' ngay dưới bộ chọn nguồn giọng (lấy miễn phí ở console.fpt.ai → Text to Speech) rồi bấm Lưu Hồ Key FPT.");
+  const tried = {};
+  let lastErr = null, quotaN = 0, authN = 0;
+  while (true) {
+    const idx = fptPickKeyIndex(tried);
+    if (idx < 0) break;
+    tried[idx] = true;
+    try {
+      const buf = await fptSynthesizeWithKey(text, voice, fptPool[idx]);
+      fptPoolIdx = (idx + 1) % fptPool.length;   /* xoay vòng: lượt gọi sau bắt đầu ở key kế tiếp */
+      return buf;
+    } catch (e) {
+      lastErr = e;
+      if (e && e.fptKind === "quota"){ fptMarkKey(idx, "quota", e.message); quotaN++; continue; }
+      if (e && e.fptKind === "auth"){ fptMarkKey(idx, "err", e.message); authN++; continue; }
+      throw e;
+    }
+  }
+  if (lastErr && (quotaN || authN)) {
+    throw new Error("FPT.AI: cả " + fptPool.length + " key trong hồ đều không dùng được lúc này (" +
+      (quotaN ? quotaN + " key hết hạn mức tháng này" : "") + (quotaN && authN ? ", " : "") +
+      (authN ? authN + " key bị báo key sai" : "") + "). Lỗi gần nhất: " + lastErr.message);
+  }
+  throw new Error("FPT.AI: không còn key khả dụng trong hồ — các key đều đã cạn ký tự miễn phí tháng này hoặc đang bị đánh dấu key sai. Thầy thêm key FPT khác vào hồ, bấm Đặt Lại Trạng Thái Key nếu key đã được sửa, hoặc chờ sang tháng sau.");
+}
 if ($("fptKeySaveBtn")) $("fptKeySaveBtn").addEventListener("click", () => {
-  fptApiKey = ($("fptKeyInput").value || "").trim();
-  try { localStorage.setItem("vbg_fpt_key", fptApiKey); } catch (e) {}
-  renderFptUsageNote();
+  const lines = fptPoolParse($("fptKeysInput").value);
+  let added = 0;
+  lines.forEach(k => {
+    if (fptPool.indexOf(k) < 0){ fptPool.push(k); fptKeyStates.push({ st: "ok", note: "", at: "", mk: "" }); added++; }
+  });
+  if (fptPoolIdx >= fptPool.length) fptPoolIdx = 0;
+  saveFptPool();
+  $("fptKeysInput").value = "";   /* xoá trắng ô dán — key đầy đủ không ở lại trên màn hình */
+  renderFptKeyList();
   const b = $("fptKeySaveBtn");
   const old = b.textContent;
-  b.textContent = "✅ Đã lưu";
+  b.textContent = fptPool.length ? "✅ Đã lưu hồ " + fptPool.length + " key" + (added ? " (thêm mới " + added + ")" : "") : "⚠️ Hồ vẫn rỗng";
   setTimeout(() => { b.textContent = old; }, 1600);
 });
-renderFptUsageNote();
+if ($("fptKeyResetBtn")) $("fptKeyResetBtn").addEventListener("click", () => {
+  fptKeyStates = fptPool.map(() => ({ st: "ok", note: "", at: "", mk: "" }));
+  saveFptPool(); renderFptKeyList();
+});
+let fptKeysVisible = false;
+if ($("toggleFptKeysViewBtn")) $("toggleFptKeysViewBtn").addEventListener("click", () => {
+  fptKeysVisible = !fptKeysVisible;
+  $("fptKeysInput").style.webkitTextSecurity = fptKeysVisible ? "none" : "disc";
+  $("toggleFptKeysViewBtn").textContent = fptKeysVisible ? "🙈 Ẩn key" : "👁 Hiện key";
+});
+renderFptKeyList();
 
 /* Trạng thái giọng của LƯỢT DỰNG đang chạy (ngoài lượt dựng đều null/
    false → hành vi xoay model cũ cho các nút lẻ như "Thử lại tiếng"). */
@@ -6771,7 +7010,7 @@ async function buildVideo(){
            theo từng đoạn của MC đó. Nguồn thiếu key bị loại khỏi vòng
            ngay từ đầu (Edge không cần key nên luôn có mặt). */
         ttsPinModel = keyPool.length ? await pickPrimaryTtsModel() : null;
-        const mixAvail = mixAvailableSources({ fpt: !!((fptApiKey || "").trim()), gemini: !!keyPool.length });
+        const mixAvail = mixAvailableSources({ fpt: fptHasKey(), gemini: !!keyPool.length });
         const mixDropped = MIX_SOURCE_ORDER.filter(s => mixAvail.indexOf(s) < 0);
         buildSegRoutes = mixRouteFor(buildMcRoles, mixAvail);
         mixCtx = { avail: mixAvail };
