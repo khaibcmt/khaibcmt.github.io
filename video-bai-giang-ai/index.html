@@ -240,6 +240,7 @@
         <span class="chip type-chip" data-type="part">🔎 Nội dung từng phần</span>
         <span class="chip type-chip" data-type="review">📝 Ôn tập / tổng kết</span>
         <span class="chip type-chip" data-type="phieu">📋 Phiếu Học Tập</span>
+        <span class="chip type-chip" data-type="chuade">🎯 Chữa Đề Thi</span>
       </div>
       <div class="small" style="margin-top:6px">Chọn 🚀 Khởi động thì app tự gợi ý thời lượng 2 phút (thầy vẫn đổi lại được ở bộ chọn thời lượng bên dưới). App tự nhớ loại video đã chọn cho lần mở sau.</div>
     </div>
@@ -249,6 +250,27 @@
       <div id="phieuStatus" class="small" style="margin-top:8px">⏳ Đang tải kho phiếu…</div>
       <div id="phieuList" style="margin-top:4px"></div>
       <div id="phieuPreview" class="hidden" style="margin-top:12px;border-top:1px dashed var(--line);padding-top:10px"></div>
+    </div>
+
+    <div id="chuadePanel" class="hidden" style="margin-top:14px;border:1px dashed var(--line);border-radius:12px;padding:12px 14px;background:var(--panel2)">
+      <div style="font-weight:700;font-size:16px">🎯 Video Chữa Đề Thi — dựng thẳng từ kho đề có đáp án</div>
+      <div class="small" style="margin-top:4px">Chọn nguồn → môn → khối → bài/đề. App lấy câu hỏi + đáp án <b>nguyên văn</b> từ kho đề (cùng bộ câu học sinh làm trong Thi Online của Học Liệu Vip Pro) và dựng video theo khuôn: mở đề → mỗi câu hiện câu hỏi trước để học sinh tự làm → chốt đáp án tô nổi bật + giải thích → tổng kết → cảnh QR làm lại đề. Có key Gemini thì AI soạn thêm <b>giải thích</b> (sửa được ở màn duyệt); không có key vẫn dựng được.</div>
+      <div id="chuadeStatus" class="small" style="margin-top:8px">⏳ Đang tải kho đề…</div>
+      <div id="chuadeCtrls" class="hidden">
+        <label style="margin-top:10px">Nguồn bộ câu</label>
+        <div class="chips" id="cdSrcChips" style="margin-top:4px">
+          <span class="chip cd-src" data-src="bank">📚 Theo bài (ngân hàng câu hỏi)</span>
+          <span class="chip cd-src" data-src="tn">🎓 Đề thi tốt nghiệp</span>
+          <span class="chip cd-src" data-src="vip">⭐ Ôn Tập Vip</span>
+        </div>
+        <div class="row" style="margin-top:10px;gap:10px">
+          <div style="flex:1"><label>Môn</label><select id="cdSubject"></select></div>
+          <div style="flex:0 0 120px"><label>Khối</label><select id="cdGrade"></select></div>
+        </div>
+        <label style="margin-top:10px">Bài / Đề</label>
+        <select id="cdEntry"></select>
+      </div>
+      <div id="chuadePreview" class="hidden" style="margin-top:12px;border-top:1px dashed var(--line);padding-top:10px"></div>
     </div>
 
     <div style="margin-top:16px">
@@ -1256,7 +1278,8 @@ const VIDEO_TYPE_BLOCKS = {
   review: "LOẠI VIDEO: 📝 ÔN TẬP / TỔNG KẾT — hệ thống hoá kiến thức đã học để học sinh ôn tập.\n" +
     "- Ưu tiên segment dạng sơ đồ (diagram) và bảng tổng hợp (table) để hệ thống hoá, so sánh, đối chiếu các kiến thức trọng tâm.\n" +
     "- Nhấn mạnh các điểm trọng tâm, các điểm hay ra thi và những lỗi học sinh hay nhầm.\n" +
-    "- Kết thúc bằng một vài câu hỏi TỰ KIỂM TRA (segment text) để học sinh tự đánh giá; không cần lời giải chi tiết."
+    "- Kết thúc bằng một vài câu hỏi TỰ KIỂM TRA (segment text) để học sinh tự đánh giá; không cần lời giải chi tiết.",
+  chuade: "LOẠI VIDEO: 🎯 CHỮA ĐỀ THI — loại này dựng thẳng từ kho đề có đáp án, không đi qua AI viết kịch bản."
 };
 let videoType = "full";
 try { videoType = localStorage.getItem(TYPE_KEY) || "full"; } catch (e) {}
@@ -1379,13 +1402,29 @@ async function generateScript(){
 }
 
 /* ---------- Màn hình duyệt kịch bản ---------- */
-const TYPE_LABEL = { image: "🖼 Hình ảnh", sgk: "📚 Hình SGK", diagram: "🔀 Sơ đồ", table: "📊 Bảng số liệu", text: "📄 Nội dung chữ", phieu: "📋 Phiếu học tập" };
+const TYPE_LABEL = { image: "🖼 Hình ảnh", sgk: "📚 Hình SGK", diagram: "🔀 Sơ đồ", table: "📊 Bảng số liệu", text: "📄 Nội dung chữ", phieu: "📋 Phiếu học tập", chuade: "🎯 Chữa đề" };
 function renderScriptReview(){
   if (!scriptData) return;
   $("scriptMeta").textContent = "🎬 " + (scriptData.title || "Video bài giảng") +
     (scriptData.subject ? " — " + scriptData.subject : "") + (scriptData.grade ? " • Lớp " + scriptData.grade : "");
   autoAssignOnline();
   const box = $("scriptSegs"); box.innerHTML = "";
+  if (scriptData._mode === "chuade" && scriptData._chuade) {
+    if (!scriptData._chuade.explOk) {
+      const w = document.createElement("div"); w.className = "warn"; w.style.marginBottom = "10px";
+      w.textContent = "⚠️ Chưa có giải thích — " + (scriptData._chuade.explNote || "thầy tự điền vào ô giải thích của từng cảnh chốt, hoặc thêm key Gemini rồi dựng lại kịch bản.");
+      box.appendChild(w);
+    } else if (scriptData._chuade.explNote) {
+      const w = document.createElement("div"); w.className = "warn"; w.style.marginBottom = "10px";
+      w.textContent = "ℹ️ " + scriptData._chuade.explNote;
+      box.appendChild(w);
+    }
+    if (scriptData._chuade.imgErr && scriptData._chuade.imgErr.length) {
+      const w2 = document.createElement("div"); w2.className = "warn"; w2.style.marginBottom = "10px";
+      w2.textContent = "⚠️ Không tải được " + scriptData._chuade.imgErr.length + " hình câu hỏi — các cảnh có hình đó sẽ hiện phần chữ (không có hình).";
+      box.appendChild(w2);
+    }
+  }
   scriptData.segments.forEach((sg, i) => {
     const d = document.createElement("div"); d.className = "seg";
     let extra = "";
@@ -1401,10 +1440,18 @@ function renderScriptReview(){
       else if (sg.phKind === "full") extra = "<p>Cảnh bảng đáp án đầy đủ: bảng phiếu đã điền mọi đáp án hiện toàn khung để học sinh đối chiếu kết quả làm bài (chỉ hiện hình, không đọc lại đáp án).</p>";
       else if (sg.phKind === "qr") extra = "<p>Cảnh cuối: mã QR + link làm bài tập tương tác: <i>" + escapeHtml(sg.qrUrl || "") + "</i></p>";
     }
+    if (sg.type === "chuade") {
+      if (sg.cdKind === "open") extra = "<p>Cảnh mở: tên đề + thành phần bộ câu (Phần I / II / III).</p>";
+      else if (sg.cdKind === "q") extra = "<p>" + chuadeUnitSummaryHtml(sg.unit) + " — hiện CHƯA lộ đáp án.</p>";
+      else if (sg.cdKind === "a") extra = "<p><b>Đáp án: " + chuadeAnswerSummaryHtml(sg.unit) + "</b> — sửa giải thích ở ô dưới đây, lời đọc tự cập nhật.</p>";
+      else if (sg.cdKind === "end") extra = "<p>Cảnh tổng kết ngắn trước cảnh QR.</p>";
+      else if (sg.cdKind === "qr") extra = "<p>Cảnh QR (tối thiểu 20 giây): học sinh quét để vào Học Liệu Vip Pro làm lại đề. " + escapeHtml(sg.guide || "") + "</p>";
+    }
     d.innerHTML = '<span class="tag ' + sg.type + '">' + TYPE_LABEL[sg.type] + "</span>" +
       "<h4>Đoạn " + (i + 1) + ": " + escapeHtml(sg.heading) + "</h4>" +
       '<p class="narr">🎙 ' + escapeHtml(sg.narration) + "</p>" + extra;
     if (sg.type === "image" || sg.type === "sgk") d.appendChild(buildAssignUI(sg, i));
+    if (sg.type === "chuade" && sg.cdKind === "a") d.appendChild(buildChuadeExplEditor(sg, i));
     box.appendChild(d);
   });
   $("scriptJson").value = JSON.stringify(scriptData, null, 2);
@@ -1426,6 +1473,12 @@ function updateDurInfo(){
   const info = $("durInfo"), warn = $("durWarn");
   if (!info || !warn) return;
   if (!scriptData) { info.textContent = ""; warn.classList.add("hidden"); return; }
+  if (scriptData._mode === "chuade") {
+    const totalSecC = narrationChars(scriptData) / 13;
+    info.textContent = "⏱ Ước tính thời lượng đọc: " + fmtDur(totalSecC) + " — video chữa đề đọc đầy đủ câu hỏi + đáp án + giải thích nên không áp mức thời lượng tối đa ở trên; thời lượng thật đi theo giọng đọc của từng cảnh.";
+    warn.classList.add("hidden");
+    return;
+  }
   if (scriptData._mode === "phieu") {
     const totalSecP = narrationChars(scriptData) / 13;
     info.textContent = "⏱ Ước tính thời lượng đọc: " + fmtDur(totalSecP) + " — video phiếu đọc ĐẦY ĐỦ đáp án nên không áp mức thời lượng tối đa ở trên; thời lượng thật đi theo giọng đọc của từng cảnh.";
@@ -1440,6 +1493,7 @@ function updateDurInfo(){
 }
 $("shortenBtn").addEventListener("click", async () => {
   if (!scriptData || demoMode || building) return;
+  if (scriptData._mode === "chuade") { $("shortenMsg").textContent = "ℹ️ Kịch bản chữa đề lấy câu hỏi + đáp án nguyên văn từ kho đề nên không rút gọn bằng AI — thầy sửa giải thích ngay trong ô của từng cảnh chốt."; return; }
   const btn = $("shortenBtn");
   btn.disabled = true;
   $("shortenMsg").textContent = "Đang nhờ AI rút gọn lời đọc...";
@@ -1481,6 +1535,10 @@ $("shortenBtn").addEventListener("click", async () => {
 $("applyJsonBtn").addEventListener("click", () => {
   if (scriptData && scriptData._mode === "phieu") {
     $("jsonMsg").textContent = "ℹ️ Kịch bản phiếu học tập sinh thẳng từ dữ liệu phiếu trong kho nên không sửa bằng JSON — muốn đổi nội dung, thầy chọn phiếu khác.";
+    return;
+  }
+  if (scriptData && scriptData._mode === "chuade") {
+    $("jsonMsg").textContent = "ℹ️ Kịch bản chữa đề sinh thẳng từ kho đề (câu hỏi + đáp án nguyên văn) nên không sửa bằng JSON — thầy sửa GIẢI THÍCH ngay trong ô của từng cảnh chốt ở phía trên.";
     return;
   }
   try {
@@ -2841,6 +2899,266 @@ function buildYoutubeDesc(entry, data, url){
 }
 /*__END_PURE_PHIEU__*/
 
+/*__PURE_CHUADE__*/
+/* ============================================================
+   [GD9] LOẠI VIDEO "🎯 CHỮA ĐỀ THI" — logic THUẦN (không DOM/mạng,
+   test Node trích khối chạy độc lập như các khối PURE khác).
+   Nguồn: kho de-lib (bank theo bài của Học Liệu + đề Ôn thi TN +
+   Ôn Tập Vip đã parse bằng đúng pipeline của Học Liệu). Câu hỏi +
+   đáp án chép NGUYÊN VĂN từ dữ liệu — KHÔNG qua AI. AI (nếu có key)
+   chỉ soạn thêm GIẢI THÍCH; thiếu key/lỗi thì giải thích để trống.
+   Khuôn video (thầy duyệt qua video mẫu tối 18/11 + bổ sung 06:30
+   ngày 19/11): mở → mỗi đơn vị 2 cảnh (hiện câu hỏi CHƯA lộ đáp án
+   → chốt đáp án tô nổi bật + giải thích) → kết tổng kết ngắn → cảnh
+   QR cuối (kêu gọi + QR to + tối thiểu 20 giây) để học sinh vào Học
+   Liệu Vip Pro LÀM LẠI chính bộ câu vừa chữa.
+   Tổng cảnh = 2 × N + 3 (N = tổng số đơn vị câu/chùm).
+   ============================================================ */
+const CHUADE_HOC_LIEU_URL = "https://khaibcmt.github.io/hoc-lieu/";
+/* Đích QR + dòng hướng dẫn làm lại đề theo NGUỒN. Đã rà kỹ trong
+   hoc-lieu-site/index.html: Thi Online KHÔNG có link sâu mở thẳng
+   bài luyện (chỉ có ?hs=1 và ?task=<id bài giao link do GV tạo trên
+   Firebase, không suy ra được từ môn/khối/bài) → QR trỏ TRANG CHÍNH
+   Học Liệu + in dòng hướng dẫn đường đi tới đúng bộ câu. */
+function chuadePracticeTarget(entry){
+  const url = CHUADE_HOC_LIEU_URL;
+  if (!entry) return { url: url, guide: "Vào mục Thi Online trên Học Liệu Vip Pro để làm lại bộ câu này." };
+  if (entry.source === "tn") return { url: url, guide: "Vào mục Thi Online → Thi tốt nghiệp → " + (entry.tenBai || "") };
+  if (entry.source === "vip") return { url: url, guide: "Vào mục Thi Online → Ôn Tập Vip → " + (entry.tenBai || "") };
+  return { url: url, guide: "Vào mục Thi Online → Chọn bài → " + (entry.mon || "") + " lớp " + (entry.khoi || "") + " → Bài " + (entry.bai == null ? "" : entry.bai) };
+}
+/* URL hình của 1 đơn vị: nguồn bank → kho qimg của repo hoc-lieu;
+   nguồn tn/vip → media trong chính de-lib (đường tương đối so với
+   thư mục app, nơi fetch resolve tiếp thành URL tuyệt đối). */
+function chuadeImgUrl(entry, unit){
+  const q = unit && (unit.qimg || (unit.qimgs && unit.qimgs[0]));
+  if (!q) return "";
+  if (entry && entry.source === "bank") return CHUADE_HOC_LIEU_URL + q;
+  return "../de-lib/" + q;
+}
+function chuadeImgUrls(entry, unit){
+  const list = (unit && unit.qimgs && unit.qimgs.length) ? unit.qimgs : (unit && unit.qimg ? [unit.qimg] : []);
+  return list.map(q => (entry && entry.source === "bank") ? CHUADE_HOC_LIEU_URL + q : "../de-lib/" + q);
+}
+/* Gộp 3 phần thành danh sách đơn vị theo thứ tự Phần I → II → III,
+   đánh số câu TRONG TỪNG PHẦN (như đề thật). */
+function chuadeUnits(data){
+  const units = [];
+  ((data && data.mc) || []).forEach((u, i) => units.push({
+    kind: "mc", part: 1, no: i + 1, q: String(u.q || ""), options: (u.options || []).map(String),
+    answer: String(u.answer || ""), qimg: u.qimg || null, qimgs: u.qimgs || null, qtbl: u.qtbl || null
+  }));
+  ((data && data.tf) || []).forEach((u, i) => units.push({
+    kind: "tf", part: 2, no: i + 1, stem: String(u.stem || ""),
+    items: (u.items || []).map(it => ({ text: String(it.text || ""), answer: !!it.answer })),
+    qimg: u.qimg || null, qimgs: u.qimgs || null, qtbl: u.qtbl || null
+  }));
+  ((data && data.sa) || []).forEach((u, i) => units.push({
+    kind: "sa", part: 3, no: i + 1, q: String(u.q || ""), answer: String(u.answer == null ? "" : u.answer),
+    qimg: u.qimg || null, qimgs: u.qimgs || null, qtbl: u.qtbl || null
+  }));
+  return units;
+}
+/* Chuẩn hoá 1 mệnh đề cho lời đọc: gộp khoảng trắng, bỏ dấu chấm kết
+   thừa ở cuối (người gọi tự nối câu). KHÔNG đụng nội dung ở giữa. */
+function cdSent(s){
+  return String(s == null ? "" : s).replace(/\s+/g, " ").trim().replace(/[.。]+\s*$/, "");
+}
+function cdDot(s){
+  const t = String(s == null ? "" : s).replace(/\s+/g, " ").trim();
+  if (!t) return "";
+  return /[.!?…:]$/.test(t) ? t : t + ".";
+}
+/* Lời đọc cảnh HỎI: MC đọc thân + 4 phương án; Đ/S đọc stem + từng ý;
+   TLN đọc câu hỏi. */
+function chuadeQuestionNarr(u){
+  if (u.kind === "mc"){
+    const parts = ["Câu " + u.no + ". " + cdSent(u.q)];
+    (u.options || []).forEach((o, i) => parts.push("ABCD"[i] + ". " + cdSent(o)));
+    return parts.join(". ") + ".";
+  }
+  if (u.kind === "tf"){
+    const parts = ["Câu " + u.no + ". " + cdSent(u.stem)];
+    (u.items || []).forEach((it, i) => parts.push("Ý " + "abcd"[i] + ": " + cdSent(it.text)));
+    return parts.join(". ") + ".";
+  }
+  return "Câu " + u.no + ". " + cdDot(u.q);
+}
+/* Lời đọc cảnh CHỐT: chốt đáp án trước, giải thích (nếu có) sau.
+   Đ/S: đọc verdict từng ý rồi giải thích theo từng ý có giải thích. */
+function chuadeAnswerNarr(u, expl, explItems){
+  if (u.kind === "mc"){
+    const idx = "ABCD".indexOf(u.answer);
+    let s = "Đáp án đúng là " + u.answer + ".";
+    const opt = idx >= 0 ? (u.options || [])[idx] : "";
+    if (opt) s += " " + cdDot(opt);
+    if (expl) s += " " + cdDot(expl);
+    return s;
+  }
+  if (u.kind === "tf"){
+    const verdict = (u.items || []).map((it, i) => "abcd"[i] + " " + (it.answer ? "Đúng" : "Sai")).join(", ");
+    let s = "Đáp án: " + verdict + ".";
+    (u.items || []).forEach((it, i) => {
+      const e = explItems && explItems[i];
+      if (e) s += " Ý " + "abcd"[i] + ": " + cdDot(e);
+    });
+    return s;
+  }
+  let s = "Đáp án là " + cdDot(u.answer);
+  if (expl) s += " " + cdDot(expl);
+  return s;
+}
+/* Sinh toàn bộ kịch bản chữa đề — TẤT ĐỊNH từ dữ liệu.
+   opts.expl = { mc: [chuỗi], tf: [[4 chuỗi]], sa: [chuỗi] } (có thể
+   thiếu/rỗng từng phần). Segment chốt giữ expl/explItems RIÊNG để màn
+   duyệt sửa được và lời đọc được dựng lại bằng chuadeAnswerNarr. */
+function buildChuadeScenes(entry, data, opts){
+  opts = opts || {};
+  const expl = opts.expl || {};
+  const units = chuadeUnits(data);
+  const counts = { 1: 0, 2: 0, 3: 0 };
+  units.forEach(u => { counts[u.part]++; });
+  const compParts = [];
+  if (counts[1]) compParts.push(counts[1] + " câu trắc nghiệm Phần I");
+  if (counts[2]) compParts.push(counts[2] + " chùm đúng sai Phần II");
+  if (counts[3]) compParts.push(counts[3] + " câu trả lời ngắn Phần III");
+  const title = (entry && entry.tenBai) || "Đề thi";
+  const sub = ((entry && entry.mon) || "") + (entry && entry.khoi ? " • Lớp " + entry.khoi : "");
+  const openNarr = "Chào các em. Hôm nay thầy chữa đề: " + title + (entry && entry.mon ? " — môn " + entry.mon + (entry.khoi ? ", lớp " + entry.khoi : "") : "") +
+    ". Bộ câu này gồm " + compParts.join(", ") + ". Mỗi câu thầy sẽ hiện câu hỏi trước để các em tự làm, sau đó mới chốt đáp án kèm giải thích. Các em chuẩn bị giấy nháp nhé!";
+  const segs = [{
+    type: "chuade", cdKind: "open", heading: "Chữa đề thi",
+    cdTitle: title, cdSub: sub, cdComp: compParts.join(" • "),
+    narration: openNarr, noAudioSec: phieuNoAudioSec(openNarr)
+  }];
+  const idxInKind = { mc: 0, tf: 0, sa: 0 };
+  const partName = p => p === 1 ? "Phần I" : p === 2 ? "Phần II" : "Phần III";
+  units.forEach(u => {
+    const k = idxInKind[u.kind]++;
+    const qn = chuadeQuestionNarr(u);
+    segs.push({
+      type: "chuade", cdKind: "q", part: u.part, no: u.no, unit: u,
+      heading: partName(u.part) + " — Câu " + u.no,
+      narration: qn, noAudioSec: phieuNoAudioSec(qn)
+    });
+    let e1 = "", eItems = null;
+    if (u.kind === "mc") e1 = String((expl.mc || [])[k] || "");
+    else if (u.kind === "sa") e1 = String((expl.sa || [])[k] || "");
+    else eItems = ((((expl.tf || [])[k]) || []).map(x => String(x || "")));
+    const an = chuadeAnswerNarr(u, e1, eItems);
+    const aseg = {
+      type: "chuade", cdKind: "a", part: u.part, no: u.no, unit: u,
+      heading: "Đáp án — " + partName(u.part) + " — Câu " + u.no,
+      narration: an, noAudioSec: phieuNoAudioSec(an), expl: e1
+    };
+    if (eItems) aseg.explItems = eItems;
+    segs.push(aseg);
+  });
+  const endNarr = "Thầy trò mình vừa chữa xong " + units.length + " câu của đề này. Các em nhớ ghi lại những câu mình làm sai, xem lại phần kiến thức liên quan và đừng quên làm lại đề để kiểm tra mức độ tiến bộ của mình nhé!";
+  segs.push({
+    type: "chuade", cdKind: "end", heading: "Tổng kết",
+    cdTitle: title, cdSub: sub, cdComp: compParts.join(" • "),
+    narration: endNarr, noAudioSec: phieuNoAudioSec(endNarr)
+  });
+  const tgt = chuadePracticeTarget(entry);
+  const qrNarr = "Các em nhớ đăng ký kênh để không bỏ lỡ các video chữa đề tiếp theo nhé. " +
+    "Giờ hãy quét mã QR trên màn hình để vào Học Liệu Vip Pro làm lại chính bộ câu này. " + tgt.guide +
+    ". Làm lại ngay lúc này thì mới nhớ lâu được. Cố lên các em!";
+  segs.push({
+    type: "chuade", cdKind: "qr", heading: "Làm lại đề trên Học Liệu Vip Pro",
+    narration: qrNarr, qrUrl: tgt.url, guide: tgt.guide, noAudioSec: 20
+  });
+  return segs;
+}
+/* Dựng lại lời đọc của 1 cảnh CHỐT sau khi thầy sửa giải thích ở màn
+   duyệt (giữ nguyên phần chốt đáp án, chỉ thay phần giải thích). */
+function chuadeRenarrate(seg){
+  if (!seg || seg.cdKind !== "a" || !seg.unit) return seg ? seg.narration : "";
+  return chuadeAnswerNarr(seg.unit, seg.expl || "", seg.explItems || null);
+}
+/* Prompt nhờ Gemini soạn GIẢI THÍCH (chỉ giải thích — câu hỏi/đáp án
+   đã chốt từ dữ liệu, AI không được đổi). Trả JSON đúng số lượng. */
+function chuadeExplPrompt(entry, units){
+  const mc = units.filter(u => u.kind === "mc");
+  const tf = units.filter(u => u.kind === "tf");
+  const sa = units.filter(u => u.kind === "sa");
+  const L = [];
+  L.push("Bạn là giáo viên " + ((entry && entry.mon) || "") + " giàu kinh nghiệm. Dưới đây là một bộ câu hỏi trắc nghiệm ĐÃ CÓ ĐÁP ÁN ĐÚNG (đáp án là dữ kiện chốt, tuyệt đối không bàn lại đúng sai).");
+  L.push("Hãy viết GIẢI THÍCH ngắn gọn, dễ hiểu cho học sinh vì sao đáp án đúng:");
+  L.push("- Câu trắc nghiệm (mc): mỗi câu 1–3 câu giải thích vì sao phương án đúng là đúng (có thể nhắc nhanh vì sao phương án gây nhiễu sai).");
+  L.push("- Chùm đúng/sai (tf): mỗi Ý đúng 1 câu giải thích ngắn.");
+  L.push("- Câu trả lời ngắn (sa): 1–3 câu nêu cách suy ra đáp án.");
+  L.push("QUY TẮC: chỉ dùng dữ kiện có trong câu hỏi và kiến thức phổ thông của môn học; KHÔNG bịa số liệu, tên riêng, công thức ngoài câu hỏi; không nhắc lại nguyên văn cả câu hỏi; viết tiếng Việt tự nhiên để đọc thành lời.");
+  L.push('Trả về DUY NHẤT một JSON đúng dạng: {"mc": ["giải thích câu 1", ...], "tf": [["ý a", "ý b", "ý c", "ý d"], ...], "sa": ["giải thích câu 1", ...]} — đúng thứ tự và đúng số lượng như danh sách dưới đây (phần nào không có câu thì để mảng rỗng).');
+  L.push("");
+  mc.forEach((u, i) => {
+    L.push("MC " + (i + 1) + ": " + u.q);
+    (u.options || []).forEach((o, j) => L.push("   " + "ABCD"[j] + ". " + o));
+    L.push("   Đáp án đúng: " + u.answer);
+  });
+  tf.forEach((u, i) => {
+    L.push("TF " + (i + 1) + ": " + u.stem);
+    (u.items || []).forEach((it, j) => L.push("   " + "abcd"[j] + ") " + it.text + " — " + (it.answer ? "ĐÚNG" : "SAI")));
+  });
+  sa.forEach((u, i) => {
+    L.push("SA " + (i + 1) + ": " + u.q);
+    L.push("   Đáp án: " + u.answer);
+  });
+  return L.join("\n");
+}
+/* Bóc + chuẩn hoá JSON giải thích Gemini trả về. Lỗi/không hợp lệ →
+   { ok: false } kèm bộ giải thích RỖNG đúng kích thước (vẫn dựng
+   được video, màn duyệt hiện cảnh báo). */
+function chuadeParseExpl(text, data){
+  const units = chuadeUnits(data);
+  const nMc = units.filter(u => u.kind === "mc").length;
+  const nTf = units.filter(u => u.kind === "tf").length;
+  const nSa = units.filter(u => u.kind === "sa").length;
+  const empty = { mc: Array(nMc).fill(""), tf: Array.from({ length: nTf }, () => ["", "", "", ""]), sa: Array(nSa).fill("") };
+  try {
+    let t = String(text || "").trim().replace(/^```json\s*/i, "").replace(/^```\s*/i, "").replace(/```\s*$/i, "").trim();
+    const obj = JSON.parse(t);
+    const norm = (arr, n) => Array.from({ length: n }, (_, i) => String((arr && arr[i]) || "").trim());
+    const out = {
+      mc: norm(obj.mc, nMc),
+      tf: Array.from({ length: nTf }, (_, i) => norm((obj.tf || [])[i], 4)),
+      sa: norm(obj.sa, nSa)
+    };
+    const any = out.mc.some(x => x) || out.sa.some(x => x) || out.tf.some(row => row.some(x => x));
+    return { ok: any, expl: any ? out : empty };
+  } catch (e) {
+    return { ok: false, expl: empty };
+  }
+}
+/* Ước tính thời lượng video (giây) từ dữ liệu: lời hỏi + lời chốt
+   (chưa tính giải thích) × hệ số dự phòng cho giải thích + cảnh mở/QR. */
+function chuadeEstSeconds(data){
+  const units = chuadeUnits(data);
+  let chars = 0;
+  units.forEach(u => { chars += chuadeQuestionNarr(u).length + chuadeAnswerNarr(u, "", null).length; });
+  return Math.round(chars * 1.45 / 13) + 45;
+}
+/* Tiêu đề + mô tả YouTube cho video chữa đề — KHÔNG in đáp án. */
+function buildChuadeYoutubeDesc(entry, target){
+  const title = "🎯 Chữa đề thi — " + ((entry && entry.tenBai) || "Đề thi") + ((entry && entry.mon) ? " | " + entry.mon + " lớp " + (entry.khoi || "") : "");
+  const srcNote = entry && entry.source === "tn" ? "Đề thi tốt nghiệp (kho Ôn thi TN trên Học Liệu Vip Pro)"
+    : entry && entry.source === "vip" ? "Đề trong kho Ôn Tập Vip trên Học Liệu Vip Pro"
+    : "Bộ câu theo bài trong ngân hàng câu hỏi của Học Liệu Vip Pro";
+  const desc = [
+    "Video chữa đề: từng câu được hiện lên để học sinh tự làm trước, sau đó thầy chốt đáp án và giải thích vì sao đúng. " + srcNote + ".",
+    "Đề: " + ((entry && entry.tenBai) || ""),
+    "",
+    "👉 LÀM LẠI BỘ CÂU NÀY TRÊN HỌC LIỆU VIP PRO:",
+    target.url,
+    target.guide + " — làm lại ngay sau khi xem chữa để nhớ lâu.",
+    "(Hoặc quét mã QR ở cuối video.)",
+    "",
+    "Cách dùng: xem tới mỗi câu hỏi thì tạm dừng và tự làm, nghe phần chốt đáp án + giải thích, cuối video quét QR vào Học Liệu Vip Pro làm lại toàn bộ đề và xem điểm của mình."
+  ].join("\n");
+  return { title: title, desc: desc };
+}
+/*__END_PURE_CHUADE__*/
+
 /*__PURE_BT__*/
 /* ============================================================
    GIAI ĐOẠN 3 — Logic THUẦN của trang BÀI TẬP TƯƠNG TÁC (?bt=).
@@ -3948,8 +4266,665 @@ function initPhieu(){
   syncPhieuPanel();
 }
 
+/* ---------- [GD9] Vẽ cảnh CHỮA ĐỀ THI ----------
+   Kỷ luật vừa khung như GD7: cỡ chữ tự co theo từng khối, sàn ~14–17px,
+   KHÔNG tràn khung/thẻ, KHÔNG cắt "…" nội dung. Tên thầy góc phải ở
+   các cảnh nội dung (mở/hỏi/chốt/tổng kết), không ở cảnh QR. */
+function cdFit(ctx, text, maxW, startPx, minPx, maxLines, weight){
+  let px = startPx;
+  while (px > minPx){
+    ctx.font = (weight || 600) + " " + px + "px " + FONT;
+    const lines = wrapLines(ctx, text, maxW);
+    if (lines.length <= maxLines) return { px: px, lines: lines };
+    px -= 2;
+  }
+  ctx.font = (weight || 600) + " " + minPx + "px " + FONT;
+  return { px: minPx, lines: wrapLines(ctx, text, maxW) };
+}
+function cdCardPx(ctx, texts, textW, cellH, startPx, minPx){
+  let px = startPx;
+  while (px > minPx){
+    ctx.font = "600 " + px + "px " + FONT;
+    const lh = px * 1.28, maxLines = Math.max(1, Math.floor((cellH - 22) / lh));
+    let ok = true;
+    for (const t of texts){ if (wrapLines(ctx, t, textW).length > maxLines) { ok = false; break; } }
+    if (ok) return px;
+    px -= 2;
+  }
+  return minPx;
+}
+function cdDrawTable(ctx, rows, x, y, maxW, maxH){
+  if (!rows || !rows.length) return 0;
+  const ncol = Math.max.apply(null, rows.map(r => r.length));
+  ctx.font = "600 20px " + FONT;
+  const wts = [];
+  for (let c = 0; c < ncol; c++){
+    let m = 70;
+    rows.forEach(r => { m = Math.max(m, ctx.measureText(String(r[c] == null ? "" : r[c])).width + 34); });
+    wts.push(m);
+  }
+  const tot = wts.reduce((a, b) => a + b, 0);
+  const scale = Math.min(1, maxW / tot);
+  const widths = wts.map(w => Math.max(84, w * scale));
+  let px = 25, linesPer = null, heights = null;
+  while (true){
+    ctx.font = "600 " + px + "px " + FONT;
+    linesPer = rows.map(r => { const o = []; for (let c = 0; c < ncol; c++) o.push(wrapLines(ctx, String(r[c] == null ? "" : r[c]), widths[c] - 22)); return o; });
+    heights = linesPer.map(ls => Math.max.apply(null, ls.map(l => l.length)) * px * 1.3 + 15);
+    if (heights.reduce((a, b) => a + b, 0) <= maxH || px <= 14) break;
+    px -= 1;
+  }
+  let cy = y;
+  rows.forEach((r, ri) => {
+    let cx = x;
+    for (let c = 0; c < ncol; c++){
+      ctx.fillStyle = ri === 0 ? "rgba(255,255,255,0.14)" : (ri % 2 ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.02)");
+      ctx.fillRect(cx, cy, widths[c], heights[ri]);
+      ctx.strokeStyle = "rgba(255,255,255,0.28)"; ctx.lineWidth = 1.5;
+      ctx.strokeRect(cx, cy, widths[c], heights[ri]);
+      ctx.fillStyle = "#ffffff"; ctx.font = (ri === 0 ? "700 " : "600 ") + px + "px " + FONT;
+      ctx.textAlign = "left"; ctx.textBaseline = "top";
+      linesPer[ri][c].forEach((ln, k) => ctx.fillText(ln, cx + 11, cy + 8 + k * px * 1.3));
+      cx += widths[c];
+    }
+    cy += heights[ri];
+  });
+  return cy - y;
+}
+function cdExplPanel(ctx, text, y, h, accent){
+  ctx.fillStyle = "rgba(0,0,0,0.38)"; rr(ctx, 110, y, 1700, h, 18); ctx.fill();
+  ctx.fillStyle = accent; ctx.fillRect(110, y, 9, h);
+  ctx.fillStyle = "#7dff9a"; ctx.font = "700 25px " + FONT; ctx.textAlign = "left"; ctx.textBaseline = "top";
+  ctx.fillText("💡 GIẢI THÍCH", 142, y + 14);
+  let px = 29, lines = null;
+  while (px > 15){
+    ctx.font = "400 " + px + "px " + FONT;
+    lines = wrapLines(ctx, text, 1610);
+    if (lines.length * px * 1.34 <= h - 58) break;
+    px -= 1;
+  }
+  ctx.font = "400 " + px + "px " + FONT;
+  ctx.fillStyle = "#eaf7ee";
+  lines.forEach((ln, k) => ctx.fillText(ln, 142, y + 50 + k * px * 1.34));
+}
+function cdHeader(ctx, sg, entry, isAnswer){
+  ctx.textAlign = "left"; ctx.textBaseline = "top";
+  ctx.fillStyle = isAnswer ? "#7dff9a" : "#ffd94d";
+  ctx.font = "700 42px " + FONT;
+  ctx.fillText(String(sg.heading || "").toUpperCase(), 110, 38);
+  ctx.fillStyle = "#37d67a"; ctx.fillRect(110, 96, 240, 6);
+  ctx.fillStyle = "#9fc7ae"; ctx.font = "400 26px " + FONT;
+  const sub = ((entry && entry.tenBai) || "") + ((entry && entry.mon) ? " • " + entry.mon + (entry.khoi ? " lớp " + entry.khoi : "") : "");
+  if (sub) ctx.fillText(sub, 110, 112);
+  drawPhieuTeacherName(ctx, 46);
+}
+function cdImgOf(sg){
+  if (!chuadeBuildCtx || !chuadeBuildCtx.images) return null;
+  const entry = chuadeBuildCtx.entry || {};
+  const urls = chuadeImgUrls(entry, sg.unit || {});
+  for (const u of urls){
+    if (chuadeBuildCtx.images[u]) return chuadeBuildCtx.images[u];
+    try { const abs = new URL(u, location.href).href; if (chuadeBuildCtx.images[abs]) return chuadeBuildCtx.images[abs]; } catch (e) {}
+  }
+  return null;
+}
+function cdDrawMc(ctx, sg, entry, isA){
+  const u = sg.unit;
+  const img = cdImgOf(sg);
+  const explH = (isA && sg.expl) ? 196 : 0;
+  const bottom = H - 40 - (explH ? explH + 14 : 0);
+  const Y0 = 158;
+  const hasImg = !!img;
+  const textW = hasImg ? 1030 : 1700;
+  const qZoneH = hasImg ? 470 : 400;
+  /* thân câu */
+  const qFit = cdFit(ctx, u.q, textW, 39, 22, 8, 600);
+  ctx.fillStyle = "#ffffff"; ctx.textAlign = "left"; ctx.textBaseline = "top";
+  ctx.font = "600 " + qFit.px + "px " + FONT;
+  const qLh = qFit.px * 1.32;
+  qFit.lines.forEach((ln, k) => ctx.fillText(ln, 110, Y0 + k * qLh));
+  let underQ = Y0 + qFit.lines.length * qLh + 10;
+  if (u.qtbl) underQ += cdDrawTable(ctx, u.qtbl, 110, underQ, textW, Math.max(90, Y0 + qZoneH - underQ)) + 8;
+  if (hasImg) drawContain(ctx, img, 1210, Y0, 600, 470);
+  /* phương án */
+  const oY = Math.max(Y0 + qZoneH + 16, underQ + 6);
+  const zoneH = bottom - oY;
+  const opts = u.options || [];
+  /* Chọn lưới theo vùng GIẢ ĐỊNH chưa trừ panel giải thích, để cảnh hỏi
+     và cảnh chốt của cùng 1 câu dùng CÙNG một lưới (2x2 hoặc 1 cột);
+     cỡ chữ thật fit lại theo vùng thật của từng cảnh. Chỉ chuyển 1 cột
+     khi cỡ chữ ở 1 cột LỚN HƠN HẲN và hàng không quá thấp. */
+  const zoneD = (H - 40) - oY;
+  const pxD2 = cdCardPx(ctx, opts, (1700 - 22) / 2 - 150, (zoneD - 16) / 2, 33, 17);
+  const cellH1D = (zoneD - 3 * 13) / 4;
+  const pxD1 = cdCardPx(ctx, opts, 1700 - 150, cellH1D, 33, 17);
+  let cols = 2, cellW = (1700 - 22) / 2, cellH = (zoneH - 16) / 2;
+  if (pxD1 > pxD2 && cellH1D >= 64) { cols = 1; cellW = 1700; cellH = (zoneH - 3 * 13) / 4; }
+  let px = cdCardPx(ctx, opts, cellW - 150, cellH, 33, 17);
+  const gap = cols === 2 ? 22 : 13;
+  opts.forEach((o, i) => {
+    const cx = cols === 2 ? 110 + (i % 2) * (cellW + gap) : 110;
+    const cy = cols === 2 ? oY + Math.floor(i / 2) * (cellH + 16) : oY + i * (cellH + gap);
+    const letter = "ABCD"[i];
+    const correct = isA && letter === u.answer;
+    ctx.fillStyle = correct ? "rgba(38,222,129,0.17)" : "rgba(255,255,255,0.055)";
+    rr(ctx, cx, cy, cellW, cellH, 16); ctx.fill();
+    ctx.strokeStyle = correct ? "#26de81" : "rgba(255,255,255,0.25)";
+    ctx.lineWidth = correct ? 4.5 : 2;
+    rr(ctx, cx, cy, cellW, cellH, 16); ctx.stroke();
+    /* huy hiệu chữ cái */
+    ctx.fillStyle = correct ? "#26de81" : "rgba(255,255,255,0.16)";
+    ctx.beginPath(); ctx.arc(cx + 52, cy + cellH / 2, 30, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = correct ? "#052e12" : "#ffffff";
+    ctx.font = "700 31px " + FONT; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText(letter, cx + 52, cy + cellH / 2 + 1);
+    /* thẻ ĐÁP ÁN ĐÚNG */
+    if (correct){
+      ctx.font = "700 23px " + FONT;
+      const tw = ctx.measureText("✓ ĐÁP ÁN ĐÚNG").width + 30;
+      ctx.fillStyle = "#26de81"; rr(ctx, cx + cellW - tw - 14, cy + 12, tw, 38, 19); ctx.fill();
+      ctx.fillStyle = "#052e12"; ctx.fillText("✓ ĐÁP ÁN ĐÚNG", cx + cellW - tw / 2 - 14, cy + 32);
+    }
+    ctx.font = "600 " + px + "px " + FONT;
+    ctx.fillStyle = "#ffffff"; ctx.textAlign = "left"; ctx.textBaseline = "top";
+    const lines = wrapLines(ctx, o, cellW - 150);
+    const lh = px * 1.28, bh = lines.length * lh;
+    lines.forEach((ln, k) => ctx.fillText(ln, cx + 100, cy + (cellH - bh) / 2 + k * lh));
+  });
+  if (explH) cdExplPanel(ctx, sg.expl, H - 40 - explH, explH, "#26de81");
+}
+function cdDrawTf(ctx, sg, entry, isA){
+  const u = sg.unit;
+  const img = cdImgOf(sg);
+  const explText = isA ? (sg.explItems || []).map((e, i) => e ? "abcd"[i] + ") " + e : "").filter(Boolean).join("  ") : "";
+  const explH = explText ? 196 : 0;
+  const bottom = H - 40 - (explH ? explH + 14 : 0);
+  const Y0 = 158;
+  const textW = img ? 1030 : 1700;
+  const sFit = cdFit(ctx, u.stem, textW, 36, 21, 6, 600);
+  ctx.fillStyle = "#ffffff"; ctx.textAlign = "left"; ctx.textBaseline = "top";
+  ctx.font = "600 " + sFit.px + "px " + FONT;
+  const sLh = sFit.px * 1.32;
+  sFit.lines.forEach((ln, k) => ctx.fillText(ln, 110, Y0 + k * sLh));
+  let underS = Y0 + sFit.lines.length * sLh + 10;
+  if (u.qtbl) underS += cdDrawTable(ctx, u.qtbl, 110, underS, textW, Math.max(90, 400 - (underS - Y0))) + 8;
+  if (img) drawContain(ctx, img, 1210, Y0, 600, 400);
+  const itemsY = Math.max(Y0 + 330, underS + 8);
+  const rowH = Math.min(150, (bottom - itemsY - 30) / 4);
+  (u.items || []).forEach((it, i) => {
+    const ry = itemsY + i * (rowH + 10);
+    ctx.fillStyle = isA ? (it.answer ? "rgba(38,222,129,0.10)" : "rgba(217,54,54,0.10)") : "rgba(255,255,255,0.045)";
+    rr(ctx, 110, ry, 1700, rowH, 14); ctx.fill();
+    ctx.fillStyle = phieuRowColor(i); ctx.fillRect(110, ry, 8, rowH);
+    let tx = 146;
+    if (isA){
+      ctx.fillStyle = it.answer ? "#1faa55" : "#d93636";
+      rr(ctx, tx, ry + rowH / 2 - 27, 138, 54, 27); ctx.fill();
+      ctx.fillStyle = "#ffffff"; ctx.font = "700 27px " + FONT; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.fillText(it.answer ? "ĐÚNG" : "SAI", tx + 69, ry + rowH / 2 + 1);
+      tx += 162;
+    } else {
+      ctx.fillStyle = "rgba(255,255,255,0.16)";
+      ctx.beginPath(); ctx.arc(tx + 28, ry + rowH / 2, 28, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = "#ffffff"; ctx.font = "700 29px " + FONT; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+      ctx.fillText("abcd"[i], tx + 28, ry + rowH / 2 + 1);
+      tx += 84;
+    }
+    const fit = cdFit(ctx, it.text, 1810 - tx - 14, 31, 16, Math.max(1, Math.floor((rowH - 14) / (31 * 1.3))), 600);
+    ctx.fillStyle = "#ffffff"; ctx.textAlign = "left"; ctx.textBaseline = "top";
+    ctx.font = "600 " + fit.px + "px " + FONT;
+    const lh = fit.px * 1.3, bh = fit.lines.length * lh;
+    fit.lines.forEach((ln, k) => ctx.fillText(ln, tx, ry + (rowH - bh) / 2 + k * lh));
+  });
+  if (explH) cdExplPanel(ctx, explText, H - 40 - explH, explH, "#26de81");
+}
+function cdDrawSa(ctx, sg, entry, isA){
+  const u = sg.unit;
+  const img = cdImgOf(sg);
+  const Y0 = 158;
+  const textW = img ? 1030 : 1700;
+  if (!isA){
+    const qFit = cdFit(ctx, u.q, textW, 43, 23, 9, 600);
+    ctx.fillStyle = "#ffffff"; ctx.textAlign = "left"; ctx.textBaseline = "top";
+    ctx.font = "600 " + qFit.px + "px " + FONT;
+    const lh = qFit.px * 1.34;
+    qFit.lines.forEach((ln, k) => ctx.fillText(ln, 110, Y0 + 10 + k * lh));
+    let underQ = Y0 + 10 + qFit.lines.length * lh + 12;
+    if (u.qtbl) underQ += cdDrawTable(ctx, u.qtbl, 110, underQ, textW, 320) + 8;
+    if (img) drawContain(ctx, img, 1210, Y0, 600, 500);
+    const py = Math.min(H - 190, underQ + 36);
+    ctx.fillStyle = "#f7b731"; rr(ctx, 110, py, 560, 64, 32); ctx.fill();
+    ctx.fillStyle = "#231a00"; ctx.font = "700 30px " + FONT; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText("✍️ CÂU TRẢ LỜI NGẮN", 110 + 280, py + 33);
+    ctx.fillStyle = "#b9d6c6"; ctx.font = "400 30px " + FONT; ctx.textAlign = "left";
+    ctx.fillText("Đáp án hiện ở cảnh ngay sau đây — các em tự suy ra trước nhé!", 110, py + 104);
+    return;
+  }
+  const qFit = cdFit(ctx, u.q, textW, 31, 19, 4, 600);
+  ctx.fillStyle = "#d7e9dc"; ctx.textAlign = "left"; ctx.textBaseline = "top";
+  ctx.font = "600 " + qFit.px + "px " + FONT;
+  const lh = qFit.px * 1.32;
+  qFit.lines.forEach((ln, k) => ctx.fillText(ln, 110, Y0 + k * lh));
+  if (img) drawContain(ctx, img, 1210, Y0, 600, 300);
+  const explH = sg.expl ? 196 : 0;
+  const panelY = 470, panelH = explH ? 300 : 430;
+  ctx.fillStyle = "rgba(38,222,129,0.10)"; rr(ctx, 330, panelY, 1260, panelH, 22); ctx.fill();
+  ctx.strokeStyle = "#26de81"; ctx.lineWidth = 3.5; rr(ctx, 330, panelY, 1260, panelH, 22); ctx.stroke();
+  ctx.fillStyle = "#7dff9a"; ctx.font = "700 30px " + FONT; ctx.textAlign = "center"; ctx.textBaseline = "top";
+  ctx.fillText("ĐÁP ÁN", W / 2, panelY + 30);
+  const aFit = cdFit(ctx, String(u.answer || ""), 1140, 92, 36, 3, 700);
+  ctx.fillStyle = "#ffffff"; ctx.font = "700 " + aFit.px + "px " + FONT;
+  const aLh = aFit.px * 1.25, aBh = aFit.lines.length * aLh;
+  aFit.lines.forEach((ln, k) => ctx.fillText(ln, W / 2, panelY + 84 + (panelH - 110 - aBh) / 2 + k * aLh));
+  if (explH) cdExplPanel(ctx, sg.expl, H - 40 - explH, explH, "#26de81");
+}
+function cdDrawOpenEnd(ctx, sg, isEnd){
+  slideBg(ctx);
+  ctx.fillStyle = isEnd ? "#26de81" : "#f7b731"; ctx.fillRect(0, 0, W, 12);
+  drawPhieuTeacherName(ctx, 60);
+  ctx.textAlign = "center"; ctx.textBaseline = "top";
+  ctx.fillStyle = isEnd ? "#7dff9a" : "#ffd94d"; ctx.font = "700 86px " + FONT;
+  ctx.fillText(isEnd ? "✅ TỔNG KẾT" : "🎯 CHỮA ĐỀ THI", W / 2, 218);
+  const tFit = cdFit(ctx, sg.cdTitle || "", 1560, 56, 28, 3, 700);
+  ctx.fillStyle = "#ffffff"; ctx.font = "700 " + tFit.px + "px " + FONT;
+  const lh = tFit.px * 1.28;
+  tFit.lines.forEach((ln, k) => ctx.fillText(ln, W / 2, 356 + k * lh));
+  let y = 356 + tFit.lines.length * lh + 26;
+  if (sg.cdSub){
+    ctx.fillStyle = "#9fc7ae"; ctx.font = "400 34px " + FONT;
+    ctx.fillText(sg.cdSub, W / 2, y); y += 62;
+  }
+  if (sg.cdComp){
+    ctx.font = "600 31px " + FONT;
+    const tw = ctx.measureText(sg.cdComp).width + 64;
+    ctx.fillStyle = "rgba(255,255,255,0.08)"; rr(ctx, (W - tw) / 2, y + 6, tw, 62, 31); ctx.fill();
+    ctx.fillStyle = "#ffe9a8"; ctx.fillText(sg.cdComp, W / 2, y + 22); y += 96;
+  }
+  ctx.fillStyle = "#b9d6c6"; ctx.font = "400 31px " + FONT;
+  const hint = isEnd
+    ? "Ghi lại những câu làm sai, xem lại kiến thức liên quan — rồi làm lại đề ở cảnh QR ngay sau đây."
+    : "Mỗi câu: hiện câu hỏi để các em tự làm → chốt đáp án + giải thích → cuối video có mã QR làm lại đề.";
+  wrapLines(ctx, hint, 1500).forEach((ln, k) => ctx.fillText(ln, W / 2, 916 + k * 42));
+  ctx.textAlign = "left";
+}
+function cdDrawQr(ctx, sg){
+  slideBg(ctx);
+  ctx.fillStyle = "#ff8fab"; ctx.fillRect(0, 0, W, 12);
+  ctx.textAlign = "center"; ctx.textBaseline = "top";
+  ctx.fillStyle = "#ff8fab"; ctx.font = "700 58px " + FONT;
+  ctx.fillText("🎯 LÀM LẠI ĐỀ NÀY", W / 2, 34);
+  ctx.font = "700 46px " + FONT;
+  const dkText = "ĐĂNG KÝ KÊNH";
+  const dkW = ctx.measureText(dkText).width + 110;
+  ctx.fillStyle = "#e63946"; rr(ctx, (W - dkW) / 2, 106, dkW, 68, 34); ctx.fill();
+  ctx.fillStyle = "#ffffff";
+  ctx.fillText("▶  " + dkText, W / 2, 116);
+  try {
+    const qc = drawPhieuQrCanvas(sg.qrUrl || "");
+    const box = 620;
+    ctx.fillStyle = "#ffffff"; rr(ctx, (W - box) / 2, 192, box, box, 24); ctx.fill();
+    ctx.drawImage(qc, (W - box + 32) / 2 + 0, 192 + 16, box - 32, box - 32);
+  } catch (e) {
+    ctx.fillStyle = "#ff6b6b"; ctx.font = "600 34px " + FONT;
+    ctx.fillText("(Không sinh được mã QR — thầy dùng link ở phần mô tả video)", W / 2, 480);
+  }
+  const mFit = cdFit(ctx, "LÀM LẠI ĐỀ TRÊN HỌC LIỆU VIP PRO", 1700, 46, 30, 1, 700);
+  ctx.fillStyle = "#ffd166"; ctx.font = "700 " + mFit.px + "px " + FONT;
+  ctx.fillText("LÀM LẠI ĐỀ TRÊN HỌC LIỆU VIP PRO", W / 2, 828);
+  ctx.fillStyle = "#57b6ff"; ctx.font = "600 28px " + FONT;
+  ctx.fillText(sg.qrUrl || "", W / 2, 890);
+  ctx.fillStyle = "#ffe9a8"; ctx.font = "600 31px " + FONT;
+  wrapLines(ctx, sg.guide || "", 1560).slice(0, 2).forEach((ln, k) => ctx.fillText(ln, W / 2, 934 + k * 40));
+  ctx.textAlign = "left";
+}
+function drawChuadeScene(ctx, sg, t){
+  const entry = (chuadeBuildCtx && chuadeBuildCtx.entry) || {};
+  if (!chuadeBuildCtx || !sg.unit && (sg.cdKind === "q" || sg.cdKind === "a")){
+    if (sg.cdKind === "open" || sg.cdKind === "end") { cdDrawOpenEnd(ctx, sg, sg.cdKind === "end"); return; }
+    if (sg.cdKind === "qr") { cdDrawQr(ctx, sg); return; }
+    drawText(ctx, { heading: sg.heading, bullets: [sg.narration || ""] });
+    return;
+  }
+  if (sg.cdKind === "open") { cdDrawOpenEnd(ctx, sg, false); return; }
+  if (sg.cdKind === "end") { cdDrawOpenEnd(ctx, sg, true); return; }
+  if (sg.cdKind === "qr") { cdDrawQr(ctx, sg); return; }
+  if (!sg.unit) { drawText(ctx, { heading: sg.heading, bullets: [sg.narration || ""] }); return; }
+  const isA = sg.cdKind === "a";
+  slideBg(ctx);
+  ctx.fillStyle = isA ? "#26de81" : "#45aaf2"; ctx.fillRect(0, 0, W, 12);
+  cdHeader(ctx, sg, entry, isA);
+  if (sg.unit.kind === "mc") cdDrawMc(ctx, sg, entry, isA);
+  else if (sg.unit.kind === "tf") cdDrawTf(ctx, sg, entry, isA);
+  else cdDrawSa(ctx, sg, entry, isA);
+}
+
+/* ---------- [GD9] Kho đề de-lib + panel CHỮA ĐỀ THI ----------
+   de-lib gồm 3 nguồn: bank (ngân hàng câu hỏi theo bài của Học Liệu),
+   tn (đề Ôn thi TN), vip (Ôn Tập Vip) — 2 kệ sau parse bằng đúng
+   pipeline EduParse của Học Liệu nên trùng khớp bộ câu Thi Online. */
+let chuadeLibState = "idle";      // idle | loading | ready | error
+let chuadeManifest = null;
+let chuadeSubjectCache = {};      // subjectId -> {mon, entries}
+let chuadeSource = "bank";
+try { chuadeSource = localStorage.getItem("vbg_chuade_source") || "bank"; } catch (e) {}
+if (["bank", "tn", "vip"].indexOf(chuadeSource) < 0) chuadeSource = "bank";
+let chuadeSelected = null;         // mục manifest (bản rút gọn) đang chọn
+let chuadeData = null;             // entry đầy đủ (có mc/tf/sa)
+let chuadeBuildCtx = null;         // {entry, data, images:{url:Image}, imgErr:[url]}
+
+async function loadChuadeLib(){
+  if (chuadeLibState === "loading" || chuadeLibState === "ready") return;
+  chuadeLibState = "loading";
+  renderChuadePanel();
+  try {
+    const res = await fetch("../de-lib/manifest.json", { cache: "no-store" });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+    if (!data || !Array.isArray(data.subjects)) throw new Error("manifest kho đề không hợp lệ");
+    chuadeManifest = data;
+    chuadeLibState = "ready";
+  } catch (e) {
+    chuadeLibState = "error";
+    chuadeManifest = null;
+  }
+  renderChuadePanel();
+}
+function chuadeSubjectsForSource(){
+  if (!chuadeManifest) return [];
+  return chuadeManifest.subjects.filter(s => (s.entries || []).some(e => e.source === chuadeSource));
+}
+function cdEntryLabel(e){
+  let s = e.tenBai || ("Bài " + e.bai);
+  const parts = [];
+  if (e.mc) parts.push(e.mc + " TN");
+  if (e.tf) parts.push(e.tf + " Đ/S");
+  if (e.sa) parts.push(e.sa + " TLN");
+  return s + (parts.length ? " — " + parts.join(" • ") : "");
+}
+function renderChuadePanel(){
+  const st = $("chuadeStatus"), ctrls = $("chuadeCtrls");
+  if (!st || !ctrls) return;
+  if (chuadeLibState === "loading") { st.textContent = "⏳ Đang tải kho đề…"; return; }
+  if (chuadeLibState === "error") {
+    st.innerHTML = "⚠️ Không tải được kho đề (de-lib). Thầy kiểm tra mạng rồi mở lại mục này.";
+    ctrls.classList.add("hidden");
+    return;
+  }
+  if (chuadeLibState !== "ready" || !chuadeManifest) return;
+  ctrls.classList.remove("hidden");
+  const src = chuadeManifest.sources || {};
+  st.textContent = "📚 Kho đề có " + (chuadeManifest.totalEntries || 0) + " bộ câu: " +
+    (src.bank || 0) + " theo bài • " + (src.tn || 0) + " đề thi tốt nghiệp • " + (src.vip || 0) + " Ôn Tập Vip.";
+  document.querySelectorAll(".cd-src").forEach(c => c.classList.toggle("active", c.dataset.src === chuadeSource));
+  const subs = chuadeSubjectsForSource();
+  const selS = $("cdSubject"), curS = selS.value;
+  selS.innerHTML = subs.map(s => '<option value="' + escapeHtml(s.id) + '">' + escapeHtml(s.mon) + "</option>").join("");
+  if (subs.some(s => s.id === curS)) selS.value = curS;
+  const subj = subs.filter(s => s.id === selS.value)[0] || subs[0];
+  if (!subj) { $("chuadePreview").classList.add("hidden"); return; }
+  const grades = Array.from(new Set(subj.entries.filter(e => e.source === chuadeSource).map(e => e.khoi))).sort((a, b) => a - b);
+  const selG = $("cdGrade"), curG = selG.value;
+  selG.innerHTML = grades.map(g => '<option value="' + g + '">Lớp ' + g + "</option>").join("");
+  if (grades.some(g => String(g) === curG)) selG.value = curG;
+  const grade = Number(selG.value || grades[0]);
+  const list = subj.entries.filter(e => e.source === chuadeSource && e.khoi === grade);
+  const selE = $("cdEntry"), curE = selE.value;
+  selE.innerHTML = list.map(e => '<option value="' + escapeHtml(e.key) + '">' + escapeHtml(cdEntryLabel(e)) + "</option>").join("");
+  if (list.some(e => e.key === curE)) selE.value = curE;
+  const slim = list.filter(e => e.key === selE.value)[0] || list[0];
+  if (slim && (!chuadeSelected || chuadeSelected.key !== slim.key)) selectChuadeEntry(subj, slim);
+  else if (slim) renderChuadePreview();
+}
+async function selectChuadeEntry(subj, slim){
+  chuadeSelected = slim; chuadeData = null;
+  const pv = $("chuadePreview");
+  pv.classList.remove("hidden");
+  pv.innerHTML = '<div class="small">⏳ Đang tải bộ câu…</div>';
+  try {
+    if (!chuadeSubjectCache[subj.id]) {
+      const res = await fetch("../de-lib/" + subj.file, { cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      chuadeSubjectCache[subj.id] = await res.json();
+    }
+    const full = (chuadeSubjectCache[subj.id].entries || []).filter(e => e.key === slim.key)[0];
+    if (!full) throw new Error("không tìm thấy bộ câu trong file môn");
+    chuadeData = full;
+  } catch (e) {
+    pv.innerHTML = '<div class="warn">⚠️ Không tải được bộ câu (' + escapeHtml(e.message) + "). Thầy thử lại.</div>";
+    return;
+  }
+  renderChuadePreview();
+}
+function renderChuadePreview(){
+  const pv = $("chuadePreview");
+  if (!pv || !chuadeSelected || !chuadeData) return;
+  const e = chuadeData;
+  const nMc = (e.mc || []).length, nTf = (e.tf || []).length, nSa = (e.sa || []).length;
+  const nUnits = nMc + nTf + nSa;
+  const comp = [];
+  if (nMc) comp.push(nMc + " câu Phần I");
+  if (nTf) comp.push(nTf + " chùm Phần II");
+  if (nSa) comp.push(nSa + " câu Phần III");
+  let h = '<div style="font-weight:700;font-size:16px">🎯 ' + escapeHtml(e.tenBai || "") + "</div>";
+  h += '<div class="small" style="margin-top:4px">' + escapeHtml(e.mon || "") + " • Lớp " + e.khoi + " • Nguồn: " +
+    (e.source === "bank" ? "📚 Theo bài (ngân hàng câu hỏi)" : e.source === "tn" ? "🎓 Đề thi tốt nghiệp" : "⭐ Ôn Tập Vip") + "</div>";
+  h += '<div class="small" style="margin-top:4px">Thành phần: <b>' + comp.join(" • ") + "</b> → video <b>" + (2 * nUnits + 3) + " cảnh</b> (mở → từng câu: hỏi → chốt đáp án → tổng kết → QR làm lại đề), ước tính <b>" + fmtDur(chuadeEstSeconds(e)) + "</b> trở lên (đọc thêm giải thích sẽ dài hơn).</div>";
+  h += '<div class="small" style="margin-top:4px">' + (getKey()
+    ? "🔑 Có key Gemini: app sẽ nhờ AI soạn <b>giải thích</b> cho từng câu (câu hỏi + đáp án lấy nguyên văn từ kho, AI không sửa được) — thầy sửa từng ô giải thích ở màn duyệt trước khi dựng."
+    : "⚠️ Chưa có key Gemini trong hồ: vẫn dựng được video, nhưng phần <b>giải thích để trống</b> (lời chốt chỉ gồm đáp án) — thầy tự điền ở màn duyệt, hoặc thêm key để AI soạn giúp.") + "</div>";
+  h += '<div class="row" style="margin-top:12px">' +
+    '<button class="btn-accent" id="chuadeBuildBtn" type="button" style="flex:2;padding:13px;font-size:17px">▶ DỰNG VIDEO CHỮA ĐỀ NÀY</button>' +
+    '<button class="btn shrink" id="chuadeYtBtn" type="button">📝 Tạo sẵn mô tả YouTube</button></div>';
+  h += '<div id="chuadeYtBox" class="hidden" style="margin-top:10px"></div>';
+  pv.innerHTML = h;
+  pv.classList.remove("hidden");
+  $("chuadeBuildBtn").addEventListener("click", prepareChuadeScript);
+  $("chuadeYtBtn").addEventListener("click", fillChuadeYt);
+}
+function fillChuadeYt(){
+  const box = $("chuadeYtBox");
+  if (!box || !chuadeData) return;
+  const yt = buildChuadeYoutubeDesc(chuadeData, chuadePracticeTarget(chuadeData));
+  box.innerHTML = '<label>Tiêu đề video gợi ý</label><input type="text" id="cdYtTitle" readonly>' +
+    '<label style="margin-top:8px">Mô tả — dán vào phần mô tả khi đăng YouTube (KHÔNG chứa đáp án; đã có sẵn link + đường đi làm lại đề)</label>' +
+    '<textarea id="cdYtDesc" rows="9" readonly></textarea>' +
+    '<div style="margin-top:8px"><button class="btn mini" id="cdYtCopy" type="button">📋 Sao chép tiêu đề + mô tả</button> <span class="small" id="cdYtMsg"></span></div>';
+  box.classList.remove("hidden");
+  $("cdYtTitle").value = yt.title;
+  $("cdYtDesc").value = yt.desc;
+  $("cdYtCopy").addEventListener("click", async () => {
+    const txt = $("cdYtTitle").value + "\n\n" + $("cdYtDesc").value;
+    try { await navigator.clipboard.writeText(txt); $("cdYtMsg").textContent = "✔ Đã sao chép — thầy dán vào YouTube khi đăng video."; }
+    catch (e) { $("cdYtMsg").textContent = "Trình duyệt không cho sao chép tự động — thầy bôi đen các ô trên rồi copy tay."; }
+  });
+}
+/* Chia đơn vị thành từng cụm ≤8 để nhờ Gemini soạn giải thích (tránh
+   1 lượt trả quá dài bị cắt); expl đích được cấp sẵn đúng kích thước,
+   cụm nào lỗi thì phần đó để trống. */
+function cdExplChunks(units, size){
+  const chunks = [];
+  for (let i = 0; i < units.length; i += size) {
+    const slice = units.slice(i, i + size);
+    const off = { mc: 0, tf: 0, sa: 0 };
+    units.slice(0, i).forEach(u => { off[u.kind]++; });
+    const data = { mc: [], tf: [], sa: [] };
+    slice.forEach(u => {
+      if (u.kind === "mc") data.mc.push({ q: u.q, options: u.options, answer: u.answer });
+      else if (u.kind === "tf") data.tf.push({ stem: u.stem, items: u.items });
+      else data.sa.push({ q: u.q, answer: u.answer });
+    });
+    chunks.push({ units: slice, data: data, off: off });
+  }
+  return chunks;
+}
+async function cdFetchExpl(entry){
+  const units = chuadeUnits(entry);
+  const expl = {
+    mc: units.filter(u => u.kind === "mc").map(() => ""),
+    tf: units.filter(u => u.kind === "tf").map(() => ["", "", "", ""]),
+    sa: units.filter(u => u.kind === "sa").map(() => "")
+  };
+  let okChunks = 0;
+  const chunks = cdExplChunks(units, 8);
+  for (const ch of chunks) {
+    try {
+      const data = await gemini("text", {
+        contents: [{ parts: [{ text: chuadeExplPrompt(entry, ch.units) }] }],
+        generationConfig: { responseMimeType: "application/json", temperature: 0.3 }
+      });
+      const parsed = chuadeParseExpl(firstText(data), ch.data);
+      (parsed.expl.mc || []).forEach((x, i) => { expl.mc[ch.off.mc + i] = x; });
+      (parsed.expl.tf || []).forEach((x, i) => { expl.tf[ch.off.tf + i] = x; });
+      (parsed.expl.sa || []).forEach((x, i) => { expl.sa[ch.off.sa + i] = x; });
+      if (parsed.ok) okChunks++;
+    } catch (e) { /* cụm lỗi -> để trống phần đó */ }
+  }
+  return { expl: expl, ok: okChunks > 0, chunks: chunks.length, okChunks: okChunks };
+}
+/* Sinh kịch bản chữa đề → đưa vào ĐÚNG pipeline duyệt + dựng hiện có. */
+async function prepareChuadeScript(){
+  if (!chuadeSelected || !chuadeData || building) return;
+  demoMode = false;
+  const entry = chuadeData;
+  const btn = $("chuadeBuildBtn");
+  if (btn) { btn.disabled = true; btn.textContent = "⏳ Đang chuẩn bị kịch bản…"; }
+  let expl = null, explOk = false, explNote = "";
+  try {
+    if (getKey()) {
+      const r = await cdFetchExpl(entry);
+      expl = r.expl; explOk = r.ok;
+      if (!explOk) explNote = "Gemini chưa trả được giải thích (hết hạn mức hoặc lỗi mạng) — phần giải thích đang để trống; thầy tự điền vào ô giải thích của từng cảnh chốt, hoặc dựng lại kịch bản khi khác.";
+      else if (r.okChunks < r.chunks) explNote = "AI mới soạn được giải thích cho " + r.okChunks + "/" + r.chunks + " cụm câu — các cụm còn lại đang để trống, thầy tự điền ở màn duyệt nếu muốn.";
+    } else {
+      explNote = "Chưa có key Gemini trong hồ nên chưa soạn được giải thích tự động — lời chốt hiện chỉ gồm đáp án. Thầy tự điền giải thích vào ô của từng cảnh chốt, hoặc thêm key rồi dựng lại kịch bản để AI soạn giúp.";
+    }
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = "▶ DỰNG VIDEO CHỮA ĐỀ NÀY"; }
+  }
+  /* Nạp trước hình câu hỏi: lỗi nạp thì cảnh đó hiện không có hình +
+     cảnh báo ở màn duyệt, không sập pipeline. */
+  const images = {}, imgErr = [];
+  const urlSet = new Set();
+  chuadeUnits(entry).forEach(u => chuadeImgUrls(entry, u).forEach(x => urlSet.add(x)));
+  await Promise.all(Array.from(urlSet).map(rel => new Promise(res => {
+    const abs = new URL(rel, location.href).href;
+    const im = new Image();
+    im.crossOrigin = "anonymous";
+    im.onload = () => { images[rel] = im; images[abs] = im; res(); };
+    im.onerror = () => { imgErr.push(rel); res(); };
+    im.src = abs;
+  })));
+  const segs = buildChuadeScenes(entry, entry, { expl: expl || undefined });
+  scriptData = {
+    title: "Chữa đề thi — " + (entry.tenBai || ""),
+    subject: entry.mon || "",
+    grade: String(entry.khoi || ""),
+    segments: segs,
+    _mode: "chuade",
+    _chuade: {
+      key: entry.key, source: entry.source, mon: entry.mon || "", khoi: entry.khoi,
+      bai: entry.bai, tenBai: entry.tenBai || "", label: entry.tenBai || "",
+      explOk: explOk, explNote: explNote, imgErr: imgErr.slice()
+    }
+  };
+  chuadeBuildCtx = { entry: entry, data: entry, images: images, imgErr: imgErr };
+  assets = {}; audios = {};
+  $("inputError").innerHTML = "";
+  $("progressNote").textContent = "— CHẾ ĐỘ CHỮA ĐỀ THI (kịch bản sinh thẳng từ kho đề, câu hỏi + đáp án nguyên văn — AI chỉ soạn giải thích)";
+  $("progressCard").classList.remove("hidden");
+  $("resultCard").classList.add("hidden");
+  $("renderCard").classList.add("hidden");
+  $("assetBox").classList.add("hidden");
+  $("buildLog").innerHTML = "";
+  resetSteps(); setStep(1, "done");
+  renderScriptReview();
+}
+/* Ô sửa GIẢI THÍCH trong thẻ cảnh chốt ở màn duyệt: sửa xong, lời đọc
+   của cảnh được dựng lại ngay (phần chốt đáp án giữ nguyên). */
+function buildChuadeExplEditor(sg, idx){
+  const wrap = document.createElement("div");
+  wrap.style.marginTop = "8px";
+  const upd = () => {
+    sg.narration = chuadeRenarrate(sg);
+    sg.noAudioSec = phieuNoAudioSec(sg.narration);
+    const card = wrap.closest(".seg");
+    if (card) { const n = card.querySelector(".narr"); if (n) n.textContent = "🎙 " + sg.narration; }
+    updateDurInfo();
+  };
+  if (sg.unit && sg.unit.kind === "tf") {
+    const lab = document.createElement("div");
+    lab.className = "small"; lab.textContent = "✍️ Giải thích từng ý (sửa được — lời đọc tự cập nhật):";
+    wrap.appendChild(lab);
+    (sg.explItems || []).forEach((v, k) => {
+      const ta = document.createElement("textarea");
+      ta.rows = 2; ta.value = v || "";
+      ta.placeholder = "Giải thích ý " + "abcd"[k] + "…";
+      ta.style.marginTop = "6px";
+      ta.addEventListener("input", () => { sg.explItems[k] = ta.value; upd(); });
+      wrap.appendChild(ta);
+    });
+  } else {
+    const lab = document.createElement("div");
+    lab.className = "small"; lab.textContent = "✍️ Giải thích (sửa được — lời đọc tự cập nhật):";
+    wrap.appendChild(lab);
+    const ta = document.createElement("textarea");
+    ta.rows = 3; ta.value = sg.expl || "";
+    ta.placeholder = "Vì sao đáp án này đúng… (để trống thì lời chốt chỉ gồm đáp án)";
+    ta.style.marginTop = "6px";
+    ta.addEventListener("input", () => { sg.expl = ta.value; upd(); });
+    wrap.appendChild(ta);
+  }
+  return wrap;
+}
+function chuadeUnitSummaryHtml(u){
+  if (!u) return "";
+  if (u.kind === "mc") return "Câu hỏi: " + escapeHtml(btShortText(u.q, 150)) + (u.qimg ? ' <span class="small">(có hình)</span>' : "");
+  if (u.kind === "tf") return "Chùm đúng/sai: " + escapeHtml(btShortText(u.stem, 150)) + (u.qimg ? ' <span class="small">(có hình)</span>' : "");
+  return "Câu trả lời ngắn: " + escapeHtml(btShortText(u.q, 150)) + (u.qimg ? ' <span class="small">(có hình)</span>' : "");
+}
+function chuadeAnswerSummaryHtml(u){
+  if (!u) return "";
+  if (u.kind === "mc") return u.answer + ". " + escapeHtml(btShortText((u.options || [])["ABCD".indexOf(u.answer)] || "", 120));
+  if (u.kind === "tf") return (u.items || []).map((it, i) => "abcd"[i] + " " + (it.answer ? "ĐÚNG" : "SAI")).join(" • ");
+  return escapeHtml(btShortText(u.answer, 120));
+}
+/* Bấm TẠO VIDEO khi đang ở loại Chữa Đề Thi → đi đường chữa đề. */
+async function routeChuadeCreate(){
+  if (chuadeSelected && chuadeData) { await prepareChuadeScript(); return; }
+  showErr("inputError", "Thầy chọn 1 bộ câu trong mục 🎯 Chữa Đề Thi (nguồn → môn → khối → bài/đề) trước đã.");
+  const p = $("chuadePanel");
+  if (p) p.scrollIntoView({ behavior: "smooth", block: "start" });
+  if (chuadeLibState === "idle") loadChuadeLib(); else renderChuadePanel();
+}
+function syncChuadePanel(){
+  const panel = $("chuadePanel");
+  if (!panel) return;
+  const on = videoType === "chuade";
+  panel.classList.toggle("hidden", !on);
+  if (on) {
+    if (chuadeLibState === "idle") loadChuadeLib();
+    else renderChuadePanel();
+  }
+}
+function initChuade(){
+  document.querySelectorAll(".type-chip").forEach(c =>
+    c.addEventListener("click", () => setTimeout(syncChuadePanel, 0)));
+  document.querySelectorAll(".cd-src").forEach(c => c.addEventListener("click", () => {
+    chuadeSource = c.dataset.src;
+    try { localStorage.setItem("vbg_chuade_source", chuadeSource); } catch (e) {}
+    chuadeSelected = null; chuadeData = null;
+    renderChuadePanel();
+  }));
+  ["cdSubject", "cdGrade", "cdEntry"].forEach(id => {
+    const el = $(id);
+    if (el) el.addEventListener("change", renderChuadePanel);
+  });
+  syncChuadePanel();
+}
+
 function drawSlide(ctx, sg, asset, t){
   if (sg.type === "phieu") { drawPhieuScene(ctx, sg, t || 0); return; }
+  if (sg.type === "chuade") { drawChuadeScene(ctx, sg, t || 0); return; }
   if (sg.type === "image" || sg.type === "sgk") drawImageSlide(ctx, sg, asset, t || 0);
   else if (sg.type === "diagram") drawDiagram(ctx, sg);
   else if (sg.type === "table") drawTable(ctx, sg);
@@ -4205,7 +5180,7 @@ function recordVideo(){
     const segs = scriptData.segments;
     const durations = segs.map((sg, i) => {
       const a = audios[i];
-      if (sg.type === "phieu") {
+      if (sg.type === "phieu" || sg.type === "chuade") {
         /* Cảnh phiếu: thời lượng KHÔNG BAO GIỜ sụp về ~0 — luôn là
            max(audio thật, sàn theo độ dài lời đọc). Audio rỗng / ngắn bất
            thường (TTS lỗi một phần, buffer gần 0 giây) thì cảnh đứng đủ
@@ -4256,7 +5231,7 @@ function recordVideo(){
       /* Chuyển cảnh trong pipeline phiếu: fade NGẮN 150ms giữa hai cảnh
          phiếu liên tiếp để khỏi chồng chữ mờ; ngoài pipeline phiếu giữ
          nguyên cắt thẳng như cũ. */
-      const fadeIn = (segs[idx].type === "phieu" && idx > 0 && segs[idx - 1].type === "phieu" && localT < 0.15)
+      const fadeIn = (idx > 0 && localT < 0.15 && segs[idx].type === segs[idx - 1].type && (segs[idx].type === "phieu" || segs[idx].type === "chuade"))
         ? Math.max(0, localT / 0.15) : 1;
       if (fadeIn < 1) {
         drawSlide(ctx, segs[idx - 1], assets[idx - 1], 1);
@@ -4288,6 +5263,9 @@ function slugPascal(s, maxLen){
   return out;
 }
 function buildDownloadName(sd, ext){
+  if (sd && sd._chuade) {
+    return "Video_ChuaDe_" + (slugPascal(sd._chuade.mon || "", 24) || "MonHoc") + "_" + (slugPascal(sd._chuade.tenBai || sd.title || "", 52) || "DeThi") + ext;
+  }
   if (sd && sd._phieu) {
     return "Video_PhieuHocTap_" + (slugPascal(sd._phieu.tenBai || sd.title || "", 56) || "Phieu") + ext;
   }
@@ -4431,6 +5409,7 @@ $("buildBtn").addEventListener("click", buildVideo);
 $("createBtn").addEventListener("click", async () => {
   if (building) return;
   $("inputError").innerHTML = "";
+  if (videoType === "chuade") { await routeChuadeCreate(); return; }
   if (videoType === "phieu") { await routePhieuCreate(); return; }
   if (!getKey()) {
     showErr("inputError", "Hồ key đang rỗng. Thầy tạo key miễn phí theo 3 bước ở mục 1 đầu trang, dán vào (mỗi key 1 dòng) rồi bấm Lưu Hồ Key.");
@@ -4524,6 +5503,7 @@ try { renderLessonOptions(); renderPickStatus(); } catch (e) {}
 try { idbLoadAll(); } catch (e) {}
 try { loadOnlineLib(); } catch (e) {}
 try { initPhieu(); } catch (e) {}
+try { initChuade(); } catch (e) {}
 try { initBaiTap(); } catch (e) {}
 </script>
 </body>
