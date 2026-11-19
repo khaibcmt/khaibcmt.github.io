@@ -1316,6 +1316,110 @@ function ttsSpeakText(text){
     (m, pre) => pre + ((pre === "" || /[.!?…]\s*$/.test(pre) || /\n\s*$/.test(pre)) ? "Sách giáo khoa" : "sách giáo khoa"));
 }
 /*__END_PURE_TTS__*/
+/* ==== GD13: 2 MC GEMINI + LUAT 1 MODEL + GOP CANH BAO QUOTA ====
+   Thầy chốt 19/11: bỏ đường giọng máy (Piper) sau khi nghe thử; dùng
+   2 giọng Gemini luân phiên theo VAI CẢNH trên CÙNG một model TTS chính:
+   - MC Nữ = "Kore" — đúng voice name app đã dùng từ đầu (TTS_VOICE),
+     giọng nữ chính thức của Gemini, thầy nghe quen.
+   - MC Nam = "Charon" — giọng nam trầm, rõ, hợp đọc bài giảng.
+   Luật luân phiên:
+   - Chữa đề: câu lẻ Nam hỏi – Nữ đáp; câu chẵn Nữ hỏi – Nam đáp. Mở đầu
+     = MC hỏi của câu 1; tổng kết + QR = MC hỏi của câu cuối.
+   - Phiếu: mở bài (hỏi) Nam; ngân hàng nội dung (hỏi) Nữ; điền ô lẻ Nữ,
+     ô chẵn Nam; bảng đầy đủ Nam chốt; QR Nữ.
+   - Bài giảng/cảnh thường: luân phiên theo thứ tự cảnh, cảnh 1 = Nam. */
+/*__PURE_VOICE__*/
+const MC_VOICES = { male: "Charon", female: "Kore" };
+const MC_LABELS = { male: "MC Nam", female: "MC Nữ" };
+function mcVoiceName(mc){ return MC_VOICES[mc] || MC_VOICES.female; }
+function otherMc(mc){ return mc === "male" ? "female" : "male"; }
+function mcForLectureIndex(i){ return (i % 2 === 0) ? "male" : "female"; }
+function chuadeQuestionMc(qOrd){ return (qOrd % 2 === 1) ? "male" : "female"; }
+function phieuMcFor(phKind, fillSo){
+  if (phKind === "open") return "male";
+  if (phKind === "bank") return "female";
+  if (phKind === "fill") return ((fillSo || 1) % 2 === 1) ? "female" : "male";
+  if (phKind === "full") return "male";
+  if (phKind === "qr") return "female";
+  return "male";
+}
+function assignMcRoles(segments){
+  const roles = [];
+  let qCount = 0, lastQMc = "male";
+  (segments || []).forEach((sg, i) => {
+    if (sg && sg.type === "chuade"){
+      if (sg.cdKind === "q"){ qCount++; lastQMc = chuadeQuestionMc(qCount); roles.push(lastQMc); }
+      else if (sg.cdKind === "a") roles.push(otherMc(lastQMc));
+      else if (sg.cdKind === "open") roles.push("male");
+      else roles.push(lastQMc);
+    } else if (sg && sg.type === "phieu"){
+      roles.push(phieuMcFor(sg.phKind, sg.fillSo));
+    } else {
+      roles.push(mcForLectureIndex(i));
+    }
+  });
+  return roles;
+}
+/* Cắt danh sách đoạn thành các nhóm liên tiếp CÙNG một MC (mỗi nhóm tối
+   đa maxSize đoạn) — lượt gọi TTS gộp không bao giờ lẫn 2 giọng. */
+function groupByMc(roles, maxSize){
+  const groups = [];
+  let cur = [];
+  (roles || []).forEach((r, i) => {
+    if (cur.length && (roles[cur[0]] !== r || cur.length >= (maxSize || 3))){ groups.push(cur); cur = []; }
+    cur.push(i);
+  });
+  if (cur.length) groups.push(cur);
+  return groups;
+}
+/* Gộp cảnh báo hết hạn mức giọng: 1 dòng/key thay cho N dòng/model. */
+function summarizeTtsQuota(quotaByKey){
+  return Object.keys(quotaByKey || {}).sort((a, b) => Number(a) - Number(b))
+    .map(idx => "⚠️ Key #" + (Number(idx) + 1) + " đã hết hạn mức giọng hôm nay (" + quotaByKey[idx] + " model)");
+}
+/* Luật 1 model: khi đã ghim model chính, ứng viên chỉ còn đúng model đó
+   (vẫn xoay KEY cho cùng model). */
+function filterCandsForPin(cands, pin){
+  if (!pin) return (cands || []).slice();
+  return (cands || []).filter(m => m === pin);
+}
+/*__END_PURE_VOICE__*/
+/* Trạng thái giọng của LƯỢT DỰNG đang chạy (ngoài lượt dựng đều null/
+   false → hành vi xoay model cũ cho các nút lẻ như "Thử lại tiếng"). */
+let ttsPinModel = null;
+let ttsBuildExhausted = false;
+let buildMcRoles = null;
+function mcRoleForSegment(i){
+  if (buildMcRoles && buildMcRoles[i]) return buildMcRoles[i];
+  if (typeof scriptData !== "undefined" && scriptData && scriptData.segments)
+    return assignMcRoles(scriptData.segments)[i] || "female";
+  return "female";
+}
+/* Model TTS chính của lượt dựng: ứng viên đầu tiên theo đúng thứ tự ưu
+   tiên hiện tại của geminiCall (key tươi trước, model chưa bị dấu hết
+   quota trước); mọi ứng viên đều đã bị dấu thì lấy ứng viên đầu tiên. */
+async function pickPrimaryTtsModel(){
+  if (!keyPool.length) return null;
+  const start = Math.min(activeKeyIdx, keyPool.length - 1);
+  const fresh = [], quotaMarked = [];
+  for (let n = 0; n < keyPool.length; n++){
+    const i = (start + n) % keyPool.length;
+    const st = (keyStates[i] || {}).st || "unknown";
+    if (st === "err") continue;
+    (st === "quota" ? quotaMarked : fresh).push(i);
+  }
+  const order = fresh.concat(quotaMarked);
+  let firstAny = null;
+  for (const idx of order){
+    const keyId = keyIdOf(keyPool[idx]);
+    const cands = await candidatesForKey(keyPool[idx], "tts");
+    for (const m of cands){
+      if (!firstAny) firstAny = m;
+      if (!isQuotaMarked(keyId, "tts", m)) return m;
+    }
+  }
+  return firstAny;
+}
 async function geminiCall(role, body, meta){
   /* Lời gọi TTS: chuẩn hoá chữ đọc (SGK -> sách giáo khoa) trên BẢN SAO
      của body — body gốc và mọi chữ hiển thị không đổi. */
@@ -1346,11 +1450,13 @@ async function geminiCall(role, body, meta){
   for (const idx of order){
     keyIds[idx] = keyIdOf(keyPool[idx]);
     candsByIdx[idx] = await candidatesForKey(keyPool[idx], role);
-    if (!candsByIdx[idx].length)
+    if (role === "tts" && ttsPinModel) candsByIdx[idx] = filterCandsForPin(candsByIdx[idx], ttsPinModel);
+    if (!candsByIdx[idx].length && !(role === "tts" && ttsPinModel))
       logKeyRotate("⚠️ Key #" + (idx + 1) + " không có model " + ROLE_TXT[role] + " — bỏ qua key này cho vai trò " + ROLE_TXT[role]);
   }
   const attempts = buildAttempts(order, candsByIdx, keyIds, role);
   if (!attempts.length){
+    if (role === "tts" && ttsPinModel) ttsBuildExhausted = true;
     throw new Error("Không key nào trong hồ có model " + ROLE_TXT[role] + " khả dụng. Trạng thái hồ key: " + keySummary());
   }
   let lastErr = null, sawQuota = false;
@@ -1384,6 +1490,7 @@ async function geminiCall(role, body, meta){
         if (keyStates[idx].st !== "ok"){ keyStates[idx] = { st: "ok", note: "", at: "" }; savePool(); renderKeyList(); }
         if (meta){ meta.keyIdx = idx; meta.model = model; }
         noteActiveKey();
+        if (role === "tts") summarizeTtsQuota(quotaKeys).forEach(l => logKeyRotate(l));
         return data;
       }
       const c = classifyHttp(res.status, data, txt);
@@ -1392,7 +1499,9 @@ async function geminiCall(role, body, meta){
         sawQuota = true;
         quotaKeys[idx] = (quotaKeys[idx] || 0) + 1;
         if (role === "tts") markQuota(keyId, role, model);   /* giọng: dấu theo TỪNG model */
-        logKeyRotate("⚠️ Model " + model + " (Key #" + (idx + 1) + ") hết quota — thử ứng viên kế tiếp");
+        /* GD13: quota GIỌNG không in từng dòng từng model nữa — gộp 1
+           dòng/key, flush ở cuối lời gọi (thành công hay thất bại). */
+        if (role !== "tts") logKeyRotate("⚠️ Model " + model + " (Key #" + (idx + 1) + ") hết quota — thử ứng viên kế tiếp");
         lastErr = new Error("Gemini báo hết quota (429) ở model " + model + " của Key #" + (idx + 1));
         break;
       }
@@ -1420,6 +1529,10 @@ async function geminiCall(role, body, meta){
         if (role === "image") setImgCap(keyIds[idx], "no");
       }
     });
+  }
+  if (role === "tts"){
+    summarizeTtsQuota(quotaKeys).forEach(l => logKeyRotate(l));
+    if (ttsPinModel && sawQuota) ttsBuildExhausted = true;   /* GD13: model chính cạn trên mọi key */
   }
   if (role === "image" && sawQuota){
     throw new Error("Không sinh được ảnh: mọi model ảnh của các key trong hồ đều đang hết hạn mức hôm nay. Với key AI Studio đời mới, Google cấp 0 lượt cho model ảnh nên key đó không sinh được ảnh qua API — phần hình SGK vẫn dùng bình thường. Thầy thử key khác có model ảnh, hoặc bỏ qua các đoạn cần ảnh AI. Trạng thái hồ key: " + keySummary());
@@ -2327,7 +2440,7 @@ function renderAssetRows(){
     }
     let auTxt = "Tiếng: chờ...";
     if (demoMode) auTxt = "Tiếng: (xem thử — không có)";
-    else if (au) auTxt = au.status === "ok" ? "Tiếng: ✔ " + au.buffer.duration.toFixed(1) + "s" : "Tiếng: ✖ lỗi";
+    else if (au) auTxt = au.status === "ok" ? "Tiếng: ✔ " + au.buffer.duration.toFixed(1) + "s" + (au.mc ? " (" + MC_LABELS[au.mc] + ")" : "") : "Tiếng: ✖ lỗi";
     const label = document.createElement("span");
     label.style.flex = "1";
     label.textContent = "Đoạn " + (i + 1) + " — " + sg.heading + "  |  " + imgTxt + "  |  " + auTxt;
@@ -5533,8 +5646,8 @@ function hashStr(s){
   h2 = Math.imul(h2 ^ (h2 >>> 16), 2246822507) ^ Math.imul(h1 ^ (h1 >>> 13), 3266489909);
   return (h2 >>> 0).toString(16).padStart(8, "0") + (h1 >>> 0).toString(16).padStart(8, "0");
 }
-function ttsCacheId(text, model){ return "tts_" + hashStr(text + "\u0001" + TTS_VOICE + "\u0001" + model); }
-function ttsPtrId(text){ return "ptr_" + hashStr(text + "\u0001" + TTS_VOICE); }
+function ttsCacheId(text, model, voice){ return "tts_" + hashStr(text + "\u0001" + (voice || TTS_VOICE) + "\u0001" + model); }
+function ttsPtrId(text, voice){ return "ptr_" + hashStr(text + "\u0001" + (voice || TTS_VOICE)); }
 async function idbTtsGet(id){
   try {
     const db = await idbOpen();
@@ -5554,16 +5667,23 @@ async function idbTtsPut(rec){
     });
   } catch (e) { /* cache lỗi thì bỏ qua — gọi API như thường */ }
 }
-async function ttsCacheLookup(text){
-  const ptr = await idbTtsGet(ttsPtrId(text));
+/* GD13: cache tách theo GIỌNG (Nam/Nữ không dùng lẫn). Khi đang dựng có
+   ghim model chính (wantModel) thì chỉ nhận bản cache của đúng model đó
+   — giữ luật 1 model cho cả video; ngoài lượt dựng thì nhận mọi model. */
+async function ttsCacheLookup(text, voice, wantModel){
+  if (wantModel){
+    const rec = await idbTtsGet(ttsCacheId(text, wantModel, voice));
+    return (rec && rec.pcm) ? rec : null;
+  }
+  const ptr = await idbTtsGet(ttsPtrId(text, voice));
   if (!ptr || !ptr.model) return null;
-  const rec = await idbTtsGet(ttsCacheId(text, ptr.model));
+  const rec = await idbTtsGet(ttsCacheId(text, ptr.model, voice));
   return (rec && rec.pcm) ? rec : null;
 }
-async function ttsCacheSave(text, model, pcmBase64){
+async function ttsCacheSave(text, model, pcmBase64, voice){
   if (!model || !pcmBase64) return;
-  await idbTtsPut({ id: ttsCacheId(text, model), model: model, pcm: pcmBase64, at: Date.now() });
-  await idbTtsPut({ id: ttsPtrId(text), model: model, at: Date.now() });
+  await idbTtsPut({ id: ttsCacheId(text, model, voice), model: model, pcm: pcmBase64, at: Date.now() });
+  await idbTtsPut({ id: ttsPtrId(text, voice), model: model, at: Date.now() });
 }
 function audioBufferToPcmBase64(buf){
   const ch = buf.getChannelData(0);
@@ -5617,13 +5737,19 @@ async function genAudioForSegment(i){
     audios[i] = { status: "err", buffer: null, err: "Đoạn này không có lời đọc." };
     renderAssetRows(); return false;
   }
-  /* Cache giọng: lời đọc + giọng không đổi → dùng lại, không tốn lượt TTS */
-  const cached = await ttsCacheLookup(sg.narration);
+  const mc = mcRoleForSegment(i);
+  const voice = mcVoiceName(mc);
+  /* Cache giọng: lời đọc + giọng (+ model chính khi đang dựng) không đổi → dùng lại, không tốn lượt TTS */
+  const cached = await ttsCacheLookup(sg.narration, voice, ttsPinModel);
   if (cached) {
     const cbuf = pcmToAudioBuffer(cached.pcm);
     applyFadesArr(cbuf.getChannelData(0), cbuf.sampleRate, 12);   /* fade hai đầu — điểm nối êm */
-    audios[i] = { status: "ok", buffer: cbuf, err: "" };
+    audios[i] = { status: "ok", buffer: cbuf, err: "", mc: mc };
     renderAssetRows(); return true;
+  }
+  if (ttsBuildExhausted && building) {
+    audios[i] = { status: "err", buffer: null, err: "Đã hết hạn mức giọng hôm nay.", mc: mc };
+    renderAssetRows(); return false;
   }
   try {
     const meta = {};
@@ -5631,17 +5757,17 @@ async function genAudioForSegment(i){
       contents: [{ parts: [{ text: sg.narration }] }],
       generationConfig: {
         responseModalities: ["AUDIO"],
-        speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: TTS_VOICE } } }
+        speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } }
       }
     }, meta);
     const inline = firstInline(data);
     if (!inline) throw new Error("Gemini TTS không trả về âm thanh.");
     const abuf = pcmToAudioBuffer(inline.data);
     applyFadesArr(abuf.getChannelData(0), abuf.sampleRate, 12);   /* fade hai đầu — điểm nối êm */
-    audios[i] = { status: "ok", buffer: abuf, err: "" };
-    ttsCacheSave(sg.narration, meta.model || "", inline.data);
+    audios[i] = { status: "ok", buffer: abuf, err: "", mc: mc };
+    ttsCacheSave(sg.narration, meta.model || "", inline.data, voice);
   } catch (e) {
-    audios[i] = { status: "err", buffer: null, err: e.message };
+    audios[i] = { status: "err", buffer: null, err: e.message, mc: mc };
   }
   renderAssetRows();
   return audios[i].status === "ok";
@@ -5652,23 +5778,37 @@ async function genAudioForSegment(i){
    dời vào khoảng lặng gần nhất + fade hai đầu mỗi phần (hết rè khúc chuyển);
    cụm lỗi → tự tách ra gọi từng đoạn như cũ. Đoạn nào đã có cache thì khỏi gọi. */
 async function genAudioGroup(indices){
+  /* GD13: 1 lượt gọi chỉ chứa 1 giọng — nhóm lẫn 2 MC thì tách theo ranh giới giọng */
+  const roles = indices.map(i => mcRoleForSegment(i));
+  if (roles.some(r => r !== roles[0])){
+    const subs = groupByMc(roles, 3);
+    for (const sub of subs) await genAudioGroup(sub.map(p => indices[p]));
+    return;
+  }
+  const mc = roles[0] || "female";
+  const voice = mcVoiceName(mc);
   const missing = [];
   for (const i of indices){
     const sg = scriptData.segments[i];
     if (!sg.narration || !sg.narration.trim()){
-      audios[i] = { status: "err", buffer: null, err: "Đoạn này không có lời đọc." };
+      audios[i] = { status: "err", buffer: null, err: "Đoạn này không có lời đọc.", mc: mc };
       continue;
     }
-    const cached = await ttsCacheLookup(sg.narration);
+    const cached = await ttsCacheLookup(sg.narration, voice, ttsPinModel);
     if (cached) {
       const cbuf = pcmToAudioBuffer(cached.pcm);
       applyFadesArr(cbuf.getChannelData(0), cbuf.sampleRate, 12);
-      audios[i] = { status: "ok", buffer: cbuf, err: "" };
+      audios[i] = { status: "ok", buffer: cbuf, err: "", mc: mc };
     }
     else missing.push(i);
   }
   renderAssetRows();
   if (!missing.length) return;
+  if (ttsBuildExhausted && building) {
+    missing.forEach(i => { audios[i] = { status: "err", buffer: null, err: "Đã hết hạn mức giọng hôm nay.", mc: mc }; });
+    renderAssetRows();
+    return;
+  }
   if (missing.length === 1){ await genAudioForSegment(missing[0]); return; }
   const joined = missing.map(i => scriptData.segments[i].narration.trim()).join("\n\n");
   try {
@@ -5677,7 +5817,7 @@ async function genAudioGroup(indices){
       contents: [{ parts: [{ text: joined }] }],
       generationConfig: {
         responseModalities: ["AUDIO"],
-        speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: TTS_VOICE } } }
+        speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } }
       }
     }, meta);
     const inline = firstInline(data);
@@ -5706,8 +5846,8 @@ async function genAudioGroup(indices){
       applyFadesArr(part, full.sampleRate, 20);
       const buf = audioCtx().createBuffer(1, Math.max(1, part.length), full.sampleRate);
       buf.getChannelData(0).set(part);
-      audios[segIdx] = { status: "ok", buffer: buf, err: "" };
-      ttsCacheSave(scriptData.segments[segIdx].narration, meta.model || "", audioBufferToPcmBase64(buf));
+      audios[segIdx] = { status: "ok", buffer: buf, err: "", mc: mc };
+      ttsCacheSave(scriptData.segments[segIdx].narration, meta.model || "", audioBufferToPcmBase64(buf), voice);
     });
   } catch (e) {
     for (const i of missing) await genAudioForSegment(i);   /* cụm lỗi → gọi từng đoạn */
@@ -5958,11 +6098,18 @@ async function buildVideo(){
     } else {
       setStep(4, "run");
       const auErr = [];
-      for (let g = 0; g < scriptData.segments.length; g += 3) {
-        const grp = [];
-        for (let k = g; k < Math.min(g + 3, scriptData.segments.length); k++) grp.push(k);
-        await genAudioGroup(grp);
-      }
+      /* GD13: gán vai 2 MC theo luật luân phiên + ghim 1 model TTS chính
+         cho cả lượt dựng (chỉ xoay key, không đổi model giữa chừng).
+         Nhóm gọi TTS cắt theo ranh giới MC — mỗi lượt gọi 1 giọng. */
+      buildMcRoles = assignMcRoles(scriptData.segments);
+      ttsBuildExhausted = false;
+      ttsPinModel = await pickPrimaryTtsModel();
+      if (ttsPinModel) logWarn("🎙️ Video này đọc bằng <b>2 giọng Gemini luân phiên theo vai</b> — MC Nam (" + MC_VOICES.male + ") và MC Nữ (" + MC_VOICES.female + ") — trên <b>một model duy nhất: " + ttsPinModel + "</b> (chỉ xoay key, không đổi model giữa chừng).");
+      const mcGroups = groupByMc(buildMcRoles, 3);
+      for (const grp of mcGroups) await genAudioGroup(grp);
+      if (ttsBuildExhausted) logWarn("🔇 <b>Đã hết hạn mức giọng hôm nay</b> — model giọng chính (" + ttsPinModel + ") đã cạn trên mọi key trong hồ. Các đoạn chưa có tiếng sẽ im lặng " + NO_AUDIO_SECONDS + " giây như trước giờ; thầy thử lại vào ngày mai hoặc thêm key mới vào hồ.");
+      ttsPinModel = null;
+      buildMcRoles = null;
       scriptData.segments.forEach((sg, i) => { if (!audios[i] || audios[i].status !== "ok") auErr.push(i + 1); });
       if (auErr.length === scriptData.segments.length) {
         setStep(4, "err");
@@ -6008,6 +6155,7 @@ async function buildVideo(){
     showErr("buildLog", "Dựng video thất bại: " + e.message);
   }
   building = false;
+  ttsPinModel = null; ttsBuildExhausted = false; buildMcRoles = null;
   $("buildBtn").disabled = false; $("cancelScriptBtn").disabled = false; $("createBtn").disabled = false;
 }
 $("buildBtn").addEventListener("click", buildVideo);
