@@ -5583,6 +5583,23 @@ function initPhieu(){
    Kỷ luật vừa khung như GD7: cỡ chữ tự co theo từng khối, sàn ~14–17px,
    KHÔNG tràn khung/thẻ, KHÔNG cắt "…" nội dung. Tên thầy góc phải ở
    các cảnh nội dung (mở/hỏi/chốt/tổng kết), không ở cảnh QR. */
+/*__PURE_CDCARD__*/
+/* [GD17] Áo 4 MÀU cho thẻ phương án Phần I trong video chữa đề, theo
+   ảnh mẫu Đấu Trường 3D của thầy: A đỏ hồng, B cam, C xanh dương,
+   D tím; thân câu hỏi nằm trong băng thẻ xanh riêng phía trên.
+   Hàm thuần — test GD17 eval trực tiếp khối này. */
+const CD_CARD_COLORS = ["#e8445f", "#f08c00", "#1e88d6", "#8e44ad"];
+const CD_QUESTION_BAND = "#1c6eb8";
+function cdShadeHex(hex, f){
+  const n = parseInt(String(hex).slice(1), 16);
+  const r = Math.min(255, Math.round(((n >> 16) & 255) * f));
+  const g = Math.min(255, Math.round(((n >> 8) & 255) * f));
+  const b = Math.min(255, Math.round((n & 255) * f));
+  return "rgb(" + r + "," + g + "," + b + ")";
+}
+function cdCardFill(i, dim){ return dim ? cdShadeHex(CD_CARD_COLORS[i % 4], 0.42) : CD_CARD_COLORS[i % 4]; }
+function cdBadgeFill(i, dim){ return cdShadeHex(CD_CARD_COLORS[i % 4], dim ? 0.26 : 0.68); }
+/*__END_PURE_CDCARD__*/
 function cdFit(ctx, text, maxW, startPx, minPx, maxLines, weight){
   let px = startPx;
   while (px > minPx){
@@ -5695,6 +5712,10 @@ function cdDrawMc(ctx, sg, entry, isA){
   ctx.fillStyle = "#ffffff"; ctx.textAlign = "left"; ctx.textBaseline = "top";
   ctx.font = "600 " + qFit.px + "px " + FONT;
   const qLh = qFit.px * 1.32;
+  /* [GD17] băng thẻ câu hỏi: thân câu nằm trong thẻ xanh riêng phía trên */
+  ctx.fillStyle = CD_QUESTION_BAND;
+  rr(ctx, 86, Y0 - 18, textW + 48, qFit.lines.length * qLh + 36, 18); ctx.fill();
+  ctx.fillStyle = "#ffffff";
   qFit.lines.forEach((ln, k) => ctx.fillText(ln, 110, Y0 + k * qLh));
   let underQ = Y0 + qFit.lines.length * qLh + 10;
   if (u.qtbl) underQ += cdDrawTable(ctx, u.qtbl, 110, underQ, textW, Math.max(90, Y0 + qZoneH - underQ)) + 8;
@@ -5720,23 +5741,27 @@ function cdDrawMc(ctx, sg, entry, isA){
     const cy = cols === 2 ? oY + Math.floor(i / 2) * (cellH + 16) : oY + i * (cellH + gap);
     const letter = "ABCD"[i];
     const correct = isA && letter === u.answer;
-    ctx.fillStyle = correct ? "rgba(38,222,129,0.17)" : "rgba(255,255,255,0.055)";
+    const dim = isA && !correct;
+    /* [GD17] thẻ MÀU theo vị trí A/B/C/D; cảnh chốt: thẻ đúng giữ màu
+       tươi + viền trắng + thẻ ✓, các thẻ sai làm mờ đi */
+    ctx.fillStyle = cdCardFill(i, dim);
     rr(ctx, cx, cy, cellW, cellH, 16); ctx.fill();
-    ctx.strokeStyle = correct ? "#26de81" : "rgba(255,255,255,0.25)";
-    ctx.lineWidth = correct ? 4.5 : 2;
+    ctx.strokeStyle = correct ? "#ffffff" : cdShadeHex(CD_CARD_COLORS[i % 4], dim ? 0.3 : 0.72);
+    ctx.lineWidth = correct ? 5 : 2;
     rr(ctx, cx, cy, cellW, cellH, 16); ctx.stroke();
-    /* huy hiệu chữ cái */
-    ctx.fillStyle = correct ? "#26de81" : "rgba(255,255,255,0.16)";
-    ctx.beginPath(); ctx.arc(cx + 52, cy + cellH / 2, 30, 0, Math.PI * 2); ctx.fill();
-    ctx.fillStyle = correct ? "#052e12" : "#ffffff";
-    ctx.font = "700 31px " + FONT; ctx.textAlign = "center"; ctx.textBaseline = "middle";
-    ctx.fillText(letter, cx + 52, cy + cellH / 2 + 1);
+    /* huy hiệu chữ cái: ô vuông đậm hơn ở phía trái thẻ */
+    const bs = Math.min(64, Math.max(38, cellH - 18));
+    ctx.fillStyle = cdBadgeFill(i, dim);
+    rr(ctx, cx + 18, cy + (cellH - bs) / 2, bs, bs, 14); ctx.fill();
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "700 " + Math.round(bs * 0.53) + "px " + FONT; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText(letter, cx + 18 + bs / 2, cy + cellH / 2 + 1);
     /* thẻ ĐÁP ÁN ĐÚNG */
     if (correct){
       ctx.font = "700 23px " + FONT;
       const tw = ctx.measureText("✓ ĐÁP ÁN ĐÚNG").width + 30;
-      ctx.fillStyle = "#26de81"; rr(ctx, cx + cellW - tw - 14, cy + 12, tw, 38, 19); ctx.fill();
-      ctx.fillStyle = "#052e12"; ctx.fillText("✓ ĐÁP ÁN ĐÚNG", cx + cellW - tw / 2 - 14, cy + 32);
+      ctx.fillStyle = "#ffffff"; rr(ctx, cx + cellW - tw - 14, cy + 12, tw, 38, 19); ctx.fill();
+      ctx.fillStyle = "#0a6e2c"; ctx.fillText("✓ ĐÁP ÁN ĐÚNG", cx + cellW - tw / 2 - 14, cy + 32);
     }
     ctx.font = "600 " + px + "px " + FONT;
     ctx.fillStyle = "#ffffff"; ctx.textAlign = "left"; ctx.textBaseline = "top";
