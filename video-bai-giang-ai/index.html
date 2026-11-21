@@ -258,7 +258,7 @@
   <header class="top">
     <h1>🎬 Video Bài Giảng <span class="ai">AI</span></h1>
     <p>Chỉ cần nêu <b>tên bài</b> hoặc dán <b>câu chuyện</b> — app tự viết kịch bản, tạo hình, vẽ sơ đồ, dựng bảng số liệu, thu giọng đọc và ghép thành video.</p>
-    <p class="small" id="buildTag">🏷️ Bản KC13 • 21/11/2026 — KHOÁ ADMIN 2 LỚP cho studio (trang học sinh ?bt=/?de= mở thẳng) + giọng VieNeu trên máy này (miễn phí) + luật phân giọng: đoạn có chữ “thầy” luôn do MC Nam đọc</p>
+    <p class="small" id="buildTag">🏷️ Bản KC14 • 21/11/2026 — ĐỒNG BỘ HOÀN THIỆN: poster-lib + ppt-lib đã nối vào khuôn “Đặt đúng chỗ” (poster nguyên tấm cho Tổng quan/Tổng kết, ảnh PPT cho Gợi mở/Liên hệ) + KHOÁ ADMIN 2 LỚP cho studio (trang học sinh ?bt=/?de= mở thẳng) + giọng VieNeu trên máy này (miễn phí) + luật phân giọng: đoạn có chữ “thầy” luôn do MC Nam đọc</p>
     <div id="voiceBadge" class="hidden"></div>
     <div id="kc13AdminBar" class="hidden" style="margin-top:10px">
       <button class="btn-ghost shrink" id="kc13LockNowBtn" type="button">🔒 Khoá lại ngay</button>
@@ -2029,6 +2029,7 @@ function renderScriptReview(){
     return;
   }
   autoAssignOnline();
+  try { kc14AssignRoleSources(); } catch (e) {}   /* [KC14] gán poster/ppt theo vai SAU khi SGK đã gán (SGK = chính danh của vai nội dung) */
   const box = $("scriptSegs"); box.innerHTML = "";
   if (scriptData._mode === "chuade" && scriptData._chuade) {
     if (!scriptData._chuade.explOk) {
@@ -2088,7 +2089,15 @@ function renderScriptReview(){
      nằm ở dòng vai cảnh của từng đoạn. */
   if (kc11OffCount > 0){
     const bn = document.createElement("div"); bn.className = "warn kc11banner";
-    bn.innerHTML = "🎯 <b>Khuôn “Đặt đúng chỗ”:</b> có <b>" + kc11OffCount + " đoạn</b> chưa dùng được nguồn hình chính danh của vai cảnh — poster nguyên tấm và ảnh PPT kho mua <b>chưa trực tuyến</b> nên app tạm lùi về nguồn dự phòng và ghi rõ ở từng đoạn. Thầy xem dòng 🎯 <b>Vai cảnh</b> dưới mỗi đoạn để biết đoạn nào đang dự phòng, đoạn nào thiếu hình — app <b>không tự lấp hình lạ</b> vào chỗ thiếu.";
+    /* [KC14] Hai kho poster/PPT đã online: banner nói đúng tình
+       trạng thật — kho đã trực tuyến thì lý do dự phòng nằm ở
+       từng đoạn (bài chưa phủ sóng / chưa khớp hình); kho chưa
+       tải được lần mở này thì nói rõ là chưa tải được. */
+    if (posterLibReady || pptLibReady){
+      bn.innerHTML = "🎯 <b>Khuôn “Đặt đúng chỗ”:</b> kho Poster + ảnh PPT đã <b>trực tuyến</b> và app đã tự gán theo vai cảnh. Còn <b>" + kc11OffCount + " đoạn</b> đang dùng nguồn dự phòng hoặc chưa có hình — lý do ghi rõ ở dòng 🎯 <b>Vai cảnh</b> của từng đoạn (thường vì bài này chưa có poster/hình PPT phủ sóng, hoặc đoạn chưa khớp được hình SGK). App <b>không tự lấp hình lạ</b> vào chỗ thiếu.";
+    } else {
+      bn.innerHTML = "🎯 <b>Khuôn “Đặt đúng chỗ”:</b> có <b>" + kc11OffCount + " đoạn</b> chưa dùng được nguồn hình chính danh của vai cảnh — kho poster/ảnh PPT <b>chưa tải được trong lần mở này</b> nên app tạm lùi về nguồn dự phòng và ghi rõ ở từng đoạn. Thầy xem dòng 🎯 <b>Vai cảnh</b> dưới mỗi đoạn để biết đoạn nào đang dự phòng, đoạn nào thiếu hình — app <b>không tự lấp hình lạ</b> vào chỗ thiếu.";
+    }
     box.insertBefore(bn, box.firstChild);
   }
   $("scriptJson").value = JSON.stringify(scriptData, null, 2);
@@ -2833,12 +2842,16 @@ function kc11SegSource(sg){
     if (sg.kcSrc === "upload") return sg.kcUpload ? "upload" : "none";
     return "mau";
   }
-  if (sg.onlinePath || sg.sgkImageId) return "sgk";
+  if (sg.onlinePath || sg.sgkImageId) return (sg.libSrc === "poster" || sg.libSrc === "ppt") ? sg.libSrc : "sgk";   /* [KC14] poster-lib/ppt-lib dùng chung trường onlinePath, phân biệt bằng sg.libSrc */
   if (sg.type === "diagram" || sg.type === "table" || sg.type === "text") return "mau";
   if (sg.type === "image") return "ai";
   return "none"; /* type sgk chưa có hình nào */
 }
 function kc11OkReason(sg, vai, src){
+  if (src === "poster") return "Đúng chỗ: poster nguyên tấm của đúng bài này — khi dựng, khung hình lia chậm trên cả tấm poster (không cắt vụn).";
+  if (src === "ppt") return vai === "noi_dung"
+    ? "Đúng chỗ: hình PPT dạng sơ đồ/có chú thích của bài — nguồn phụ sau SGK cho vai nội dung (SGK vẫn là chính danh)."
+    : "Đúng chỗ: ảnh PPT đời thật của đúng bài này — vai này cần hình đời sống thật để gợi mở/liên hệ, không phải hình kiến thức chuẩn.";
   if (src === "sgk"){
     if (sg.onlineFigure) return "Đúng chỗ: hình SGK đúng số hiệu Hình " + sg.onlineFigure + " mà lời đọc nhắc tới.";
     return "Đúng chỗ: hình SGK của bài — vai này cần đúng hình sách giáo khoa.";
@@ -2987,7 +3000,7 @@ function toggleSegImage(sg, entry){
   const ix = sel.indexOf(entry.path);
   if (ix >= 0) sel.splice(ix, 1); else sel.push(entry.path);
   if (sel.length) {
-    const first = onlineLib.filter(e => e.path === sel[0])[0];
+    const first = (typeof kc14FindEntry === "function" ? kc14FindEntry(sel[0]) : null) || onlineLib.filter(e => e.path === sel[0])[0];   /* [KC14] hình đầu có thể thuộc poster-lib/ppt-lib */
     if (first) setOnlineAssign(sg, first);
     delete sg.sgkImageId;
   } else {
@@ -3017,9 +3030,11 @@ function setOnlineAssign(sg, entry){
   sg.onlineUrl = onlineImgUrl(entry);
   sg.onlineFigure = entry.figure || null;
   sg.onlineCaption = entry.caption || entry.path;
+  sg.libSrc = kc14LibOfPath(entry.path);   /* [KC14] nguồn thật: poster/ppt/sgk theo tiền tố path */
 }
 function clearOnlineAssign(sg){
   delete sg.onlinePath; delete sg.onlineUrl; delete sg.onlineFigure; delete sg.onlineCaption;
+  delete sg.libSrc;   /* [KC14] */
 }
 function autoAssignOnline(){
   if (!onlineLibReady || !scriptData) return;
@@ -3102,6 +3117,214 @@ async function loadOnlineLib(){
   }
 }
 
+/* =========================================================
+   [KC14] NỐI POSTER-LIB + PPT-LIB VÀO KHUÔN "ĐẶT ĐÚNG CHỖ"
+   (đợt cuối của vụ đồng bộ — thầy lệnh "làm luôn cho đồng bộ"
+   + "test cái hoàn thiện luôn", 21/11/2026).
+   - Hai kho đã online cùng origin: ../poster-lib/manifest.json
+     (67 poster, vaiGoiY tong_quan, ánh xạ bài chuẩn KC10) và
+     ../ppt-lib/manifest.json (1.111 hình + camDung 23 hình kèm
+     SHA-256 — TUYỆT ĐỐI không dùng).
+   - Nạp SAU KHOÁ KC13 (kc13ApplyUnlocked / phiên còn hạn). Lỗi
+     nạp một kho -> kho đó coi như không có, app vẫn chạy; màn
+     duyệt báo rõ ở banner. Nạp thành công -> lật cờ online của
+     KC11_SRC_META ở RUNTIME (khối thuần KC11 giữ nguyên cờ
+     false như thiết kế ban đầu — test KC11 eval khối thuần
+     độc lập nên không đổi baseline).
+   - Đoạn gán hình từ 2 kho này dùng chung trường onlinePath/
+     onlineUrl như SGK, phân biệt bằng sg.libSrc = "poster" /
+     "ppt" (vắng mặt = SGK). Mọi đường đọc cũ chạy nguyên.
+   - camDung bị loại ngay ở tầng nạp ppt-lib (theo SHA + cờ
+     entry) nên không thể lọt vào gallery / tự gán / chọn tay.
+   ========================================================= */
+let posterLib = [];
+let posterLibReady = false;
+let posterLibFailed = false;
+let pptLib = [];
+let pptLibReady = false;
+let pptLibFailed = false;
+let kc14LibsRequested = false;
+/*__PURE_KC14__*/
+/* [KC14] Logic thuần (không DOM, test Node eval trực tiếp):
+   lọc camDung, lọc hình theo bài, chọn poster/ppt theo vai và
+   lập kế hoạch gán nguồn cho kịch bản Bài giảng. */
+function kc14LibOfPath(p){
+  const s = String(p || "");
+  if (s.indexOf("poster-lib/") === 0) return "poster";
+  if (s.indexOf("ppt-lib/") === 0) return "ppt";
+  return "sgk";
+}
+function kc14CamShaSet(camDung){
+  const set = {};
+  (Array.isArray(camDung) ? camDung : []).forEach(c => { if (c && c.sha256) set[String(c.sha256).toLowerCase()] = 1; });
+  return set;
+}
+/* Loại hình bị cấm dùng khỏi ppt-lib NGAY ở tầng nạp: trùng
+   SHA-256 với danh sách camDung của manifest, hoặc entry tự
+   mang cờ camDung. Trả { kept, dropped }. */
+function kc14FilterPptEntries(entries, camDung){
+  const sha = kc14CamShaSet(camDung);
+  const kept = [], dropped = [];
+  (Array.isArray(entries) ? entries : []).forEach(e => {
+    if (!e || !e.path || e.camDung || (e.srcSha256 && sha[String(e.srcSha256).toLowerCase()])) { dropped.push(e); return; }
+    kept.push(e);
+  });
+  return { kept: kept, dropped: dropped };
+}
+function kc14EntriesForLesson(entries, key){
+  if (!key) return [];
+  return (Array.isArray(entries) ? entries : []).filter(e =>
+    e && e.subjectCode === key.subjectCode && e.grade === key.grade && e.lessonCode === key.lessonCode);
+}
+/* Chọn poster cho cảnh Tổng quan/Tổng kết: ưu tiên tấm CHÍNH
+   (loai "poster") chưa dùng; hết tấm chính chưa dùng thì dùng
+   lại tấm chính đầu tiên (bookend mở/đóng cùng một tấm — đúng
+   khuôn); bài chỉ có hình bổ sung thì lấy hình bổ sung đầu. */
+function kc14PickPoster(posters, used){
+  const list = Array.isArray(posters) ? posters : [];
+  if (!list.length) return null;
+  const mains = list.filter(e => e.loai === "poster");
+  const pool = mains.length ? mains : list;
+  const fresh = pool.filter(e => !(used && used[e.path]));
+  return fresh.length ? fresh[0] : pool[0];
+}
+/* Chọn hình PPT theo vai: khớp vaiGoiY trước. Vai gợi mở/liên
+   hệ: chỉ lấy ảnh ĐỜI THẬT (thẻ goi_mo/lien_he) — không lấy sơ
+   đồ nội dung ra gợi mở (lộ kiến thức). Vai nội dung: CHỈ lấy
+   hình thẻ noi_dung (sơ đồ/có chú thích); không có thì thôi —
+   đây là nguồn PHỤ sau SGK, không lấp bằng ảnh đời thật. */
+function kc14PickPpt(ppts, vai, used){
+  const list = Array.isArray(ppts) ? ppts : [];
+  if (!list.length) return null;
+  let pool;
+  if (vai === "noi_dung") pool = list.filter(e => e.vaiGoiY === "noi_dung");
+  else {
+    const exact = list.filter(e => e.vaiGoiY === vai);
+    pool = exact.length ? exact : list.filter(e => e.vaiGoiY === "goi_mo" || e.vaiGoiY === "lien_he");
+  }
+  if (!pool.length) return null;
+  const fresh = pool.filter(e => !(used && used[e.path]));
+  return fresh.length ? fresh[0] : pool[0];
+}
+/* Lập kế hoạch gán nguồn KC14 cho BÀI GIẢNG. roles[i] = vai
+   của đoạn i (tầng DOM tính bằng kc11SegRole). CHỈ gán cho
+   đoạn CHƯA có hình và chưa bị can thiệp: đã có onlinePath /
+   sgkImageId, hoặc onlineSel là mảng có hình (thầy đã chọn)
+   thì bỏ qua. onlineSel = [] (mảng rỗng do app tự khởi tạo ở
+   màn duyệt) vẫn được gán — việc "chạy một lần" do cờ
+   _kc14Assigned ở tầng DOM bảo đảm không gán lại lần hai.
+   Trả về mảng { i, path, lib }. */
+function kc14PlanAssignments(segments, roles, posters, ppts){
+  const plan = [];
+  const used = {};
+  const segs = Array.isArray(segments) ? segments : [];
+  segs.forEach(sg => { if (sg && sg.onlinePath) used[sg.onlinePath] = 1; });
+  segs.forEach((sg, i) => {
+    if (!sg) return;
+    if (sg.onlinePath || sg.sgkImageId) return;
+    if (Array.isArray(sg.onlineSel) && sg.onlineSel.length) return;
+    const vai = roles && roles[i];
+    if (vai === "tong_quan" || vai === "tong_ket"){
+      if (["image", "text", "sgk"].indexOf(sg.type) < 0) return;
+      const p = kc14PickPoster(posters, used);
+      if (p){ plan.push({ i: i, path: p.path, lib: "poster" }); used[p.path] = 1; }
+      return;
+    }
+    if (vai === "goi_mo" || vai === "lien_he"){
+      if (["image", "sgk"].indexOf(sg.type) < 0) return;
+      const p = kc14PickPpt(ppts, vai, used);
+      if (p){ plan.push({ i: i, path: p.path, lib: "ppt" }); used[p.path] = 1; }
+      return;
+    }
+    if (vai === "noi_dung" && sg.type === "sgk"){
+      const p = kc14PickPpt(ppts, "noi_dung", used);
+      if (p){ plan.push({ i: i, path: p.path, lib: "ppt" }); used[p.path] = 1; }
+    }
+  });
+  return plan;
+}
+/*__END_PURE_KC14__*/
+/* Khoá bài của kịch bản hiện tại: ưu tiên danh tính đã chốt
+   _picked (KC10); thiếu thì suy từ bộ chọn Môn/Khối/Bài. */
+function kc14LessonKey(){
+  if (scriptData && scriptData._picked){
+    const p = scriptData._picked;
+    return { subjectCode: p.subjectCode, grade: p.grade, lessonCode: p.lessonCode };
+  }
+  const sc = ctxSubjectCode(), g = ctxGrade(), ln = ctxLessonNo();
+  if (sc && g && ln) return { subjectCode: sc, grade: g, lessonCode: "bai-" + ln };
+  return null;
+}
+/* Tra entry theo path trong CẢ 3 kho (poster -> ppt -> sgk). */
+function kc14FindEntry(path){
+  const pools = [posterLib, pptLib, onlineLib];
+  for (let k = 0; k < pools.length; k++){
+    const e = (pools[k] || []).filter(x => x.path === path)[0];
+    if (e) return e;
+  }
+  return null;
+}
+function kc14SetLibAssign(sg, entry){
+  sg.onlinePath = entry.path;
+  sg.onlineUrl = onlineImgUrl(entry);
+  sg.onlineFigure = entry.figure || null;
+  sg.onlineCaption = entry.caption || entry.path;
+  sg.libSrc = kc14LibOfPath(entry.path);
+}
+/* Áp kế hoạch gán KC14 vào kịch bản Bài giảng đang duyệt.
+   Chạy MỘT LẦN cho mỗi kịch bản (cờ _kc14Assigned) ngay sau
+   autoAssignOnline — SGK đã gán trước nên vai nội dung luôn
+   ưu tiên SGK, ppt-lib chỉ là nguồn phụ. Các loại video khác
+   (phiếu / chữa đề / kể chuyện) KHÔNG qua hàm này. */
+function kc14AssignRoleSources(){
+  if (!scriptData || !Array.isArray(scriptData.segments)) return;
+  if (["phieu", "chuade", "kechuyen", "story"].indexOf(scriptData._mode) >= 0) return;
+  if (scriptData._kc14Assigned) return;
+  if (!posterLibReady && !pptLibReady) return;
+  const key = kc14LessonKey();
+  if (!key) return;
+  const posters = posterLibReady ? kc14EntriesForLesson(posterLib, key) : [];
+  const ppts = pptLibReady ? kc14EntriesForLesson(pptLib, key) : [];
+  scriptData._kc14Assigned = true;
+  if (!posters.length && !ppts.length) return;
+  const total = scriptData.segments.length;
+  const roles = scriptData.segments.map((sg, i) => kc11SegRole(sg, i, total, (typeof videoType !== "undefined" ? videoType : "full"), false));
+  const plan = kc14PlanAssignments(scriptData.segments, roles, posters, ppts);
+  plan.forEach(d => {
+    const e = kc14FindEntry(d.path);
+    if (e) kc14SetLibAssign(scriptData.segments[d.i], e);
+  });
+}
+/* Nạp 2 manifest poster-lib + ppt-lib (song song, độc lập):
+   kho nào lỗi thì kho đó coi như không có — app vẫn chạy.
+   Chỉ gọi SAU KHOÁ KC13 (mở khoá tương tác hoặc phiên còn
+   hạn); trang học sinh không gọi. Nạp xong mà đang có kịch
+   bản thì vẽ lại màn duyệt để gán nguồn ngay. */
+async function kc14LoadLibs(){
+  if (kc14LibsRequested) return;
+  kc14LibsRequested = true;
+  const jobs = [];
+  jobs.push(fetch("../poster-lib/manifest.json", { cache: "no-store" })
+    .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+    .then(d => {
+      posterLib = (d && Array.isArray(d.entries)) ? d.entries.filter(e => e && e.path) : [];
+      posterLibReady = posterLib.length > 0;
+      if (posterLibReady) KC11_SRC_META.poster.online = true;
+    })
+    .catch(() => { posterLib = []; posterLibReady = false; posterLibFailed = true; }));
+  jobs.push(fetch("../ppt-lib/manifest.json", { cache: "no-store" })
+    .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+    .then(d => {
+      const f = kc14FilterPptEntries((d && d.entries) || [], (d && d.camDung) || []);
+      pptLib = f.kept;
+      pptLibReady = pptLib.length > 0;
+      if (pptLibReady) KC11_SRC_META.ppt.online = true;
+    })
+    .catch(() => { pptLib = []; pptLibReady = false; pptLibFailed = true; }));
+  try { await Promise.all(jobs); } catch (e) {}
+  if (scriptData) { try { renderScriptReview(); } catch (e) {} }
+}
+
 /* ---------- UI gán hình cho từng segment (ở màn hình kịch bản) ---------- */
 function mkBtn(label, cls){
   const b = document.createElement("button");
@@ -3117,8 +3340,14 @@ function buildAssignUI(sg, i){
   if (scriptData && scriptData._mode !== "story") initOnlineSel(sg);
   const assigned = sg.sgkImageId ? library.get(sg.sgkImageId) : null;
   const st = document.createElement("div"); st.className = "small"; st.style.marginBottom = "6px";
-  if (sg.onlinePath) st.innerHTML = "🖼 Trạng thái hình: ☁️ <b>Đã có hình SGK từ kho online</b>" +
-    '<span class="obadge">☁️ Tự gán: ' + escapeHtml(sg.onlineFigure ? ("Hình " + sg.onlineFigure + " SGK") : (sg.onlineCaption || "hình SGK")) + " ✓</span>";
+  if (sg.onlinePath) st.innerHTML = sg.libSrc === "poster"
+    ? "🖼 Trạng thái hình: ☁️ <b>Đã có POSTER nguyên tấm từ kho online</b>" +
+      '<span class="obadge">🗺 ' + escapeHtml(sg.onlineCaption || "poster của bài") + " ✓</span>"
+    : sg.libSrc === "ppt"
+    ? "🖼 Trạng thái hình: ☁️ <b>Đã có ảnh PPT từ kho online</b>" +
+      '<span class="obadge">🖼 ' + escapeHtml(sg.onlineCaption || "ảnh PPT của bài") + " ✓</span>"
+    : "🖼 Trạng thái hình: ☁️ <b>Đã có hình SGK từ kho online</b>" +
+      '<span class="obadge">☁️ Tự gán: ' + escapeHtml(sg.onlineFigure ? ("Hình " + sg.onlineFigure + " SGK") : (sg.onlineCaption || "hình SGK")) + " ✓</span>";
   else if (assigned) st.innerHTML = "🖼 Trạng thái hình: ✅ <b>Đã có hình SGK</b> — " + escapeHtml(assigned.name);
   else if (sg.type === "sgk") st.innerHTML = "🖼 Trạng thái hình: ⚠️ <b>Chưa có hình</b> — chọn hình SGK bên dưới, hoặc bật sinh AI dự phòng. Nếu vẫn không có hình, khi dựng app sẽ tự chuyển đoạn này sang <b>slide chữ</b> (không để ô chờ hình lọt vào video).";
   else st.innerHTML = "🖼 Trạng thái hình: chưa gán hình SGK — nếu không gán, app sẽ <b>sinh ảnh bằng AI</b> khi dựng.";
@@ -3178,6 +3407,36 @@ function buildAssignUI(sg, i){
         grid.appendChild(cell);
       });
       mbox.appendChild(grid);
+    }
+    /* [KC14] Hai nhóm hình riêng của BÀI: POSTER nguyên tấm +
+       ảnh PPT — tick/bỏ tick dùng chung cơ chế onlineSel như
+       hình SGK (toggleSegImage tra cả 3 kho). Hình camDung đã
+       bị loại từ tầng nạp ppt-lib nên không có ở đây. */
+    if (scriptData && scriptData._picked && (posterLibReady || pptLibReady)){
+      const key14 = kc14LessonKey();
+      const groups14 = [
+        { lib: "poster", title: "🗺 Poster của bài (nguyên tấm)", entries: posterLibReady ? kc14EntriesForLesson(posterLib, key14) : [] },
+        { lib: "ppt", title: "🖼 Ảnh PPT của bài", entries: pptLibReady ? kc14EntriesForLesson(pptLib, key14) : [] }
+      ];
+      groups14.forEach(g14 => {
+        if (!g14.entries.length) return;
+        const gh = document.createElement("div"); gh.className = "small"; gh.style.margin = "10px 0 2px";
+        gh.innerHTML = "<b>" + g14.title + "</b> — " + g14.entries.length + " hình của đúng bài này:";
+        mbox.appendChild(gh);
+        const grid14 = document.createElement("div"); grid14.className = "gal-grid";
+        g14.entries.forEach(e => {
+          const on = sel.indexOf(e.path) >= 0;
+          const cell = document.createElement("div"); cell.className = "gal-cell pickable" + (on ? " sel" : "");
+          const im = document.createElement("img"); im.src = onlineImgUrl(e); im.loading = "lazy";
+          im.title = e.caption || e.path;
+          const cap = document.createElement("div"); cap.className = "cap";
+          cap.textContent = (on ? "✔ " : "") + (g14.lib === "poster" ? "🗺 Poster" : "🖼 PPT") + (e.vaiGoiY ? " • vai gợi ý: " + e.vaiGoiY : "") + (e.caption ? " — " + e.caption : "");
+          cell.appendChild(im); cell.appendChild(cap);
+          cell.addEventListener("click", () => toggleSegImage(sg, e));
+          grid14.appendChild(cell);
+        });
+        mbox.appendChild(grid14);
+      });
     }
     wrap.appendChild(mbox);
   }
@@ -3297,7 +3556,7 @@ async function genImageForSegment(i){
     const inGrid = {};
     ordered.forEach(e => { inGrid[e.path] = 1; });
     sg.onlineSel.forEach(p => {
-      if (!inGrid[p]) { const e = onlineLib.filter(x => x.path === p)[0]; if (e) ordered.push(e); }
+      if (!inGrid[p]) { const e = (typeof kc14FindEntry === "function" ? kc14FindEntry(p) : null) || onlineLib.filter(x => x.path === p)[0]; if (e) ordered.push(e); }   /* [KC14] */
     });
     const imgs = [];
     for (const e of ordered) {
@@ -3310,9 +3569,9 @@ async function genImageForSegment(i){
   if (sg.onlinePath) {
     try {
       const img = await loadOnlineImage(sg.onlineUrl || ("../" + sg.onlinePath));
-      assets[i] = { status: "ok", img, source: "online", err: "" };
+      assets[i] = { status: "ok", img, source: "online", err: "", poster: sg.libSrc === "poster" };   /* [KC14] poster -> lia khung khi vẽ */
     } catch (e) {
-      assets[i] = { status: "err", img: null, source: "online", err: "Không tải được hình từ kho SGK online: " + e.message };
+      assets[i] = { status: "err", img: null, source: "online", err: "Không tải được hình từ kho online: " + e.message };
     }
     renderAssetRows(); return assets[i].status === "ok";
   }
@@ -3434,6 +3693,27 @@ function drawCover(ctx, img, scale){
   const w = img.width * s, h = img.height * s;
   ctx.drawImage(img, (W - w) / 2, (H - h) / 2, w, h);
 }
+/* [KC14] Poster NGUYÊN TẤM — khung LIA CHẬM trên cả tấm, không
+   cắt vụn (đúng khuôn "Đặt đúng chỗ" + cách bản dựng tay Bài 8
+   đã làm: lia xuống nhẹ). Poster dọc (đa số): bề ngang vừa
+   khung 16:9, lia từ trên xuống dưới theo tiến độ t của đoạn.
+   Poster ngang: contain + zoom rất chậm 5%. CHỈ dùng t (tiến
+   độ theo đồng hồ tiếng của đoạn) — không dùng giờ thật nên
+   không lệch hình–tiếng (GD13). */
+function drawPosterPan(ctx, img, t){
+  const p = Math.max(0, Math.min(1, Number(t) || 0));
+  const imgRatio = img.width / Math.max(1, img.height);
+  const frameRatio = W / H;
+  if (imgRatio < frameRatio * 0.98) {
+    const w = W, h = img.height * (W / img.width);
+    const overflow = Math.max(0, h - H);
+    ctx.drawImage(img, 0, -overflow * p, w, h);
+  } else {
+    const s = Math.min(W / img.width, H / img.height) * (1 + 0.05 * p);
+    const w = img.width * s, h = img.height * s;
+    ctx.drawImage(img, (W - w) / 2, (H - h) / 2, w, h);
+  }
+}
 function drawContain(ctx, img, x, y, w, h){
   const s = Math.min(w / img.width, h / img.height);
   const dw = img.width * s, dh = img.height * s;
@@ -3469,7 +3749,8 @@ function drawImageSlide1(ctx, sg, asset, t){
   const has = asset && asset.status === "ok" && asset.img;
   if (has && (asset.source === "sgk" || asset.source === "online")) {
     slideBg(ctx);
-    drawContain(ctx, asset.img, 90, 60, W - 180, H - 300);
+    if (asset.poster) drawPosterPan(ctx, asset.img, t);   /* [KC14] poster nguyên tấm -> lia khung chậm */
+    else drawContain(ctx, asset.img, 90, 60, W - 180, H - 300);
   } else if (has) {
     drawCover(ctx, asset.img, 1 + 0.06 * t);
   } else {
@@ -7090,16 +7371,17 @@ function renderKcReviewInto(box){
 
     /* [KC11] Nhãn VAI CẢNH cho truyện: vai theo VỊ TRÍ (mở đầu /
        cảnh truyện / kết KC9) nên đổi thứ tự ▲▼ (KC5) là nhãn tự
-       cập nhật theo vị trí mới. Cảnh mở đầu: nguồn chính danh là
-       poster nguyên tấm — chưa trực tuyến — nên ghi rõ nguồn
-       đang dùng thay thế, không giả vờ đã có poster. */
+       cập nhật theo vị trí mới. Cảnh mở đầu: trong Bài giảng,
+       nguồn chính danh là poster nguyên tấm (đã online từ
+       KC14); Kể Chuyện giữ nguồn hình RIÊNG của nó (mẫu vẽ /
+       SGK / ảnh thầy tải lên) — nhãn ghi rõ để không hiểu nhầm. */
     {
       const kv = kc11SegRole(sg, i, scriptData.segments.length, videoType, true);
       const kSrc = kc11SegSource(sg);
       const kSrcLabel = (KC11_SRC_META[kSrc] || {}).label || "🚫 Chưa có hình";
       const rl = document.createElement("div"); rl.className = "small kc11role"; rl.style.marginTop = "6px";
       if (sg.kcClosing) rl.innerHTML = "🎯 Vai: <b>🏁 Kết — kêu gọi</b> • Nguồn: 🎨 Mẫu vẽ của app — ✅ đúng chỗ: mẫu cảnh kết KC9.";
-      else if (kv === "tong_quan") rl.innerHTML = "🎯 Vai: <b>🧭 Mở đầu</b> • Nguồn: " + escapeHtml(kSrcLabel) + " — vai này chính danh là 🗺 Poster nguyên tấm (chưa trực tuyến), app tạm dùng nguồn này.";
+      else if (kv === "tong_quan") rl.innerHTML = "🎯 Vai: <b>🧭 Mở đầu</b> • Nguồn: " + escapeHtml(kSrcLabel) + " — trong Bài giảng, vai này chính danh là 🗺 Poster nguyên tấm; Kể Chuyện giữ nguồn hình riêng (mẫu vẽ / SGK / ảnh thầy tải lên) nên cảnh mở đầu dùng nguồn này.";
       else rl.innerHTML = "🎯 Vai: <b>🎭 Cảnh truyện</b> • Nguồn: " + escapeHtml(kSrcLabel) + (kSrc === "none" ? " — chưa chọn hình; khi dựng, cảnh này chuyển slide chữ." : ".");
       d.appendChild(rl);
     }
@@ -8236,7 +8518,7 @@ async function buildVideo(){
         if (sg.onlinePath) {
           try {
             const oimg = await loadOnlineImage(sg.onlineUrl || ("../" + sg.onlinePath));
-            assets[i] = { status: "ok", img: oimg, source: "online", err: "" }; usedLib = true;
+            assets[i] = { status: "ok", img: oimg, source: "online", err: "", poster: sg.libSrc === "poster" }; usedLib = true;   /* [KC14] */
           } catch (e) { assets[i] = { status: "skip", img: null, source: "none", err: "" }; }
         } else if (sg.sgkImageId && library.get(sg.sgkImageId) && library.get(sg.sgkImageId).img) {
           assets[i] = { status: "ok", img: library.get(sg.sgkImageId).img, source: "sgk", err: "" }; usedLib = true;
@@ -8637,6 +8919,7 @@ function kc13ApplyUnlocked(){
   const overlay = $("kc13Lock");
   if (overlay) overlay.classList.add("hidden");
   kc13ShowAdminBar();
+  try { kc14LoadLibs(); } catch (e) {}   /* [KC14] vào được studio mới nạp poster-lib + ppt-lib */
 }
 async function kc13LoadPwStep(){
   kc13ShowStep("kc13Step2Load");
@@ -8722,7 +9005,7 @@ function kc13Init(){
   if (decision !== "locked"){
     const overlay = $("kc13Lock");
     if (overlay) overlay.classList.add("hidden");
-    if (decision === "session") kc13ShowAdminBar();
+    if (decision === "session") { kc13ShowAdminBar(); try { kc14LoadLibs(); } catch (e) {} }   /* [KC14] phiên còn hạn -> nạp 2 kho ngay */
     return decision;
   }
   try { document.body.classList.add("kc13-locked"); } catch (e) {}
