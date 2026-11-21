@@ -345,10 +345,10 @@ var INTRO_LINE = "Đội ngũ là các Muse: Đạo diễn Em Yêu Của Thầy 
 
 var MEMBERS = {
   director:    { id: "director",    name: "Em Yêu Của Thầy Khải", short: "Đạo diễn", ava: "EY", role: "Đạo diễn · Điều phối sản xuất — chỉ nhận lệnh từ Giám đốc" },
-  giaoan01:    { id: "giaoan01",    name: "Giáo án 01",   short: "Giáo án 01",   ava: "Gi", role: "Nhân viên soạn KHBD chuẩn CV 5512 · Phòng Giáo Án" },
-  video01:     { id: "video01",     name: "Video 01",     short: "Video 01",     ava: "Vi", role: "Nhân viên viết kịch bản video bài giảng · Phòng Video" },
-  dethi01:     { id: "dethi01",     name: "Đề thi 01",    short: "Đề thi 01",    ava: "Đề", role: "Nhân viên ra dàn đề & chữa đề · Phòng Đề Thi" },
-  kiemdinh01:  { id: "kiemdinh01",  name: "Kiểm định 01", short: "Kiểm định 01", ava: "Ki", role: "Nhân viên rà soát đối chiếu SGK · kiêm Học Liệu" }
+  giaoan01:    { id: "giaoan01",    name: "Mây", short: "Mây", ava: "Mâ", role: "Nhân viên ĐA NĂNG — nhận mọi loại việc do Đạo diễn phân công" },
+  video01:     { id: "video01",     name: "Nắng", short: "Nắng", ava: "Nắ", role: "Nhân viên ĐA NĂNG — nhận mọi loại việc do Đạo diễn phân công" },
+  dethi01:     { id: "dethi01",     name: "Mưa", short: "Mưa", ava: "Mư", role: "Nhân viên ĐA NĂNG — nhận mọi loại việc do Đạo diễn phân công" },
+  kiemdinh01:  { id: "kiemdinh01",  name: "Gió", short: "Gió", ava: "Gi", role: "Nhân viên ĐA NĂNG — nhận mọi loại việc do Đạo diễn phân công" }
 };
 var MEMBER_ORDER = ["director", "giaoan01", "video01", "dethi01", "kiemdinh01"];
 var ROOMS = {
@@ -399,7 +399,7 @@ var DEFAULT_CONTEXT = [
   "",
   "2) GIÁO ÁN / KHBD: theo khung Công văn 5512. Cấu trúc mục tiêu mẫu: I. MỤC TIÊU / 1. Kiến thức / 2. Năng lực (2.1 chung, 2.2 đặc thù, 2.3 Năng lực số, 2.4 Năng lực AI) / 3. Phẩm chất / 4. Nội dung tích hợp. Hoạt động 2 trình bày bảng 2 cột: cột hoạt động ghi rõ GV làm gì / HS làm gì / làm như thế nào theo từng bước; cột sản phẩm tương ứng từng bước, theo đề mục SGK, KHÔNG chép nguyên văn SGK, không dùng câu mẫu chung chung lặp lại. Thẻ tích hợp nằm TRONG hoạt động: 👉 [Tích hợp năng lực số] / 👉 [Tích hợp năng lực AI] / 👉 [Tích hợp khác]. Tài liệu: Times New Roman cỡ 12, tiêu đề mục luôn màu đen, bảng không tô nền, đầu file KHBD chỉ ghi tên tác giả \"Hồ Tấn Khải\" (đậm, tím đậm) — không ghi dòng Sở/Trường.",
   "",
-  "3) VIDEO BÀI GIẢNG — KHUÔN \"ĐẶT ĐÚNG CHỖ\" (một khuôn chung cho mọi video): 7 vai cảnh, mỗi vai một nguồn hình chính danh — Tổng quan mở đầu + Tổng kết = POSTER nguyên tấm (lia khung, không cắt); Gợi mở + Liên hệ thực tế = ảnh đời thật từ slide PPT; Nội dung từng ý = hình SGK đúng số hiệu mà lời đọc nhắc tới; Nhấn mạnh = chữ/sơ đồ vẽ bằng mẫu + dải Ghi nhớ của poster; Cảnh kết = mẫu kêu gọi vào bài học + đăng ký kênh. Cuối mọi video Kể Chuyện có cảnh kết kêu gọi mở SGK đúng bài và đăng ký kênh của thầy. Mọi cảnh đều có chữ ký \"✍️ Thầy Hồ Tấn Khải\". Dựng MP4 thật làm ở app Video Bài Giảng AI; trong công ty này Video 01 chỉ viết KỊCH BẢN/STORYBOARD dạng chữ.",
+  "3) VIDEO BÀI GIẢNG — KHUÔN \"ĐẶT ĐÚNG CHỖ\" (một khuôn chung cho mọi video): 7 vai cảnh, mỗi vai một nguồn hình chính danh — Tổng quan mở đầu + Tổng kết = POSTER nguyên tấm (lia khung, không cắt); Gợi mở + Liên hệ thực tế = ảnh đời thật từ slide PPT; Nội dung từng ý = hình SGK đúng số hiệu mà lời đọc nhắc tới; Nhấn mạnh = chữ/sơ đồ vẽ bằng mẫu + dải Ghi nhớ của poster; Cảnh kết = mẫu kêu gọi vào bài học + đăng ký kênh. Cuối mọi video Kể Chuyện có cảnh kết kêu gọi mở SGK đúng bài và đăng ký kênh của thầy. Mọi cảnh đều có chữ ký \"✍️ Thầy Hồ Tấn Khải\". Dựng MP4 thật làm ở app Video Bài Giảng AI; trong công ty này khâu viết KỊCH BẢN/STORYBOARD làm dạng chữ, dựng MP4 ở app Video.",
   "",
   "4) LUẬT ĐÁP ÁN (tuyệt đối): đáp án lấy từ đề gốc/nguồn thầy cấp thế nào giữ nguyên thế đó. KHÔNG bịa đáp án khi không tìm thấy, KHÔNG tự ý sửa/chọn lại đáp án khi thấy bất thường — việc duy nhất được làm là CẢNH BÁO rõ ràng (câu nào, lỗi gì) để giáo viên tự sửa. Giáo viên là người quyết định cao nhất về đáp án. Khi soạn dàn câu hỏi mà nguồn không có đáp án: ghi \"CHƯA CÓ ĐÁP ÁN — chờ thầy\".",
   "",
@@ -777,7 +777,7 @@ async function geminiGenerate(systemText, turns, opts) {
 /* ---------------- PROMPT VAI ---------------- */
 function directorSystem() {
   return [
-    "Bạn là ĐẠO DIỄN của EduMaster Company — tên của bạn là \"Em Yêu Của Thầy Khải\", trợ lý Muse của thầy Hồ Tấn Khải (Giám đốc). Bạn là Muse, điều phối 4 nhân viên Muse chuyên trách: Giáo án 01 (Phòng Giáo Án), Video 01 (Phòng Video), Đề thi 01 (Phòng Đề Thi), Kiểm định 01 (Phòng Học Liệu + rà soát).",
+    "Bạn là ĐẠO DIỄN của EduMaster Company — tên của bạn là \"Em Yêu Của Thầy Khải\", trợ lý Muse của thầy Hồ Tấn Khải (Giám đốc). Bạn là Muse, điều phối 4 nhân viên Muse ĐA NĂNG: Mây, Nắng, Mưa, Gió — nhân viên nào cũng nhận được mọi loại việc, Đạo diễn phân công theo lượng token còn lại của từng tài khoản.",
     "Xưng hô: bạn xưng \"em\", gọi Giám đốc là \"thầy\". Trả lời tiếng Việt, ngắn gọn, rõ việc, thân thiện. Bạn nắm toàn bộ Hồ sơ chung ở cuối prompt này và PHẢI làm theo.",
     "NHIỆM VỤ CHÍNH: tiếp nhận yêu cầu của Giám đốc, tư vấn/chốt ý, và PHÂN CÔNG VIỆC cho nhân viên bằng cách tạo việc trên Bảng công việc.",
     "KHI Giám đốc yêu cầu làm một việc cụ thể (soạn, viết, rà soát, tóm tắt...), hãy xác nhận ngắn gọn trong lời trả lời VÀ chèn khối hành động theo ĐÚNG định dạng sau (có thể chèn nhiều khối nếu nhiều việc):",
