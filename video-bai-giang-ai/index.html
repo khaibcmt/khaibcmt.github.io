@@ -352,12 +352,8 @@
             <option value="male">👨 MC Nam dẫn chuyện</option>
           </select>
         </div>
-        <div style="flex:1"><label>Nguồn giọng cho truyện</label>
-          <select id="kcVoiceSource">
-            <option value="gemini">Gemini — cần key trong hồ (mặc định)</option>
-            <option value="fpt">FPT.AI — cần key FPT</option>
-            <option value="mix">🔀 Trộn hết (ưu tiên miễn phí trước) — FPT.AI → Gemini</option>
-          </select>
+        <div style="flex:1"><label>🎙 Giọng đọc</label>
+          <div class="small" style="margin-top:6px">Giọng đọc: <b>Gemini</b> (MC Nữ Kore • MC Nam Charon)</div>
         </div>
       </div>
       <div class="small" style="margin-top:8px">Điền xong, thầy bấm nút <b>🎬 TẠO VIDEO</b> phía dưới: app chia cảnh rồi mở màn hình duyệt — ở đó thầy sửa lời từng cảnh, chọn ảnh cho từng cảnh, thêm/xoá cảnh, rồi bấm <b>DỰNG VIDEO</b>.</div>
@@ -430,27 +426,7 @@
         <span class="small" id="jsonMsg"></span>
       </div>
     </details>
-    <div class="row" style="margin-top:14px;align-items:center;gap:10px">
-      <label for="voiceSourceSel" style="font-weight:700;white-space:nowrap">🎙️ Nguồn giọng đọc:</label>
-      <select id="voiceSourceSel" style="flex:1;min-width:240px">
-        <option value="gemini">Gemini (Google) — MC Nữ Kore + MC Nam Charon · cần key · có hạn mức ngày</option>
-        <option value="fpt">FPT.AI (Việt Nam) — MC Nữ miền Nam + MC Nam miền Bắc · cần API key FPT · free 100.000 ký tự/tháng</option>
-        <option value="mix">🔀 Trộn hết (ưu tiên miễn phí trước) — FPT.AI → Gemini, giọng xoay vòng theo từng đoạn</option>
-      </select>
-    </div>
-    <div class="small" id="voiceSourceNote" style="margin-top:6px"></div>
-    <div id="fptKeyBox" style="display:none;margin-top:10px">
-      <label for="fptKeysInput" style="font-weight:700">🔑 Hồ key FPT.AI (chỉ lưu trên máy này)</label>
-      <div class="small" style="margin-top:4px">Dán key FPT vào đây — <b>mỗi key 1 dòng</b>. Dán nhiều key (mỗi key từ một tài khoản / dự án FPT khác nhau) để app <b>tự xoay vòng</b> khi một key cạn ký tự tháng này hoặc bị báo key sai — key hỏng app tự bỏ qua, tự thử key kế tiếp. Ô dán key được <b>che như ô mật khẩu</b>; bấm Lưu là key được cất vào hồ và ô dán tự xoá trắng:</div>
-      <textarea id="fptKeysInput" rows="3" placeholder="Key FPT 1&#10;Key FPT 2&#10;Key FPT 3" autocomplete="off" spellcheck="false" style="font-family:Consolas,monospace;font-size:13px;-webkit-text-security:disc;margin-top:6px"></textarea>
-      <div class="row" style="gap:8px;margin-top:6px">
-        <button class="btn-ghost" id="fptKeySaveBtn" type="button">💾 Lưu Hồ Key FPT</button>
-        <button class="btn-ghost" id="fptKeyResetBtn" type="button">↺ Đặt Lại Trạng Thái Key</button>
-        <button class="btn-ghost" id="toggleFptKeysViewBtn" type="button">👁 Hiện key</button>
-      </div>
-      <div id="fptKeyList" style="margin-top:8px"></div>
-      <div class="small" id="fptUsageNote" style="margin-top:6px"></div>
-    </div>
+    <div class="small" style="margin-top:14px">🎙️ <b>Giọng đọc: Gemini</b> (MC Nữ Kore • MC Nam Charon) — hai giọng luân phiên theo vai, ghim một model duy nhất cho cả lượt dựng, chỉ xoay key trong hồ Gemini.</div>
     <div class="row" style="margin-top:14px">
       <button class="btn-accent" id="buildBtn" style="flex:2;padding:15px;font-size:18px">▶ DỰNG VIDEO NGAY</button>
       <button class="btn-ghost shrink" id="cancelScriptBtn">Huỷ, làm lại</button>
@@ -1447,478 +1423,48 @@ function filterCandsForPin(cands, pin){
   return (cands || []).filter(m => m === pin);
 }
 /*__END_PURE_VOICE__*/
-/*__PURE_MIX__*/
-/* GD16 — NGUỒN "TRỘN HẾT": logic thuần (không DOM). Vai MC giữ luật
-   GD13, giọng của mỗi MC xoay vòng qua các nguồn theo thứ tự ưu tiên
-   MIỄN PHÍ TRƯỚC: FPT (key, free 100.000 ký tự/tháng) -> Gemini (key,
-   quota ngày). [KC3 — 21/11/2026: Edge TTS đã GỠ khỏi vòng xoay theo
-   lệnh thầy — vòng chỉ còn FPT -> Gemini.]
-   (Phần test giọng của GD16 đã GỠ ở GD18 theo lệnh thầy 19/11/2026 —
-   chỉ giữ phần Trộn cho video thật.) */
-const MIX_SOURCE_ORDER = ["fpt", "gemini"];
-const MIX_SOURCE_NAMES = { fpt: "FPT.AI", gemini: "Gemini" };
-/* Nguồn khả dụng cho vòng xoay trộn: FPT/Gemini chỉ vào vòng khi ĐÃ
-   có key tương ứng ([KC3] Edge đã gỡ — không còn nguồn không-key). */
-function mixAvailableSources(has){
-  return MIX_SOURCE_ORDER.filter(s => !!(has && has[s]));
-}
-/* Phân nguồn cho từng đoạn ở chế độ trộn: đếm riêng theo TỪNG MC — đoạn
-   thứ n của một MC dùng nguồn thứ (n mod số nguồn khả dụng) trong vòng. */
-function mixRouteFor(roles, avail){
-  const count = { male: 0, female: 0 };
-  return (roles || []).map(r => {
-    const mc = (r === "male") ? "male" : "female";
-    const n = count[mc]++;
-    return { src: avail.length ? avail[n % avail.length] : "gemini", mc: mc };
-  });
-}
-/* Thứ tự nguồn THỬ cho 1 đoạn ở chế độ trộn: bắt đầu từ nguồn được phân,
-   vòng qua các nguồn khả dụng còn lại (mỗi nguồn tối đa 1 lần). */
-function mixAttemptOrder(assignedSrc, avail){
-  if (!avail || !avail.length) return [assignedSrc];
-  let k = avail.indexOf(assignedSrc);
-  if (k < 0) k = 0;
-  const out = [];
-  for (let j = 0; j < avail.length; j++) out.push(avail[(k + j) % avail.length]);
-  return out;
-}
-/*__END_PURE_MIX__*/
-/*__PURE_KC3__*/
-/* [KC3 — 21/11/2026] CHUỖI GIỌNG DỰ PHÒNG sau khi gỡ Edge: nguồn FPT
-   đang chọn mà CHẾT TOÀN BỘ (0 đoạn có tiếng) và hồ CÓ key Gemini ->
-   tự chuyển Gemini thu lại toàn bộ bước tiếng. Gemini chết toàn bộ ->
-   không còn nguồn lùi (Edge đã gỡ) -> cảnh báo như cũ, vẫn dựng video
-   câm. Chế độ Trộn tự xoay nguồn theo từng đoạn nên không áp ở đây. */
-function kc3ShouldFallback(st){
-  if (!st || st.isMix) return false;
-  if (st.src !== "fpt") return false;
-  if (!st.total || st.ok > 0) return false;
-  return !!st.hasGeminiKey;
-}
-/*__END_PURE_KC3__*/
-/* [KC3 — 21/11/2026] Edge TTS ĐÃ GỠ HOÀN TOÀN theo lệnh thầy ("giờ
-   bỏ giọng Edge đi, nó lỗi rồi"): khối thuần ký token của Edge,
-   client WebSocket Edge và cặp giọng Microsoft đã xoá
-   khỏi app. resolveVoiceSource ở dưới tự di trú giá trị lưu cũ
-   "edge" -> "gemini" để máy nào đang lưu edge cũng không kẹt ở
-   nguồn không còn tồn tại. */
-/* Ánh xạ MC -> tên giọng theo NGUỒN: fpt = cặp giọng FPT.AI,
-   còn lại = cặp Gemini của GD13. ([KC3] nhánh Edge đã gỡ.) */
-const FPT_VOICES = { male: "leminh", female: "lannhi" };
+/* [KC7 — 21/11/2026] FPT.AI ĐÃ GỠ HẲN theo lệnh thầy ("Bỏ luôn key
+   fpt đi !!!"), theo đúng cách KC3 đã gỡ Edge trước đó: xoá UI hồ key,
+   client TTS của FPT, vòng xoay Trộn (GD16), chuỗi dự phòng
+   FPT -> Gemini (KC3) và bộ đếm ký tự. App nay chỉ còn MỘT nguồn
+   giọng: Gemini — MC Nữ Kore / MC Nam Charon, luật 1 model/lượt +
+   xoay key trong hồ Gemini giữ nguyên như GD13. */
+/* Ánh xạ MC -> tên giọng Gemini. Tham số source giữ lại cho các điểm
+   gọi cũ — mọi nguồn nay đều là Gemini. */
 function mcVoiceNameFor(source, mc){
-  if (source === "fpt") return FPT_VOICES[mc] || FPT_VOICES.female;
   return MC_VOICES[mc] || MC_VOICES.female;
 }
-/* Nguồn giọng hợp lệ: "fpt" | "mix" | mặc định "gemini".
-   [KC3] Di trú: giá trị "edge" đã lưu từ trước (vbg_voice_source /
-   vbg_kc_voice_source) tự rơi về "gemini" vì Edge đã gỡ khỏi app. */
+/* Nguồn giọng hợp lệ: chỉ còn "gemini". Di trú: giá trị đã lưu từ
+   trước ("edge" / "fpt" / "mix" trong vbg_voice_source /
+   vbg_kc_voice_source) tự rơi về "gemini" để máy nào cũng không kẹt
+   ở nguồn không còn tồn tại. */
 function resolveVoiceSource(saved){
-  if (saved === "fpt") return "fpt";
-  if (saved === "mix") return "mix";
   return "gemini";
 }
-/* Hạn mức gói miễn phí FPT.AI: 100.000 ký tự/tháng (theo FPT công bố). */
-const FPT_MONTHLY_FREE_CHARS = 100000;
-/* Khoá localStorage đếm ký tự theo tháng: vbg_fpt_usage_<năm>-<tháng>. */
-function fptUsageKeyFor(date){
-  return "vbg_fpt_usage_" + date.getFullYear() + "-" + String(date.getMonth() + 1).padStart(2, "0");
-}
-function fptUsageLevel(used){
-  if (used >= FPT_MONTHLY_FREE_CHARS) return "over";
-  if (used >= FPT_MONTHLY_FREE_CHARS * 0.8) return "warn";
-  return "ok";
-}
-/* Poll link async của FPT tới khi file sẵn sàng: fetchFn(url) -> {status, buf?};
-   HTTP 200 + có buf = xong; 403/404 = file chưa kịp tạo (FPT báo 5 giây –
-   2 phút tuỳ độ dài) -> chờ tiếp; quá số lượt -> ném lỗi. sleepFn tiêm
-   được để test bằng Node. */
-async function fptPollUntilReady(fetchFn, url, opts){
-  const o = opts || {};
-  const tries = o.tries || 40;
-  const intervalMs = o.intervalMs || 3000;
-  const sleep = o.sleepFn || (ms => new Promise(r => setTimeout(r, ms)));
-  let last = null;
-  for (let t = 0; t < tries; t++){
-    try {
-      const r = await fetchFn(url);
-      if (r && r.status === 200 && r.buf && r.buf.length) return r;
-      last = r;
-    } catch (e) { last = { status: 0, error: e }; }
-    if (t < tries - 1) await sleep(intervalMs);
-  }
-  throw new Error("Chờ file quá lâu (" + Math.round(tries * intervalMs / 1000) + " giây) mà FPT.AI chưa tạo xong file.");
-}
-/*__PURE_FPTPOOL__*/
-/* GD19 — HỒ KEY FPT XOAY VÒNG: logic thuần (không DOM).
-   Hồ gồm nhiều key; mỗi lượt gọi FPT lấy key kế tiếp theo vòng trong số
-   key còn KHẢ DỤNG (chưa cạn ký tự tháng này, chưa bị FPT báo key sai).
-   Đếm ký tự TÁCH THEO TỪNG KEY: khoá localStorage =
-   vbg_fpt_usage_<năm>-<tháng>_<mã băm ngắn của key> — chỉ lưu mã băm,
-   tuyệt đối không lưu key thô vào tên khoá. */
-/* Mã băm FNV-1a 32-bit của key -> 8 ký tự hex. Chỉ để phân biệt key trong
-   tên khoá đếm ký tự, KHÔNG phải mã hoá bảo mật. */
-function fptKeyHash(key){
-  const s = String(key || "");
-  let h = 0x811c9dc5;
-  for (let i = 0; i < s.length; i++){
-    h ^= s.charCodeAt(i);
-    h = Math.imul(h, 0x01000193);
-  }
-  return ("0000000" + (h >>> 0).toString(16)).slice(-8);
-}
-function fptUsageKeyForKey(key, date){
-  return fptUsageKeyFor(date) + "_" + fptKeyHash(key);
-}
-/* Tách văn bản dán vào hồ: mỗi dòng 1 key, bỏ dòng trống, khử trùng giữ
-   đúng thứ tự dán. */
-function fptPoolParse(text){
-  const out = [];
-  String(text == null ? "" : text).split(/\r?\n/).forEach(line => {
-    const k = line.trim();
-    if (k && out.indexOf(k) < 0) out.push(k);
-  });
-  return out;
-}
-/* Nhãn tháng ("2026-11") — dấu "cạn" của một key chỉ có hiệu lực trong
-   đúng tháng bị cạn, sang tháng sau tự hết hiệu lực. */
-function fptMonthTag(date){
-  const d = date || new Date();
-  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0");
-}
-/* Key còn khả dụng không: state = {st:'ok'|'quota'|'err', mk:'<tháng>'};
-   'err' (FPT báo key sai, HTTP 401) = hỏng hẳn; 'quota' chỉ chặn trong
-   tháng mk; ký tự app đã đếm cho key trong tháng >= mức miễn phí = cạn. */
-function fptKeyUsable(state, usedChars, curMonthTag){
-  if (state && state.st === "err") return false;
-  if (state && state.st === "quota" && state.mk === curMonthTag) return false;
-  if ((usedChars || 0) >= FPT_MONTHLY_FREE_CHARS) return false;
-  return true;
-}
-/* Chỉ số key khả dụng KẾ TIẾP theo vòng xoay, bắt đầu từ fromIdx, bỏ qua
-   các chỉ số đã đánh dấu trong exclude. usedByHash tra cứu theo
-   fptKeyHash(key). Trả -1 khi không còn key nào khả dụng. */
-function fptPoolNextIndex(pool, states, usedByHash, fromIdx, exclude, curMonthTag){
-  const n = (pool || []).length;
-  if (!n) return -1;
-  const start = (((fromIdx || 0) % n) + n) % n;
-  for (let step = 0; step < n; step++){
-    const i = (start + step) % n;
-    if (exclude && exclude[i]) continue;
-    const used = usedByHash ? (usedByHash[fptKeyHash(pool[i])] || 0) : 0;
-    if (fptKeyUsable(states ? states[i] : null, used, curMonthTag)) return i;
-  }
-  return -1;
-}
-/* Phân loại lỗi FPT theo HTTP status + thông điệp:
-   'quota' = hết hạn mức (HTTP 429, hoặc thông điệp nhắc quota/limit/hết
-   mức); 'auth' = key sai / không có quyền (HTTP 401, 403); 'other' =
-   lỗi còn lại (mạng, máy chủ, tải file...) — không đổ tội cho key. */
-function fptClassifyError(status, message){
-  const msg = String(message || "");
-  if (status === 429) return "quota";
-  if (/quota|limit|exceed|insufficient|balance|credit|hết hạn mức|hết ký tự|vượt mức/i.test(msg)) return "quota";
-  if (status === 401 || status === 403) return "auth";
-  return "other";
-}
-/*__END_PURE_FPTPOOL__*/
-/* ---- GD14: trạng thái nguồn giọng (phần cần trình duyệt) ---- */
+/* ---- [KC7] Nguồn giọng: chỉ còn Gemini ---- */
 let voiceSource = "gemini";
 try { voiceSource = resolveVoiceSource(localStorage.getItem("vbg_voice_source")); } catch (e) {}
-/* [KC3] Trạng thái ngắt mạch riêng của Edge đã gỡ cùng client Edge. */
+/* [KC7] Dọn rác hồ FPT trên máy: xoá các khoá localStorage của hồ key
+   FPT (danh sách key, key đơn cũ GD14, trạng thái key, các bộ đếm ký
+   tự theo tháng) để không còn dữ liệu thừa của nguồn đã gỡ. */
+try {
+  localStorage.removeItem("vbg_fpt_keys");
+  localStorage.removeItem("vbg_fpt_key");
+  localStorage.removeItem("vbg_fpt_key_states");
+  Object.keys(localStorage).filter(k => k.indexOf("vbg_fpt_usage_") === 0)
+    .forEach(k => localStorage.removeItem(k));
+} catch (e) {}
 function currentMcVoiceName(mc){ return mcVoiceNameFor(voiceSource, mc); }
-/* Model-tag dùng cho cache giọng của lượt gọi hiện tại: FPT tách hẳn
-   cache theo tag "fpt-tts"; Gemini giữ nguyên luật ghim model GD13. */
-function ttsWantModel(){ return voiceSource === "fpt" ? "fpt-tts" : ttsPinModel; }
-function mp3ToAudioBuffer(mp3Bytes){
-  const ab = mp3Bytes.buffer.slice(mp3Bytes.byteOffset, mp3Bytes.byteOffset + mp3Bytes.byteLength);
-  return audioCtx().decodeAudioData(ab);
-}
-function renderVoiceSourceNote(){
-  const sel = $("voiceSourceSel");
-  if (sel && sel.value !== voiceSource) sel.value = voiceSource;
-  const note = $("voiceSourceNote");
-  if (!note) return;
-  if (voiceSource === "fpt"){
-    note.innerHTML = "🇻🇳 Đang dùng <b>FPT.AI</b>: MC Nữ <b>Lan Nhi (miền Nam)</b> + MC Nam <b>Lê Minh (miền Bắc)</b> — FPT chưa có giọng nam miền Nam. Cần dán key FPT vào HỒ KEY ở khung riêng phía trên — dán nhiều key (mỗi key một tài khoản / dự án FPT khác nhau) app sẽ tự xoay vòng, key cạn/hỏng tự bỏ qua. Gói miễn phí 100.000 ký tự/tháng MỖI key; app đếm ký tự riêng từng key ngay dưới đây.";
-  } else if (voiceSource === "mix"){
-    note.innerHTML = "🔀 Đang dùng <b>Trộn hết (ưu tiên miễn phí trước)</b>: giọng của mỗi MC <b>xoay vòng theo từng đoạn</b> qua <b>FPT.AI</b> (free 100.000 ký tự/tháng mỗi key, cần key FPT ở HỒ KEY phía trên — app tự xoay vòng các key) → <b>Gemini</b> (key, hạn mức ngày). Nguồn nào <b>chưa có key thì tự loại khỏi vòng xoay</b>; đoạn nào lỗi ở một nguồn, app tự thử nguồn kế tiếp cho đoạn đó và ghi nhận cuối lượt dựng.";
-  } else {
-    note.innerHTML = "";
-  }
-  const fptBox = $("fptKeyBox");
-  if (fptBox) fptBox.style.display = (voiceSource === "fpt" || voiceSource === "mix") ? "" : "none";
-}
-function setVoiceSource(src){
-  voiceSource = resolveVoiceSource(src);
-  try { localStorage.setItem("vbg_voice_source", voiceSource); } catch (e) {}
-  /* Đổi nguồn giữa chừng: xoá audio đã thu theo nguồn cũ (cache theo giọng
-     trong IndexedDB vẫn giữ, dựng lại đoạn nào có cache thì không tốn lượt). */
-  if (typeof building === "undefined" || !building){
-    if (typeof scriptData !== "undefined" && scriptData && typeof renderAssetRows === "function"){
-      audios = {};
-      renderAssetRows();
-    }
-  }
-  renderVoiceSourceNote();
-}
-if ($("voiceSourceSel")) $("voiceSourceSel").addEventListener("change", e => setVoiceSource(e.target.value));
-renderVoiceSourceNote();
+/* Model-tag dùng cho cache giọng của lượt gọi hiện tại: model Gemini
+   đang ghim của lượt dựng (GD13); ngoài lượt dựng là null. */
+function ttsWantModel(){ return ttsPinModel; }
 
-/* ---- GD14 + GD19: FPT.AI — client + HỒ KEY XOAY VÒNG + đếm ký tự
-   tháng TÁCH THEO TỪNG KEY (phần cần trình duyệt) ---- */
-let fptPool = [];         // mảng các key FPT (string)
-let fptKeyStates = [];    // mảng song song: {st:'ok'|'quota'|'err', note:'', at:'', mk:''}
-let fptPoolIdx = 0;       // con trỏ xoay vòng: key sẽ được thử trước ở lượt gọi kế tiếp
-function saveFptPool(){
-  try {
-    localStorage.setItem("vbg_fpt_keys", JSON.stringify(fptPool));
-    localStorage.setItem("vbg_fpt_key_states", JSON.stringify(fptKeyStates));
-  } catch (e) { /* localStorage đầy/tắt — hồ vẫn chạy trong phiên này */ }
-}
-function loadFptPool(){
-  try { fptPool = JSON.parse(localStorage.getItem("vbg_fpt_keys") || "[]"); } catch (e) { fptPool = []; }
-  if (!Array.isArray(fptPool)) fptPool = [];
-  fptPool = fptPool.map(k => String(k || "").trim()).filter(Boolean);
-  fptPool = fptPool.filter((k, i) => fptPool.indexOf(k) === i);
-  if (!fptPool.length){
-    /* Di trú GD19: key đơn cũ trong vbg_fpt_key (GD14) tự thành key đầu
-       tiên của hồ; số ký tự tháng này đã đếm dồn cho key đơn cũng chuyển
-       theo đúng key đó để không mất dấu đã dùng. */
-    let old = "";
-    try { old = (localStorage.getItem("vbg_fpt_key") || "").trim(); } catch (e) {}
-    if (old) {
-      fptPool = [old];
-      try {
-        const agg = localStorage.getItem(fptUsageKeyFor(new Date()));
-        if (agg && !localStorage.getItem(fptUsageKeyForKey(old, new Date())))
-          localStorage.setItem(fptUsageKeyForKey(old, new Date()), agg);
-      } catch (e) {}
-    }
-  }
-  try { fptKeyStates = JSON.parse(localStorage.getItem("vbg_fpt_key_states") || "[]"); } catch (e) { fptKeyStates = []; }
-  if (!Array.isArray(fptKeyStates)) fptKeyStates = [];
-  while (fptKeyStates.length < fptPool.length) fptKeyStates.push({ st: "ok", note: "", at: "", mk: "" });
-  fptKeyStates.length = fptPool.length;
-  if (fptPoolIdx >= fptPool.length) fptPoolIdx = 0;
-  if (fptPool.length) saveFptPool();
-}
-loadFptPool();
-/* Hàm DUY NHẤT để mọi nơi trong app hỏi về key FPT (GD19): hồ còn key
-   không / còn key khả dụng không / đếm ký tự — không nơi nào đọc thẳng
-   biến hồ nữa. */
-function fptHasKey(){ return fptPool.length > 0; }
-function fptUsedCharsForKey(key){
-  try { return parseInt(localStorage.getItem(fptUsageKeyForKey(key, new Date())) || "0", 10) || 0; } catch (e) { return 0; }
-}
-function fptUsedChars(){
-  /* Tổng ký tự tháng này của CẢ hồ (giữ tên hàm GD14 cho nơi hiển thị). */
-  return fptPool.reduce((s, k) => s + fptUsedCharsForKey(k), 0);
-}
-function fptUsedByHash(){
-  const m = {};
-  fptPool.forEach(k => { m[fptKeyHash(k)] = fptUsedCharsForKey(k); });
-  return m;
-}
-function fptHasUsableKey(){
-  return fptPoolNextIndex(fptPool, fptKeyStates, fptUsedByHash(), 0, null, fptMonthTag()) >= 0;
-}
-/* Chọn chỉ số key cho lượt gọi KẾ TIẾP: xoay vòng từ con trỏ fptPoolIdx,
-   bỏ qua key cạn/hỏng và các key trong exclude (đã thử hỏng ở lượt này). */
-function fptPickKeyIndex(exclude){
-  return fptPoolNextIndex(fptPool, fptKeyStates, fptUsedByHash(), fptPoolIdx, exclude || null, fptMonthTag());
-}
-function fptMarkKey(idx, st, note){
-  if (!fptKeyStates[idx]) fptKeyStates[idx] = { st: "ok", note: "", at: "", mk: "" };
-  fptKeyStates[idx].st = st;
-  fptKeyStates[idx].note = note || "";
-  fptKeyStates[idx].at = new Date().toLocaleString("vi-VN");
-  fptKeyStates[idx].mk = fptMonthTag();
-  saveFptPool();
-  renderFptKeyList();
-}
-let fptConsecutiveFails = 0;   /* số lượt gọi FPT lỗi LIÊN TIẾP trong lượt dựng */
-let fptBuildDown = false;      /* đã ngắt mạch FPT trong lượt dựng này */
-function noteFptFailure(){
-  fptConsecutiveFails++;
-  if (typeof building !== "undefined" && building && fptConsecutiveFails >= 2) fptBuildDown = true;
-}
-async function fetchWithTimeout(url, opts, timeoutMs){
-  const ctl = new AbortController();
-  const t = setTimeout(() => ctl.abort(), timeoutMs || 20000);
-  try { return await fetch(url, Object.assign({}, opts || {}, { signal: ctl.signal })); }
-  catch (e) {
-    if (e && e.name === "AbortError") throw new Error("Quá thời gian chờ (" + Math.round((timeoutMs || 20000) / 1000) + " giây) khi tải dữ liệu.");
-    throw e;
-  } finally { clearTimeout(t); }
-}
-function fptAddUsage(key, n){
-  try { localStorage.setItem(fptUsageKeyForKey(key, new Date()), String(fptUsedCharsForKey(key) + (n || 0))); } catch (e) {}
-  renderFptUsageNote();
-  renderFptKeyList();
-}
-function renderFptUsageNote(){
-  const el = $("fptUsageNote");
-  if (!el) return;
-  if (!fptPool.length){
-    el.innerHTML = "📊 Hồ key FPT đang rỗng — thầy dán ít nhất 1 key FPT vào ô trên rồi bấm <b>Lưu Hồ Key FPT</b>. Gói miễn phí của FPT: <b>" + FPT_MONTHLY_FREE_CHARS.toLocaleString("vi-VN") + " ký tự/tháng cho MỖI key</b> (tính theo tài khoản / dự án của key đó).";
-    return;
-  }
-  const used = fptUsedChars();
-  const cap = fptPool.length * FPT_MONTHLY_FREE_CHARS;
-  const overN = fptPool.filter(k => fptUsedCharsForKey(k) >= FPT_MONTHLY_FREE_CHARS).length;
-  const warnN = fptPool.filter(k => { const u = fptUsedCharsForKey(k); return u >= FPT_MONTHLY_FREE_CHARS * 0.8 && u < FPT_MONTHLY_FREE_CHARS; }).length;
-  el.innerHTML = "📊 Ký tự FPT.AI đã dùng trong tháng (app tự đếm RIÊNG TỪNG KEY = tổng số ký tự của mọi đoạn ĐÃ GỬI cho FPT bằng key đó, tính cả lượt FPT báo lỗi sau khi đã nhận yêu cầu; đoạn lấy từ cache giọng thì không tốn ký tự): cả hồ <b>" +
-    used.toLocaleString("vi-VN") + "</b> / " + cap.toLocaleString("vi-VN") + " ký tự miễn phí (" + fptPool.length + " key × " + FPT_MONTHLY_FREE_CHARS.toLocaleString("vi-VN") + ")" +
-    (overN ? " — <b>⚠️ " + overN + " key đã cạn mức miễn phí tháng này</b>, app tự bỏ qua các key đó khi xoay vòng." : "") +
-    (warnN ? " — ⚠️ " + warnN + " key đã dùng ≥80% mức miễn phí." : ".");
-}
-function renderFptKeyList(){
-  renderFptUsageNote();
-  const box = $("fptKeyList");
-  if (!box) return;
-  if (!fptPool.length){
-    box.innerHTML = '<div class="small">Hồ FPT đang rỗng — thầy dán ít nhất 1 key vào ô trên rồi bấm <b>Lưu Hồ Key FPT</b>.</div>';
-    return;
-  }
-  const tag = fptMonthTag();
-  let h = '<div class="small" style="font-weight:700;margin-bottom:4px">Hồ FPT có ' + fptPool.length + ' key — tổng đã dùng tháng này: ' + fptUsedChars().toLocaleString("vi-VN") + ' ký tự</div>';
-  fptPool.forEach((k, i) => {
-    const s = fptKeyStates[i] || { st: "ok", note: "", at: "", mk: "" };
-    const used = fptUsedCharsForKey(k);
-    const lvl = fptUsageLevel(used);
-    let dot = "🟢", txt = "Sẵn sàng";
-    if (s.st === "err"){ dot = "🔴"; txt = "Key hỏng — FPT báo key sai" + (s.note ? " (" + escapeHtml(s.note) + ")" : ""); }
-    else if (s.st === "quota" && s.mk === tag){ dot = "🟡"; txt = "Đã cạn hạn mức tháng này" + (s.note ? " (" + escapeHtml(s.note) + ")" : ""); }
-    else if (lvl === "over"){ dot = "🟡"; txt = "Đã dùng hết mức miễn phí app đếm tháng này"; }
-    else if (lvl === "warn"){ dot = "🟡"; txt = "Sắp cạn (đã dùng ≥80%)"; }
-    h += '<div class="row" style="align-items:center;margin-top:4px">'
-       + '<span style="flex:1">' + dot + " <b>Key FPT #" + (i + 1) + "</b> · " + escapeHtml(maskKey(k)) + " · " + txt + " · đã dùng <b>" + used.toLocaleString("vi-VN") + "</b>/" + FPT_MONTHLY_FREE_CHARS.toLocaleString("vi-VN") + " ký tự" + (i === fptPoolIdx ? " · <b>⭐ lượt kế tiếp</b>" : "") + "</span>"
-       + '<button class="btn-ghost shrink" data-delfptkey="' + i + '">✖ Xoá</button></div>';
-  });
-  box.innerHTML = h;
-  box.querySelectorAll("[data-delfptkey]").forEach(b => b.addEventListener("click", () => {
-    const i = parseInt(b.dataset.delfptkey, 10);
-    fptPool.splice(i, 1); fptKeyStates.splice(i, 1);
-    if (fptPoolIdx >= fptPool.length) fptPoolIdx = 0;
-    saveFptPool(); renderFptKeyList();
-  }));
-}
-/* Một lượt đọc FPT bằng ĐÚNG một key: POST bất đồng bộ -> poll URL MP3
-   -> tải về. Lỗi được gắn fptKind ('quota'|'auth'|'other') theo phân
-   loại thuần để tầng xoay vòng quyết định có thử key kế tiếp hay không. */
-async function fptSynthesizeWithKey(text, voice, key){
-  let resp;
-  try {
-    resp = await fetchWithTimeout("https://api.fpt.ai/hmi/tts/v5", {
-      method: "POST",
-      headers: { "api-key": key, "api_key": key, "voice": voice },
-      body: text
-    }, 30000);
-  } catch (e) {
-    throw new Error("Không gọi được FPT.AI (" + e.message + ") — kiểm tra mạng rồi thử lại.");
-  }
-  fptAddUsage(key, text.length);   /* FPT đã nhận yêu cầu -> tính ký tự ngay cho ĐÚNG key vừa gửi */
-  let data = null;
-  try { data = await resp.json(); } catch (e) {}
-  const msg = (data && data.message) ? String(data.message) : "";
-  if (!resp.ok) {
-    const err = new Error("FPT.AI trả lỗi HTTP " + resp.status + (msg ? " — " + msg : "") + ".");
-    err.fptKind = fptClassifyError(resp.status, msg);
-    throw err;
-  }
-  if (!data || data.error !== 0 || !data.async) {
-    const err = new Error("FPT.AI từ chối yêu cầu" + (msg ? ": " + msg : "") + ".");
-    err.fptKind = fptClassifyError(resp.status, msg);
-    throw err;
-  }
-  let got = null;
-  try {
-    got = await fptPollUntilReady(async (u) => {
-      const r = await fetchWithTimeout(u, {}, 20000);
-      if (r.ok) return { status: r.status, buf: new Uint8Array(await r.arrayBuffer()) };
-      return { status: r.status };
-    }, data.async, {});
-  } catch (e) {
-    throw new Error("Không tải được file MP3 từ link của FPT.AI (" + e.message + "). Nếu lỗi là 'Failed to fetch' thì có thể máy chủ file của FPT chưa mở CORS cho trình duyệt — thầy báo lại em để xử lý tiếp.");
-  }
-  if (!got || !got.buf || !got.buf.length) throw new Error("File MP3 FPT.AI trả về rỗng.");
-  return got.buf;
-}
-/* Đọc một đoạn/cụm bằng FPT.AI với HỒ KEY XOAY VÒNG (GD19):
-   - Mỗi lượt gọi lấy key khả dụng kế tiếp theo vòng (round-robin).
-   - Key bị báo hết hạn mức -> đánh dấu "cạn tháng này", thử lại CHÍNH
-     đoạn đó bằng key kế tiếp; key sai (401) -> đánh dấu hỏng, bỏ qua.
-   - Mọi key đều cạn/hỏng -> ném lỗi gộp rõ ràng (hành vi như GD14 khi
-     FPT hết đường: đoạn im lặng; ở chế độ Trộn, tầng Trộn tự rơi xuống
-     nguồn kế tiếp theo luật GD16). */
-async function fptSynthesize(text, voice){
-  if (!text || text.trim().length < 3) throw new Error("Đoạn đọc quá ngắn cho FPT.AI (tối thiểu 3 ký tự).");
-  if (text.length > 5000) throw new Error("Đoạn đọc dài hơn 5.000 ký tự — vượt giới hạn 1 yêu cầu của FPT.AI.");
-  if (!fptPool.length) throw new Error("Chưa có API key FPT.AI — thầy dán key vào khung 'Hồ key FPT.AI' ngay dưới bộ chọn nguồn giọng (lấy miễn phí ở console.fpt.ai → Text to Speech) rồi bấm Lưu Hồ Key FPT.");
-  const tried = {};
-  let lastErr = null, quotaN = 0, authN = 0;
-  while (true) {
-    const idx = fptPickKeyIndex(tried);
-    if (idx < 0) break;
-    tried[idx] = true;
-    try {
-      const buf = await fptSynthesizeWithKey(text, voice, fptPool[idx]);
-      fptPoolIdx = (idx + 1) % fptPool.length;   /* xoay vòng: lượt gọi sau bắt đầu ở key kế tiếp */
-      return buf;
-    } catch (e) {
-      lastErr = e;
-      if (e && e.fptKind === "quota"){ fptMarkKey(idx, "quota", e.message); quotaN++; continue; }
-      if (e && e.fptKind === "auth"){ fptMarkKey(idx, "err", e.message); authN++; continue; }
-      throw e;
-    }
-  }
-  if (lastErr && (quotaN || authN)) {
-    throw new Error("FPT.AI: cả " + fptPool.length + " key trong hồ đều không dùng được lúc này (" +
-      (quotaN ? quotaN + " key hết hạn mức tháng này" : "") + (quotaN && authN ? ", " : "") +
-      (authN ? authN + " key bị báo key sai" : "") + "). Lỗi gần nhất: " + lastErr.message);
-  }
-  throw new Error("FPT.AI: không còn key khả dụng trong hồ — các key đều đã cạn ký tự miễn phí tháng này hoặc đang bị đánh dấu key sai. Thầy thêm key FPT khác vào hồ, bấm Đặt Lại Trạng Thái Key nếu key đã được sửa, hoặc chờ sang tháng sau.");
-}
-if ($("fptKeySaveBtn")) $("fptKeySaveBtn").addEventListener("click", () => {
-  const lines = fptPoolParse($("fptKeysInput").value);
-  let added = 0;
-  lines.forEach(k => {
-    if (fptPool.indexOf(k) < 0){ fptPool.push(k); fptKeyStates.push({ st: "ok", note: "", at: "", mk: "" }); added++; }
-  });
-  if (fptPoolIdx >= fptPool.length) fptPoolIdx = 0;
-  saveFptPool();
-  $("fptKeysInput").value = "";   /* xoá trắng ô dán — key đầy đủ không ở lại trên màn hình */
-  renderFptKeyList();
-  const b = $("fptKeySaveBtn");
-  const old = b.textContent;
-  b.textContent = fptPool.length ? "✅ Đã lưu hồ " + fptPool.length + " key" + (added ? " (thêm mới " + added + ")" : "") : "⚠️ Hồ vẫn rỗng";
-  setTimeout(() => { b.textContent = old; }, 1600);
-});
-if ($("fptKeyResetBtn")) $("fptKeyResetBtn").addEventListener("click", () => {
-  fptKeyStates = fptPool.map(() => ({ st: "ok", note: "", at: "", mk: "" }));
-  saveFptPool(); renderFptKeyList();
-});
-let fptKeysVisible = false;
-if ($("toggleFptKeysViewBtn")) $("toggleFptKeysViewBtn").addEventListener("click", () => {
-  fptKeysVisible = !fptKeysVisible;
-  $("fptKeysInput").style.webkitTextSecurity = fptKeysVisible ? "none" : "disc";
-  $("toggleFptKeysViewBtn").textContent = fptKeysVisible ? "🙈 Ẩn key" : "👁 Hiện key";
-});
-renderFptKeyList();
 
 /* Trạng thái giọng của LƯỢT DỰNG đang chạy (ngoài lượt dựng đều null/
    false → hành vi xoay model cũ cho các nút lẻ như "Thử lại tiếng"). */
 let ttsPinModel = null;
 let ttsBuildExhausted = false;
 let buildMcRoles = null;
-/* GD16: định tuyến giọng theo TỪNG ĐOẠN cho lượt dựng đang chạy —
-   buildSegRoutes[i] = { src, mc } ghi đè nguồn toàn cục cho đoạn i
-   (chế độ Trộn). Ngoài chế độ đó luôn null -> hành vi cũ nguyên vẹn. */
-let buildSegRoutes = null;
-function segRouteFor(i){
-  if (buildSegRoutes && buildSegRoutes[i]) return buildSegRoutes[i];
-  return null;
-}
 function mcRoleForSegment(i){
   if (buildMcRoles && buildMcRoles[i]) return buildMcRoles[i];
   if (typeof scriptData !== "undefined" && scriptData && scriptData.segments)
@@ -6465,7 +6011,6 @@ function initChuade(){
    mẫu giọt nước sáng 21/11): chọn mẫu là có hình ngay, nhân vật giọt
    nước "Tí" nhất quán qua mọi mẫu. Không cần key sinh ảnh.
    ========================================================= */
-let kcSavedVoiceSource = null;
 function kcSky(ctx, top, bot){
   const g = ctx.createLinearGradient(0, 0, 0, H);
   g.addColorStop(0, top); g.addColorStop(1, bot);
@@ -7054,8 +6599,7 @@ async function routeKechuyenCreate(){
       kcSrc: "draw", kcTpl: kcGuessTemplate(s.narration), kcUpload: null
     })),
     _mode: "kechuyen",
-    _kcNarrator: $("kcNarrator").value === "male" ? "male" : "female",
-    _kcVoiceSource: resolveVoiceSource($("kcVoiceSource").value)
+    _kcNarrator: $("kcNarrator").value === "male" ? "male" : "female"
   };
   assets = {}; audios = {};
   $("inputError").innerHTML = "";
@@ -7077,11 +6621,6 @@ function syncKcPanel(){
 function initKc(){
   document.querySelectorAll(".type-chip").forEach(c =>
     c.addEventListener("click", () => setTimeout(syncKcPanel, 0)));
-  const vn = $("kcVoiceSource");
-  if (vn){
-    try { const saved = localStorage.getItem("vbg_kc_voice_source"); if (saved) vn.value = resolveVoiceSource(saved); } catch (e) {}
-    vn.addEventListener("change", () => { try { localStorage.setItem("vbg_kc_voice_source", vn.value); } catch (e) {} });
-  }
   const nr = $("kcNarrator");
   if (nr){
     try { const savedN = localStorage.getItem("vbg_kc_narrator"); if (savedN === "male" || savedN === "female") nr.value = savedN; } catch (e) {}
@@ -7415,7 +6954,6 @@ function kc2BuildScriptData(lesson, entries, narrations){
     _mode: "kechuyen",
     _picked: { subjectCode: lesson.subjectCode, subjectName: lesson.subjectName, grade: lesson.grade, lessonNo: lesson.lessonNo, lessonCode: lesson.lessonCode, topic: lesson.topic, count: lesson.count, entries: lesson.entries },
     _kcNarrator: $("kcNarrator").value === "male" ? "male" : "female",
-    _kcVoiceSource: resolveVoiceSource($("kcVoiceSource").value),
     _kc2Lesson: { subjectCode: lesson.subjectCode, grade: lesson.grade, lessonCode: lesson.lessonCode }
   };
 }
@@ -7643,13 +7181,10 @@ async function genAudioForSegment(i){
     audios[i] = { status: "err", buffer: null, err: "Đoạn này không có lời đọc." };
     renderAssetRows(); return false;
   }
-  const route = segRouteFor(i);
-  const src = route ? route.src : voiceSource;
-  const mc = route ? route.mc : mcRoleForSegment(i);
-  const voice = mcVoiceNameFor(src, mc);
-  /* Cache giọng: lời đọc + giọng (+ model chính khi đang dựng) không đổi → dùng lại, không tốn lượt TTS.
-     GD16: đoạn có định tuyến riêng thì cache vẫn tách theo ĐÚNG nguồn của đoạn đó (tag fpt-tts/model Gemini ghim). */
-  const wantModel = route ? (src === "fpt" ? "fpt-tts" : ttsPinModel) : ttsWantModel();
+  const mc = mcRoleForSegment(i);
+  const voice = mcVoiceNameFor(voiceSource, mc);
+  /* Cache giọng: lời đọc + giọng (+ model chính khi đang dựng) không đổi → dùng lại, không tốn lượt TTS. */
+  const wantModel = ttsWantModel();
   const cached = await ttsCacheLookup(sg.narration, voice, wantModel);
   if (cached) {
     const cbuf = pcmToAudioBuffer(cached.pcm);
@@ -7657,30 +7192,9 @@ async function genAudioForSegment(i){
     audios[i] = { status: "ok", buffer: cbuf, err: "", mc: mc };
     renderAssetRows(); return true;
   }
-  if (src === "gemini" && ttsBuildExhausted && building) {
+  if (ttsBuildExhausted && building) {
     audios[i] = { status: "err", buffer: null, err: "Đã hết hạn mức giọng hôm nay.", mc: mc };
     renderAssetRows(); return false;
-  }
-  if (src === "fpt") {
-    /* GD14: đọc bằng FPT.AI — POST bất đồng bộ -> poll URL MP3 -> tải ->
-       decodeAudioData -> cùng pipeline như Gemini. */
-    if (fptBuildDown && building) {
-      audios[i] = { status: "err", buffer: null, err: "FPT.AI lỗi liên tiếp — đã ngừng gọi trong lượt dựng này.", mc: mc };
-      renderAssetRows(); return false;
-    }
-    try {
-      const mp3 = await fptSynthesize(ttsSpeakText(sg.narration), voice);
-      const abuf = await mp3ToAudioBuffer(mp3);
-      fptConsecutiveFails = 0;
-      applyFadesArr(abuf.getChannelData(0), abuf.sampleRate, 12);   /* fade hai đầu — điểm nối êm */
-      audios[i] = { status: "ok", buffer: abuf, err: "", mc: mc };
-      ttsCacheSave(sg.narration, "fpt-tts", audioBufferToPcmBase64(abuf), voice);
-    } catch (e) {
-      noteFptFailure();
-      audios[i] = { status: "err", buffer: null, err: e.message, mc: mc };
-    }
-    renderAssetRows();
-    return audios[i].status === "ok";
   }
   try {
     const meta = {};
@@ -7745,24 +7259,16 @@ async function genAudioGroup(indices){
   try {
     const meta = {};
     let full = null;
-    if (voiceSource === "fpt") {
-      /* GD14: FPT.AI đọc cả cụm bằng 1 yêu cầu bất đồng bộ. */
-      const mp3 = await fptSynthesize(ttsSpeakText(joined), voice);
-      full = await mp3ToAudioBuffer(mp3);
-      meta.model = "fpt-tts";
-      fptConsecutiveFails = 0;
-    } else {
-      const data = await gemini("tts", {
-        contents: [{ parts: [{ text: joined }] }],
-        generationConfig: {
-          responseModalities: ["AUDIO"],
-          speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } }
-        }
-      }, meta);
-      const inline = firstInline(data);
-      if (!inline) throw new Error("Gemini TTS không trả về âm thanh.");
-      full = pcmToAudioBuffer(inline.data);
-    }
+    const data = await gemini("tts", {
+      contents: [{ parts: [{ text: joined }] }],
+      generationConfig: {
+        responseModalities: ["AUDIO"],
+        speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: voice } } }
+      }
+    }, meta);
+    const inline = firstInline(data);
+    if (!inline) throw new Error("Gemini TTS không trả về âm thanh.");
+    full = pcmToAudioBuffer(inline.data);
     const fch = full.getChannelData(0);
     const totalSamples = fch.length;
     const totalChars = missing.reduce((s, i) => s + scriptData.segments[i].narration.trim().length, 0) || 1;
@@ -7790,7 +7296,6 @@ async function genAudioGroup(indices){
       ttsCacheSave(scriptData.segments[segIdx].narration, meta.model || "", audioBufferToPcmBase64(buf), voice);
     });
   } catch (e) {
-    if (voiceSource === "fpt") noteFptFailure();
     for (const i of missing) await genAudioForSegment(i);   /* cụm lỗi → gọi từng đoạn */
   }
   renderAssetRows();
@@ -8033,10 +7538,6 @@ async function buildVideo(){
     scriptData.segments.forEach((sg, i) => drawSlide(stageCtx, sg, assets[i], 0));
     setStep(3, "done");
 
-    /* [KC3] Trạng thái chuỗi dự phòng FPT -> Gemini của bước 4 (khai
-       báo ngoài khối bước 4 để cuối bước khôi phục được nguồn gốc). */
-    let kc3FellBack = false;
-    let kc3Src0 = null;
     /* BƯỚC 4 — giọng đọc */
     if (demoMode) {
       setStep(4, "skip");
@@ -8052,104 +7553,26 @@ async function buildVideo(){
         buildMcRoles = scriptData.segments.map(() => scriptData._kcNarrator === "male" ? "male" : "female");
       }
       ttsBuildExhausted = false;
-      fptConsecutiveFails = 0; fptBuildDown = false;
-      kc3FellBack = false;
-      kc3Src0 = voiceSource;
-      /* [KC1] Nguồn giọng riêng của chế độ kể chuyện (mặc định Gemini) — áp trong lúc dựng rồi hoàn trả ở cuối bước 4. kcSavedVoiceSource khai báo ở khối KC1 (phạm vi module). */
-      if (scriptData._mode === "kechuyen" && scriptData._kcVoiceSource) {
-        kcSavedVoiceSource = voiceSource;
-        voiceSource = resolveVoiceSource(scriptData._kcVoiceSource);
-      }
-      let mixCtx = null;
-      if (voiceSource === "mix") {
-        /* GD16: TRỘN HẾT (ưu tiên miễn phí trước) — vai MC giữ nguyên
-           luật GD13; GIỌNG của mỗi MC xoay vòng qua các nguồn KHẢ DỤNG
-           theo từng đoạn của MC đó. Nguồn thiếu key bị loại khỏi vòng
-           ngay từ đầu ([KC3] vòng xoay chỉ còn FPT -> Gemini — nguồn nào có key mới vào vòng). */
-        ttsPinModel = keyPool.length ? await pickPrimaryTtsModel() : null;
-        const mixAvail = mixAvailableSources({ fpt: fptHasKey(), gemini: !!keyPool.length });
-        const mixDropped = MIX_SOURCE_ORDER.filter(s => mixAvail.indexOf(s) < 0);
-        buildSegRoutes = mixRouteFor(buildMcRoles, mixAvail);
-        mixCtx = { avail: mixAvail };
-        logWarn("🔀 Video này đọc bằng chế độ <b>Trộn hết (ưu tiên miễn phí trước)</b>: giọng của mỗi MC <b>xoay vòng theo từng đoạn</b> qua " + mixAvail.map(s => "<b>" + MIX_SOURCE_NAMES[s] + "</b>").join(" → ") + " rồi quay lại từ đầu." + (mixDropped.length ? " Nguồn <b>" + mixDropped.map(s => MIX_SOURCE_NAMES[s]).join(", ") + "</b> chưa có key nên đã loại khỏi vòng xoay." : "") + " Đoạn nào lỗi ở một nguồn, app tự thử nguồn kế tiếp cho đoạn đó.");
-      } else if (voiceSource === "fpt") {
-        /* GD14: nguồn FPT.AI — không ghim model Gemini. */
-        ttsPinModel = null;
-        logWarn("🎙️ Video này đọc bằng <b>2 giọng FPT.AI luân phiên theo vai</b> — MC Nam (" + FPT_VOICES.male + ") và MC Nữ (" + FPT_VOICES.female + ") — gói miễn phí 100.000 ký tự/tháng, app tự đếm ký tự đã dùng.");
-      } else {
-        ttsPinModel = await pickPrimaryTtsModel();
-        if (ttsPinModel) logWarn("🎙️ Video này đọc bằng <b>2 giọng Gemini luân phiên theo vai</b> — MC Nam (" + MC_VOICES.male + ") và MC Nữ (" + MC_VOICES.female + ") — trên <b>một model duy nhất: " + ttsPinModel + "</b> (chỉ xoay key, không đổi model giữa chừng).");
-      }
-      if (mixCtx) {
-        /* Trộn: thu TỪNG ĐOẠN theo đúng nguồn đã phân (không gộp qua
-           ranh giới nguồn/giọng); đoạn lỗi ở nguồn được phân thì thử lần
-           lượt các nguồn còn lại trong vòng cho RIÊNG đoạn đó — lỗi
-           không lan sang đoạn sau, mọi lần cứu đều ghi nhận gộp. */
-        const mixFb = [];
-        for (let i = 0; i < scriptData.segments.length; i++) {
-          const tries = mixAttemptOrder(buildSegRoutes[i].src, mixCtx.avail);
-          let usedSrc = null;
-          for (const ts of tries) {
-            buildSegRoutes[i] = { src: ts, mc: buildMcRoles[i] };
-            if (await genAudioForSegment(i)) { usedSrc = ts; break; }
-          }
-          if (usedSrc && usedSrc !== tries[0]) mixFb.push("đoạn " + (i + 1) + ": " + MIX_SOURCE_NAMES[tries[0]] + " lỗi → đã đọc bằng " + MIX_SOURCE_NAMES[usedSrc]);
-          else if (!usedSrc && tries.length > 1) mixFb.push("đoạn " + (i + 1) + ": cả " + tries.length + " nguồn đều lỗi");
-        }
-        if (mixFb.length) logWarn("🔀 <b>Ghi nhận chế độ Trộn:</b> " + mixFb.join("; ") + ". Các đoạn còn lại đọc bình thường theo vòng xoay.");
-      } else {
-        const mcGroups = groupByMc(buildMcRoles, 3);
-        for (const grp of mcGroups) await genAudioGroup(grp);
-      }
-      /* [KC3] CHUỖI DỰ PHÒNG: nguồn FPT đang chọn CHẾT TOÀN BỘ (0 đoạn
-         có tiếng) và hồ có key Gemini -> tự chuyển Gemini thu lại TOÀN
-         BỘ bước tiếng, để video không bị câm như vụ Edge chết sáng
-         21/11/2026. Nguồn gốc được khôi phục ở cuối bước 4 (kc3Src0):
-         chuyển nguồn chỉ cứu lượt dựng này, không đổi lựa chọn của
-         thầy; luật 1 model TTS/lượt dựng vẫn giữ (ghim lại 1 model
-         duy nhất cho lượt thu lại bằng Gemini). */
-      if (!mixCtx && kc3ShouldFallback({ src: voiceSource, total: scriptData.segments.length, ok: scriptData.segments.reduce((n, sg, i) => n + ((audios[i] && audios[i].status === "ok") ? 1 : 0), 0), hasGeminiKey: !!keyPool.length, isMix: false })) {
-        logWarn("⚠️ <b>FPT.AI mất kết nối toàn bộ</b> — không thu được đoạn nào có tiếng. App <b>tự chuyển sang Gemini</b> và thu lại toàn bộ giọng đọc để video không bị câm…");
-        voiceSource = "gemini";
-        kc3FellBack = true;
-        fptConsecutiveFails = 0; fptBuildDown = false;
-        ttsBuildExhausted = false;
-        ttsPinModel = await pickPrimaryTtsModel();
-        if (ttsPinModel) logWarn("🎙️ Thu lại bằng <b>2 giọng Gemini luân phiên theo vai</b> — MC Nam (" + MC_VOICES.male + ") và MC Nữ (" + MC_VOICES.female + ") — trên <b>một model duy nhất: " + ttsPinModel + "</b> (chỉ xoay key, không đổi model giữa chừng).");
-        const mcGroupsRetry = groupByMc(buildMcRoles, 3);
-        for (const grp of mcGroupsRetry) await genAudioGroup(grp);
-      }
-      if (!mixCtx && ttsBuildExhausted) logWarn("🔇 <b>Đã hết hạn mức giọng hôm nay</b> — model giọng chính (" + ttsPinModel + ") đã cạn trên mọi key trong hồ. Các đoạn chưa có tiếng sẽ im lặng " + NO_AUDIO_SECONDS + " giây như trước giờ; thầy thử lại vào ngày mai hoặc thêm key mới vào hồ.");
-      if (!mixCtx && voiceSource === "fpt" && fptBuildDown) logWarn("🔇 <b>FPT.AI lỗi liên tiếp</b> — app đã ngừng gọi thêm trong lượt dựng này. Các đoạn chưa có tiếng sẽ im lặng " + NO_AUDIO_SECONDS + " giây; thầy kiểm tra API key FPT/mạng rồi dựng lại, hoặc đổi nguồn giọng.");
+      /* [KC7] Chỉ còn nguồn Gemini: ghim 1 model TTS chính cho cả
+         lượt dựng (chỉ xoay key) rồi thu theo cụm cùng MC như GD13.
+         Gemini chết toàn bộ -> cảnh báo ở cuối bước như cũ, video
+         vẫn dựng nhưng không có tiếng. */
+      ttsPinModel = await pickPrimaryTtsModel();
+      if (ttsPinModel) logWarn("🎙️ Video này đọc bằng <b>2 giọng Gemini luân phiên theo vai</b> — MC Nam (" + MC_VOICES.male + ") và MC Nữ (" + MC_VOICES.female + ") — trên <b>một model duy nhất: " + ttsPinModel + "</b> (chỉ xoay key, không đổi model giữa chừng).");
+      const mcGroups = groupByMc(buildMcRoles, 3);
+      for (const grp of mcGroups) await genAudioGroup(grp);
+      if (ttsBuildExhausted) logWarn("🔇 <b>Đã hết hạn mức giọng hôm nay</b> — model giọng chính (" + ttsPinModel + ") đã cạn trên mọi key trong hồ. Các đoạn chưa có tiếng sẽ im lặng " + NO_AUDIO_SECONDS + " giây như trước giờ; thầy thử lại vào ngày mai hoặc thêm key mới vào hồ.");
       ttsPinModel = null;
       buildMcRoles = null;
-      buildSegRoutes = null;
       scriptData.segments.forEach((sg, i) => { if (!audios[i] || audios[i].status !== "ok") auErr.push(i + 1); });
-      if (mixCtx) {
-        if (auErr.length === scriptData.segments.length) {
-          setStep(4, "err");
-          logWarn("❌ <b>Không thu được giọng đọc cho đoạn nào</b> ở chế độ Trộn — mọi nguồn trong vòng xoay đều không đọc được (FPT.AI/Gemini thiếu key hoặc lỗi kết nối). Video vẫn sẽ được dựng nhưng <b>KHÔNG có tiếng</b>. Thầy kiểm tra mạng/key rồi dựng lại, hoặc chọn một nguồn giọng cố định.");
-        } else {
-          setStep(4, "done");
-          if (auErr.length) logWarn("⚠️ Các đoạn " + auErr.join(", ") + " không có giọng đọc ở mọi nguồn trong vòng xoay — trong video, các đoạn đó sẽ im lặng " + NO_AUDIO_SECONDS + " giây. Các đoạn còn lại có tiếng bình thường.");
-        }
-      } else if (auErr.length === scriptData.segments.length) {
+      if (auErr.length === scriptData.segments.length) {
         setStep(4, "err");
-        if (kc3FellBack) logWarn("❌ <b>Không thu được giọng đọc cho đoạn nào</b> — FPT.AI đã chết toàn bộ, app đã tự chuyển sang Gemini nhưng Gemini cũng không đọc được (hết hạn mức giọng hôm nay hoặc lỗi mạng). Video vẫn sẽ được dựng nhưng <b>KHÔNG có tiếng</b>. Thầy kiểm tra lại key hoặc thử lại sau.");
-        else if (voiceSource === "fpt") logWarn("❌ <b>Không thu được giọng đọc cho đoạn nào</b> — FPT.AI không đọc được (thiếu/sai API key, hết ký tự miễn phí tháng này, hoặc lỗi mạng) và hồ không có key Gemini để tự chuyển nguồn dự phòng. Video vẫn sẽ được dựng nhưng <b>KHÔNG có tiếng</b>. Thầy kiểm tra key FPT ở mục Nguồn giọng đọc hoặc đổi nguồn rồi dựng lại.");
-        else logWarn("❌ <b>Không thu được giọng đọc cho đoạn nào</b> (có thể đã hết hạn mức TTS miễn phí hôm nay). Video vẫn sẽ được dựng nhưng <b>KHÔNG có tiếng</b>. Thầy kiểm tra lại key hoặc thử lại sau.");
+        logWarn("❌ <b>Không thu được giọng đọc cho đoạn nào</b> (có thể đã hết hạn mức TTS miễn phí hôm nay). Video vẫn sẽ được dựng nhưng <b>KHÔNG có tiếng</b>. Thầy kiểm tra lại key hoặc thử lại sau.");
       } else {
         setStep(4, "done");
-        if (kc3FellBack) logWarn("✅ <b>Chuyển nguồn dự phòng thành công:</b> FPT.AI chết toàn bộ nhưng <b>Gemini đã thu được " + (scriptData.segments.length - auErr.length) + "/" + scriptData.segments.length + " đoạn</b> — video có tiếng bình thường. (Nguồn giọng thầy đã chọn vẫn giữ nguyên cho lần dựng sau.)");
-        if (auErr.length) logWarn("⚠️ Các đoạn " + auErr.join(", ") + " không có giọng đọc (" + (voiceSource === "gemini" ? "hết hạn mức hoặc lỗi" : "lỗi kết nối tới nguồn giọng") + ") — trong video, các đoạn đó sẽ im lặng " + NO_AUDIO_SECONDS + " giây. Các đoạn còn lại có tiếng bình thường.");
+        if (auErr.length) logWarn("⚠️ Các đoạn " + auErr.join(", ") + " không có giọng đọc (hết hạn mức hoặc lỗi) — trong video, các đoạn đó sẽ im lặng " + NO_AUDIO_SECONDS + " giây. Các đoạn còn lại có tiếng bình thường.");
       }
     }
-
-    if (kcSavedVoiceSource !== null) { voiceSource = kcSavedVoiceSource; kcSavedVoiceSource = null; }
-    /* [KC3] Nếu chuỗi dự phòng đã tạm đổi nguồn trong bước 4, khôi phục
-       nguồn gốc của thầy — chuyển nguồn chỉ cứu lượt dựng này. */
-    if (kc3Src0 !== null && voiceSource !== kc3Src0) voiceSource = kc3Src0;
-    kc3Src0 = null;
 
     /* BƯỚC 5 — dựng video */
     setStep(5, "run");
@@ -8187,7 +7610,6 @@ async function buildVideo(){
   }
   building = false;
   ttsPinModel = null; ttsBuildExhausted = false; buildMcRoles = null;
-  buildSegRoutes = null;
   $("buildBtn").disabled = false; $("cancelScriptBtn").disabled = false; $("createBtn").disabled = false;
 }
 $("buildBtn").addEventListener("click", buildVideo);
