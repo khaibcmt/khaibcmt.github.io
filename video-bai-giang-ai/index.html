@@ -258,7 +258,7 @@
   <header class="top">
     <h1>🎬 Video Bài Giảng <span class="ai">AI</span></h1>
     <p>Chỉ cần nêu <b>tên bài</b> hoặc dán <b>câu chuyện</b> — app tự viết kịch bản, tạo hình, vẽ sơ đồ, dựng bảng số liệu, thu giọng đọc và ghép thành video.</p>
-    <p class="small" id="buildTag">🏷️ Bản KC14 • 21/11/2026 — ĐỒNG BỘ HOÀN THIỆN: poster-lib + ppt-lib đã nối vào khuôn “Đặt đúng chỗ” (poster nguyên tấm cho Tổng quan/Tổng kết, ảnh PPT cho Gợi mở/Liên hệ) + KHOÁ ADMIN 2 LỚP cho studio (trang học sinh ?bt=/?de= mở thẳng) + giọng VieNeu trên máy này (miễn phí) + luật phân giọng: đoạn có chữ “thầy” luôn do MC Nam đọc</p>
+    <p class="small" id="buildTag">🏷️ Bản KC15 • 22/11/2026 — ĐOẠN MỞ ĐẦU TỰA BÀI tất định cho video Bài giảng (công bố tên bài + giới thiệu; hình là poster nguyên tấm hoặc THẺ TỰA app tự vẽ in tên bài) + poster-lib + ppt-lib đã nối vào khuôn “Đặt đúng chỗ” + KHOÁ ADMIN 2 LỚP cho studio (trang học sinh ?bt=/?de= mở thẳng) + giọng VieNeu trên máy này (miễn phí) + luật phân giọng: đoạn có chữ “thầy” luôn do MC Nam đọc</p>
     <div id="voiceBadge" class="hidden"></div>
     <div id="kc13AdminBar" class="hidden" style="margin-top:10px">
       <button class="btn-ghost shrink" id="kc13LockNowBtn" type="button">🔒 Khoá lại ngay</button>
@@ -1825,7 +1825,7 @@ const VIDEO_TYPE_BLOCKS = {
     "- Kết thúc bằng MỘT câu hỏi treo (chưa trả lời) dẫn vào bài mới, khiến học sinh muốn học tiếp để tìm câu trả lời.\n" +
     "- Nhịp nhanh, sinh động, số đoạn ít theo thời lượng đã chọn.",
   full: "LOẠI VIDEO: 📚 NỘI DUNG TOÀN BÀI — giảng trọn vẹn mạch bài học theo khuôn chuẩn.\n" +
-    "- Đoạn đầu: mở bài, nêu vấn đề và mục tiêu của bài học.\n" +
+    "- Đoạn đầu (nối tiếp ngay sau đoạn TỰA BÀI app đã tự chèn sẵn ở đầu video): GIỚI THIỆU NỘI DUNG — mở bài, nêu vấn đề và mục tiêu của bài học; không lặp lại lời chào hay câu công bố tên bài.\n" +
     "- Các đoạn giữa: trình bày lần lượt các ý chính của bài, mỗi ý chính kèm hình minh hoạ, sơ đồ hoặc bảng số liệu phù hợp.\n" +
     "- Đoạn cuối: tổng kết và phần ghi nhớ những điểm cốt lõi của bài.",
   part: "LOẠI VIDEO: 🔎 NỘI DUNG TỪNG PHẦN — CHỈ đào sâu MỘT phần/mục duy nhất của bài (phần được nêu trong tên bài hoặc trong chỉ dẫn của giáo viên).\n" +
@@ -1876,7 +1876,7 @@ function masterPrompt(){
     "  ]",
     "}",
     "QUY TẮC BẮT BUỘC:",
-    "- Số segments tuỳ theo độ đầy đủ tự nhiên của nội dung bài: phủ đủ các phần chính của bài, KHÔNG cắt xén ý để vừa một độ dài định sẵn (video chạy theo độ dài thật của nội dung). Đoạn đầu là image hoặc sgk mở bài, đoạn cuối là text hoặc image tổng kết.",
+    "- Số segments tuỳ theo độ đầy đủ tự nhiên của nội dung bài: phủ đủ các phần chính của bài, KHÔNG cắt xén ý để vừa một độ dài định sẵn (video chạy theo độ dài thật của nội dung). Đoạn đầu là image hoặc sgk GIỚI THIỆU NỘI DUNG (mở bài, nêu vấn đề, mục tiêu) — với video bài học theo tên bài, app đã tự chèn sẵn một đoạn TỰA BÀI công bố tên bài ở trước đoạn đầu này, nên đoạn đầu KHÔNG lặp lại lời chào hay câu công bố tên bài. Đoạn cuối là text hoặc image tổng kết.",
     "- Mỗi segment PHẢI có trường vai (vai cảnh trong khuôn \"Đặt đúng chỗ\"): một trong tong_quan, goi_mo, noi_dung, lien_he, nhan_manh, tong_ket, ket — gán theo khối KHUÔN VAI CẢNH ở cuối yêu cầu này.",
     "- Có ÍT NHẤT 1 segment diagram (sơ đồ dòng chảy 3–6 bước) và ÍT NHẤT 1 segment table (bảng số liệu).",
     "- ƯU TIÊN segment type sgk cho nội dung mà sách giáo khoa thường có sẵn hình hoặc sơ đồ minh hoạ (cấu tạo, quá trình, thí nghiệm...). Segment sgk PHẢI có trường imageHint mô tả chính xác hình SGK cần tìm, ví dụ: Hình 12.3 SGK — sơ đồ quang hợp. Nếu bài có hình SGK quen thuộc, hãy dùng ít nhất 1–2 segment sgk.",
@@ -1914,12 +1914,19 @@ function validateScript(s){
 }
 async function generateScript(){
   let userPart;
+  let kc15Ctx = null;   /* [KC15] ngữ cảnh đoạn TỰA BÀI tất định — chỉ chế độ Theo Tên Bài */
   if (mode === "name") {
     const name = $("lessonName").value.trim();
     if (!name) throw new Error("Thầy chưa nhập TÊN BÀI.");
     const subj = $("lessonSubject").value.trim() || "(chưa rõ môn)";
     const grade = $("lessonGrade").value.trim() || "(chưa rõ lớp)";
     userPart = "Tên bài: " + name + "\nMôn học: " + subj + "\nLớp: " + grade;
+    /* [KC15] Ngữ cảnh tựa bài: ưu tiên bài đã chốt ở Bài Học Trung
+       Tâm (tên bài CÓ DẤU theo KC10, số bài, môn, khối); chưa chốt
+       bài thì dùng đúng những gì thầy gõ ở ô tên bài / môn / lớp. */
+    kc15Ctx = pickedLesson
+      ? { topic: pickedLesson.topic, subjectName: pickedLesson.subjectName, grade: pickedLesson.grade, lessonNo: pickedLesson.lessonNo }
+      : { topic: name, subjectName: $("lessonSubject").value.trim(), grade: $("lessonGrade").value.trim(), lessonNo: "" };
     if (pickedLesson) {
       /* Bài đã chốt từ kho SGK: đưa DANH SÁCH HÌNH THẬT của bài vào prompt và
          cấm model bịa số hiệu hình — nguyên nhân vụ "Hình 15.1" không có thật. */
@@ -1942,6 +1949,9 @@ async function generateScript(){
   /* [KC11] Khối trình tự vai theo loại video (mục B1–B4 của khuôn) */
   const kc11Block = (typeof kc11RolePromptBlock === "function") ? kc11RolePromptBlock(videoType) : "";
   if (kc11Block) userPart += "\n\n" + kc11Block;
+  /* [KC15] Đoạn đầu của AI nay là đoạn GIỚI THIỆU NỘI DUNG nối
+     tiếp sau đoạn tựa bài tất định — không lặp công bố tựa bài. */
+  if (mode === "name") userPart += "\n\nLƯU Ý VỀ ĐOẠN MỞ ĐẦU: app đã TỰ CHÈN sẵn một đoạn TỰA BÀI ở vị trí đầu tiên của video (lời chào + công bố đúng tên bài + giới thiệu ngắn). Đoạn ĐẦU TIÊN em viết phải là đoạn GIỚI THIỆU NỘI DUNG nối tiếp ngay sau tựa bài: mở bài, nêu vấn đề và mục tiêu của bài học — TUYỆT ĐỐI không lặp lại lời chào hay câu công bố tên bài / tựa bài.";
   const instrBlock = teacherInstructionBlock($("teacherInstr").value);
   if (instrBlock) userPart += "\n\n" + instrBlock;
   const data = await gemini("text", {
@@ -1954,6 +1964,10 @@ async function generateScript(){
   try { parsed = JSON.parse(txt); }
   catch (e) { throw new Error("AI trả kịch bản không đúng JSON. Thầy bấm TẠO VIDEO thử lại. Chi tiết: " + txt.slice(0, 200)); }
   const valid = validateScript(parsed);
+  /* [KC15] Chèn đoạn mở đầu TẤT ĐỊNH "Tựa bài + giới thiệu bài
+     học" ở vị trí ĐẦU TIÊN — chỉ Bài giảng Theo Tên Bài (cả 4 loại
+     video dùng chung đường này); chế độ câu chuyện giữ nguyên. */
+  if (mode === "name" && kc15Ctx) valid.segments = kc15PrependOpening(valid.segments, kc15Ctx);
   valid._mode = mode;
   valid._picked = (mode === "name" && pickedLesson) ? {
     subjectCode: pickedLesson.subjectCode, subjectName: pickedLesson.subjectName,
@@ -2054,7 +2068,9 @@ function renderScriptReview(){
     if (sg.type === "diagram") extra = "<p>Các bước: " + sg.diagram.steps.map(s => escapeHtml(s.label)).join(" → ") + "</p>";
     if (sg.type === "table") extra = "<p>Bảng: " + escapeHtml(sg.table.caption || "") + " — " + sg.table.rows.length + " dòng số liệu.</p>";
     if (sg.type === "text") extra = "<p>" + (sg.bullets || []).map(escapeHtml).join("<br>") + "</p>";
-    if (sg.type === "image") extra = "<p>Mô tả ảnh (AI sẽ vẽ): <i>" + escapeHtml(sg.imagePrompt || "") + "</i></p>";
+    if (sg.type === "image") extra = sg.kcOpening
+      ? "<p>🎬 <b>Đoạn mở đầu TẤT ĐỊNH của app</b> (KC15): hình dùng là <b>POSTER nguyên tấm của bài</b> (nếu bài có) hoặc <b>THẺ TỰA app tự vẽ</b> in rõ tên bài — đoạn này không sinh ảnh AI.</p>"
+      : ("<p>Mô tả ảnh (AI sẽ vẽ): <i>" + escapeHtml(sg.imagePrompt || "") + "</i></p>");
     if (sg.type === "sgk") extra = "<p>Hình SGK cần tìm: <i>" + escapeHtml(sg.imageHint || "") + "</i></p>";
     if (sg.type === "phieu") {
       if (sg.phKind === "open") extra = "<p>Cảnh mở: bảng phiếu <b>câm</b> toàn khung — ô trống chỉ có vòng tròn đánh số, kèm câu yêu cầu của phiếu.</p>";
@@ -2745,6 +2761,69 @@ function kc9AppendClosing(segments, ctx, opts){
   return segments.concat([kc9ClosingSegment(ctx)]);
 }
 /*__END_PURE_KC9__*/
+/*__PURE_KC15__*/
+/* [KC15] ĐOẠN MỞ ĐẦU TẤT ĐỊNH "TỰA BÀI + GIỚI THIỆU BÀI HỌC" cho
+   video BÀI GIẢNG — thầy bắt lỗi khi test thật sáng 22/11/2026:
+   "mới vào bài phải có tựa bài và phần giới thiệu bài học chứ!!".
+   Trước KC15, prompt chỉ "nhờ" AI viết đoạn đầu mở bài — AI viết
+   lệch là video mất hẳn cảnh công bố tên bài. Làm theo ĐÚNG khuôn
+   đoạn kết tất định KC9 (đối xứng đầu–cuối): văn MẪU có sẵn, không
+   cần AI, ghép từ Bài Học Trung Tâm.
+   - kc15OpeningText(ctx): chào học sinh + CÔNG BỐ TỰA BÀI (số bài
+     + tên bài CÓ DẤU theo KC10 + môn + lớp) + một câu dẫn giới
+     thiệu (bài sẽ đi qua các nội dung chính, khơi gợi vào bài).
+     ~45–70 từ, xưng "thầy" — lời mang vai thầy nói nên luật phân
+     giọng KC12 tự ép sang giọng NAM khi dựng.
+   - kc15OpeningSegment(ctx): đoạn thường type "image", vai
+     tong_quan, cờ kcOpening, kèm kcTitleInfo để tầng dựng vẽ THẺ
+     TỰA khi bài không có poster. Hình chính danh: POSTER của bài
+     (KC14 tự gán như mọi đoạn tổng quan); không có poster thì app
+     tự vẽ thẻ tựa in tên bài — bài nào cũng có tựa bài NHÌN THẤY
+     được, không chỉ nghe đọc. Đoạn mở KHÔNG sinh ảnh AI.
+   - kc15PrependOpening(segments, ctx): trả MẢNG MỚI có đoạn mở ở
+     vị trí ĐẦU TIÊN; bỏ qua khi mảng rỗng hoặc đoạn đầu đã là
+     đoạn mở KC15 (cờ kcOpening / heading trùng nhãn) — chạy lại
+     tạo kịch bản / nạp lại không bao giờ chèn trùng 2 đoạn mở.
+   Phạm vi: CHỈ Bài giảng (generateScript, chế độ Theo Tên Bài).
+   Kể Chuyện / Phiếu / Chữa đề không qua đường này — giữ nguyên. */
+const KC15_OPENING_HEADING = "🎬 Tựa bài — giới thiệu bài học";
+function kc15OpeningText(ctx){
+  ctx = ctx || {};
+  const topic = String(ctx.topic || "").trim();
+  const mon = String(ctx.subjectName || "").trim();
+  const lop = (ctx.grade === 0 || ctx.grade) ? String(ctx.grade).trim() : "";
+  const so = (ctx.lessonNo === 0 || ctx.lessonNo) ? String(ctx.lessonNo).trim() : "";
+  const tua = topic ? ((so ? ("Bài " + so + " — ") : "") + topic) : "bài học mới của chúng ta";
+  const nguParts = [];
+  if (mon) nguParts.push("môn " + mon);
+  if (lop) nguParts.push("lớp " + lop);
+  const ngu = nguParts.length ? (", " + nguParts.join(" ")) : "";
+  return "Chào các em! Thầy trò mình cùng đến với bài học mới: " + tua + ngu + ". Trong bài học này, chúng ta sẽ lần lượt khám phá những nội dung chính của bài, hiểu rõ từng ý quan trọng và cách vận dụng vào thực tế. Các em hãy chuẩn bị sách vở, tập trung theo dõi — mình bắt đầu ngay nhé!";
+}
+function kc15OpeningSegment(ctx){
+  ctx = ctx || {};
+  return {
+    type: "image",
+    heading: KC15_OPENING_HEADING,
+    narration: kc15OpeningText(ctx),
+    vai: "tong_quan",
+    imagePrompt: "",
+    kcOpening: true,
+    kcTitleInfo: {
+      topic: String(ctx.topic || ""),
+      subjectName: String(ctx.subjectName || ""),
+      grade: (ctx.grade === 0 || ctx.grade) ? ctx.grade : "",
+      lessonNo: (ctx.lessonNo === 0 || ctx.lessonNo) ? ctx.lessonNo : ""
+    }
+  };
+}
+function kc15PrependOpening(segments, ctx){
+  if (!Array.isArray(segments) || !segments.length) return segments;
+  const first = segments[0];
+  if (first && (first.kcOpening || first.heading === KC15_OPENING_HEADING)) return segments;
+  return [kc15OpeningSegment(ctx)].concat(segments);
+}
+/*__END_PURE_KC15__*/
 /*__PURE_KC11__*/
 /* [KC11] KHUÔN KỊCH BẢN "ĐẶT ĐÚNG CHỖ" — logic thuần (không DOM,
    test Node eval trực tiếp khối này). Thầy duyệt khuôn ngày
@@ -2843,6 +2922,7 @@ function kc11SegSource(sg){
     return "mau";
   }
   if (sg.onlinePath || sg.sgkImageId) return (sg.libSrc === "poster" || sg.libSrc === "ppt") ? sg.libSrc : "sgk";   /* [KC14] poster-lib/ppt-lib dùng chung trường onlinePath, phân biệt bằng sg.libSrc */
+  if (sg.kcOpening) return "mau";   /* [KC15] đoạn tựa bài chưa có poster -> THẺ TỰA vẽ bằng mẫu của app, KHÔNG phải AI sinh ảnh */
   if (sg.type === "diagram" || sg.type === "table" || sg.type === "text") return "mau";
   if (sg.type === "image") return "ai";
   return "none"; /* type sgk chưa có hình nào */
@@ -3349,6 +3429,7 @@ function buildAssignUI(sg, i){
     : "🖼 Trạng thái hình: ☁️ <b>Đã có hình SGK từ kho online</b>" +
       '<span class="obadge">☁️ Tự gán: ' + escapeHtml(sg.onlineFigure ? ("Hình " + sg.onlineFigure + " SGK") : (sg.onlineCaption || "hình SGK")) + " ✓</span>";
   else if (assigned) st.innerHTML = "🖼 Trạng thái hình: ✅ <b>Đã có hình SGK</b> — " + escapeHtml(assigned.name);
+  else if (sg.kcOpening) st.innerHTML = "🖼 Trạng thái hình: 🎬 <b>THẺ TỰA BÀI</b> — bài này chưa có poster được gán, khi dựng app sẽ <b>tự vẽ thẻ tựa in rõ tên bài + môn + lớp</b> (không cần AI, không để trống). Thầy vẫn có thể tick chọn poster/hình khác cho đoạn này ở lưới hình bên dưới.";
   else if (sg.type === "sgk") st.innerHTML = "🖼 Trạng thái hình: ⚠️ <b>Chưa có hình</b> — chọn hình SGK bên dưới, hoặc bật sinh AI dự phòng. Nếu vẫn không có hình, khi dựng app sẽ tự chuyển đoạn này sang <b>slide chữ</b> (không để ô chờ hình lọt vào video).";
   else st.innerHTML = "🖼 Trạng thái hình: chưa gán hình SGK — nếu không gán, app sẽ <b>sinh ảnh bằng AI</b> khi dựng.";
   wrap.appendChild(st);
@@ -3579,6 +3660,18 @@ async function genImageForSegment(i){
     assets[i] = { status: "ok", img: library.get(sg.sgkImageId).img, source: "sgk", err: "" };
     renderAssetRows(); return true;
   }
+  if (sg.kcOpening) {
+    /* [KC15] Đoạn TỰA BÀI không bao giờ sinh ảnh AI: có poster /
+       hình đã gán thì các nhánh trên đã xử; tới đây là chưa có
+       hình nào -> app tự vẽ THẺ TỰA in tên bài làm hình đoạn. */
+    try {
+      const timg = await kc15TitleCardImage(sg);
+      assets[i] = { status: "ok", img: timg, source: "title", err: "" };
+    } catch (e) {
+      assets[i] = { status: "err", img: null, source: "title", err: "Không vẽ được thẻ tựa bài: " + ((e && e.message) || e) };
+    }
+    renderAssetRows(); return assets[i].status === "ok";
+  }
   const canAI = sg.type === "image" || (sg.type === "sgk" && sg.useAI);
   if (!canAI) { assets[i] = { status: "skip", img: null, source: "none", err: "" }; renderAssetRows(); return false; }
   const prompt = sg.imagePrompt || sg.imageHint || sg.heading;
@@ -3609,7 +3702,7 @@ function renderAssetRows(){
     if (sg.type === "image" || sg.type === "sgk" || sg.type === "kechuyen") {
       if (sg.noImg && (!a || a.status !== "ok")) imgTxt = "Hình: ⚠ không có hình — đã chuyển slide chữ";
       else if (!a) imgTxt = "Hình: chờ...";
-      else if (a.status === "ok") imgTxt = "Hình: ✔ " + (a.source === "sgk" ? "hình SGK (trong máy)" : (a.source === "online" ? "hình SGK (kho online)" : (a.source === "draw" ? "vẽ mẫu kể chuyện" : (a.source === "upload" ? "ảnh của thầy" : "AI sinh")))) + ((a.imgs && a.imgs.length > 1) ? " ×" + a.imgs.length + " hình (chia đều thời lượng đoạn)" : "");
+      else if (a.status === "ok") imgTxt = "Hình: ✔ " + (a.source === "sgk" ? "hình SGK (trong máy)" : (a.source === "online" ? "hình SGK (kho online)" : (a.source === "title" ? "THẺ TỰA BÀI (app tự vẽ)" : (a.source === "draw" ? "vẽ mẫu kể chuyện" : (a.source === "upload" ? "ảnh của thầy" : "AI sinh"))))) + ((a.imgs && a.imgs.length > 1) ? " ×" + a.imgs.length + " hình (chia đều thời lượng đoạn)" : "");
       else if (a.status === "skip") imgTxt = "Hình: bỏ qua (chuyển slide chữ)";
       else imgTxt = "Hình: ✖ lỗi";
     }
@@ -3720,6 +3813,63 @@ function drawContain(ctx, img, x, y, w, h){
   ctx.fillStyle = "#eef4ee"; ctx.fillRect(x, y, w, h);
   ctx.drawImage(img, x + (w - dw) / 2, y + (h - dh) / 2, dw, dh);
 }
+/* [KC15] THẺ TỰA BÀI vẽ bằng canvas — hình của đoạn mở đầu khi
+   bài KHÔNG có poster: nền tông app (slideBg), "BÀI N" vàng,
+   TÊN BÀI chữ lớn ở giữa, dòng môn • lớp dưới vạch xanh, chữ ký
+   thầy góc dưới phải (tiền lệ GD8/KC9). Mọi chữ lấy từ Bài Học
+   Trung Tâm (tên bài có dấu KC10) — không qua AI, bài nào cũng
+   có tựa bài nhìn thấy được. */
+function drawTitleCard(ctx, info){
+  info = info || {};
+  const topic = String(info.topic || "").trim() || "Bài học mới";
+  const mon = String(info.subjectName || "").trim();
+  const lop = (info.grade === 0 || info.grade) ? String(info.grade).trim() : "";
+  const so = (info.lessonNo === 0 || info.lessonNo) ? String(info.lessonNo).trim() : "";
+  slideBg(ctx);
+  ctx.textAlign = "center"; ctx.textBaseline = "top";
+  ctx.fillStyle = "#8fd0ab"; ctx.font = "600 42px " + FONT;
+  ctx.fillText("VIDEO BÀI GIẢNG", W / 2, 148);
+  let titleY = 330;
+  if (so) {
+    ctx.fillStyle = "#ffd94d"; ctx.font = "700 60px " + FONT;
+    ctx.fillText("BÀI " + so, W / 2, 238);
+    titleY = 386;
+  }
+  ctx.fillStyle = "#ffffff"; ctx.font = "700 116px " + FONT;
+  const lines = wrapLines(ctx, topic, 1560).slice(0, 3);
+  lines.forEach((ln, k) => ctx.fillText(ln, W / 2, titleY + k * 140));
+  const ruleY = titleY + lines.length * 140 + 34;
+  ctx.fillStyle = "#37d67a"; ctx.fillRect(W / 2 - 130, ruleY, 260, 8);
+  const sub = [mon, lop ? ("Lớp " + lop) : ""].filter(Boolean).join("  •  ");
+  if (sub) {
+    ctx.fillStyle = "#b9d6c6"; ctx.font = "400 46px " + FONT;
+    ctx.fillText(sub, W / 2, ruleY + 46);
+  }
+  ctx.save();
+  ctx.shadowColor = "rgba(0,0,0,0.5)"; ctx.shadowBlur = 7; ctx.shadowOffsetX = 1; ctx.shadowOffsetY = 2;
+  ctx.fillStyle = "#ffe9a8"; ctx.font = "600 30px " + FONT;
+  ctx.textAlign = "right"; ctx.textBaseline = "top";
+  ctx.fillText("✍️ " + PHIEU_TEACHER_NAME, W - 110, H - 86);
+  ctx.restore();
+  ctx.textAlign = "left";
+}
+/* Vẽ thẻ tựa của đoạn mở thành ẢNH (canvas -> Image) để đi qua
+   đúng pipeline hình như mọi đoạn khác. Thông tin tựa ưu tiên
+   kcTitleInfo đã ghim trên đoạn (sống qua sửa JSON / nạp lại),
+   thiếu mới suy từ kịch bản đang dựng. */
+async function kc15TitleCardImage(sg){
+  let info = (sg && sg.kcTitleInfo) || null;
+  if (!info || !String(info.topic || "").trim()){
+    const p = (scriptData && scriptData._picked) || null;
+    info = p
+      ? { topic: p.topic, subjectName: p.subjectName, grade: p.grade, lessonNo: p.lessonNo }
+      : { topic: (scriptData && scriptData.title) || "", subjectName: (scriptData && scriptData.subject) || "", grade: (scriptData && scriptData.grade) || "", lessonNo: "" };
+  }
+  const cv = document.createElement("canvas");
+  cv.width = W; cv.height = H;
+  drawTitleCard(cv.getContext("2d"), info);
+  return loadImageEl(cv.toDataURL("image/png"));
+}
 /* Đoạn không có hình thật → slide CHỮ thay thế (lấy ý từ lời đọc).
    TUYỆT ĐỐI không vẽ ô "CHỜ HÌNH" vào video xuất ra. */
 function fallbackBullets(sg){
@@ -3747,6 +3897,7 @@ function drawImageSlide(ctx, sg, asset, t){
 }
 function drawImageSlide1(ctx, sg, asset, t){
   const has = asset && asset.status === "ok" && asset.img;
+  if (has && asset.source === "title") { ctx.drawImage(asset.img, 0, 0, W, H); return; }   /* [KC15] THẺ TỰA vẽ sẵn: toàn khung, không băng tiêu đề đè lên */
   if (has && (asset.source === "sgk" || asset.source === "online")) {
     slideBg(ctx);
     if (asset.poster) drawPosterPan(ctx, asset.img, t);   /* [KC14] poster nguyên tấm -> lia khung chậm */
