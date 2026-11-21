@@ -328,7 +328,7 @@
       <div class="small" style="margin-top:4px">Không cần AI viết kịch bản, không cần key sinh ảnh: thầy dán kịch bản truyện, app <b>tự chia cảnh theo đoạn văn</b> (đoạn dài tự chia nhỏ theo câu). Mỗi cảnh chọn 1 nguồn ảnh: <b>🎨 Vẽ mẫu có sẵn</b> (có hình ngay, nhân vật giọt nước nhất quán), <b>📚 ảnh trong kho SGK</b>, hoặc <b>⬆ ảnh của thầy</b>. Một giọng dẫn chuyện đọc toàn bộ truyện, phụ đề lời kể chạy theo từng câu trên hình.</div>
       <div id="kc2Box" style="margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--panel)">
         <div style="font-weight:700;font-size:16px">📚 KỂ CHUYỆN TỰ ĐỘNG THEO BÀI — app tự lấy hình của bài và viết truyện</div>
-        <div class="small" style="margin-top:4px">Thầy chỉ cần <b>chọn bài ở khung 🎯 Bài Học Trung Tâm</b> phía trên, rồi bấm đúng 1 nút 🚀: app <b>tự nạp toàn bộ hình/sơ đồ SGK của bài</b>, <b>tự chọn hình</b> (tối đa 12, ưu tiên hình/sơ đồ có số hiệu), nhờ <b>AI xem từng hình và viết lời kể chuyện</b> nối tiếp nhau thành truyện hoàn chỉnh, gắn đúng hình vào từng cảnh rồi <b>tự dựng luôn thành phim</b> (giọng đọc Gemini — dùng key trong hồ của thầy). Tick chọn lại hình hay sửa lời từng cảnh chỉ là tuỳ chọn phụ cho thầy nào muốn tự tay.</div>
+        <div class="small" style="margin-top:4px">Thầy chỉ cần <b>chọn bài ở khung 🎯 Bài Học Trung Tâm</b> phía trên, rồi bấm đúng 1 nút 🚀: app <b>tự nạp toàn bộ hình/sơ đồ SGK của bài</b>, <b>tự nhận diện và gom các hình giống nhau</b> (bản đánh số + bản nguyên chữ của cùng một hình chỉ tính là 1 hình — không lặp hình trong phim), <b>tự chọn hình</b> (tối đa 12, ưu tiên hình/sơ đồ có số hiệu), nhờ <b>AI xem từng hình và viết lời kể chuyện</b> nối tiếp nhau thành truyện hoàn chỉnh, gắn đúng hình vào từng cảnh rồi <b>tự dựng luôn thành phim</b> (giọng đọc Gemini — dùng key trong hồ của thầy). Tick chọn lại hình hay sửa lời từng cảnh chỉ là tuỳ chọn phụ cho thầy nào muốn tự tay.</div>
         <div id="kc2Status" class="small" style="margin-top:8px">⏳ Đang chờ bài trung tâm…</div>
         <div id="kc2Gallery" class="hidden" style="margin-top:8px">
           <div class="small" id="kc2Count"></div>
@@ -2775,6 +2775,92 @@ function kc2CleanNarration(txt){
   return t.trim();
 }
 /*__END_PURE_KC2__*/
+/*__PURE_KC4__*/
+/* [KC4] NHẬN DIỆN HÌNH GIỐNG NHAU + GOM CẶP cho Kể Chuyện theo bài —
+   logic thuần (không DOM, test Node eval trực tiếp khối này).
+   Bối cảnh (thầy chốt 21/11/2026): trong kho SGK, cùng MỘT hình của bài
+   thường có 2 bản — bản ĐÁNH SỐ (để trống, chỉ có số ①②③ cho học sinh
+   điền) và bản NGUYÊN CHỮ (đầy đủ chữ của SGK) — KC2 tính thành 2 hình
+   / 2 cảnh nên video bị lặp hình. KC4 gom chúng thành MỘT đơn vị.
+   Thuật toán (hiệu chuẩn trên toàn kho sgk-lib 1.325 hình thật):
+   - Dấu vân = lưới xám 32×32 (v32) + 64×64 (v64) của ảnh (phần điều
+     phối tính trên canvas từ chính thumbnail của bài).
+   - HAI hình là MỘT khi: trùng kích thước manifest (w×h) VÀ khoảng
+     cách MAD(v32) <= KC4_T32 VÀ MAD(v64) <= KC4_T64. Trên dữ liệu
+     thật: mọi cặp đúng (kể cả cặp biến thể đánh số/nguyên chữ) có
+     MAD64 <= 20,4; cặp khác hình đầu tiên xuất hiện ở MAD64 = 23,8 —
+     ngưỡng 22 nằm giữa khoảng tách. Trùng kích thước là cổng bắt buộc
+     vì các cặp khác-size MAD nhỏ đều là các mẩu cắt khác nhau của bảng
+     dài (nội dung khác, chỉ giống nhau ở nền trắng).
+   - kc4GroupEntries: gom kiểu NEO (leader clustering) — mỗi hình chỉ
+     so với hình NEO (hình đầu tiên) của nhóm, tránh bắt cầu qua các
+     bản trắng giống nhau thuộc hình khác nhau.
+   - kc4MainOf: hình chính của nhóm — ưu tiên bản có số hiệu hình, rồi
+     bản bytes lớn hơn (bản nguyên chữ đầy chữ thường nặng hơn bản
+     đánh số để trống), rồi thứ tự bài.
+   - kc4AutoPickGroups: tự tick tối đa max NHÓM (nhóm có hình chính
+     mang số hiệu trước, như kc2AutoPick).
+   - kc4PairNote: đoạn prompt dặn AI khi cảnh có bản đi kèm. */
+const KC4_T32 = 22;
+const KC4_T64 = 22;
+function kc4VecDist(va, vb){
+  if (!va || !vb || !va.v32 || !vb.v32 || !va.v64 || !vb.v64) return null;
+  if (va.v32.length !== vb.v32.length || va.v64.length !== vb.v64.length) return null;
+  let s32 = 0, s64 = 0;
+  for (let i = 0; i < va.v32.length; i++) s32 += Math.abs(va.v32[i] - vb.v32[i]);
+  for (let i = 0; i < va.v64.length; i++) s64 += Math.abs(va.v64[i] - vb.v64[i]);
+  return { d32: s32 / va.v32.length, d64: s64 / va.v64.length };
+}
+function kc4SameImage(ea, eb, va, vb){
+  if (!ea || !eb) return false;
+  if ((ea.w || 0) !== (eb.w || 0) || (ea.h || 0) !== (eb.h || 0)) return false;
+  const d = kc4VecDist(va, vb);
+  if (!d) return false;
+  return d.d32 <= KC4_T32 && d.d64 <= KC4_T64;
+}
+function kc4MainOf(members){
+  const list = (Array.isArray(members) ? members : []).filter(Boolean);
+  if (!list.length) return null;
+  let best = list[0];
+  for (let i = 1; i < list.length; i++){
+    const e = list[i];
+    const fe = e.figure ? 1 : 0, fb = best.figure ? 1 : 0;
+    if (fe !== fb) { if (fe > fb) best = e; continue; }
+    if ((e.bytes || 0) > (best.bytes || 0)) best = e;
+  }
+  return best;
+}
+function kc4GroupEntries(entries, vecOf){
+  const list = (Array.isArray(entries) ? entries : []).filter(Boolean);
+  const raw = [];
+  list.forEach(e => {
+    const ve = vecOf ? vecOf(e) : null;
+    let placed = false;
+    if (ve){
+      for (let g = 0; g < raw.length; g++){
+        const anchor = raw[g].members[0];
+        if (kc4SameImage(anchor, e, vecOf ? vecOf(anchor) : null, ve)){
+          raw[g].members.push(e); placed = true; break;
+        }
+      }
+    }
+    if (!placed) raw.push({ members: [e] });
+  });
+  return raw.map(g => ({ main: kc4MainOf(g.members), members: g.members }));
+}
+function kc4AutoPickGroups(groups, max){
+  const list = (Array.isArray(groups) ? groups : []).filter(g => g && g.main);
+  const cap = Math.max(1, Number(max) || KC2_MAX_IMAGES);
+  const figs = list.filter(g => g.main.figure);
+  const rest = list.filter(g => !g.main.figure);
+  return figs.concat(rest).slice(0, cap).map(g => g.main.path);
+}
+function kc4PairNote(n){
+  const c = Number(n) || 0;
+  if (c <= 1) return "";
+  return "LƯU Ý VỀ HÌNH ĐÍNH KÈM: cảnh này có " + c + " ảnh đính kèm, nhưng tất cả là CÙNG MỘT hình/sơ đồ của bài học ở các bản khác nhau (ví dụ: bản ĐÁNH SỐ để trống cho học sinh điền và bản NGUYÊN CHỮ có đầy đủ nội dung chữ của SGK). Hãy coi bản NGUYÊN CHỮ (bản đầy đủ chữ) là CĂN CỨ NỘI DUNG SGK để viết lời kể cho cảnh này. Đây vẫn là MỘT cảnh duy nhất — chỉ viết đúng một lời kể cho cảnh này.";
+}
+/*__END_PURE_KC4__*/
 /* Danh sách hình của BÀI ĐÃ CHỐT (theo danh tính _picked của kịch bản) —
    nguồn cho lưới chọn hình từng đoạn ở luồng chọn bài. */
 function pickedLessonEntries(){
@@ -6980,6 +7066,11 @@ function kc2CentralKey(){
 }
 function kc2SelectedEntries(){
   if (!pickedLesson || !Array.isArray(pickedLesson.entries)) return [];
+  if (kc4Groups){
+    const out = [];
+    kc4Groups.forEach(g => { if (g && g.main && kc2Sel[g.main.path]) out.push(g.main); });
+    return out;
+  }
   return pickedLesson.entries.filter(e => e && kc2Sel[e.path]);
 }
 function kc2SetMsg(html, isWarn){
@@ -6989,6 +7080,14 @@ function kc2SetMsg(html, isWarn){
 }
 function kc2RenderCount(){
   const cnt = $("kc2Count"); if (!cnt || !pickedLesson) return;
+  if (kc4Pending){
+    cnt.innerHTML = "🔍 Đang nhận diện các hình giống nhau trong bài…";
+    return;
+  }
+  if (kc4Groups){
+    cnt.innerHTML = "🖼 Đã chọn <b>" + kc2SelectedEntries().length + "/" + KC2_MAX_IMAGES + "</b> hình cho truyện — bài có " + pickedLesson.entries.length + " hình gốc, app đã gom các hình giống nhau (bản đánh số + bản nguyên chữ của cùng một hình) còn <b>" + kc4Groups.length + " hình</b>, mỗi nhóm tính là 1 hình (app tự tick sẵn, ưu tiên hình/sơ đồ có số hiệu — thầy tick/bỏ tick lại nếu muốn). Thứ tự cảnh = thứ tự hình trong bài.";
+    return;
+  }
   cnt.innerHTML = "🖼 Đã chọn <b>" + kc2SelectedEntries().length + "/" + KC2_MAX_IMAGES + "</b> hình cho truyện (app tự tick sẵn theo thứ tự bài, ưu tiên hình/sơ đồ có số hiệu — thầy tick/bỏ tick lại nếu muốn). Thứ tự cảnh = thứ tự hình trong bài.";
 }
 function kc2RenderGallery(){
@@ -7001,13 +7100,20 @@ function kc2RenderGallery(){
     gal.classList.add("hidden"); grid.innerHTML = "";
     return;
   }
-  st.innerHTML = "📚 Bài trung tâm: <b>" + escapeHtml(pickedLesson.subjectName) + " • Lớp " + pickedLesson.grade + " • Bài " + pickedLesson.lessonNo + (pickedLesson.topic ? (" — " + escapeHtml(pickedLesson.topic)) : "") + "</b> — bài có " + pickedLesson.entries.length + " hình/sơ đồ có sẵn:";
+  let kc4Tail = " — bài có " + pickedLesson.entries.length + " hình/sơ đồ có sẵn:";
+  if (kc4Pending) kc4Tail += " (🔍 đang nhận diện hình giống nhau…)";
+  else if (kc4Groups) kc4Tail += " (đã gom các hình giống nhau — còn " + kc4Groups.length + " hình)";
+  st.innerHTML = "📚 Bài trung tâm: <b>" + escapeHtml(pickedLesson.subjectName) + " • Lớp " + pickedLesson.grade + " • Bài " + pickedLesson.lessonNo + (pickedLesson.topic ? (" — " + escapeHtml(pickedLesson.topic)) : "") + "</b>" + kc4Tail;
   gal.classList.remove("hidden");
   grid.innerHTML = "";
-  pickedLesson.entries.forEach(e => {
+  const kc4Units = kc4Groups
+    ? kc4Groups.map(g => ({ main: g.main, members: g.members }))
+    : pickedLesson.entries.map(e => ({ main: e, members: [e] }));
+  kc4Units.forEach(u => {
+    const e = u.main; if (!e) return;
     const cell = document.createElement("div"); cell.className = "gal-cell";
     const lab = document.createElement("label"); lab.style.display = "block"; lab.style.cursor = "pointer";
-    const cb = document.createElement("input"); cb.type = "checkbox"; cb.checked = !!kc2Sel[e.path];
+    const cb = document.createElement("input"); cb.type = "checkbox"; cb.checked = !!kc2Sel[e.path]; cb.disabled = kc4Pending;
     cb.addEventListener("change", () => {
       if (cb.checked && kc2SelectedEntries().length >= KC2_MAX_IMAGES){
         cb.checked = false;
@@ -7021,13 +7127,111 @@ function kc2RenderGallery(){
     im.title = e.caption || e.path;
     const cap = document.createElement("div"); cap.className = "cap"; cap.textContent = kc2CaptionLine(e);
     lab.appendChild(cb); lab.appendChild(im); lab.appendChild(cap);
+    if (u.members.length > 1){
+      const bd = document.createElement("div"); bd.className = "cap";
+      bd.style.fontWeight = "700"; bd.style.color = "var(--blue)";
+      bd.textContent = "🧩 " + u.members.length + " bản — tính 1 hình";
+      bd.title = "Các bản của cùng một hình: " + u.members.map(x => (x.path || "").split("/").pop()).join(", ");
+      lab.appendChild(bd);
+    }
     cell.appendChild(lab); grid.appendChild(cell);
   });
   kc2RenderCount();
 }
+/* ---------- [KC4] DẤU VÂN + GOM NHÓM HÌNH GIỐNG NHAU (điều phối) ----------
+   Trạng thái: kc4Vecs = dấu vân theo path (tính 1 lần, dùng lại khi
+   quay lại bài); kc4Groups = các nhóm của BÀI TRUNG TÂM hiện tại (null
+   = chưa gom — gallery chạy như KC2); kc4Pending = đang gom (khoá nút
+   chạy + checkbox để không ai thao tác giữa chừng); kc4Token chống
+   việc đổi bài giữa chừng làm kết quả gom của bài cũ rơi vào bài mới. */
+let kc4Vecs = {};
+let kc4Groups = null;
+let kc4Pending = false;
+let kc4Token = 0;
+/* Dấu vân của 1 ảnh đã nạp: vẽ thu về lưới 64×64 trên nền trắng (qua
+   trạm 256×256 nếu ảnh gốc lớn, cho giống phép tính hiệu chuẩn), lấy
+   mức xám v64; v32 = trung bình khối 2×2 của v64. */
+function kc4GrayVec(img){
+  try {
+    const S = 64;
+    let src = img;
+    if (Math.max(img.naturalWidth || img.width || 0, img.naturalHeight || img.height || 0) > 256){
+      const big = document.createElement("canvas");
+      big.width = 256; big.height = 256;
+      const bx = big.getContext("2d");
+      bx.fillStyle = "#ffffff"; bx.fillRect(0, 0, 256, 256);
+      bx.drawImage(img, 0, 0, 256, 256);
+      src = big;
+    }
+    const cv = document.createElement("canvas"); cv.width = S; cv.height = S;
+    const cx = cv.getContext("2d");
+    cx.fillStyle = "#ffffff"; cx.fillRect(0, 0, S, S);
+    cx.drawImage(src, 0, 0, S, S);
+    const px = cx.getImageData(0, 0, S, S).data;
+    const v64 = new Array(S * S), v32 = new Array(32 * 32);
+    for (let i = 0; i < S * S; i++){
+      v64[i] = 0.299 * px[i * 4] + 0.587 * px[i * 4 + 1] + 0.114 * px[i * 4 + 2];
+    }
+    for (let y = 0; y < 32; y++) for (let x = 0; x < 32; x++){
+      v32[y * 32 + x] = (v64[(2 * y) * S + 2 * x] + v64[(2 * y) * S + 2 * x + 1] + v64[(2 * y + 1) * S + 2 * x] + v64[(2 * y + 1) * S + 2 * x + 1]) / 4;
+    }
+    return { v32: v32, v64: v64 };
+  } catch (err) { return null; }
+}
+/* Nạp dấu vân cho 1 hình của bài — dùng chính URL ảnh gallery (đã có
+   trong cache trình duyệt khi gallery hiện hình) nên không tải thêm
+   file gốc. Hình lỗi/không đọc được -> null (thành nhóm đơn). */
+async function kc4LoadVec(entry){
+  if (Object.prototype.hasOwnProperty.call(kc4Vecs, entry.path)) return kc4Vecs[entry.path];
+  let vec = null;
+  try {
+    const img = await loadImageEl(onlineImgUrl(entry));
+    vec = kc4GrayVec(img);
+  } catch (err) { vec = null; }
+  kc4Vecs[entry.path] = vec;
+  return vec;
+}
+function kc4SyncRunButtons(){
+  const bA = $("kc2AutoBtn"), bW = $("kc2WriteBtn");
+  if (bA && !kc2Busy) bA.disabled = kc4Pending;
+  if (bW && !kc2Busy) bW.disabled = kc4Pending;
+}
+/* Gom nhóm cho bài trung tâm hiện tại: tính dấu vân mọi hình -> gom
+   -> tự tick tối đa KC2_MAX_IMAGES NHÓM -> vẽ lại gallery. */
+async function kc4ComputeGroups(){
+  const lesson = pickedLesson;
+  if (!lesson) return;
+  const token = ++kc4Token;
+  const key = kc2CentralKey();
+  kc4Pending = true;
+  kc4SyncRunButtons();
+  kc2RenderGallery();
+  try {
+    await Promise.all((lesson.entries || []).map(e => kc4LoadVec(e)));
+  } catch (err) { /* hình nào lỗi thì không có dấu vân — thành nhóm đơn */ }
+  if (token !== kc4Token || key !== kc2CentralKey()) return;
+  kc4Groups = kc4GroupEntries(lesson.entries, e => kc4Vecs[e.path] || null);
+  kc2Sel = {};
+  kc4AutoPickGroups(kc4Groups, KC2_MAX_IMAGES).forEach(p => { kc2Sel[p] = 1; });
+  kc4Pending = false;
+  kc4SyncRunButtons();
+  kc2RenderGallery();
+}
+/* Các bản đi kèm (trừ hình chính) của nhóm chứa entry — dùng khi AI
+   viết truyện: gửi kèm để AI có bản nguyên chữ làm căn cứ. */
+function kc4CompanionsOf(entry){
+  if (!kc4Groups || !entry) return [];
+  for (let i = 0; i < kc4Groups.length; i++){
+    const g = kc4Groups[i];
+    if (g && g.main && g.main.path === entry.path){
+      return g.members.filter(x => x && x.path !== entry.path);
+    }
+  }
+  return [];
+}
 function kc2SyncGallery(){
   if (!pickedLesson){
-    if (kc2LessonKey) { kc2LessonKey = ""; kc2Sel = {}; }
+    if (kc2LessonKey) { kc2LessonKey = ""; kc2Sel = {}; kc4Groups = null; kc4Pending = false; kc4Token++; kc4SyncRunButtons(); }
     kc2RenderGallery();
     return;
   }
@@ -7035,8 +7239,11 @@ function kc2SyncGallery(){
   if (key !== kc2LessonKey){
     kc2LessonKey = key;
     kc2Sel = {};
-    kc2AutoPick(pickedLesson.entries, KC2_MAX_IMAGES).forEach(p => { kc2Sel[p] = 1; });
+    kc4Groups = null;
     kc2SetMsg("");
+    kc2RenderGallery();
+    kc4ComputeGroups();
+    return;
   }
   kc2RenderGallery();
 }
@@ -7111,20 +7318,25 @@ async function kc2WriteNarrations(lesson, entries){
   let prev = "";
   for (let i = 0; i < entries.length; i++){
     const e = entries[i];
-    logWarn("✍️ Đang viết lời cảnh " + (i + 1) + "/" + entries.length + " — " + escapeHtml(kc2CaptionLine(e)) + "…");
-    const prompt = kc2BuildScenePrompt({
+    const companions = kc4CompanionsOf(e).slice(0, 2);
+    logWarn("✍️ Đang viết lời cảnh " + (i + 1) + "/" + entries.length + " — " + escapeHtml(kc2CaptionLine(e)) + (companions.length ? " (gửi kèm " + companions.length + " bản đi kèm của cùng hình)" : "") + "…");
+    let prompt = kc2BuildScenePrompt({
       subjectName: lesson.subjectName, grade: lesson.grade, lessonNo: lesson.lessonNo, topic: lesson.topic,
       idx: i, total: entries.length, entry: e, prev: prev ? prev.slice(0, 400) : "", instr: instr
     });
-    let narr = "", b64 = null;
-    try { b64 = await kc2FetchImageB64(e); } catch (err) { b64 = null; }
+    if (companions.length) prompt += "\n" + kc4PairNote(companions.length + 1);
+    let narr = "", imgs = [];
+    try { const b0 = await kc2FetchImageB64(e); if (b0) imgs.push(b0); } catch (err) {}
+    for (let ci = 0; ci < companions.length; ci++){
+      try { const bx = await kc2FetchImageB64(companions[ci]); if (bx) imgs.push(bx); } catch (err) {}
+    }
     try {
       const parts = [{ text: prompt }];
-      if (b64) parts.push({ inlineData: { mimeType: b64.mimeType, data: b64.data } });
+      imgs.forEach(b => parts.push({ inlineData: { mimeType: b.mimeType, data: b.data } }));
       const data = await geminiCall("text", { contents: [{ parts: parts }], generationConfig: { temperature: 0.7 } });
       narr = kc2CleanNarration(firstText(data));
     } catch (err1) {
-      if (b64 && /\(400\)/.test(String((err1 && err1.message) || ""))){
+      if (imgs.length && /\(400\)/.test(String((err1 && err1.message) || ""))){
         try {
           const data2 = await geminiCall("text", { contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.7 } });
           narr = kc2CleanNarration(firstText(data2));
@@ -7168,6 +7380,10 @@ async function kc2Run(autoBuild){
   if (!lesson){
     kc2SetMsg("⚠️ Thầy chưa chọn bài ở khung 🎯 Bài Học Trung Tâm phía trên — chọn Môn → Khối → Bài trước đã.", true);
     const pb = $("pickerBox"); if (pb) pb.scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+  if (kc4Pending){
+    kc2SetMsg("⏳ App đang nhận diện các hình giống nhau trong bài — thầy đợi vài giây để app gom xong rồi bấm lại.", true);
     return;
   }
   const entries = kc2SelectedEntries();
