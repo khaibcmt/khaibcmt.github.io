@@ -2861,6 +2861,33 @@ function kc4PairNote(n){
   return "LƯU Ý VỀ HÌNH ĐÍNH KÈM: cảnh này có " + c + " ảnh đính kèm, nhưng tất cả là CÙNG MỘT hình/sơ đồ của bài học ở các bản khác nhau (ví dụ: bản ĐÁNH SỐ để trống cho học sinh điền và bản NGUYÊN CHỮ có đầy đủ nội dung chữ của SGK). Hãy coi bản NGUYÊN CHỮ (bản đầy đủ chữ) là CĂN CỨ NỘI DUNG SGK để viết lời kể cho cảnh này. Đây vẫn là MỘT cảnh duy nhất — chỉ viết đúng một lời kể cho cảnh này.";
 }
 /*__END_PURE_KC4__*/
+/*__PURE_KC5__*/
+/* [KC5] ĐỔI THỨ TỰ CẢNH trong màn duyệt Kể Chuyện — logic thuần (không
+   DOM, test Node eval trực tiếp khối này).
+   Lệnh của thầy (10:49 ngày 21/11/2026): app tạo ra các cảnh rồi, thầy
+   muốn "đổi các cảnh lẫn nhau — ý như là đổi thứ tự ấy" trước khi dựng.
+   kc5MovedSegments(segments, i, dir): trả về MẢNG MỚI trong đó phần tử
+   ở vị trí i đã hoán đổi với cảnh kề trên (dir = -1) hoặc kề dưới
+   (dir = +1); trả null khi không đổi được (không phải mảng, dưới 2
+   phần tử, chỉ số ngoài tầm, dir không phải ±1). Mảng gốc KHÔNG bị
+   sửa. Phần tử là OBJECT cảnh nên khi đổi vị trí, toàn bộ dữ liệu của
+   cảnh (tiêu đề, lời kể, nguồn hình cả 3 loại: kcTpl vẽ mẫu /
+   onlinePath kho SGK — bản đi kèm của nhóm KC4 tra theo chính path
+   này / kcUpload ảnh tải lên) đi theo nguyên vẹn; bước dựng đọc
+   segments theo thứ tự mảng nên video ra đúng thứ tự mới. */
+function kc5MovedSegments(segments, i, dir){
+  if (!Array.isArray(segments) || segments.length < 2) return null;
+  const d = Number(dir);
+  if (d !== -1 && d !== 1) return null;
+  const a = Number(i);
+  if (!Number.isInteger(a) || a < 0 || a >= segments.length) return null;
+  const b = a + d;
+  if (b < 0 || b >= segments.length) return null;
+  const out = segments.slice();
+  const tmp = out[a]; out[a] = out[b]; out[b] = tmp;
+  return out;
+}
+/*__END_PURE_KC5__*/
 /* Danh sách hình của BÀI ĐÃ CHỐT (theo danh tính _picked của kịch bản) —
    nguồn cho lưới chọn hình từng đoạn ở luồng chọn bài. */
 function pickedLessonEntries(){
@@ -6860,6 +6887,28 @@ function renderKcReviewInto(box){
     head.appendChild(tag);
     const st = document.createElement("span"); st.className = "small"; st.style.flex = "1"; st.textContent = kcSrcStatus(sg);
     head.appendChild(st);
+    /* [KC5] Đổi thứ tự cảnh: ▲ Lên / ▼ Xuống đổi vị trí với cảnh kề.
+       Cảnh đầu không hiện ▲, cảnh cuối không hiện ▼. Vùng chạm 44px
+       cho dễ bấm trên điện thoại. Chỉ màn duyệt Kể Chuyện mới có —
+       các loại khác dùng nhánh duyệt riêng, không qua hàm này. */
+    const kc5Move = (dir) => {
+      const mv = kc5MovedSegments(scriptData.segments, i, dir);
+      if (!mv) return;
+      scriptData.segments.splice(0, scriptData.segments.length, ...mv);
+      renderScriptReview();
+    };
+    if (i > 0){
+      const bUp = mkBtn("▲ Lên", "btn-ghost");
+      bUp.style.minWidth = "44px"; bUp.style.minHeight = "44px";
+      bUp.addEventListener("click", () => kc5Move(-1));
+      head.appendChild(bUp);
+    }
+    if (i < scriptData.segments.length - 1){
+      const bDn = mkBtn("▼ Xuống", "btn-ghost");
+      bDn.style.minWidth = "44px"; bDn.style.minHeight = "44px";
+      bDn.addEventListener("click", () => kc5Move(1));
+      head.appendChild(bDn);
+    }
     const bDel = mkBtn("🗑 Xoá cảnh", "btn-ghost");
     bDel.disabled = scriptData.segments.length <= 1;
     bDel.addEventListener("click", () => { scriptData.segments.splice(i, 1); renderScriptReview(); });
