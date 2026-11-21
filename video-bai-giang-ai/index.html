@@ -290,6 +290,7 @@
         <span class="chip type-chip" data-type="review">📝 Ôn tập / tổng kết</span>
         <span class="chip type-chip" data-type="phieu">📋 Phiếu Học Tập</span>
         <span class="chip type-chip" data-type="chuade">🎯 Chữa Đề Thi</span>
+        <span class="chip type-chip" data-type="kechuyen">🎭 Kể Chuyện</span>
       </div>
       <div class="small" style="margin-top:6px">App tự nhớ loại video đã chọn cho lần mở sau.</div>
     </div>
@@ -320,6 +321,32 @@
         <select id="cdEntry"></select>
       </div>
       <div id="chuadePreview" class="hidden" style="margin-top:12px;border-top:1px dashed var(--line);padding-top:10px"></div>
+    </div>
+
+    <div id="kcPanel" class="hidden" style="margin-top:14px;border:1px dashed var(--line);border-radius:12px;padding:12px 14px;background:var(--panel2)">
+      <div style="font-weight:700;font-size:16px">🎭 Video Kể Chuyện — dán kịch bản có sẵn, chọn ảnh từng cảnh, dựng thành phim</div>
+      <div class="small" style="margin-top:4px">Không cần AI viết kịch bản, không cần key sinh ảnh: thầy dán kịch bản truyện, app <b>tự chia cảnh theo đoạn văn</b> (đoạn dài tự chia nhỏ theo câu). Mỗi cảnh chọn 1 nguồn ảnh: <b>🎨 Vẽ mẫu có sẵn</b> (có hình ngay, nhân vật giọt nước nhất quán), <b>📚 ảnh trong kho SGK</b>, hoặc <b>⬆ ảnh của thầy</b>. Một giọng dẫn chuyện đọc toàn bộ truyện, phụ đề lời kể chạy theo từng câu trên hình.</div>
+      <label style="margin-top:10px">Tiêu đề truyện</label>
+      <input type="text" id="kcTitle" placeholder="Ví dụ: Cuộc phiêu lưu của giọt nước trong thân cây">
+      <label style="margin-top:10px">Dán kịch bản truyện *</label>
+      <textarea id="kcText" rows="10" placeholder="Dán toàn bộ kịch bản truyện vào đây. Mỗi đoạn văn (cách nhau một dòng trống) thành 1 cảnh; đoạn dài app tự chia nhỏ theo câu..."></textarea>
+      <div class="row" style="margin-top:10px;gap:10px">
+        <div style="flex:1"><label>🎙 Giọng dẫn chuyện</label>
+          <select id="kcNarrator">
+            <option value="female">👩 MC Nữ dẫn chuyện</option>
+            <option value="male">👨 MC Nam dẫn chuyện</option>
+          </select>
+        </div>
+        <div style="flex:1"><label>Nguồn giọng cho truyện</label>
+          <select id="kcVoiceSource">
+            <option value="edge">Edge TTS — miễn phí, không cần key (mặc định)</option>
+            <option value="gemini">Gemini — cần key trong hồ</option>
+            <option value="fpt">FPT.AI — cần key FPT</option>
+            <option value="mix">🔀 Trộn hết (ưu tiên miễn phí trước)</option>
+          </select>
+        </div>
+      </div>
+      <div class="small" style="margin-top:8px">Điền xong, thầy bấm nút <b>🎬 TẠO VIDEO</b> phía dưới: app chia cảnh rồi mở màn hình duyệt — ở đó thầy sửa lời từng cảnh, chọn ảnh cho từng cảnh, thêm/xoá cảnh, rồi bấm <b>DỰNG VIDEO</b>.</div>
     </div>
 
     <div style="margin-top:16px">
@@ -2411,7 +2438,8 @@ const VIDEO_TYPE_BLOCKS = {
     "- Ưu tiên segment dạng sơ đồ (diagram) và bảng tổng hợp (table) để hệ thống hoá, so sánh, đối chiếu các kiến thức trọng tâm.\n" +
     "- Nhấn mạnh các điểm trọng tâm, các điểm hay ra thi và những lỗi học sinh hay nhầm.\n" +
     "- Kết thúc bằng một vài câu hỏi TỰ KIỂM TRA (segment text) để học sinh tự đánh giá; không cần lời giải chi tiết.",
-  chuade: "LOẠI VIDEO: 🎯 CHỮA ĐỀ THI — loại này dựng thẳng từ kho đề có đáp án, không đi qua AI viết kịch bản."
+  chuade: "LOẠI VIDEO: 🎯 CHỮA ĐỀ THI — loại này dựng thẳng từ kho đề có đáp án, không đi qua AI viết kịch bản.",
+  kechuyen: "LOẠI VIDEO: 🎭 KỂ CHUYỆN — loại này dựng thẳng từ kịch bản thầy dán sẵn, không đi qua AI viết kịch bản."
 };
 let videoType = "full";
 try { videoType = localStorage.getItem(TYPE_KEY) || "full"; } catch (e) {}
@@ -2527,11 +2555,20 @@ async function generateScript(){
 }
 
 /* ---------- Màn hình duyệt kịch bản ---------- */
-const TYPE_LABEL = { image: "🖼 Hình ảnh", sgk: "📚 Hình SGK", diagram: "🔀 Sơ đồ", table: "📊 Bảng số liệu", text: "📄 Nội dung chữ", phieu: "📋 Phiếu học tập", chuade: "🎯 Chữa đề" };
+const TYPE_LABEL = { image: "🖼 Hình ảnh", sgk: "📚 Hình SGK", diagram: "🔀 Sơ đồ", table: "📊 Bảng số liệu", text: "📄 Nội dung chữ", phieu: "📋 Phiếu học tập", chuade: "🎯 Chữa đề", kechuyen: "🎭 Kể chuyện" };
 function renderScriptReview(){
   if (!scriptData) return;
   $("scriptMeta").textContent = "🎬 " + (scriptData.title || "Video bài giảng") +
     (scriptData.subject ? " — " + scriptData.subject : "") + (scriptData.grade ? " • Lớp " + scriptData.grade : "");
+  if (scriptData._mode === "kechuyen") {
+    const kbox = $("scriptSegs"); kbox.innerHTML = "";
+    renderKcReviewInto(kbox);
+    $("scriptJson").value = JSON.stringify(scriptData, null, 2);
+    updateDurInfo();
+    $("scriptCard").classList.remove("hidden");
+    $("scriptCard").scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
   autoAssignOnline();
   const box = $("scriptSegs"); box.innerHTML = "";
   if (scriptData._mode === "chuade" && scriptData._chuade) {
@@ -2610,6 +2647,10 @@ $("applyJsonBtn").addEventListener("click", () => {
   }
   if (scriptData && scriptData._mode === "chuade") {
     $("jsonMsg").textContent = "ℹ️ Kịch bản chữa đề sinh thẳng từ kho đề (câu hỏi + đáp án nguyên văn) nên không sửa bằng JSON — thầy sửa GIẢI THÍCH ngay trong ô của từng cảnh chốt ở phía trên.";
+    return;
+  }
+  if (scriptData && scriptData._mode === "kechuyen") {
+    $("jsonMsg").textContent = "ℹ️ Kịch bản kể chuyện sửa trực tiếp ở danh sách cảnh phía trên (sửa lời, đổi nguồn ảnh từng cảnh, thêm/xoá cảnh) — không sửa bằng JSON.";
     return;
   }
   try {
@@ -2887,6 +2928,99 @@ function segVisualPlan(sg, asset){
   return n > 0 ? { kind: "images", count: n } : { kind: "text", count: 0 };
 }
 /*__END_PURE_MULTI__*/
+/*__PURE_KC__*/
+/* [KC1] CHẾ ĐỘ KỂ CHUYỆN — logic thuần (không DOM, test Node eval trực
+   tiếp khối này):
+   - kcSplitScenes: chia kịch bản dán vào thành cảnh — đoạn văn (cách
+     nhau dòng trống) = 1 cảnh; không có dòng trống thì mỗi dòng = 1
+     cảnh; đoạn dài tự chia theo câu, không cắt giữa câu.
+   - kcGuessTemplate: đoán mẫu vẽ theo từ khoá trong lời kể.
+   - kcCaptionAt: phụ đề tại tiến độ t — câu đang đọc + câu liền trước. */
+const KC_TEMPLATES = [
+  { id: "cay_mattroi", name: "🌳 Cây và mặt trời" },
+  { id: "giot_nuoc", name: "💧 Giọt nước phiêu lưu" },
+  { id: "la_cay", name: "🍃 Lá cây và quang hợp" },
+  { id: "bau_troi", name: "☁️ Bầu trời, mây và mưa" },
+  { id: "long_dat", name: "🪱 Trong lòng đất — rễ cây" },
+  { id: "mach_go", name: "🪵 Mạch gỗ trong thân cây" },
+  { id: "dong_song", name: "🏞 Dòng sông, cánh đồng" },
+  { id: "vuon_hoa", name: "🌻 Vườn hoa, ong và bướm" },
+  { id: "phong_thi_nghiem", name: "🔬 Phòng thí nghiệm" },
+  { id: "te_bao", name: "🦠 Tế bào" }
+];
+const KC_TEMPLATE_IDS = KC_TEMPLATES.map(t => t.id);
+function kcNorm(s){
+  return String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d");
+}
+const KC_TPL_KEYWORDS = {
+  giot_nuoc: ["giot nuoc", "hoi nuoc", "boc hoi", "nuoc mua"],
+  long_dat: ["long dat", "bac re", "re cay", "long hut", "trong dat"],
+  mach_go: ["mach go", "xi-lem", "xilem", "than cay", "leo len cao", "day nuoc len"],
+  la_cay: ["quang hop", "chi la", "la cay", "khi cacbonic", "khi oxi", "luc lap"],
+  bau_troi: ["bau troi", "thanh may", "bay len troi", "khi khong", "thoat hoi nuoc", "thanh mua"],
+  cay_mattroi: ["goc cay", "cay xanh", "mat troi", "vuon cay"],
+  dong_song: ["dong song", "con song", "canh dong", "dong ruong", "con suoi"],
+  vuon_hoa: ["vuon hoa", "bong hoa", "con ong", "con buom", "thu phan", "hat phan"],
+  phong_thi_nghiem: ["thi nghiem", "ong nghiem", "binh tam giac", "kinh hien vi", "nha khoa hoc"],
+  te_bao: ["te bao", "nhan te bao", "ti the", "mang te bao"]
+};
+function kcGuessTemplate(text){
+  const t = " " + kcNorm(text) + " ";
+  let best = "cay_mattroi", bestScore = 0;
+  Object.keys(KC_TPL_KEYWORDS).forEach(id => {
+    let s = 0;
+    KC_TPL_KEYWORDS[id].forEach(kw => { if (t.indexOf(kw) >= 0) s += kw.length; });
+    if (s > bestScore) { bestScore = s; best = id; }
+  });
+  return best;
+}
+function kcSentences(text){
+  return String(text || "").replace(/\s+/g, " ").trim().split(/(?<=[.!?…])\s+/).map(s => s.trim()).filter(Boolean);
+}
+function kcSplitLongPara(para, maxChars){
+  const p = String(para || "").replace(/\s+/g, " ").trim();
+  if (!p) return [];
+  if (p.length <= maxChars) return [p];
+  const sents = kcSentences(p);
+  const out = []; let cur = "";
+  sents.forEach(s => {
+    if (cur && (cur.length + 1 + s.length) > maxChars) { out.push(cur); cur = s; }
+    else cur = cur ? cur + " " + s : s;
+  });
+  if (cur) out.push(cur);
+  return out;
+}
+function kcHeadingFrom(narration){
+  const s = kcSentences(narration)[0] || String(narration || "");
+  const words = s.split(/\s+/).filter(Boolean);
+  let h = words.slice(0, 8).join(" ");
+  if (words.length > 8) h += "…";
+  return h || "Cảnh mới";
+}
+function kcSplitScenes(text){
+  const raw = String(text || "").replace(/\r\n?/g, "\n").trim();
+  if (!raw) return [];
+  let paras = raw.split(/\n\s*\n/).map(p => p.trim()).filter(Boolean);
+  if (paras.length <= 1) {
+    const lines = raw.split(/\n/).map(p => p.trim()).filter(Boolean);
+    if (lines.length > 1) paras = lines;
+  }
+  const scenes = [];
+  paras.forEach(p => {
+    kcSplitLongPara(p, 320).forEach(chunk => {
+      scenes.push({ heading: kcHeadingFrom(chunk), narration: chunk });
+    });
+  });
+  return scenes;
+}
+function kcCaptionAt(narration, t){
+  const s = kcSentences(narration);
+  if (!s.length) return "";
+  const x = Math.max(0, Math.min(0.999999, Number(t) || 0));
+  const idx = Math.min(s.length - 1, Math.floor(x * s.length));
+  return s.slice(Math.max(0, idx - 1), idx + 1).join(" ");
+}
+/*__END_PURE_KC__*/
 /* Danh sách hình của BÀI ĐÃ CHỐT (theo danh tính _picked của kịch bản) —
    nguồn cho lưới chọn hình từng đoạn ở luồng chọn bài. */
 function pickedLessonEntries(){
@@ -3152,6 +3286,27 @@ function buildAssignUI(sg, i){
 /* ---------- BƯỚC 2: hình cho từng segment ---------- */
 async function genImageForSegment(i){
   const sg = scriptData.segments[i];
+  if (scriptData._mode === "kechuyen") {
+    /* KC1: 3 nguồn ảnh của cảnh kể chuyện — 🎨 vẽ mẫu (có hình ngay,
+       không cần key), 📚 kho SGK (online / thư viện máy), ⬆ ảnh thầy
+       tải lên. Chế độ này KHÔNG bao giờ gọi AI sinh ảnh. */
+    try {
+      if (sg.kcSrc === "upload") {
+        if (!sg.kcUpload) assets[i] = { status: "skip", img: null, source: "none", err: "" };
+        else { const uimg = await loadImageEl(sg.kcUpload); assets[i] = { status: "ok", img: uimg, source: "upload", err: "" }; }
+      } else if (sg.kcSrc === "sgk") {
+        if (sg.onlinePath) { const oimg = await loadOnlineImage(sg.onlineUrl || ("../" + sg.onlinePath)); assets[i] = { status: "ok", img: oimg, source: "online", err: "" }; }
+        else if (sg.sgkImageId && library.get(sg.sgkImageId) && library.get(sg.sgkImageId).img) assets[i] = { status: "ok", img: library.get(sg.sgkImageId).img, source: "sgk", err: "" };
+        else assets[i] = { status: "skip", img: null, source: "none", err: "" };
+      } else {
+        assets[i] = { status: "ok", img: null, source: "draw", tpl: KC_TEMPLATE_IDS.indexOf(sg.kcTpl) >= 0 ? sg.kcTpl : "cay_mattroi", err: "" };
+      }
+    } catch (e) {
+      assets[i] = { status: "err", img: null, source: sg.kcSrc || "draw", err: e.message };
+    }
+    renderAssetRows();
+    return assets[i].status === "ok";
+  }
   if (scriptData._mode === "story") {
     /* CHẾ ĐỘ KỂ CHUYỆN: ưu tiên ẢNH AI phong cách minh hoạ truyện/hoạt hình.
        Hình SGK (nếu thầy gán tay) chỉ là dự phòng khi AI sinh không được. */
@@ -3238,10 +3393,10 @@ function renderAssetRows(){
     const row = document.createElement("div"); row.className = "asset-row";
     const a = assets[i], au = audios[i];
     let imgTxt = "—";
-    if (sg.type === "image" || sg.type === "sgk") {
+    if (sg.type === "image" || sg.type === "sgk" || sg.type === "kechuyen") {
       if (sg.noImg && (!a || a.status !== "ok")) imgTxt = "Hình: ⚠ không có hình — đã chuyển slide chữ";
       else if (!a) imgTxt = "Hình: chờ...";
-      else if (a.status === "ok") imgTxt = "Hình: ✔ " + (a.source === "sgk" ? "hình SGK (trong máy)" : (a.source === "online" ? "hình SGK (kho online)" : "AI sinh")) + ((a.imgs && a.imgs.length > 1) ? " ×" + a.imgs.length + " hình (chia đều thời lượng đoạn)" : "");
+      else if (a.status === "ok") imgTxt = "Hình: ✔ " + (a.source === "sgk" ? "hình SGK (trong máy)" : (a.source === "online" ? "hình SGK (kho online)" : (a.source === "draw" ? "vẽ mẫu kể chuyện" : (a.source === "upload" ? "ảnh của thầy" : "AI sinh")))) + ((a.imgs && a.imgs.length > 1) ? " ×" + a.imgs.length + " hình (chia đều thời lượng đoạn)" : "");
       else if (a.status === "skip") imgTxt = "Hình: bỏ qua (chuyển slide chữ)";
       else imgTxt = "Hình: ✖ lỗi";
     }
@@ -6436,7 +6591,617 @@ function initChuade(){
   syncChuadePanel();
 }
 
+/* =========================================================
+   [KC1] CHẾ ĐỘ KỂ CHUYỆN — vẽ mẫu trên canvas + slide kể chuyện
+   + màn duyệt cảnh (sửa lời / chọn ảnh 3 nguồn / thêm / xoá cảnh)
+   + điều phối tạo & panel.
+   Hình minh hoạ phẳng vẽ bằng code (chuyển ý từ bản vẽ PIL của video
+   mẫu giọt nước sáng 21/11): chọn mẫu là có hình ngay, nhân vật giọt
+   nước "Tí" nhất quán qua mọi mẫu. Không cần key sinh ảnh.
+   ========================================================= */
+let kcSavedVoiceSource = null;
+function kcSky(ctx, top, bot){
+  const g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, top); g.addColorStop(1, bot);
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+}
+function kcDropletPath(ctx, cx, cy, s){
+  const pts = [];
+  for (let i = 0; i <= 20; i++){ const t = i / 20; pts.push([cx + s * Math.sin(t * Math.PI * 0.62) * (1 - 0.25 * t), (cy - 2.05 * s) + t * (2.4 * s)]); }
+  for (let i = 1; i <= 20; i++){ const t = i / 20; pts.push([cx + 0.70 * s * Math.cos(t * Math.PI), (cy + 0.35 * s) + s * 0.62 * Math.sin(t * Math.PI)]); }
+  for (let i = 20; i >= 0; i--){ const t = i / 20; pts.push([cx - s * Math.sin(t * Math.PI * 0.62) * (1 - 0.25 * t), (cy - 2.05 * s) + t * (2.4 * s)]); }
+  ctx.beginPath();
+  pts.forEach((p, k) => { if (k === 0) ctx.moveTo(p[0], p[1]); else ctx.lineTo(p[0], p[1]); });
+  ctx.closePath();
+}
+function kcDroplet(ctx, cx, cy, s, opt){
+  opt = opt || {};
+  kcDropletPath(ctx, cx, cy, s);
+  ctx.fillStyle = opt.body || "#35a7ff"; ctx.fill();
+  ctx.lineWidth = Math.max(3, s * 0.07); ctx.strokeStyle = opt.outline || "#1665ab"; ctx.stroke();
+  ctx.fillStyle = "rgba(180,225,255,0.9)";
+  ctx.beginPath(); ctx.ellipse(cx - 0.35 * s, cy - 0.14 * s, 0.17 * s, 0.41 * s, 0, 0, Math.PI * 2); ctx.fill();
+  if (opt.face === false) return;
+  const ey = cy + 0.05 * s;
+  [-1, 1].forEach(sgn => {
+    const ex = cx + sgn * 0.36 * s;
+    ctx.fillStyle = "#ffffff"; ctx.beginPath(); ctx.ellipse(ex, ey, 0.13 * s, 0.16 * s, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#14283c"; ctx.beginPath(); ctx.ellipse(ex, ey + 0.02 * s, 0.065 * s, 0.085 * s, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "rgba(255,170,190,0.85)";
+    ctx.beginPath(); ctx.ellipse(cx + sgn * 0.58 * s, ey + 0.27 * s, 0.14 * s, 0.09 * s, 0, 0, Math.PI * 2); ctx.fill();
+  });
+  ctx.strokeStyle = "#143c6e"; ctx.lineWidth = Math.max(3, s * 0.06);
+  ctx.beginPath(); ctx.ellipse(cx, ey + 0.29 * s, 0.26 * s, 0.21 * s, 0, Math.PI * 0.08, Math.PI * 0.92); ctx.stroke();
+}
+function kcSun(ctx, cx, cy, r, t, face){
+  ctx.save();
+  ctx.strokeStyle = "#f0a500"; ctx.lineWidth = 13; ctx.lineCap = "round";
+  for (let k = 0; k < 12; k++){
+    const a = k * Math.PI / 6 + (t || 0) * 0.2;
+    ctx.beginPath();
+    ctx.moveTo(cx + (r + 16) * Math.cos(a), cy + (r + 16) * Math.sin(a));
+    ctx.lineTo(cx + (r + 62) * Math.cos(a), cy + (r + 62) * Math.sin(a));
+    ctx.stroke();
+  }
+  ctx.fillStyle = "#ffd93d";
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2); ctx.fill();
+  ctx.lineWidth = 6; ctx.strokeStyle = "#f0a500"; ctx.stroke();
+  if (face){
+    ctx.strokeStyle = "#7a4d00"; ctx.lineWidth = 7;
+    [-1, 1].forEach(sgn => {
+      ctx.beginPath(); ctx.arc(cx + sgn * 0.38 * r, cy - 0.10 * r, 0.17 * r, Math.PI * 1.08, Math.PI * 1.92); ctx.stroke();
+    });
+    ctx.beginPath(); ctx.arc(cx, cy + 0.02 * r, 0.36 * r, Math.PI * 0.15, Math.PI * 0.85); ctx.stroke();
+  }
+  ctx.restore();
+}
+function kcCloud(ctx, cx, cy, s, fill){
+  ctx.fillStyle = fill || "#ffffff";
+  [[-1.1, 0.15, 0.62], [-0.35, -0.25, 0.85], [0.5, -0.15, 0.75], [1.15, 0.18, 0.55], [0.1, 0.3, 0.8]].forEach(p => {
+    ctx.beginPath(); ctx.ellipse(cx + p[0] * s, cy + p[1] * s, p[2] * s, p[2] * s * 0.72, 0, 0, Math.PI * 2); ctx.fill();
+  });
+  ctx.fillRect(cx - 1.55 * s, cy + 0.08 * s, 3.15 * s, 0.55 * s);
+}
+function kcTree(ctx, bx, gy, th, ccx, ccy, cr){
+  ctx.fillStyle = "#8b5a2b";
+  ctx.beginPath();
+  ctx.moveTo(bx - 55, gy); ctx.lineTo(bx - 30, gy - th); ctx.lineTo(bx + 30, gy - th); ctx.lineTo(bx + 55, gy);
+  ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = "#8b5a2b"; ctx.lineCap = "round"; ctx.lineWidth = 26;
+  [[-1, 60], [1, 100], [-1, 150]].forEach(b => {
+    ctx.beginPath(); ctx.moveTo(bx, gy - th + b[1]); ctx.lineTo(bx + b[0] * cr * 0.55, gy - th + b[1] - 60); ctx.stroke();
+  });
+  [[-0.95, 0.25, 0.62], [-0.4, -0.35, 0.8], [0.35, -0.4, 0.85], [0.95, 0.2, 0.6], [0, 0.3, 0.9], [-0.75, -0.5, 0.55], [0.75, -0.55, 0.55]].forEach(p => {
+    ctx.fillStyle = "#2e9e4f";
+    ctx.beginPath(); ctx.ellipse(ccx + p[0] * cr, ccy + p[1] * cr, p[2] * cr, p[2] * cr * 0.82, 0, 0, Math.PI * 2); ctx.fill();
+  });
+  [[-0.3, 0.05, 0.5], [0.45, 0.1, 0.45], [0.05, -0.25, 0.5]].forEach(p => {
+    ctx.fillStyle = "#3cb35f";
+    ctx.beginPath(); ctx.ellipse(ccx + p[0] * cr, ccy + p[1] * cr, p[2] * cr, p[2] * cr * 0.82, 0, 0, Math.PI * 2); ctx.fill();
+  });
+}
+function kcGround(ctx, gy, c1, c2){
+  const g = ctx.createLinearGradient(0, gy, 0, H);
+  g.addColorStop(0, c1); g.addColorStop(1, c2);
+  ctx.fillStyle = g; ctx.fillRect(0, gy, W, H - gy);
+}
+function kcArrow(ctx, x1, y1, x2, y2, color, w){
+  ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = w || 10; ctx.lineCap = "round";
+  ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2); ctx.stroke();
+  const ang = Math.atan2(y2 - y1, x2 - x1);
+  ctx.beginPath();
+  ctx.moveTo(x2, y2);
+  ctx.lineTo(x2 - 30 * Math.cos(ang - 0.45), y2 - 30 * Math.sin(ang - 0.45));
+  ctx.lineTo(x2 - 30 * Math.cos(ang + 0.45), y2 - 30 * Math.sin(ang + 0.45));
+  ctx.closePath(); ctx.fill();
+}
+function kcDrawTemplate(ctx, tpl, t){
+  t = Math.max(0, Math.min(1, Number(t) || 0));
+  const bob = Math.sin(t * Math.PI * 2) * 10;
+  if (tpl === "giot_nuoc"){
+    kcSky(ctx, "#7ec8f7", "#e8f9ff");
+    kcCloud(ctx, 350, 150, 60); kcCloud(ctx, 1500, 110, 48);
+    [[300, 320, 34], [1560, 350, 40], [420, 720, 28], [1620, 740, 30], [700, 210, 24], [1250, 840, 26]].forEach(p => kcDroplet(ctx, p[0], p[1], p[2], { face: false }));
+    kcDroplet(ctx, 960, 560 + bob, 150, {});
+    return;
+  }
+  if (tpl === "la_cay"){
+    kcSky(ctx, "#8fd3f4", "#eafcf1");
+    kcSun(ctx, 240, 170, 85, t, true);
+    ctx.save(); ctx.translate(1020, 560); ctx.rotate(-0.5);
+    ctx.fillStyle = "#34a853";
+    ctx.beginPath(); ctx.ellipse(0, 0, 560, 300, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = "#1e7040"; ctx.lineWidth = 10;
+    ctx.beginPath(); ctx.moveTo(-540, 0); ctx.lineTo(540, 0); ctx.stroke();
+    ctx.lineWidth = 5;
+    for (let k = -3; k <= 3; k++){
+      if (!k) continue;
+      ctx.beginPath(); ctx.moveTo(k * 130, 0); ctx.lineTo(k * 130 + 140, (k % 2 ? -1 : 1) * 225); ctx.stroke();
+    }
+    ctx.restore();
+    kcArrow(ctx, 420, 290, 650, 420, "#e05252", 12);
+    kcArrow(ctx, 1330, 650, 1570, 470, "#3d8bfd", 12);
+    kcDroplet(ctx, 700, 720 + bob, 56, {});
+    return;
+  }
+  if (tpl === "bau_troi"){
+    kcSky(ctx, "#4aa3e8", "#cfeeff");
+    kcSun(ctx, 300, 160, 80, t, true);
+    const dx = t * 60;
+    kcCloud(ctx, 620 + dx, 210, 80); kcCloud(ctx, 1250 - dx, 160, 62); kcCloud(ctx, 950 + dx * 0.6, 350, 70, "#eef6ff");
+    ["#ef5350", "#ffa726", "#ffee58", "#66bb6a", "#42a5f5"].forEach((c, k) => {
+      ctx.strokeStyle = c; ctx.lineWidth = 22;
+      ctx.beginPath(); ctx.arc(1620, 920, 330 - k * 24, Math.PI, Math.PI * 1.62); ctx.stroke();
+    });
+    ctx.strokeStyle = "rgba(30,110,200,0.55)"; ctx.lineWidth = 6; ctx.lineCap = "round";
+    const off = (t * 520) % 130;
+    for (let x = 110; x < 880; x += 92){
+      for (let y = 430; y < 1010; y += 130){
+        const yy = y + off - 130;
+        ctx.beginPath(); ctx.moveTo(x, yy); ctx.lineTo(x - 14, yy + 44); ctx.stroke();
+      }
+    }
+    kcDroplet(ctx, 1330, 300 + bob, 58, {});
+    return;
+  }
+  if (tpl === "long_dat"){
+    kcSky(ctx, "#8fd3f4", "#eafcf1");
+    kcSun(ctx, 1700, 130, 75, t, true);
+    kcGround(ctx, 300, "#8a5a33", "#5d3a1e");
+    ctx.fillStyle = "#6f4525"; ctx.fillRect(0, 300, W, 26);
+    [[300, 600], [1500, 520], [1100, 880], [520, 950], [1700, 900]].forEach(p => {
+      ctx.fillStyle = "#7d5230";
+      ctx.beginPath(); ctx.ellipse(p[0], p[1], 46, 30, 0.4, 0, Math.PI * 2); ctx.fill();
+    });
+    ctx.strokeStyle = "#2e9e4f"; ctx.lineWidth = 14; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(960, 300); ctx.quadraticCurveTo(950, 210, 960, 130); ctx.stroke();
+    ctx.fillStyle = "#34a853";
+    ctx.beginPath(); ctx.ellipse(905, 130, 62, 30, -0.6, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(1015, 120, 62, 30, 0.6, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = "#d9b380"; ctx.lineWidth = 20;
+    ctx.beginPath(); ctx.moveTo(960, 300); ctx.quadraticCurveTo(950, 560, 965, 800); ctx.stroke();
+    [[-1, 420, 700], [1, 470, 760], [-1, 560, 830], [1, 620, 880], [-1, 690, 900]].forEach(r => {
+      ctx.lineWidth = 9;
+      ctx.beginPath(); ctx.moveTo(958, r[1]); ctx.quadraticCurveTo(958 + r[0] * 120, r[1] + 60, 958 + r[0] * 210, r[2]); ctx.stroke();
+      ctx.lineWidth = 3;
+      for (let k = 0; k < 5; k++){
+        const hx = 958 + r[0] * (90 + k * 26), hy = r[1] + 30 + k * ((r[2] - r[1] - 40) / 5);
+        ctx.beginPath(); ctx.moveTo(hx, hy); ctx.lineTo(hx + r[0] * 22, hy + 12); ctx.stroke();
+      }
+    });
+    kcDroplet(ctx, 480, 790 + bob, 62, {});
+    kcDroplet(ctx, 1420, 660, 44, { face: false });
+    return;
+  }
+  if (tpl === "mach_go"){
+    kcSky(ctx, "#a8d8a8", "#eafcf1");
+    ctx.fillStyle = "#8b5a2b"; ctx.fillRect(700, 0, 520, H);
+    ctx.fillStyle = "#a06a35"; ctx.fillRect(730, 0, 60, H); ctx.fillRect(1130, 0, 60, H);
+    ctx.fillStyle = "#ffe1a8"; ctx.fillRect(880, 0, 160, H);
+    ctx.strokeStyle = "#c98f3d"; ctx.lineWidth = 6;
+    ctx.beginPath(); ctx.moveTo(880, 0); ctx.lineTo(880, H); ctx.moveTo(1040, 0); ctx.lineTo(1040, H); ctx.stroke();
+    for (let k = 0; k < 6; k++){
+      const yy = 1120 - ((k * 210 + t * 420) % 1240);
+      if (yy > -90 && yy < 1170) kcDroplet(ctx, 960, yy, 42, { face: k % 2 === 0 });
+    }
+    kcArrow(ctx, 620, 800, 620, 480, "#1e7040", 12);
+    kcArrow(ctx, 1300, 800, 1300, 480, "#1e7040", 12);
+    ctx.fillStyle = "#2e9e4f";
+    [[760, 46, 150], [960, 16, 180], [1160, 46, 150]].forEach(p => {
+      ctx.beginPath(); ctx.ellipse(p[0], p[1], p[2], 92, 0, 0, Math.PI * 2); ctx.fill();
+    });
+    return;
+  }
+  if (tpl === "dong_song"){
+    kcSky(ctx, "#8fd3f4", "#eafcf1");
+    kcSun(ctx, 240, 150, 80, t, true);
+    kcCloud(ctx, 1200, 130, 60);
+    ctx.fillStyle = "#7cc47f";
+    ctx.beginPath(); ctx.ellipse(400, 560, 560, 190, 0, Math.PI, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(1560, 580, 620, 210, 0, Math.PI, Math.PI * 2); ctx.fill();
+    kcGround(ctx, 520, "#58b368", "#3d8b4f");
+    ctx.strokeStyle = "#4db2ff"; ctx.lineCap = "round"; ctx.lineWidth = 150;
+    ctx.beginPath(); ctx.moveTo(1080, 500); ctx.bezierCurveTo(760, 640, 1240, 780, 900, 1080); ctx.stroke();
+    ctx.strokeStyle = "rgba(255,255,255,0.5)"; ctx.lineWidth = 16;
+    ctx.beginPath(); ctx.moveTo(1040, 540); ctx.bezierCurveTo(800, 650, 1180, 780, 920, 1020); ctx.stroke();
+    kcTree(ctx, 330, 700, 300, 330, 330, 170);
+    kcDroplet(ctx, 950, 830 + bob, 54, {});
+    return;
+  }
+  if (tpl === "vuon_hoa"){
+    kcSky(ctx, "#8fd3f4", "#fff7e0");
+    kcSun(ctx, 1690, 150, 85, t, true);
+    kcCloud(ctx, 500, 140, 58);
+    kcGround(ctx, 640, "#58b368", "#3d8b4f");
+    const cols = ["#ef5350", "#ffa726", "#ab47bc", "#ffee58", "#42a5f5", "#ec407a"];
+    for (let k = 0; k < 6; k++){
+      const fx = 180 + k * 300, fy = 800 + (k % 2) * 90;
+      ctx.strokeStyle = "#2e7d32"; ctx.lineWidth = 10;
+      ctx.beginPath(); ctx.moveTo(fx, fy + 130); ctx.quadraticCurveTo(fx + 14, fy + 60, fx, fy); ctx.stroke();
+      ctx.fillStyle = cols[k];
+      for (let p = 0; p < 6; p++){
+        const a = p * Math.PI / 3;
+        ctx.beginPath(); ctx.ellipse(fx + 44 * Math.cos(a), fy + 44 * Math.sin(a), 30, 30, 0, 0, Math.PI * 2); ctx.fill();
+      }
+      ctx.fillStyle = "#ffca28";
+      ctx.beginPath(); ctx.arc(fx, fy, 26, 0, Math.PI * 2); ctx.fill();
+    }
+    const bx = 1250 + Math.sin(t * Math.PI * 2) * 60, by = 330 + Math.cos(t * Math.PI * 4) * 22;
+    ctx.fillStyle = "#ab47bc";
+    ctx.beginPath(); ctx.ellipse(bx - 34, by, 36, 22, -0.5, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(bx + 34, by, 36, 22, 0.5, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#4a235a"; ctx.fillRect(bx - 5, by - 26, 10, 52);
+    kcDroplet(ctx, 480, 690 + bob, 52, {});
+    return;
+  }
+  if (tpl === "phong_thi_nghiem"){
+    kcSky(ctx, "#bfe8dd", "#f2fbf7");
+    ctx.fillStyle = "#a1887f"; ctx.fillRect(180, 300, 420, 18);
+    [["#ef5350", 250], ["#42a5f5", 350], ["#66bb6a", 450]].forEach(b => {
+      ctx.fillStyle = "rgba(255,255,255,0.65)";
+      rr(ctx, b[1], 208, 56, 92, 10); ctx.fill();
+      ctx.fillStyle = b[0]; ctx.fillRect(b[1] + 5, 252, 46, 44);
+    });
+    ctx.fillStyle = "#8d6e63"; ctx.fillRect(0, 830, W, 250);
+    ctx.fillStyle = "#6d4c41"; ctx.fillRect(0, 830, W, 26);
+    ctx.strokeStyle = "#2e7d32"; ctx.lineWidth = 10; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(430, 830); ctx.quadraticCurveTo(425, 760, 430, 710); ctx.stroke();
+    ctx.fillStyle = "#34a853";
+    ctx.beginPath(); ctx.ellipse(395, 700, 52, 24, -0.6, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(468, 692, 52, 24, 0.6, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#795548"; ctx.fillRect(360, 824, 150, 14);
+    ctx.fillStyle = "rgba(160,220,255,0.5)"; ctx.strokeStyle = "#5b7a8c"; ctx.lineWidth = 7;
+    ctx.beginPath();
+    ctx.moveTo(880, 420); ctx.lineTo(920, 420); ctx.lineTo(1010, 700); ctx.lineTo(790, 700);
+    ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = "rgba(53,167,255,0.75)";
+    ctx.beginPath();
+    ctx.moveTo(824, 600); ctx.lineTo(976, 600); ctx.lineTo(1002, 692); ctx.lineTo(798, 692);
+    ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255,0.85)";
+    for (let k = 0; k < 5; k++){
+      const bubY = 668 - ((t * 170 + k * 42) % 95);
+      ctx.beginPath(); ctx.arc(862 + ((k * 41) % 70), bubY, 5 + (k % 3) * 2.5, 0, Math.PI * 2); ctx.fill();
+    }
+    for (let k = 0; k < 3; k++){
+      const tx = 1180 + k * 90;
+      ctx.fillStyle = "rgba(200,235,255,0.55)"; ctx.strokeStyle = "#5b7a8c"; ctx.lineWidth = 5;
+      rr(ctx, tx, 480, 52, 220, 24); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = ["#ef5350", "#66bb6a", "#ffa726"][k];
+      ctx.fillRect(tx + 5, 590, 42, 105);
+    }
+    ctx.fillStyle = "#795548"; ctx.fillRect(1150, 700, 330, 26);
+    kcDroplet(ctx, 620, 700 + bob, 56, {});
+    return;
+  }
+  if (tpl === "te_bao"){
+    kcSky(ctx, "#0d4a33", "#052418");
+    ctx.fillStyle = "#b9e7c9";
+    ctx.beginPath(); ctx.ellipse(960, 540, 780, 430, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.strokeStyle = "#2e9e4f"; ctx.lineWidth = 16; ctx.stroke();
+    ctx.strokeStyle = "rgba(46,158,79,0.5)"; ctx.lineWidth = 6;
+    ctx.beginPath(); ctx.ellipse(960, 540, 745, 398, 0, 0, Math.PI * 2); ctx.stroke();
+    ctx.fillStyle = "#8e6bc8";
+    ctx.beginPath(); ctx.arc(1180, 470, 130, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#6a3fb5";
+    ctx.beginPath(); ctx.arc(1180, 470, 62, 0, Math.PI * 2); ctx.fill();
+    [[560, 380], [700, 700], [1420, 660], [480, 580]].forEach(p => {
+      ctx.fillStyle = "#34a853";
+      ctx.beginPath(); ctx.ellipse(p[0], p[1], 92, 46, 0.5, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = "#1e7040"; ctx.lineWidth = 4;
+      ctx.beginPath(); ctx.moveTo(p[0] - 70, p[1] + 22); ctx.lineTo(p[0] + 70, p[1] - 22); ctx.stroke();
+    });
+    [[1500, 300], [620, 200]].forEach(p => {
+      ctx.fillStyle = "#ff9f43";
+      ctx.beginPath(); ctx.ellipse(p[0], p[1], 84, 40, -0.4, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = "#d35400"; ctx.lineWidth = 4;
+      ctx.beginPath(); ctx.moveTo(p[0] - 50, p[1]); ctx.bezierCurveTo(p[0] - 20, p[1] - 18, p[0] + 20, p[1] + 18, p[0] + 50, p[1]); ctx.stroke();
+    });
+    ctx.fillStyle = "rgba(120,200,255,0.5)";
+    ctx.beginPath(); ctx.ellipse(880, 300, 130, 74, 0.2, 0, Math.PI * 2); ctx.fill();
+    kcDroplet(ctx, 900, 620 + bob, 52, {});
+    return;
+  }
+  /* mặc định: cay_mattroi */
+  kcSky(ctx, "#6ebef0", "#e8f9ff");
+  kcSun(ctx, 1690, 150, 88, t, true);
+  kcCloud(ctx, 420, 150, 66); kcCloud(ctx, 1050, 105, 50);
+  kcGround(ctx, 900, "#58b368", "#3d8b4f");
+  kcTree(ctx, 1300, 905, 480, 1300, 300, 255);
+  ["#ef5350", "#ffee58", "#ec407a", "#ffffff"].forEach((c, k) => {
+    ctx.fillStyle = c;
+    ctx.beginPath(); ctx.arc(220 + k * 130, 960 + (k % 2) * 40, 13, 0, Math.PI * 2); ctx.fill();
+  });
+  kcDroplet(ctx, 560, 780 + bob, 62, {});
+}
+/* Slide kể chuyện: hình toàn cảnh + băng phụ đề lời kể hiện theo tiến
+   độ đọc của cảnh (câu đang đọc + câu liền trước), tiêu đề cảnh phía
+   trên phụ đề. Cảnh không có hình -> slide chữ như các loại khác. */
+function drawKcSlide(ctx, sg, asset, t){
+  const has = asset && asset.status === "ok";
+  if (!has){
+    drawText(ctx, { heading: sg.heading, bullets: fallbackBullets(sg) });
+    return;
+  }
+  if (asset.source === "draw"){
+    kcDrawTemplate(ctx, asset.tpl || sg.kcTpl || "cay_mattroi", t || 0);
+  } else if (asset.source === "sgk" || asset.source === "online"){
+    slideBg(ctx);
+    drawContain(ctx, asset.img, 90, 50, W - 180, H - 350);
+  } else if (asset.img){
+    drawCover(ctx, asset.img, 1 + 0.05 * (t || 0));
+  } else {
+    drawText(ctx, { heading: sg.heading, bullets: fallbackBullets(sg) });
+    return;
+  }
+  const bandH = 240;
+  const g = ctx.createLinearGradient(0, H - bandH - 70, 0, H);
+  g.addColorStop(0, "rgba(0,0,0,0)"); g.addColorStop(0.4, "rgba(0,0,0,0.8)"); g.addColorStop(1, "rgba(0,0,0,0.93)");
+  ctx.fillStyle = g; ctx.fillRect(0, H - bandH - 70, W, bandH + 70);
+  ctx.textAlign = "left"; ctx.textBaseline = "top";
+  ctx.fillStyle = "#ffd94d"; ctx.font = "700 46px " + FONT;
+  wrapLines(ctx, sg.heading || "", 1700).slice(0, 1).forEach(ln => ctx.fillText(ln, 110, H - bandH + 4));
+  const cap = kcCaptionAt(sg.narration, t || 0);
+  if (cap){
+    ctx.fillStyle = "#ffffff"; ctx.font = "400 42px " + FONT;
+    wrapLines(ctx, cap, 1700).slice(0, 3).forEach((ln, k) => ctx.fillText(ln, 110, H - bandH + 70 + k * 54));
+  }
+  if (scriptData && scriptData.title){
+    ctx.fillStyle = "#ffd94d"; ctx.font = "600 30px " + FONT; ctx.textAlign = "right";
+    ctx.fillText(scriptData.title, W - 110, 40); ctx.textAlign = "left";
+  }
+}
+/* ---------- [KC1] Màn duyệt cảnh kể chuyện ---------- */
+function kcSrcStatus(sg){
+  if (sg.kcSrc === "sgk"){
+    if (sg.onlinePath) return "📚 Đã chọn ảnh kho SGK online" + (sg.onlineFigure ? " (Hình " + sg.onlineFigure + ")" : "");
+    if (sg.sgkImageId) return "📚 Đã chọn ảnh SGK trong máy";
+    return "📚 Chưa chọn ảnh — chưa chọn thì khi dựng, cảnh này chuyển slide chữ";
+  }
+  if (sg.kcSrc === "upload") return sg.kcUpload ? "⬆ Đã có ảnh của thầy" : "⬆ Chưa tải ảnh — chưa có ảnh thì khi dựng, cảnh này chuyển slide chữ";
+  const tpl = KC_TEMPLATES.filter(x => x.id === sg.kcTpl)[0];
+  return "🎨 Vẽ mẫu: " + (tpl ? tpl.name : (sg.kcTpl || "")) + " — có hình ngay khi dựng";
+}
+function kcSgkSuggestions(sg){
+  if (!onlineLibReady) return [];
+  const words = kcNorm(sg.narration || "").split(/[^a-z0-9]+/).filter(w => w.length >= 4);
+  const wset = {};
+  words.forEach(w => { wset[w] = 1; });
+  const scored = [];
+  onlineLib.forEach(e => {
+    const hay = kcNorm((e.caption || "") + " " + (e.path || "") + " " + (e.lesson || ""));
+    let s = 0;
+    Object.keys(wset).forEach(w => { if (hay.indexOf(w) >= 0) s++; });
+    if (s > 0) scored.push({ e, s });
+  });
+  scored.sort((a, b) => b.s - a.s);
+  return scored.slice(0, 12).map(x => x.e);
+}
+function kcSgkSearch(q){
+  if (!onlineLibReady) return [];
+  const words = kcNorm(q || "").split(/[^a-z0-9]+/).filter(w => w.length >= 3);
+  if (!words.length) return [];
+  return onlineLib.filter(e => {
+    const hay = kcNorm((e.caption || "") + " " + (e.path || "") + " " + (e.lesson || "") + " " + (e.subject || ""));
+    return words.every(w => hay.indexOf(w) >= 0);
+  }).slice(0, 12);
+}
+function kcReadUploadFile(file){
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      try {
+        const maxDim = 1920;
+        if (Math.max(img.width, img.height) <= maxDim && file.size <= 1500000){
+          const r = new FileReader();
+          r.onload = () => { URL.revokeObjectURL(url); resolve(r.result); };
+          r.onerror = () => { URL.revokeObjectURL(url); reject(r.error || new Error("Không đọc được file")); };
+          r.readAsDataURL(file);
+          return;
+        }
+        const s = maxDim / Math.max(img.width, img.height);
+        const cv = document.createElement("canvas");
+        cv.width = Math.round(img.width * s); cv.height = Math.round(img.height * s);
+        cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
+        URL.revokeObjectURL(url);
+        resolve(cv.toDataURL("image/png"));
+      } catch (e) { URL.revokeObjectURL(url); reject(e); }
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error("file không phải ảnh hợp lệ")); };
+    img.src = url;
+  });
+}
+function renderKcReviewInto(box){
+  scriptData.segments.forEach((sg, i) => {
+    const d = document.createElement("div"); d.className = "seg";
+    const head = document.createElement("div");
+    head.style.display = "flex"; head.style.gap = "8px"; head.style.alignItems = "center"; head.style.flexWrap = "wrap";
+    const tag = document.createElement("span"); tag.className = "tag kechuyen"; tag.textContent = "🎭 Cảnh " + (i + 1);
+    head.appendChild(tag);
+    const st = document.createElement("span"); st.className = "small"; st.style.flex = "1"; st.textContent = kcSrcStatus(sg);
+    head.appendChild(st);
+    const bDel = mkBtn("🗑 Xoá cảnh", "btn-ghost");
+    bDel.disabled = scriptData.segments.length <= 1;
+    bDel.addEventListener("click", () => { scriptData.segments.splice(i, 1); renderScriptReview(); });
+    head.appendChild(bDel);
+    d.appendChild(head);
+
+    const hInp = document.createElement("input");
+    hInp.type = "text"; hInp.value = sg.heading || ""; hInp.placeholder = "Tiêu đề cảnh";
+    hInp.style.width = "100%"; hInp.style.marginTop = "8px"; hInp.style.fontWeight = "700";
+    hInp.addEventListener("input", () => { sg.heading = hInp.value; });
+    d.appendChild(hInp);
+
+    const nTx = document.createElement("textarea");
+    nTx.rows = 3; nTx.value = sg.narration || "";
+    nTx.placeholder = "Lời kể của cảnh này (giọng dẫn chuyện sẽ đọc nguyên văn)...";
+    nTx.style.width = "100%"; nTx.style.marginTop = "6px";
+    nTx.addEventListener("input", () => { sg.narration = nTx.value; updateDurInfo(); });
+    d.appendChild(nTx);
+
+    const srcRow = document.createElement("div"); srcRow.className = "row"; srcRow.style.marginTop = "8px";
+    [["draw", "🎨 Vẽ mẫu"], ["sgk", "📚 Kho SGK"], ["upload", "⬆ Ảnh của thầy"]].forEach(pair => {
+      const b = mkBtn(pair[1], sg.kcSrc === pair[0] ? "btn-accent" : "btn-ghost");
+      b.addEventListener("click", () => { if (sg.kcSrc !== pair[0]) { sg.kcSrc = pair[0]; renderScriptReview(); } });
+      srcRow.appendChild(b);
+    });
+    d.appendChild(srcRow);
+
+    const body = document.createElement("div"); body.style.marginTop = "8px";
+    if (sg.kcSrc === "draw"){
+      const sel = document.createElement("select");
+      KC_TEMPLATES.forEach(tpl => {
+        const o = document.createElement("option"); o.value = tpl.id; o.textContent = tpl.name;
+        if (tpl.id === sg.kcTpl) o.selected = true;
+        sel.appendChild(o);
+      });
+      sel.addEventListener("change", () => { sg.kcTpl = sel.value; renderScriptReview(); });
+      body.appendChild(sel);
+      const cv = document.createElement("canvas"); cv.width = W; cv.height = H;
+      cv.style.width = "100%"; cv.style.maxWidth = "560px"; cv.style.borderRadius = "10px"; cv.style.display = "block"; cv.style.marginTop = "8px";
+      try { kcDrawTemplate(cv.getContext("2d"), sg.kcTpl || "cay_mattroi", 0.35); } catch (e) {}
+      body.appendChild(cv);
+    } else if (sg.kcSrc === "sgk"){
+      if (sg.onlinePath || sg.sgkImageId){
+        const prow = document.createElement("div");
+        prow.style.display = "flex"; prow.style.gap = "10px"; prow.style.alignItems = "flex-start";
+        const th = document.createElement("img"); th.className = "online-thumb";
+        const rec = sg.sgkImageId ? library.get(sg.sgkImageId) : null;
+        th.src = sg.onlinePath ? (sg.onlineUrl || ("../" + sg.onlinePath)) : ((rec && rec.dataUrl) || "");
+        prow.appendChild(th);
+        const bClear = mkBtn("✖ Bỏ chọn ảnh này", "btn-ghost");
+        bClear.addEventListener("click", () => { clearOnlineAssign(sg); delete sg.sgkImageId; renderScriptReview(); });
+        prow.appendChild(bClear);
+        body.appendChild(prow);
+      }
+      const sRow = document.createElement("div"); sRow.className = "row"; sRow.style.marginTop = "8px";
+      const sInp = document.createElement("input"); sInp.type = "text";
+      sInp.placeholder = "Từ khoá tìm ảnh trong kho SGK (vd: quang hợp, rễ cây...)";
+      sInp.style.flex = "1";
+      const sBtn = mkBtn("🔍 Tìm ảnh", "btn");
+      const grid = document.createElement("div"); grid.className = "pick-grid hidden"; grid.style.marginTop = "8px";
+      const doSearch = () => {
+        grid.innerHTML = "";
+        const q = sInp.value.trim();
+        const entries = q ? kcSgkSearch(q) : kcSgkSuggestions(sg);
+        if (!onlineLibReady) grid.innerHTML = '<span class="small">Kho SGK online chưa tải xong — thầy chờ một lát rồi tìm lại, hoặc dùng 2 nguồn ảnh còn lại.</span>';
+        else if (!entries.length) grid.innerHTML = '<span class="small">Không thấy ảnh khớp trong kho SGK (kho hiện có Sinh học + Công nghệ nông nghiệp).</span>';
+        entries.forEach(e => {
+          const im = document.createElement("img"); im.src = onlineImgUrl(e);
+          im.title = (e.caption || e.path) + (e.figure ? " — Hình " + e.figure : "");
+          im.addEventListener("click", () => { setOnlineAssign(sg, e); delete sg.sgkImageId; renderScriptReview(); });
+          grid.appendChild(im);
+        });
+        if (library.size){
+          const lb = document.createElement("div"); lb.className = "small"; lb.style.width = "100%"; lb.textContent = "📚 Hoặc ảnh SGK đã nạp trong máy:";
+          grid.appendChild(lb);
+          library.forEach(rec2 => {
+            const im = document.createElement("img"); im.src = rec2.dataUrl; im.title = rec2.name;
+            im.addEventListener("click", () => { sg.sgkImageId = rec2.id; clearOnlineAssign(sg); renderScriptReview(); });
+            grid.appendChild(im);
+          });
+        }
+        grid.classList.remove("hidden");
+      };
+      sBtn.addEventListener("click", doSearch);
+      sRow.appendChild(sInp); sRow.appendChild(sBtn);
+      body.appendChild(sRow); body.appendChild(grid);
+      const hint = document.createElement("div"); hint.className = "small"; hint.style.marginTop = "4px";
+      hint.textContent = "Bấm Tìm ảnh (để trống từ khoá = app gợi ý theo lời kể của cảnh) rồi bấm vào 1 ảnh để chọn cho cảnh này.";
+      body.appendChild(hint);
+    } else {
+      if (sg.kcUpload){
+        const im = document.createElement("img"); im.src = sg.kcUpload;
+        im.style.width = "100%"; im.style.maxWidth = "560px"; im.style.borderRadius = "10px"; im.style.display = "block";
+        body.appendChild(im);
+      }
+      const uRow = document.createElement("div"); uRow.className = "row"; uRow.style.marginTop = "8px";
+      const bUp = mkBtn(sg.kcUpload ? "🔁 Đổi ảnh khác" : "⬆ Chọn ảnh từ máy", "btn");
+      const fInp = document.createElement("input"); fInp.type = "file"; fInp.accept = "image/*"; fInp.className = "hidden";
+      fInp.addEventListener("change", async e => {
+        const f = e.target.files && e.target.files[0];
+        e.target.value = "";
+        if (!f) return;
+        try { sg.kcUpload = await kcReadUploadFile(f); renderScriptReview(); }
+        catch (err) { alert("Không đọc được file ảnh: " + err.message); }
+      });
+      bUp.addEventListener("click", () => fInp.click());
+      uRow.appendChild(bUp); uRow.appendChild(fInp);
+      body.appendChild(uRow);
+    }
+    d.appendChild(body);
+    box.appendChild(d);
+  });
+  const addRow = document.createElement("div"); addRow.style.marginTop = "4px";
+  const bAdd = mkBtn("➕ Thêm cảnh", "btn");
+  bAdd.addEventListener("click", () => {
+    scriptData.segments.push({ type: "kechuyen", heading: "Cảnh mới", narration: "", kcSrc: "draw", kcTpl: "cay_mattroi", kcUpload: null });
+    renderScriptReview();
+  });
+  addRow.appendChild(bAdd);
+  box.appendChild(addRow);
+}
+/* Bấm TẠO VIDEO khi đang ở loại Kể Chuyện → chia cảnh thẳng từ kịch bản
+   dán vào, KHÔNG qua AI viết kịch bản và KHÔNG cần key Gemini. */
+async function routeKechuyenCreate(){
+  const text = $("kcText").value.trim();
+  if (!text){
+    showErr("inputError", "Thầy chưa dán kịch bản truyện trong mục 🎭 Kể Chuyện.");
+    const p = $("kcPanel");
+    if (p) p.scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+  const scenes = kcSplitScenes(text);
+  if (!scenes.length){
+    showErr("inputError", "Không tách được cảnh nào từ kịch bản — thầy kiểm tra lại nội dung đã dán.");
+    return;
+  }
+  demoMode = false;
+  scriptData = {
+    title: $("kcTitle").value.trim() || "Truyện kể",
+    subject: "", grade: "",
+    segments: scenes.map(s => ({
+      type: "kechuyen", heading: s.heading, narration: s.narration,
+      kcSrc: "draw", kcTpl: kcGuessTemplate(s.narration), kcUpload: null
+    })),
+    _mode: "kechuyen",
+    _kcNarrator: $("kcNarrator").value === "male" ? "male" : "female",
+    _kcVoiceSource: resolveVoiceSource($("kcVoiceSource").value)
+  };
+  assets = {}; audios = {};
+  $("inputError").innerHTML = "";
+  $("progressNote").textContent = "— CHẾ ĐỘ KỂ CHUYỆN (kịch bản thầy dán sẵn — app tự chia " + scenes.length + " cảnh, không qua AI viết kịch bản)";
+  $("progressCard").classList.remove("hidden");
+  $("resultCard").classList.add("hidden");
+  $("renderCard").classList.add("hidden");
+  $("assetBox").classList.add("hidden");
+  $("buildLog").innerHTML = "";
+  resetSteps(); setStep(1, "done");
+  renderScriptReview();
+}
+function syncKcPanel(){
+  const panel = $("kcPanel");
+  if (!panel) return;
+  panel.classList.toggle("hidden", videoType !== "kechuyen");
+}
+function initKc(){
+  document.querySelectorAll(".type-chip").forEach(c =>
+    c.addEventListener("click", () => setTimeout(syncKcPanel, 0)));
+  const vn = $("kcVoiceSource");
+  if (vn){
+    try { const saved = localStorage.getItem("vbg_kc_voice_source"); if (saved) vn.value = resolveVoiceSource(saved); } catch (e) {}
+    vn.addEventListener("change", () => { try { localStorage.setItem("vbg_kc_voice_source", vn.value); } catch (e) {} });
+  }
+  const nr = $("kcNarrator");
+  if (nr){
+    try { const savedN = localStorage.getItem("vbg_kc_narrator"); if (savedN === "male" || savedN === "female") nr.value = savedN; } catch (e) {}
+    nr.addEventListener("change", () => { try { localStorage.setItem("vbg_kc_narrator", nr.value); } catch (e) {} });
+  }
+  syncKcPanel();
+}
 function drawSlide(ctx, sg, asset, t){
+  if (sg.type === "kechuyen") { drawKcSlide(ctx, sg, asset, t || 0); return; }
   if (sg.type === "phieu") { drawPhieuScene(ctx, sg, t || 0); return; }
   if (sg.type === "chuade") { drawChuadeScene(ctx, sg, t || 0); return; }
   if (sg.type === "image" || sg.type === "sgk") drawImageSlide(ctx, sg, asset, t || 0);
@@ -6943,7 +7708,7 @@ async function buildVideo(){
     let usedLib = false, imgErr = [];
     for (let i = 0; i < scriptData.segments.length; i++) {
       const sg = scriptData.segments[i];
-      if (sg.type !== "image" && sg.type !== "sgk") { assets[i] = { status: "skip", img: null, source: "none", err: "" }; continue; }
+      if (sg.type !== "image" && sg.type !== "sgk" && sg.type !== "kechuyen") { assets[i] = { status: "skip", img: null, source: "none", err: "" }; continue; }
       if (demoMode) {
         if (sg.onlinePath) {
           try {
@@ -6966,7 +7731,7 @@ async function buildVideo(){
          hình, để video xuất ra không bao giờ dính ô "CHỜ HÌNH SGK". */
       const noImg = [], noImgChosen = [];
       scriptData.segments.forEach((sg, i) => {
-        if ((sg.type === "image" || sg.type === "sgk") && (!assets[i] || assets[i].status !== "ok")) {
+        if ((sg.type === "image" || sg.type === "sgk" || sg.type === "kechuyen") && (!assets[i] || assets[i].status !== "ok")) {
           sg.noImg = true;
           /* Phân biệt: đoạn THẦY CHỦ ĐỘNG bỏ chọn hết hình (và không nguồn
              nào khác được thử — status skip) khác với đoạn LỖI thật. */
@@ -7000,9 +7765,18 @@ async function buildVideo(){
          cho cả lượt dựng (chỉ xoay key, không đổi model giữa chừng).
          Nhóm gọi TTS cắt theo ranh giới MC — mỗi lượt gọi 1 giọng. */
       buildMcRoles = assignMcRoles(scriptData.segments);
+      if (scriptData._mode === "kechuyen") {
+        /* [KC1] Kể chuyện: 1 giọng dẫn duy nhất đọc toàn bộ truyện. */
+        buildMcRoles = scriptData.segments.map(() => scriptData._kcNarrator === "male" ? "male" : "female");
+      }
       ttsBuildExhausted = false;
       edgeConsecutiveFails = 0; edgeBuildDown = false;
       fptConsecutiveFails = 0; fptBuildDown = false;
+      /* [KC1] Nguồn giọng riêng của chế độ kể chuyện (mặc định Edge miễn phí) — áp trong lúc dựng rồi hoàn trả ở cuối bước 4. kcSavedVoiceSource khai báo ở khối KC1 (phạm vi module). */
+      if (scriptData._mode === "kechuyen" && scriptData._kcVoiceSource) {
+        kcSavedVoiceSource = voiceSource;
+        voiceSource = resolveVoiceSource(scriptData._kcVoiceSource);
+      }
       let mixCtx = null;
       if (voiceSource === "mix") {
         /* GD16: TRỘN HẾT (ưu tiên miễn phí trước) — vai MC giữ nguyên
@@ -7074,6 +7848,8 @@ async function buildVideo(){
       }
     }
 
+    if (kcSavedVoiceSource !== null) { voiceSource = kcSavedVoiceSource; kcSavedVoiceSource = null; }
+
     /* BƯỚC 5 — dựng video */
     setStep(5, "run");
     $("renderCard").classList.remove("hidden");
@@ -7121,6 +7897,7 @@ $("createBtn").addEventListener("click", async () => {
   $("inputError").innerHTML = "";
   if (videoType === "chuade") { await routeChuadeCreate(); return; }
   if (videoType === "phieu") { await routePhieuCreate(); return; }
+  if (videoType === "kechuyen") { await routeKechuyenCreate(); return; }
   if (!getKey()) {
     showErr("inputError", "Hồ key đang rỗng. Thầy tạo key miễn phí theo 3 bước ở mục 1 đầu trang, dán vào (mỗi key 1 dòng) rồi bấm Lưu Hồ Key.");
     $("keyGuide").open = true;
@@ -7214,6 +7991,7 @@ try { idbLoadAll(); } catch (e) {}
 try { loadOnlineLib(); } catch (e) {}
 try { initPhieu(); } catch (e) {}
 try { initChuade(); } catch (e) {}
+try { initKc(); } catch (e) {}
 try { initLamDe(); } catch (e) {}
 try { initBaiTap(); } catch (e) {}
 </script>
