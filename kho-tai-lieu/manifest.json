@@ -1,0 +1,121 @@
+{
+ "base": "https://khaibcmt.github.io/kho-tai-lieu/",
+ "cap_nhat": "2026-11-22",
+ "huong_dan_cho_ai": "Đây là kho tài liệu chung của đội Muse EduMaster Company. Khi cần tài liệu: (1) đọc Sổ tay chuẩn trước tiên; (2) cần nội dung SGK bài nào thì tải đúng file PDF của môn/khối đó về đọc; (3) cần hình SGK thì dùng sgk-lib ở mục kho_nguon_khac. Mọi link đều công khai, không cần đăng nhập.",
+ "kho_nguon_khac": [
+  {
+   "id": "sgk-lib",
+   "manifest": "https://khaibcmt.github.io/sgk-lib/manifest.json",
+   "tieu_de": "Kho hình SGK (1.325 hình/sơ đồ/bảng của Sinh học + Công nghệ nông nghiệp, 155 bài, có tên bài có dấu)"
+  },
+  {
+   "id": "poster-lib",
+   "manifest": "https://khaibcmt.github.io/poster-lib/manifest.json",
+   "tieu_de": "Kho poster bài học (67 tấm, dùng nguyên tấm cho cảnh mở đầu/tổng kết video)"
+  },
+  {
+   "id": "ppt-lib",
+   "manifest": "https://khaibcmt.github.io/ppt-lib/manifest.json",
+   "tieu_de": "Kho ảnh PPT đời thật (1.111 hình đã gắn thẻ vai theo khuôn Đặt đúng chỗ)"
+  }
+ ],
+ "tai_lieu": [
+  {
+   "id": "so-tay-chuan-thay-khai",
+   "loai": "so_tay",
+   "tieu_de": "SỔ TAY CHUẨN THẦY KHẢI — toàn bộ chỉ dẫn và quy chuẩn của thầy (BẮT BUỘC đọc trước khi làm việc)",
+   "url": "https://khaibcmt.github.io/kho-tai-lieu/SO_TAY_CHUAN_THAY_KHAI.md"
+  },
+  {
+   "id": "sgk-sinh-10",
+   "khoi": 10,
+   "loai": "sgk_pdf",
+   "mb": 39.8,
+   "mon": "Sinh học",
+   "tieu_de": "SGK Sinh học 10 — Kết nối tri thức (bản PDF scan)",
+   "trang": 162,
+   "url": "https://khaibcmt.github.io/kho-tai-lieu/sgk/Sinh_hoc_10_KNTT.pdf"
+  },
+  {
+   "id": "sgk-sinh-11-phan-1",
+   "loai": "sgk_pdf",
+   "mon": "Sinh học",
+   "khoi": 11,
+   "tieu_de": "SGK Sinh học 11 — Kết nối tri thức, Phần 1 (trang 1–95)",
+   "url": "https://khaibcmt.github.io/kho-tai-lieu/sgk/Sinh_hoc_11_KNTT_Phan1.pdf",
+   "trang": 95,
+   "mb": 23.0
+  },
+  {
+   "id": "sgk-sinh-11-phan-2",
+   "loai": "sgk_pdf",
+   "mon": "Sinh học",
+   "khoi": 11,
+   "tieu_de": "SGK Sinh học 11 — Kết nối tri thức, Phần 2 (trang 96–190)",
+   "url": "https://khaibcmt.github.io/kho-tai-lieu/sgk/Sinh_hoc_11_KNTT_Phan2.pdf",
+   "trang": 95,
+   "mb": 22.4
+  },
+  {
+   "id": "sgk-sinh-12-phan-1",
+   "loai": "sgk_pdf",
+   "mon": "Sinh học",
+   "khoi": 12,
+   "tieu_de": "SGK Sinh học 12 — Kết nối tri thức, Phần 1 (trang 1–66)",
+   "url": "https://khaibcmt.github.io/kho-tai-lieu/sgk/Sinh_hoc_12_KNTT_Phan1.pdf",
+   "trang": 66,
+   "mb": 30.0
+  },
+  {
+   "id": "sgk-sinh-12-phan-2",
+   "loai": "sgk_pdf",
+   "mon": "Sinh học",
+   "khoi": 12,
+   "tieu_de": "SGK Sinh học 12 — Kết nối tri thức, Phần 2 (trang 67–133)",
+   "url": "https://khaibcmt.github.io/kho-tai-lieu/sgk/Sinh_hoc_12_KNTT_Phan2.pdf",
+   "trang": 67,
+   "mb": 32.5
+  },
+  {
+   "id": "sgk-sinh-12-phan-3",
+   "loai": "sgk_pdf",
+   "mon": "Sinh học",
+   "khoi": 12,
+   "tieu_de": "SGK Sinh học 12 — Kết nối tri thức, Phần 3 (trang 134–199)",
+   "url": "https://khaibcmt.github.io/kho-tai-lieu/sgk/Sinh_hoc_12_KNTT_Phan3.pdf",
+   "trang": 66,
+   "mb": 32.5
+  },
+  {
+   "id": "sgk-cnnn-10",
+   "khoi": 10,
+   "loai": "sgk_pdf",
+   "mb": 31.9,
+   "mon": "Công nghệ nông nghiệp",
+   "tieu_de": "SGK Công nghệ 10 — Công nghệ trồng trọt, Kết nối tri thức (bản PDF scan)",
+   "trang": 146,
+   "url": "https://khaibcmt.github.io/kho-tai-lieu/sgk/Cong_nghe_10_Trong_trot_KNTT.pdf"
+  },
+  {
+   "id": "sgk-cnnn-11",
+   "khoi": 11,
+   "loai": "sgk_pdf",
+   "mb": 28.1,
+   "mon": "Công nghệ nông nghiệp",
+   "tieu_de": "SGK Công nghệ 11 — Công nghệ chăn nuôi, Kết nối tri thức (bản PDF scan)",
+   "trang": 123,
+   "url": "https://khaibcmt.github.io/kho-tai-lieu/sgk/Cong_nghe_11_Chan_nuoi_KNTT.pdf"
+  },
+  {
+   "id": "sgk-cnnn-12",
+   "khoi": 12,
+   "loai": "sgk_pdf",
+   "mb": 27.5,
+   "mon": "Công nghệ nông nghiệp",
+   "tieu_de": "SGK Công nghệ 12 — Lâm nghiệp và Thuỷ sản, Kết nối tri thức (bản PDF scan)",
+   "trang": 147,
+   "url": "https://khaibcmt.github.io/kho-tai-lieu/sgk/Cong_nghe_12_Lam_nghiep_Thuy_san_KNTT.pdf"
+  }
+ ],
+ "ten": "Kho tài liệu chung — EduMaster Company"
+}
