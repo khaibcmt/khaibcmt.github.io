@@ -207,7 +207,8 @@
   <header class="top">
     <h1>🎬 Video Bài Giảng <span class="ai">AI</span></h1>
     <p>Chỉ cần nêu <b>tên bài</b> hoặc dán <b>câu chuyện</b> — app tự viết kịch bản, tạo hình, vẽ sơ đồ, dựng bảng số liệu, thu giọng đọc và ghép thành video.</p>
-    <p class="small" id="buildTag">🏷️ Bản KC11 • 21/11/2026 — khuôn kịch bản “Đặt đúng chỗ”: mỗi cảnh một vai, mỗi vai một nguồn hình chính danh</p>
+    <p class="small" id="buildTag">🏷️ Bản KC12 • 21/11/2026 — thêm nguồn giọng VieNeu trên máy này (miễn phí) + luật phân giọng: đoạn có chữ “thầy” luôn do MC Nam đọc</p>
+    <div id="voiceBadge" class="hidden"></div>
   </header>
 
   <!-- ===== HỒ KEY GEMINI ===== -->
@@ -432,7 +433,7 @@
         <span class="small" id="jsonMsg"></span>
       </div>
     </details>
-    <div class="small" style="margin-top:14px">🎙️ <b>Giọng đọc: Gemini</b> (MC Nữ Kore • MC Nam Charon) — hai giọng luân phiên theo vai, ghim một model duy nhất cho cả lượt dựng, chỉ xoay key trong hồ Gemini.</div>
+    <div class="small" id="voiceLine" style="margin-top:14px">🎙️ <b>Giọng đọc: Gemini</b> (MC Nữ Kore • MC Nam Charon) — hai giọng luân phiên theo vai, ghim một model duy nhất cho cả lượt dựng, chỉ xoay key trong hồ Gemini. Đoạn nào có chữ “thầy” luôn do MC Nam đọc.</div>
     <div class="row" style="margin-top:14px">
       <button class="btn-accent" id="buildBtn" style="flex:2;padding:15px;font-size:18px">▶ DỰNG VIDEO NGAY</button>
       <button class="btn-ghost shrink" id="cancelScriptBtn">Huỷ, làm lại</button>
@@ -1433,28 +1434,56 @@ function filterCandsForPin(cands, pin){
   if (!pin) return (cands || []).slice();
   return (cands || []).filter(m => m === pin);
 }
+/* [KC12] LUẬT PHÂN GIỌNG CỦA THẦY (lệnh trực tiếp 16:14 ngày
+   21/11/2026 — YÊU CẦU CỨNG): đoạn lời nào mang vai THẦY NÓI — tức có
+   chữ "thầy" xưng hô — thì BẮT BUỘC do giọng NAM đọc (Thái Sơn khi
+   nguồn VieNeu, Charon khi nguồn Gemini), bất kể luật luân phiên đã
+   gán nữ. Đây là lượt duyệt TẤT ĐỊNH chạy SAU khi chia vai MC: quét
+   từng đoạn, đoạn chứa "thầy" (không phân biệt hoa thường, kể cả ở
+   đầu câu) thì ép sang "male"; đoạn không có "thầy" giữ nguyên vai
+   đã gán. Nhận diện theo BIÊN TỪ: "thầy" đứng độc lập mới tính —
+   từ ghép như "thầythuốc" viết dính không bị bắt nhầm. */
+function narrationHasThay(text){
+  return /(^|[^\p{L}\p{N}_])thầy(?![\p{L}\p{N}_])/iu.test(String(text == null ? "" : text));
+}
+function enforceTeacherVoiceRule(segments, roles){
+  const out = (roles || []).slice();
+  (segments || []).forEach((sg, i) => {
+    if (sg && narrationHasThay(sg.narration)) out[i] = "male";
+  });
+  return out;
+}
 /*__END_PURE_VOICE__*/
 /* [KC7 — 21/11/2026] FPT.AI ĐÃ GỠ HẲN theo lệnh thầy ("Bỏ luôn key
    fpt đi !!!"), theo đúng cách KC3 đã gỡ Edge trước đó: xoá UI hồ key,
    client TTS của FPT, vòng xoay Trộn (GD16), chuỗi dự phòng
-   FPT -> Gemini (KC3) và bộ đếm ký tự. App nay chỉ còn MỘT nguồn
-   giọng: Gemini — MC Nữ Kore / MC Nam Charon, luật 1 model/lượt +
-   xoay key trong hồ Gemini giữ nguyên như GD13. */
-/* Ánh xạ MC -> tên giọng Gemini. Tham số source giữ lại cho các điểm
-   gọi cũ — mọi nguồn nay đều là Gemini. */
+   FPT -> Gemini (KC3) và bộ đếm ký tự. */
+/* [KC12 — 21/11/2026] THÊM NGUỒN GIỌNG VIENEU LOCAL: máy chủ VieNeu
+   chạy trên chính máy của thầy (http://127.0.0.1:8770) được ƯU TIÊN
+   khi app phát hiện được và model đã nạp xong — cặp MC Nữ Thùy Dung /
+   MC Nam Thái Sơn, miễn phí, không tốn lượt key. Không có máy chủ
+   (điện thoại, máy khác) thì nguồn là Gemini (Kore/Charon) y hệt bản
+   KC7–KC11. Thiết kế: vieneu_local_server/TICH_HOP_APP.md. */
+/* Ánh xạ MC -> tên giọng THEO NGUỒN. Khi local đã hỏng giữa lượt dựng
+   (kc12LocalBroken) thì tên giọng rơi về Gemini để các đoạn lùi nguồn
+   đọc đúng giọng Gemini. */
 function mcVoiceNameFor(source, mc){
-  return MC_VOICES[mc] || MC_VOICES.female;
+  if (source === "vieneu" && kc12LocalBroken) return MC_VOICES[mc] || MC_VOICES.female;
+  return kc12VoiceNameFor(source, mc, kc12Local);
 }
-/* Nguồn giọng hợp lệ: chỉ còn "gemini". Di trú: giá trị đã lưu từ
-   trước ("edge" / "fpt" / "mix" trong vbg_voice_source /
-   vbg_kc_voice_source) tự rơi về "gemini" để máy nào cũng không kẹt
-   ở nguồn không còn tồn tại. */
-function resolveVoiceSource(saved){
-  return "gemini";
+/* Nguồn hiệu lực là hàm THUẦN của kết quả /health đã chuẩn hoá:
+   "vieneu" chỉ khi máy chủ có thật + model đã nạp; mọi trường hợp
+   còn lại (kể cả giá trị lưu cũ "edge"/"fpt"/"mix") đều "gemini". */
+function resolveVoiceSource(localHealth){
+  return kc12EffectiveSource(localHealth);
 }
-/* ---- [KC7] Nguồn giọng: chỉ còn Gemini ---- */
+/* ---- [KC12] Trạng thái nguồn giọng của phiên ---- */
+let kc12Local = null;           /* /health đã chuẩn hoá (kc12ParseHealth) hoặc null */
+let kc12LocalBroken = false;    /* local hỏng GIỮA lượt dựng: phần còn lại của lượt đó lùi Gemini */
+let kc12FallbackNoted = false;  /* đã ghi chú lùi nguồn cho lượt dựng này chưa */
+let kc12DetectPromise = null;   /* promise phát hiện đang chạy — cache trong phiên */
 let voiceSource = "gemini";
-try { voiceSource = resolveVoiceSource(localStorage.getItem("vbg_voice_source")); } catch (e) {}
+try { voiceSource = resolveVoiceSource(null); } catch (e) {}
 /* [KC7] Dọn rác hồ FPT trên máy: xoá các khoá localStorage của hồ key
    FPT (danh sách key, key đơn cũ GD14, trạng thái key, các bộ đếm ký
    tự theo tháng) để không còn dữ liệu thừa của nguồn đã gỡ. */
@@ -1466,9 +1495,70 @@ try {
     .forEach(k => localStorage.removeItem(k));
 } catch (e) {}
 function currentMcVoiceName(mc){ return mcVoiceNameFor(voiceSource, mc); }
+/* [KC12] Phát hiện máy chủ VieNeu local: fetch /health với timeout
+   800ms, BẤT ĐỒNG BỘ và không chặn giao diện; kết quả cache trong
+   phiên (chỉ dò lại khi force=true — trước mỗi lượt dựng — hoặc sau
+   khi local bị đánh dấu hỏng). Chỉ nhận khi service == "vieneu-local"
+   (kc12ParseHealth lo phần này). Lỗi mạng/timeout -> coi như không
+   có máy chủ, app im lặng dùng Gemini. */
+async function kc12DetectLocal(force){
+  if (!force && kc12DetectPromise) return kc12DetectPromise;
+  kc12DetectPromise = (async () => {
+    let health = null;
+    try {
+      const ctrl = (typeof AbortController !== "undefined") ? new AbortController() : null;
+      const timer = ctrl ? setTimeout(() => { try { ctrl.abort(); } catch (e) {} }, 800) : null;
+      const r = await fetch(KC12_LOCAL_URL + "/health", ctrl ? { signal: ctrl.signal, cache: "no-store" } : { cache: "no-store" });
+      if (timer) clearTimeout(timer);
+      if (r && r.ok) health = kc12ParseHealth(await r.json());
+    } catch (e) { health = null; }
+    kc12Local = health;
+    if (!kc12LocalBroken) voiceSource = resolveVoiceSource(kc12Local);
+    kc12RenderVoiceBadge();
+    return kc12Local;
+  })();
+  return kc12DetectPromise;
+}
+/* [KC12] Huy hiệu trạng thái máy chủ local — 3 trạng thái theo thiết
+   kế: sẵn sàng (xanh) / đang nạp model (vàng, nguồn vẫn Gemini) /
+   không có (ẨN hẳn — không báo lỗi, không pop-up). */
+function kc12RenderVoiceBadge(){
+  const el = (typeof document !== "undefined") ? document.getElementById("voiceBadge") : null;
+  if (el) {
+    if (kc12Local && kc12Local.modelLoaded){
+      el.className = "ok-box"; el.style.marginTop = "8px";
+      el.innerHTML = "🟢 <b>VieNeu local sẵn sàng</b> — giọng đọc trên máy này: MC Nữ <b>" + kc12Esc(kc12Local.voices.female) + "</b> • MC Nam <b>" + kc12Esc(kc12Local.voices.male) + "</b> (miễn phí, không tốn lượt key Gemini).";
+    } else if (kc12Local && kc12Local.loading){
+      el.className = "warn"; el.style.marginTop = "8px";
+      el.innerHTML = "🟡 <b>VieNeu đang nạp model…</b> — app vẫn dựng ngay bằng giọng Gemini; muốn dùng VieNeu thì chờ máy chủ báo sẵn sàng rồi dựng.";
+    } else {
+      el.className = "hidden"; el.innerHTML = "";
+    }
+  }
+  kc12RenderVoiceLine();
+}
+/* [KC12] Dòng công bố nguồn giọng ở màn duyệt — render lại mỗi khi
+   nguồn hiệu lực thay đổi, để thầy luôn thấy nguồn THỰC TẾ. */
+function kc12RenderVoiceLine(){
+  const el = (typeof document !== "undefined") ? document.getElementById("voiceLine") : null;
+  if (el) el.innerHTML = kc12VoiceLineHtml(voiceSource, kc12Local);
+}
+/* [KC12] Nạp app xong: vẽ dòng nguồn giọng theo nguồn hiệu lực hiện
+   tại (mặc định Gemini) rồi dò máy chủ local MỘT lần ở nền — không
+   chặn giao diện; thấy máy chủ thì huy hiệu + dòng nguồn tự cập nhật. */
+try {
+  kc12RenderVoiceLine();
+  setTimeout(() => { kc12DetectLocal(false); }, 400);
+} catch (e) {}
 /* Model-tag dùng cho cache giọng của lượt gọi hiện tại: model Gemini
-   đang ghim của lượt dựng (GD13); ngoài lượt dựng là null. */
-function ttsWantModel(){ return ttsPinModel; }
+   đang ghim của lượt dựng (GD13); ngoài lượt dựng là null.
+   [KC12] Khi nguồn hiệu lực là VieNeu local (chưa hỏng giữa chừng)
+   thì tag là "vieneu-local" — cache giọng tách hẳn theo nguồn, bản
+   VieNeu và bản Gemini không bao giờ dùng lẫn nhau. */
+function ttsWantModel(){
+  if (voiceSource === "vieneu" && !kc12LocalBroken) return KC12_LOCAL_MODEL_TAG;
+  return ttsPinModel;
+}
 
 
 /* Trạng thái giọng của LƯỢT DỰNG đang chạy (ngoài lượt dựng đều null/
@@ -1736,6 +1826,7 @@ function masterPrompt(){
     "- Có ÍT NHẤT 1 segment diagram (sơ đồ dòng chảy 3–6 bước) và ÍT NHẤT 1 segment table (bảng số liệu).",
     "- ƯU TIÊN segment type sgk cho nội dung mà sách giáo khoa thường có sẵn hình hoặc sơ đồ minh hoạ (cấu tạo, quá trình, thí nghiệm...). Segment sgk PHẢI có trường imageHint mô tả chính xác hình SGK cần tìm, ví dụ: Hình 12.3 SGK — sơ đồ quang hợp. Nếu bài có hình SGK quen thuộc, hãy dùng ít nhất 1–2 segment sgk.",
     '- narration: lời đọc tiếng Việt tự nhiên cho học sinh nghe. Hãy viết ĐẦY ĐỦ ý chính của bài theo mạch nội dung tự nhiên — không giới hạn độ dài, mỗi câu văn phải trọn vẹn hoàn chỉnh, không viết dở dang. Mọi con số, phân số, công thức trong narration PHẢI viết thành dạng đọc được bằng chữ (ví dụ: "sáu phân tử", "một phần hai", "hai mươi phần trăm"), KHÔNG dùng ký hiệu như CO2, %, 1/2.',
+    "- LUẬT PHÂN GIỌNG (bắt buộc): video có 2 giọng MC luân phiên — Nữ và Nam. Đoạn narration nào là lời THẦY trực tiếp nói với học sinh (có chữ \"thầy\" xưng hô, ví dụ \"Thầy nhắc các em...\", \"cùng thầy quan sát...\") sẽ do giọng NAM đọc — hãy viết những đoạn đó tự nhiên như lời thầy. Mọi đoạn còn lại (giảng giải trung tính, dẫn chuyện) HẠN CHẾ dùng chữ \"thầy\" (thay bằng \"chúng ta\", \"các em hãy...\") để giọng nữ không bị đổi vai giữa chừng; hệ thống sẽ tự ép mọi đoạn có chữ \"thầy\" sang giọng nam.",
     "- imagePrompt: tiếng Anh, mô tả ảnh minh hoạ giáo dục rõ ràng, thân thiện học sinh, ghi rõ no text, no watermark. Chỉ có ở segment type image.",
     "- Số liệu trong table: chỉ dùng số liệu đúng kiến thức sách giáo khoa phổ thông. Nếu không chắc chắn về một con số cụ thể, PHẢI ghi rõ trong caption là số liệu minh hoạ (ví dụ caption bắt đầu bằng: Số liệu minh hoạ — ...).",
     "- Nội dung bám sát chương trình phổ thông Việt Nam, chính xác, không bịa kiến thức.",
@@ -2758,6 +2849,62 @@ function kc11RolePromptBlock(vtype){
     "- Quy tắc gán vai: segment type sgk LUÔN là noi_dung; type diagram là nhan_manh; type table là noi_dung; đoạn image mang tính tình huống đời sống mở đầu là goi_mo, mang tính ví dụ ứng dụng là lien_he.";
 }
 /*__END_PURE_KC11__*/
+/*__PURE_KC12__*/
+/* [KC12] NGUỒN GIỌNG VIENEU LOCAL — logic THUẦN (không DOM, không
+   fetch): chuẩn hoá kết quả /health của máy chủ VieNeu chạy trên
+   chính máy của thầy (127.0.0.1:8770), quyết định nguồn hiệu lực,
+   ánh xạ vai MC -> tên giọng theo nguồn, và câu chữ hiển thị. Thiết
+   kế đầy đủ: vieneu_local_server/TICH_HOP_APP.md. Nguyên tắc cứng:
+   CHỈ nhận máy chủ khi service == "vieneu-local"; mọi trường hợp
+   còn lại nguồn hiệu lực là "gemini" — app chạy y hệt bản KC11. */
+const KC12_LOCAL_URL = "http://127.0.0.1:8770";
+const KC12_LOCAL_MODEL_TAG = "vieneu-local";
+/* Cặp giọng VieNeu thầy chốt 21/11/2026 ("1 cặp thôi, cho học sinh
+   quen luôn"): Nữ Thùy Dung thay vai Kore, Nam Thái Sơn thay vai
+   Charon. Máy chủ có thể trả default_voices riêng qua /health —
+   app tôn trọng giá trị máy chủ trả, cặp này là dự phòng. */
+const VIENEU_VOICES = { male: "Thái Sơn", female: "Thùy Dung" };
+function kc12ParseHealth(h){
+  if (!h || typeof h !== "object" || h.service !== "vieneu-local") return null;
+  const dv = (h.default_voices && typeof h.default_voices === "object") ? h.default_voices : {};
+  return {
+    modelLoaded: h.model_loaded === true,
+    loading: h.loading === true,
+    voices: {
+      female: (typeof dv.female === "string" && dv.female) ? dv.female : VIENEU_VOICES.female,
+      male: (typeof dv.male === "string" && dv.male) ? dv.male : VIENEU_VOICES.male
+    }
+  };
+}
+/* Nguồn hiệu lực: "vieneu" CHỈ khi máy chủ local có thật và model đã
+   nạp xong; đang nạp model / không có máy chủ / cổng bị chương trình
+   khác chiếm -> "gemini". */
+function kc12EffectiveSource(local){
+  return (local && local.modelLoaded) ? "vieneu" : "gemini";
+}
+function kc12VoiceNameFor(source, mc, local){
+  if (source === "vieneu"){
+    if (local && local.voices && local.voices[mc]) return local.voices[mc];
+    return VIENEU_VOICES[mc] || VIENEU_VOICES.female;
+  }
+  return MC_VOICES[mc] || MC_VOICES.female;
+}
+/* Câu ghi chú lùi nguồn ở màn duyệt (đúng mẫu câu của thiết kế mục 5). */
+function kc12FallbackNote(fromSeg, toSeg, total){
+  return "Đoạn " + fromSeg + "–" + toSeg + "/" + total + " dùng giọng Gemini do máy VieNeu local mất kết nối giữa chừng.";
+}
+function kc12Esc(s){
+  return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+/* Dòng công bố nguồn giọng ở màn duyệt — luôn theo NGUỒN THỰC TẾ đang
+   hiệu lực, để thầy nhìn là biết video sắp dựng đọc bằng giọng nào. */
+function kc12VoiceLineHtml(source, local){
+  if (source === "vieneu"){
+    return "🎙️ <b>Giọng đọc: VieNeu máy này</b> (MC Nữ " + kc12Esc(kc12VoiceNameFor("vieneu", "female", local)) + " • MC Nam " + kc12Esc(kc12VoiceNameFor("vieneu", "male", local)) + ") — <b>miễn phí</b>, đọc ngay trên máy của thầy, không tốn lượt key Gemini. Hai giọng luân phiên theo vai; đoạn nào có chữ “thầy” luôn do MC Nam đọc.";
+  }
+  return "🎙️ <b>Giọng đọc: Gemini</b> (MC Nữ Kore • MC Nam Charon) — hai giọng luân phiên theo vai, ghim một model duy nhất cho cả lượt dựng, chỉ xoay key trong hồ Gemini. Đoạn nào có chữ “thầy” luôn do MC Nam đọc.";
+}
+/*__END_PURE_KC12__*/
 /* Danh sách hình của BÀI ĐÃ CHỐT (theo danh tính _picked của kịch bản) —
    nguồn cho lưới chọn hình từng đoạn ở luồng chọn bài. */
 function pickedLessonEntries(){
@@ -7637,6 +7784,57 @@ function applyFadesArr(data, sr, ms){
 }
 /*__END_PURE_PCM__*/
 
+/* [KC12] Giải mã file tiếng (mp3/wav) từ máy chủ local thành
+   AudioBuffer. decodeAudioData có thể "ăn" mất ArrayBuffer nên thử
+   trên bản sao trước. */
+async function decodeAudioBlob(blob){
+  const ab = await blob.arrayBuffer();
+  try { return await audioCtx().decodeAudioData(ab.slice(0)); }
+  catch (e) { return await audioCtx().decodeAudioData(ab); }
+}
+/* [KC12] Đọc MỘT đoạn bằng máy chủ VieNeu local: POST /tts
+   {text, voice, format:"mp3"} -> file mp3 đã chỉnh tốc độ sẵn.
+   Timeout 180 giây/đoạn theo thiết kế (tổng hợp CPU chậm hơn thời
+   gian thực). Bản chữ gửi đi qua ttsSpeakText như đường Gemini.
+   Thành công: nạp audios[i] + lưu cache PCM dưới model tag
+   "vieneu-local". Lỗi thì THROW — tầng trên chỉ lùi ĐÚNG đoạn đó
+   sang Gemini, không huỷ cả lượt dựng. */
+async function kc12SynthSegment(i){
+  const sg = scriptData.segments[i];
+  const mc = mcRoleForSegment(i);
+  const voice = kc12VoiceNameFor("vieneu", mc, kc12Local);
+  const ctrl = (typeof AbortController !== "undefined") ? new AbortController() : null;
+  const timer = ctrl ? setTimeout(() => { try { ctrl.abort(); } catch (e) {} }, 180000) : null;
+  let resp;
+  try {
+    resp = await fetch(KC12_LOCAL_URL + "/tts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: ttsSpeakText(sg.narration), voice: voice, format: "mp3" }),
+      signal: ctrl ? ctrl.signal : undefined
+    });
+  } finally { if (timer) clearTimeout(timer); }
+  if (!resp || !resp.ok) throw new Error("Máy VieNeu local trả lỗi" + (resp ? " HTTP " + resp.status : "") + ".");
+  const abuf = await decodeAudioBlob(await resp.blob());
+  applyFadesArr(abuf.getChannelData(0), abuf.sampleRate, 12);
+  audios[i] = { status: "ok", buffer: abuf, err: "", mc: mc };
+  ttsCacheSave(sg.narration, KC12_LOCAL_MODEL_TAG, audioBufferToPcmBase64(abuf), voice);
+  renderAssetRows();
+  return true;
+}
+/* [KC12] Ghi chú lùi nguồn ở màn duyệt — 1 lần cho mỗi lượt dựng,
+   đúng mẫu câu thiết kế: đoạn từ lúc local mất kết nối tới đoạn
+   chưa thu cuối cùng dùng giọng Gemini. */
+function kc12NoteLocalFallback(fromIdx){
+  if (kc12FallbackNoted) return;
+  kc12FallbackNoted = true;
+  if (typeof scriptData === "undefined" || !scriptData || !scriptData.segments) return;
+  const total = scriptData.segments.length;
+  let last = fromIdx;
+  for (let k = fromIdx; k < total; k++) if (!audios[k] || audios[k].status !== "ok") last = k;
+  logWarn("🎙️ " + kc12FallbackNote(fromIdx + 1, last + 1, total) + " Các đoạn còn lại của lượt dựng này đọc bằng Gemini; lượt dựng sau app sẽ thử lại VieNeu local từ đầu.");
+}
+
 async function genAudioForSegment(i){
   const sg = scriptData.segments[i];
   if (!sg.narration || !sg.narration.trim()) {
@@ -7644,6 +7842,24 @@ async function genAudioForSegment(i){
     renderAssetRows(); return false;
   }
   const mc = mcRoleForSegment(i);
+  /* [KC12] Nguồn VieNeu local: cache VieNeu trước (đúng model tag),
+     chưa có thì gọi máy chủ local. Local lỗi -> đánh dấu hỏng trong
+     phiên, ghi chú, và CHỈ đoạn này rơi xuống đường Gemini bên dưới. */
+  if (voiceSource === "vieneu" && !kc12LocalBroken){
+    const vvoice = kc12VoiceNameFor("vieneu", mc, kc12Local);
+    const vcached = await ttsCacheLookup(sg.narration, vvoice, KC12_LOCAL_MODEL_TAG);
+    if (vcached) {
+      const cbuf = pcmToAudioBuffer(vcached.pcm);
+      applyFadesArr(cbuf.getChannelData(0), cbuf.sampleRate, 12);
+      audios[i] = { status: "ok", buffer: cbuf, err: "", mc: mc };
+      renderAssetRows(); return true;
+    }
+    try { return await kc12SynthSegment(i); }
+    catch (e) {
+      kc12LocalBroken = true;
+      if (building) kc12NoteLocalFallback(i);
+    }
+  }
   const voice = mcVoiceNameFor(voiceSource, mc);
   /* Cache giọng: lời đọc + giọng (+ model chính khi đang dựng) không đổi → dùng lại, không tốn lượt TTS. */
   const wantModel = ttsWantModel();
@@ -7693,6 +7909,13 @@ async function genAudioGroup(indices){
     return;
   }
   const mc = roles[0] || "female";
+  /* [KC12] Nguồn VieNeu local: máy chủ tự chia đoạn dài theo câu và
+     tổng hợp TUẦN TỰ — đọc từng đoạn một, KHÔNG gộp cụm như Gemini.
+     Đoạn nào lỗi thì genAudioForSegment chỉ lùi đúng đoạn đó. */
+  if (voiceSource === "vieneu" && !kc12LocalBroken){
+    for (const i of indices) await genAudioForSegment(i);
+    return;
+  }
   const voice = currentMcVoiceName(mc);
   const missing = [];
   for (const i of indices){
@@ -8014,16 +8237,32 @@ async function buildVideo(){
         /* [KC1] Kể chuyện: 1 giọng dẫn duy nhất đọc toàn bộ truyện. */
         buildMcRoles = scriptData.segments.map(() => scriptData._kcNarrator === "male" ? "male" : "female");
       }
+      /* [KC12] LUẬT PHÂN GIỌNG (lệnh thầy 16:14 ngày 21/11/2026):
+         lượt duyệt tất định SAU mọi luật chia vai ở trên — đoạn nào
+         có chữ "thầy" thì ép sang giọng NAM, đoạn khác giữ nguyên. */
+      buildMcRoles = enforceTeacherVoiceRule(scriptData.segments, buildMcRoles);
       ttsBuildExhausted = false;
-      /* [KC7] Chỉ còn nguồn Gemini: ghim 1 model TTS chính cho cả
-         lượt dựng (chỉ xoay key) rồi thu theo cụm cùng MC như GD13.
-         Gemini chết toàn bộ -> cảnh báo ở cuối bước như cũ, video
-         vẫn dựng nhưng không có tiếng. */
-      ttsPinModel = await pickPrimaryTtsModel();
-      if (ttsPinModel) logWarn("🎙️ Video này đọc bằng <b>2 giọng Gemini luân phiên theo vai</b> — MC Nam (" + MC_VOICES.male + ") và MC Nữ (" + MC_VOICES.female + ") — trên <b>một model duy nhất: " + ttsPinModel + "</b> (chỉ xoay key, không đổi model giữa chừng).");
+      kc12LocalBroken = false; kc12FallbackNoted = false;
+      /* [KC12] Trước mỗi lượt dựng: dò lại máy chủ VieNeu local
+         (bất đồng bộ, timeout 800ms — không làm chậm các bước trước).
+         Có local + model đã nạp -> nguồn VieNeu cho cả lượt; không
+         có -> Gemini y hệt KC11. Một lượt dựng = một nguồn. */
+      await kc12DetectLocal(true);
+      const useVieneu = (voiceSource === "vieneu");
+      if (useVieneu) {
+        ttsPinModel = null;
+        logWarn("🎙️ Video này đọc bằng <b>giọng VieNeu trên máy này</b> — MC Nữ (" + kc12VoiceNameFor("vieneu", "female", kc12Local) + ") và MC Nam (" + kc12VoiceNameFor("vieneu", "male", kc12Local) + ") luân phiên theo vai — <b>miễn phí</b>, không tốn lượt key Gemini. Đoạn nào có chữ “thầy” luôn do MC Nam đọc.");
+      } else {
+        /* [KC7/GD13] Nguồn Gemini: ghim 1 model TTS chính cho cả
+           lượt dựng (chỉ xoay key) rồi thu theo cụm cùng MC.
+           Gemini chết toàn bộ -> cảnh báo ở cuối bước như cũ, video
+           vẫn dựng nhưng không có tiếng. */
+        ttsPinModel = await pickPrimaryTtsModel();
+        if (ttsPinModel) logWarn("🎙️ Video này đọc bằng <b>2 giọng Gemini luân phiên theo vai</b> — MC Nam (" + MC_VOICES.male + ") và MC Nữ (" + MC_VOICES.female + ") — trên <b>một model duy nhất: " + ttsPinModel + "</b> (chỉ xoay key, không đổi model giữa chừng).");
+      }
       const mcGroups = groupByMc(buildMcRoles, 3);
       for (const grp of mcGroups) await genAudioGroup(grp);
-      if (ttsBuildExhausted) logWarn("🔇 <b>Đã hết hạn mức giọng hôm nay</b> — model giọng chính (" + ttsPinModel + ") đã cạn trên mọi key trong hồ. Các đoạn chưa có tiếng sẽ im lặng " + NO_AUDIO_SECONDS + " giây như trước giờ; thầy thử lại vào ngày mai hoặc thêm key mới vào hồ.");
+      if (!useVieneu && ttsBuildExhausted) logWarn("🔇 <b>Đã hết hạn mức giọng hôm nay</b> — model giọng chính (" + ttsPinModel + ") đã cạn trên mọi key trong hồ. Các đoạn chưa có tiếng sẽ im lặng " + NO_AUDIO_SECONDS + " giây như trước giờ; thầy thử lại vào ngày mai hoặc thêm key mới vào hồ.");
       ttsPinModel = null;
       buildMcRoles = null;
       scriptData.segments.forEach((sg, i) => { if (!audios[i] || audios[i].status !== "ok") auErr.push(i + 1); });
