@@ -81,6 +81,7 @@
   a{color:var(--blue)}
   .count{font-size:14px;color:var(--accent);font-weight:700}
   .seg .tag.sgk{background:#0f5132;color:#b6ffd2}
+  .seg .tag.kcclosing{background:#7a3b00;color:#ffd9a8}
   .mini{padding:6px 12px;font-size:13.5px;border-radius:8px}
   #libDrop{border:2px dashed var(--line);border-radius:12px;padding:18px;text-align:center;margin-top:10px;background:var(--panel2)}
   #libDrop.over{border-color:var(--accent);background:#14532d}
@@ -2188,7 +2189,8 @@ const KC_TEMPLATES = [
   { id: "dong_song", name: "🏞 Dòng sông, cánh đồng" },
   { id: "vuon_hoa", name: "🌻 Vườn hoa, ong và bướm" },
   { id: "phong_thi_nghiem", name: "🔬 Phòng thí nghiệm" },
-  { id: "te_bao", name: "🦠 Tế bào" }
+  { id: "te_bao", name: "🦠 Tế bào" },
+  { id: "ket_bai", name: "🏁 Kết bài — mở sách vào bài học" }
 ];
 const KC_TEMPLATE_IDS = KC_TEMPLATES.map(t => t.id);
 function kcNorm(s){
@@ -2204,7 +2206,8 @@ const KC_TPL_KEYWORDS = {
   dong_song: ["dong song", "con song", "canh dong", "dong ruong", "con suoi"],
   vuon_hoa: ["vuon hoa", "bong hoa", "con ong", "con buom", "thu phan", "hat phan"],
   phong_thi_nghiem: ["thi nghiem", "ong nghiem", "binh tam giac", "kinh hien vi", "nha khoa hoc"],
-  te_bao: ["te bao", "nhan te bao", "ti the", "mang te bao"]
+  te_bao: ["te bao", "nhan te bao", "ti the", "mang te bao"],
+  ket_bai: ["sach giao khoa", "vao bai hoc"]
 };
 function kcGuessTemplate(text){
   const t = " " + kcNorm(text) + " ";
@@ -2434,6 +2437,69 @@ function kc5MovedSegments(segments, i, dir){
   return out;
 }
 /*__END_PURE_KC5__*/
+/*__PURE_KC9__*/
+/* [KC9] CẢNH KẾT CUỐI VIDEO KỂ CHUYỆN — lời kêu gọi + dẫn dắt học
+   sinh vào bài học (lệnh thầy 12:21 ngày 21/11/2026: "cuối video là
+   lời kêu gọi... và dẫn dắt các em vào bài học"). Logic thuần,
+   test Node eval trực tiếp khối này.
+   - kc9ClosingText(ctx): văn MẪU có sẵn — không cần AI viết, nên
+     đường dán tay không key vẫn có cảnh kết. CTA HAI TẦNG (bổ sung
+     theo lệnh thầy 12:25 ngày 21/11/2026): (1) dẫn vào bài học —
+     mở SGK đúng bài, sẵn vở bút, cùng thầy khám phá; (2) kêu gọi
+     ĐĂNG KÝ KÊNH YouTube của thầy + bật chuông thông báo để nhận
+     các bài học tiếp theo (nói "kênh của thầy", không nêu tên
+     kênh cụ thể). Cấu trúc: khép chuyện -> nối sang bài học ->
+     mở sách vào bài -> đăng ký kênh -> chào hẹn gặp ở bài học.
+     ctx có {topic, subjectName, grade} khi truyện gắn BÀI TRUNG
+     TÂM thì nêu đúng tên bài + môn + khối; không có thì
+     {storyTitle} với câu chữ chung, không nêu tên bài. ~55–80 từ,
+     xưng "thầy", gọi "các em", không bịa kiến thức mới.
+   - kc9LooksLikeClosing(text): đoạn cuối đã mang hơi hướng kết/
+     kêu gọi (chứa một trong các từ khoá "bài học", "mở sách",
+     "cùng thầy", "khám phá", "đăng ký kênh", "đăng kí kênh",
+     "subscribe" sau khi bỏ dấu) — dùng cho đường DÁN
+     TAY: kịch bản của thầy đã có đoạn kết thì giữ nguyên, KHÔNG
+     thêm trùng (giáo viên là cao nhất).
+   - kc9AppendClosing(segments, ctx, opts): trả MẢNG MỚI có cảnh
+     kết ở vị trí CUỐI; bỏ qua (trả nguyên mảng) khi mảng rỗng, khi
+     cảnh cuối đã là cảnh kết KC9 (chống thêm trùng), hoặc
+     opts.skipIfClosingLike && đoạn cuối đã giống cảnh kết. Cảnh
+     kết là cảnh thường: kcSrc "draw" + mẫu vẽ riêng "ket_bai",
+     cờ kcClosing để màn duyệt gắn nhãn; thầy sửa/xoá/đổi thứ tự
+     (▲▼ KC5) như mọi cảnh khác. */
+const KC9_CLOSING_KEYWORDS = ["bai hoc", "mo sach", "cung thay", "kham pha", "dang ky kenh", "dang ki kenh", "subscribe"];
+function kc9LooksLikeClosing(text){
+  const t = " " + kcNorm(text || "") + " ";
+  return KC9_CLOSING_KEYWORDS.some(kw => t.indexOf(kw) >= 0);
+}
+function kc9ClosingText(ctx){
+  ctx = ctx || {};
+  const topic = String(ctx.topic || "").trim();
+  if (topic){
+    const mon = String(ctx.subjectName || "").trim();
+    const lop = (ctx.grade === 0 || ctx.grade) ? String(ctx.grade).trim() : "";
+    return "Các em thân mến, câu chuyện đến đây là khép lại rồi — nhưng hành trình khám phá chưa dừng lại đâu! Phía trước là bài học " + topic + (mon ? ", môn " + mon : "") + (lop ? " lớp " + lop : "") + " đang chờ các em. Hãy mở sách giáo khoa đúng bài này, sẵn vở và bút, cùng thầy khám phá nhé. Đừng quên bấm Đăng ký kênh của thầy, bật chuông để nhận các bài học tiếp theo. Hẹn gặp các em trong bài học!";
+  }
+  const tt = String(ctx.storyTitle || "").trim();
+  return "Các em thân mến, " + (tt ? ("câu chuyện " + tt) : "câu chuyện") + " đến đây là khép lại rồi — nhưng hành trình khám phá chưa dừng lại đâu! Bài học mới đang chờ các em ở ngay phía trước. Hãy mở sách giáo khoa, sẵn vở và bút, cùng thầy khám phá tiếp nhé. Đừng quên bấm Đăng ký kênh của thầy, bật chuông để nhận các bài học tiếp theo. Hẹn gặp các em trong bài học!";
+}
+function kc9ClosingSegment(ctx){
+  return {
+    type: "kechuyen",
+    heading: "🏁 Cảnh kết — kêu gọi vào bài học",
+    narration: kc9ClosingText(ctx),
+    kcSrc: "draw", kcTpl: "ket_bai", kcUpload: null,
+    kcClosing: true
+  };
+}
+function kc9AppendClosing(segments, ctx, opts){
+  if (!Array.isArray(segments) || !segments.length) return segments;
+  const last = segments[segments.length - 1];
+  if (last && last.kcClosing) return segments;
+  if (opts && opts.skipIfClosingLike && last && kc9LooksLikeClosing(last.narration)) return segments;
+  return segments.concat([kc9ClosingSegment(ctx)]);
+}
+/*__END_PURE_KC9__*/
 /* Danh sách hình của BÀI ĐÃ CHỐT (theo danh tính _picked của kịch bản) —
    nguồn cho lưới chọn hình từng đoạn ở luồng chọn bài. */
 function pickedLessonEntries(){
@@ -6313,6 +6379,68 @@ function kcDrawTemplate(ctx, tpl, t){
     kcDroplet(ctx, 900, 620 + bob, 52, {});
     return;
   }
+  if (tpl === "ket_bai"){
+    /* [KC9] Cảnh kết: bình minh lên, quyển sách giáo khoa mở sẵn,
+       mũi tên đi tới phía trước và Tí vẫy tay — "vào bài học mới". */
+    kcSky(ctx, "#5aa9e6", "#ffedb8");
+    kcSun(ctx, 1470, 400, 100, t, true);
+    kcCloud(ctx, 330, 140, 58); kcCloud(ctx, 900, 100, 44);
+    kcGround(ctx, 905, "#5cb85c", "#3d8b4f");
+    /* quyển sách mở ở giữa — trái */
+    const bx = 640, by = 810, pw = 320, ph = 205;
+    ctx.fillStyle = "#b03a2e";
+    ctx.fillRect(bx - pw - 24, by - ph + 16, (pw + 24) * 2, ph + 22);
+    ctx.fillStyle = "#fffdf5";
+    ctx.beginPath();
+    ctx.moveTo(bx, by - ph + 34);
+    ctx.quadraticCurveTo(bx - pw / 2, by - ph - 8, bx - pw, by - ph + 34);
+    ctx.lineTo(bx - pw, by + 12);
+    ctx.quadraticCurveTo(bx - pw / 2, by + 40, bx, by + 16);
+    ctx.closePath(); ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(bx, by - ph + 34);
+    ctx.quadraticCurveTo(bx + pw / 2, by - ph - 8, bx + pw, by - ph + 34);
+    ctx.lineTo(bx + pw, by + 12);
+    ctx.quadraticCurveTo(bx + pw / 2, by + 40, bx, by + 16);
+    ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = "#d9c9a8"; ctx.lineWidth = 5;
+    ctx.beginPath(); ctx.moveTo(bx, by - ph + 30); ctx.lineTo(bx, by + 14); ctx.stroke();
+    ctx.strokeStyle = "rgba(90,90,90,0.55)"; ctx.lineWidth = 7; ctx.lineCap = "round";
+    for (let r = 0; r < 4; r++){
+      const ly = by - ph + 78 + r * 38;
+      ctx.beginPath(); ctx.moveTo(bx - pw + 42, ly); ctx.lineTo(bx - 34, ly + 8); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(bx + 34, ly + 8); ctx.lineTo(bx + pw - 42, ly); ctx.stroke();
+    }
+    /* mũi tên đi tới — hướng về phía mặt trời/bài học mới */
+    kcArrow(ctx, bx + pw + 80, by - 70, 1300, 615, "#e67e22", 17);
+    /* Tí vẫy tay chào tạm biệt */
+    kcDroplet(ctx, 1640, 790 + bob, 92, {});
+    const wob = Math.sin(t * Math.PI * 4) * 15;
+    ctx.strokeStyle = "#1665ab"; ctx.lineWidth = 13; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(1640 + 48, 790 + bob - 32);
+    ctx.quadraticCurveTo(1640 + 92, 790 + bob - 88, 1640 + 103, 790 + bob - 124 + wob); ctx.stroke();
+    ctx.fillStyle = "#35a7ff";
+    ctx.beginPath(); ctx.arc(1640 + 103, 790 + bob - 124 + wob, 15, 0, Math.PI * 2); ctx.fill();
+    /* Huy hiệu kêu gọi đăng ký kênh — nút đỏ kiểu YouTube ở vùng
+       trời trống phía trên-trái, không che sách/mũi tên/Tí/mặt
+       trời. */
+    ctx.save();
+    const bdW = 500, bdH = 86, bdX = 205, bdY = 262, bdR = 24;
+    ctx.fillStyle = "#e62117";
+    ctx.beginPath();
+    ctx.moveTo(bdX + bdR, bdY);
+    ctx.lineTo(bdX + bdW - bdR, bdY); ctx.quadraticCurveTo(bdX + bdW, bdY, bdX + bdW, bdY + bdR);
+    ctx.lineTo(bdX + bdW, bdY + bdH - bdR); ctx.quadraticCurveTo(bdX + bdW, bdY + bdH, bdX + bdW - bdR, bdY + bdH);
+    ctx.lineTo(bdX + bdR, bdY + bdH); ctx.quadraticCurveTo(bdX, bdY + bdH, bdX, bdY + bdH - bdR);
+    ctx.lineTo(bdX, bdY + bdR); ctx.quadraticCurveTo(bdX, bdY, bdX + bdR, bdY);
+    ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = "rgba(255,255,255,0.85)"; ctx.lineWidth = 4; ctx.stroke();
+    ctx.fillStyle = "#ffffff"; ctx.font = "700 40px " + FONT;
+    ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.fillText("▶ ĐĂNG KÝ KÊNH", bdX + bdW / 2, bdY + bdH / 2 + 2);
+    ctx.restore();
+    return;
+  }
   /* mặc định: cay_mattroi */
   kcSky(ctx, "#6ebef0", "#e8f9ff");
   kcSun(ctx, 1690, 150, 88, t, true);
@@ -6325,6 +6453,20 @@ function kcDrawTemplate(ctx, tpl, t){
   });
   kcDroplet(ctx, 560, 780 + bob, 62, {});
 }
+/* [KC9] Chữ ký "✍️ Thầy Hồ Tấn Khải" ở góc trên bên phải MỌI cảnh
+   Kể Chuyện (kể cả cảnh kết) — lệnh thầy 12:21 ngày 21/11/2026, theo
+   tiền lệ GD8 của video phiếu: vàng nhạt, 28px trên khung
+   1920×1080; thêm bóng nhẹ để đọc rõ trên nền sáng (trời/mây của
+   các mẫu vẽ, ảnh SGK sáng). Chỉ cảnh kể chuyện — các loại video
+   khác giữ nguyên (phiếu đã có chữ ký riêng của nó). */
+function kc9DrawTeacherSign(ctx){
+  ctx.save();
+  ctx.shadowColor = "rgba(0,0,0,0.5)"; ctx.shadowBlur = 7; ctx.shadowOffsetX = 1; ctx.shadowOffsetY = 2;
+  ctx.fillStyle = "#ffe9a8"; ctx.font = "600 28px " + FONT;
+  ctx.textAlign = "right"; ctx.textBaseline = "top";
+  ctx.fillText("✍️ " + PHIEU_TEACHER_NAME, W - 110, 38);
+  ctx.restore();
+}
 /* Slide kể chuyện: hình toàn cảnh + băng phụ đề lời kể hiện theo tiến
    độ đọc của cảnh (câu đang đọc + câu liền trước), tiêu đề cảnh phía
    trên phụ đề. Cảnh không có hình -> slide chữ như các loại khác. */
@@ -6332,6 +6474,7 @@ function drawKcSlide(ctx, sg, asset, t){
   const has = asset && asset.status === "ok";
   if (!has){
     drawText(ctx, { heading: sg.heading, bullets: fallbackBullets(sg) });
+    kc9DrawTeacherSign(ctx);
     return;
   }
   if (asset.source === "draw"){
@@ -6343,6 +6486,7 @@ function drawKcSlide(ctx, sg, asset, t){
     drawCover(ctx, asset.img, 1 + 0.05 * (t || 0));
   } else {
     drawText(ctx, { heading: sg.heading, bullets: fallbackBullets(sg) });
+    kc9DrawTeacherSign(ctx);
     return;
   }
   const bandH = 240;
@@ -6357,9 +6501,12 @@ function drawKcSlide(ctx, sg, asset, t){
     ctx.fillStyle = "#ffffff"; ctx.font = "400 42px " + FONT;
     wrapLines(ctx, cap, 1700).slice(0, 3).forEach((ln, k) => ctx.fillText(ln, 110, H - bandH + 70 + k * 54));
   }
+  /* [KC9] Chữ ký thầy ở góc trên phải; tiêu đề truyện lùi xuống
+     ngay dưới chữ ký để không đè nhau. */
+  kc9DrawTeacherSign(ctx);
   if (scriptData && scriptData.title){
     ctx.fillStyle = "#ffd94d"; ctx.font = "600 30px " + FONT; ctx.textAlign = "right";
-    ctx.fillText(scriptData.title, W - 110, 40); ctx.textAlign = "left";
+    ctx.fillText(scriptData.title, W - 110, 88); ctx.textAlign = "left";
   }
 }
 /* ---------- [KC1] Màn duyệt cảnh kể chuyện ---------- */
@@ -6430,6 +6577,12 @@ function renderKcReviewInto(box){
     head.style.display = "flex"; head.style.gap = "8px"; head.style.alignItems = "center"; head.style.flexWrap = "wrap";
     const tag = document.createElement("span"); tag.className = "tag kechuyen"; tag.textContent = "🎭 Cảnh " + (i + 1);
     head.appendChild(tag);
+    /* [KC9] Nhãn nhận biết cảnh kết app tự thêm — vẫn là cảnh
+       thường: sửa lời, xoá, đổi thứ tự ▲▼ như mọi cảnh. */
+    if (sg.kcClosing){
+      const cb = document.createElement("span"); cb.className = "tag kcclosing"; cb.textContent = "🏁 Cảnh kết — kêu gọi vào bài";
+      head.appendChild(cb);
+    }
     const st = document.createElement("span"); st.className = "small"; st.style.flex = "1"; st.textContent = kcSrcStatus(sg);
     head.appendChild(st);
     /* [KC5] Đổi thứ tự cảnh: ▲ Lên / ▼ Xuống đổi vị trí với cảnh kề.
@@ -6591,19 +6744,27 @@ async function routeKechuyenCreate(){
     return;
   }
   demoMode = false;
+  /* [KC9] Cảnh kết kêu gọi vào bài học cho đường dán tay: đang gắn
+     BÀI TRUNG TÂM thì nêu đúng tên bài; không thì lời kết chung
+     theo tên truyện. Đoạn cuối thầy đã tự viết kết/kêu gọi thì giữ
+     nguyên của thầy, không thêm trùng. */
+  const kc9Ctx = pickedLesson
+    ? { topic: pickedLesson.topic, subjectName: pickedLesson.subjectName, grade: pickedLesson.grade }
+    : { storyTitle: $("kcTitle").value.trim() };
+  const kcSegs = kc9AppendClosing(scenes.map(s => ({
+    type: "kechuyen", heading: s.heading, narration: s.narration,
+    kcSrc: "draw", kcTpl: kcGuessTemplate(s.narration), kcUpload: null
+  })), kc9Ctx, { skipIfClosingLike: true });
   scriptData = {
     title: $("kcTitle").value.trim() || "Truyện kể",
     subject: "", grade: "",
-    segments: scenes.map(s => ({
-      type: "kechuyen", heading: s.heading, narration: s.narration,
-      kcSrc: "draw", kcTpl: kcGuessTemplate(s.narration), kcUpload: null
-    })),
+    segments: kcSegs,
     _mode: "kechuyen",
     _kcNarrator: $("kcNarrator").value === "male" ? "male" : "female"
   };
   assets = {}; audios = {};
   $("inputError").innerHTML = "";
-  $("progressNote").textContent = "— CHẾ ĐỘ KỂ CHUYỆN (kịch bản thầy dán sẵn — app tự chia " + scenes.length + " cảnh, không qua AI viết kịch bản)";
+  $("progressNote").textContent = "— CHẾ ĐỘ KỂ CHUYỆN (kịch bản thầy dán sẵn — app tự chia " + scenes.length + " cảnh" + (kcSegs.length > scenes.length ? " + tự thêm 1 cảnh kết kêu gọi vào bài học" : "") + ", không qua AI viết kịch bản)";
   $("progressCard").classList.remove("hidden");
   $("resultCard").classList.add("hidden");
   $("renderCard").classList.add("hidden");
@@ -6954,7 +7115,10 @@ function kc2BuildScriptData(lesson, entries, narrations){
   return {
     title: ($("kcTitle").value.trim()) || (lesson.topic ? ("Chuyện kể: " + lesson.topic) : ("Chuyện kể Bài " + lesson.lessonNo)),
     subject: lesson.subjectName, grade: lesson.grade,
-    segments: segments,
+    /* [KC9] Tự thêm cảnh kết kêu gọi vào bài học ở cuối truyện —
+       văn mẫu có sẵn, không cần AI, nêu đúng tên bài của bài
+       trung tâm. */
+    segments: kc9AppendClosing(segments, { topic: lesson.topic, subjectName: lesson.subjectName, grade: lesson.grade }, {}),
     _mode: "kechuyen",
     _picked: { subjectCode: lesson.subjectCode, subjectName: lesson.subjectName, grade: lesson.grade, lessonNo: lesson.lessonNo, lessonCode: lesson.lessonCode, topic: lesson.topic, count: lesson.count, entries: lesson.entries },
     _kcNarrator: $("kcNarrator").value === "male" ? "male" : "female",
