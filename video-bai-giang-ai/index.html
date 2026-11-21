@@ -1128,6 +1128,11 @@ async function vbgFetchJson(url){
 })();
 /*__PURE_PICKER__*/
 function lessonTopicOf(entries){
+  /* [KC10] Tên bài CHUẨN có dấu nằm ở trường lessonName của manifest
+     sgk-lib (bảng tên chuẩn đồng bộ toàn hệ) — ưu tiên tuyệt đối khi
+     có; manifest cũ chưa có trường này thì rơi xuống cách cũ. */
+  const named = (entries || []).map(e => String((e && e.lessonName) || "").trim()).filter(Boolean)[0];
+  if (named) return named;
   const cnt = {};
   (entries || []).forEach(e => {
     const c = String((e && e.caption) || "").replace(/^Hình\s+\d+\.\d+\s*[—-]\s*/i, "").trim();
