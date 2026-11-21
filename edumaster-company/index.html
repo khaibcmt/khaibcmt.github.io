@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>EduMaster Company — Văn phòng ảo của thầy Khải</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Be Vietnam Pro','Segoe UI','DejaVu Sans',sans-serif; }
+  body { background:#f2f1f7; color:#1d1b2e; }
+  .hidden { display:none !important; }
+  button { cursor:pointer; }
+  /* ===== khoá admin ===== */
+  body.locked #appShell { visibility:hidden; }
+  #lockOverlay { position:fixed; inset:0; z-index:200; background:linear-gradient(150deg,#1c1440,#2a1c5c 55%,#3a2c74); display:flex; align-items:center; justify-content:center; padding:18px; }
+  body:not(.locked) #lockOverlay { display:none; }
+  .lockcard { background:#fff; border-radius:22px; padding:30px 30px 24px; width:430px; max-width:94vw; box-shadow:0 18px 60px rgba(0,0,0,.45); }
+  .lockcard .lg { display:flex; align-items:center; gap:13px; margin-bottom:6px; }
+  .lockcard .logo { width:52px; height:52px; border-radius:14px; background:linear-gradient(135deg,#efeaff,#c9b8ff); color:#3a2a7a; font-size:29px; font-weight:800; display:flex; align-items:center; justify-content:center; }
+  .lockcard h1 { font-size:20px; line-height:1.2; }
+  .lockcard .sub { color:#6f6a8c; font-size:13.5px; margin:2px 0 16px; line-height:1.45; }
+  .lockcard label { display:block; font-weight:700; font-size:14px; margin:12px 0 6px; }
+  .inp, .txta, select.inp { width:100%; border:1.5px solid #ddd9ec; border-radius:11px; padding:11px 13px; font-size:15px; background:#fff; color:#1d1b2e; }
+  .txta { min-height:90px; resize:vertical; line-height:1.5; }
+  .inp:focus, .txta:focus { outline:2px solid #b9a5ff; border-color:#6a3df0; }
+  .btn { border:none; border-radius:11px; padding:11px 20px; font-size:15px; font-weight:700; background:#6a3df0; color:#fff; }
+  .btn.sec { background:#fff; color:#2c2850; border:1.5px solid #ddd9ec; }
+  .btn.warn { background:#b3261e; }
+  .btn.small { padding:7px 13px; font-size:13.5px; border-radius:9px; }
+  .btn:disabled { opacity:.5; cursor:not-allowed; }
+  .lockcard .btn { width:100%; margin-top:16px; }
+  .err { color:#b3261e; font-size:13.5px; min-height:18px; margin-top:8px; line-height:1.4; }
+  .steptag { display:inline-block; background:#f0edfb; color:#5a3fd4; font-weight:700; font-size:12.5px; border-radius:999px; padding:4px 11px; }
+  /* ===== khung app ===== */
+  #appShell { display:flex; flex-direction:column; height:100vh; height:100dvh; }
+  .topbar { display:flex; align-items:center; justify-content:space-between; gap:10px; background:#fff; padding:11px 20px; border-bottom:1px solid #e6e4f0; flex-wrap:wrap; }
+  .topbar .title { font-size:20px; font-weight:700; display:flex; align-items:center; gap:10px; }
+  .topbar .actions { display:flex; gap:9px; align-items:center; flex-wrap:wrap; }
+  .tbtn { border:1.5px solid #ddd9ec; background:#fff; border-radius:11px; padding:8px 14px; font-size:14px; font-weight:600; color:#2c2850; }
+  .tbtn.search { background:#f0edfb; color:#5a3fd4; }
+  .tbtn.search span { color:#8b86a8; font-weight:500; margin-left:6px; font-size:12.5px; }
+  .tbtn.on { background:#ffe9a8; border-color:#e3c964; }
+  .connected { color:#6f6a8c; font-size:13.5px; display:flex; align-items:center; gap:6px; }
+  .dot { width:9px; height:9px; border-radius:50%; background:#bbb; display:inline-block; }
+  .dot.ok { background:#2e9e4f; } .dot.bad { background:#d33; } .dot.wait { background:#e3a008; }
+  #hamburger { display:none; border:1.5px solid #ddd9ec; background:#fff; border-radius:10px; padding:7px 12px; font-size:16px; }
+  .banner { background:#2a1c5c; color:#fff; text-align:center; font-size:13.5px; letter-spacing:.4px; padding:8px 10px; font-weight:600; }
+  .banner b { color:#ffd98a; }
+  .main { display:flex; flex:1; min-height:0; }
+  /* sidebar */
+  .side { width:296px; flex:none; background:#241a4e; color:#fff; padding:20px 16px; display:flex; flex-direction:column; gap:3px; overflow-y:auto; }
+  .brand { display:flex; align-items:center; gap:12px; padding:2px 8px 16px; }
+  .logo { width:50px; height:50px; border-radius:14px; background:linear-gradient(135deg,#efeaff,#c9b8ff); color:#3a2a7a; font-size:28px; font-weight:800; display:flex; align-items:center; justify-content:center; box-shadow:0 0 20px rgba(160,130,255,.45); flex:none; }
+  .brand .bname { font-size:19px; font-weight:800; line-height:1.15; }
+  .brand .bsub { font-size:12px; color:#bdb4e8; font-weight:600; }
+  .sec { font-size:12px; letter-spacing:2.2px; color:#a99ede; font-weight:700; margin:14px 10px 6px; }
+  .item { display:flex; align-items:center; gap:11px; padding:9px 12px; border-radius:11px; font-size:15.5px; font-weight:600; color:#e9e5fb; cursor:pointer; user-select:none; }
+  .item:hover { background:#322361; }
+  .item .ic { width:21px; text-align:center; opacity:.9; font-size:15px; flex:none; }
+  .item.active { background:#3a2c74; box-shadow:inset 3.5px 0 0 #b9a5ff; }
+  .item .cnt { color:#cfc6f5; font-weight:700; margin-left:auto; }
+  .sidefoot { margin-top:auto; padding:12px 8px 2px; border-top:1px solid #3a2c74; display:flex; flex-direction:column; gap:8px; }
+  .sidefoot .btn { width:100%; }
+  /* nội dung */
+  .content { flex:1; min-width:0; overflow-y:auto; padding:20px 22px; display:flex; flex-direction:column; }
+  .card { background:#fff; border-radius:18px; box-shadow:0 2px 14px rgba(40,30,90,.07); padding:20px 22px; }
+  .introline { background:linear-gradient(120deg,#f0edfb,#fdf6e0); border:1.5px solid #ddd3ff; border-radius:14px; padding:13px 16px; font-size:15px; line-height:1.5; margin-bottom:16px; }
+  .introline b { color:#4a32a8; }
+  h2.vt { font-size:20px; margin-bottom:12px; }
+  h3.vt { font-size:16.5px; margin:16px 0 8px; }
+  .muted { color:#6f6a8c; font-size:13.5px; line-height:1.5; }
+  /* chat */
+  .chatcard { flex:1; background:#fff; border-radius:20px; box-shadow:0 2px 14px rgba(40,30,90,.07); display:flex; flex-direction:column; padding:18px 20px; min-height:0; }
+  .chathead { display:flex; justify-content:space-between; align-items:center; padding-bottom:10px; gap:10px; flex-wrap:wrap; }
+  .chathead .ct { font-size:18.5px; font-weight:800; }
+  .assign { border:1.5px solid #ddd9ec; background:#fff; border-radius:10px; padding:7px 14px; font-weight:700; font-size:14px; color:#2c2850; }
+  .msgs { flex:1; overflow-y:auto; display:flex; flex-direction:column; gap:11px; padding:6px 2px; min-height:120px; }
+  .msg { background:#f6f4fd; border-radius:14px; padding:13px 15px; display:flex; gap:12px; max-width:92%; align-self:flex-start; }
+  .msg.boss { background:#e7deff; align-self:flex-end; flex-direction:row-reverse; }
+  .msg.sys { background:#fff7e0; align-self:center; max-width:96%; font-size:14px; }
+  .ava { width:44px; height:44px; border-radius:12px; flex:none; display:flex; align-items:center; justify-content:center; font-weight:800; font-size:15px; }
+  .ava.director { background:#ffe9a8; color:#8a6d1a; }
+  .ava.giaoan01 { background:#b8f1e3; color:#0d6e5d; }
+  .ava.video01 { background:#ffd3d3; color:#9c2b2b; }
+  .ava.dethi01 { background:#ffe9a8; color:#8a6d1a; }
+  .ava.kiemdinh01 { background:#d9d2ff; color:#4a32a8; }
+  .ava.boss { background:#6a3df0; color:#fff; }
+  .ava.sys { background:#f3d27a; color:#6d5410; }
+  .msg .who { font-weight:800; font-size:15px; }
+  .msg .who span { color:#8b86a8; font-weight:500; font-size:12.5px; margin-left:7px; }
+  .msg .who .role { color:#5a3fd4; font-weight:600; font-size:12.5px; margin-left:6px; }
+  .msg .body { font-size:14.8px; line-height:1.55; margin-top:3px; color:#2c2850; white-space:pre-wrap; word-break:break-word; }
+  .pin { color:#5a3fd4; font-weight:700; font-size:13px; margin-top:5px; }
+  .related { background:#fbf9ff; border:1.5px dashed #c9b8ff; border-radius:13px; padding:10px 14px; font-size:13.8px; line-height:1.55; }
+  .related .rt { font-weight:800; color:#4a32a8; font-size:13px; margin-bottom:4px; }
+  .composer { border-top:1px solid #eeeaf8; padding-top:12px; margin-top:8px; }
+  .composer textarea { width:100%; border:1.5px solid #ddd9ec; border-radius:12px; padding:12px 14px; font-size:15px; min-height:56px; resize:vertical; }
+  .sendrow { display:flex; justify-content:space-between; align-items:center; margin-top:10px; gap:10px; }
+  .send { background:#6a3df0; color:#fff; border:none; border-radius:11px; padding:10px 22px; font-size:15px; font-weight:700; }
+  /* thành viên */
+  .members { width:336px; flex:none; padding:20px 20px 20px 4px; overflow-y:auto; }
+  .mcard { background:#fff; border-radius:20px; box-shadow:0 2px 14px rgba(40,30,90,.07); padding:18px 20px; }
+  .mcard .mt { font-size:18px; font-weight:800; padding-bottom:9px; border-bottom:1px solid #eeeaf8; }
+  .mem { padding:13px 0; border-bottom:1px solid #f0edf9; }
+  .mem:last-child { border-bottom:none; }
+  .mem .row1 { display:flex; gap:11px; }
+  .mem .nm { font-size:15.5px; font-weight:800; line-height:1.3; }
+  .mem .nm span { font-weight:500; color:#55516e; font-size:13.5px; display:block; }
+  .mem .st { color:#6f6a8c; font-size:13px; margin-top:2px; line-height:1.45; }
+  .mem .row2 { display:flex; justify-content:space-between; align-items:center; margin-top:8px; }
+  .chip { background:#e0f4e4; color:#2e7d32; font-weight:700; font-size:12.5px; border-radius:999px; padding:4px 12px; }
+  .chip.busy { background:#fff0c2; color:#8a6d1a; }
+  .chip.wait { background:#e7deff; color:#4a32a8; }
+  .dm { border:1.5px solid #ddd9ec; background:#fff; border-radius:10px; padding:6px 13px; font-weight:700; font-size:13.5px; color:#2c2850; }
+  /* tổng quan */
+  .stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:13px; margin-bottom:16px; }
+  .stat { background:#fff; border-radius:16px; box-shadow:0 2px 12px rgba(40,30,90,.06); padding:16px 18px; }
+  .stat .n { font-size:29px; font-weight:800; color:#3a2a7a; }
+  .stat .l { color:#6f6a8c; font-size:13.5px; font-weight:600; margin-top:2px; }
+  .feed { display:flex; flex-direction:column; gap:8px; }
+  .feed .fi { background:#fff; border-radius:12px; padding:11px 15px; box-shadow:0 1px 6px rgba(40,30,90,.05); font-size:14.3px; line-height:1.5; }
+  .feed .fi span { color:#8b86a8; font-size:12.5px; font-weight:600; margin-right:8px; }
+  /* bảng việc */
+  .board { display:grid; grid-template-columns:repeat(4,1fr); gap:13px; align-items:start; }
+  .col { background:#eae7f6; border-radius:16px; padding:11px; min-height:160px; }
+  .col .ch { font-weight:800; font-size:14.5px; padding:2px 4px 10px; display:flex; justify-content:space-between; }
+  .col .ch span { color:#6f6a8c; }
+  .tcard { background:#fff; border-radius:12px; padding:11px 12px; margin-bottom:9px; box-shadow:0 1px 6px rgba(40,30,90,.08); cursor:pointer; }
+  .tcard:hover { outline:2px solid #c9b8ff; }
+  .tcard .tt { font-weight:700; font-size:14.5px; line-height:1.4; }
+  .tcard .tm { color:#6f6a8c; font-size:12.5px; margin-top:5px; line-height:1.45; }
+  .bdg { display:inline-block; font-size:11.5px; font-weight:700; border-radius:999px; padding:2.5px 9px; margin:5px 5px 0 0; }
+  .bdg.room { background:#f0edfb; color:#4a32a8; }
+  .bdg.who { background:#eef7ee; color:#2e7d32; }
+  .bdg.assigned { background:#e7deff; color:#4a32a8; }
+  .bdg.doing { background:#fff0c2; color:#8a6d1a; }
+  .bdg.review { background:#ffe1ec; color:#a01450; }
+  .bdg.done { background:#e0f4e4; color:#2e7d32; }
+  .bdg.queue { background:#eceaf5; color:#55516e; }
+  /* danh sách */
+  .rowitem { background:#fff; border-radius:14px; box-shadow:0 1px 8px rgba(40,30,90,.06); padding:14px 17px; margin-bottom:10px; }
+  .rowitem .rt1 { display:flex; justify-content:space-between; gap:10px; align-items:flex-start; flex-wrap:wrap; }
+  .rowitem .ttl { font-weight:800; font-size:15.5px; }
+  .rowitem .acts { display:flex; gap:8px; flex-wrap:wrap; }
+  .prodbg { background:#f6f4fd; border-radius:11px; padding:11px 13px; font-size:14px; line-height:1.55; white-space:pre-wrap; word-break:break-word; max-height:220px; overflow-y:auto; margin-top:9px; }
+  /* modal */
+  #modalBackdrop { position:fixed; inset:0; z-index:150; background:rgba(24,16,60,.55); display:flex; align-items:center; justify-content:center; padding:14px; }
+  .modal { background:#fff; border-radius:18px; width:760px; max-width:96vw; max-height:90vh; max-height:90dvh; overflow-y:auto; padding:22px 24px; }
+  .modal h3 { font-size:18px; margin-bottom:10px; }
+  .modal .xrow { display:flex; justify-content:space-between; align-items:center; }
+  .xbtn { border:none; background:#f0edfb; border-radius:9px; width:34px; height:34px; font-size:16px; font-weight:800; color:#4a32a8; }
+  .frow { margin-bottom:12px; }
+  .frow label { display:block; font-weight:700; font-size:13.5px; margin-bottom:5px; }
+  .btnrow { display:flex; gap:9px; flex-wrap:wrap; margin-top:14px; }
+  pre.pack { background:#241a4e; color:#e9e5fb; border-radius:12px; padding:14px 16px; font-size:12.8px; line-height:1.55; white-space:pre-wrap; word-break:break-word; max-height:320px; overflow-y:auto; font-family:'DejaVu Sans Mono',monospace; }
+  .hist { font-size:13.5px; line-height:1.6; }
+  .hist div { padding:5px 0; border-bottom:1px dashed #eeeaf8; }
+  .hist span { color:#8b86a8; font-weight:600; margin-right:7px; font-size:12.3px; }
+  /* tìm nhanh */
+  .sres { padding:10px 12px; border-radius:11px; cursor:pointer; }
+  .sres:hover { background:#f0edfb; }
+  .sres .k { font-size:11.5px; font-weight:800; color:#5a3fd4; letter-spacing:.6px; }
+  /* toast */
+  #toast { position:fixed; left:50%; bottom:22px; transform:translateX(-50%) translateY(20px); background:#241a4e; color:#fff; padding:12px 20px; border-radius:12px; font-size:14.5px; font-weight:600; opacity:0; pointer-events:none; transition:.25s; z-index:300; max-width:92vw; text-align:center; line-height:1.45; }
+  #toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+  /* DM */
+  .dmwrap { display:flex; gap:14px; flex:1; min-height:0; }
+  .dmlist { width:250px; flex:none; background:#fff; border-radius:18px; box-shadow:0 2px 14px rgba(40,30,90,.07); padding:12px; overflow-y:auto; }
+  .dmi { padding:11px 12px; border-radius:12px; cursor:pointer; display:flex; gap:10px; align-items:center; }
+  .dmi:hover { background:#f6f4fd; } .dmi.active { background:#f0edfb; }
+  .dmi .nm { font-weight:700; font-size:14.5px; line-height:1.3; }
+  .dmi .rl { color:#6f6a8c; font-size:12.3px; }
+  /* responsive */
+  @media (max-width:1240px) { .members { display:none; } }
+  @media (max-width:900px) {
+    .board { grid-template-columns:1fr; }
+    .side { position:fixed; left:0; top:0; bottom:0; z-index:120; width:280px; transform:translateX(-105%); transition:transform .25s; box-shadow:0 0 40px rgba(0,0,0,.4); }
+    .side.open { transform:none; }
+    #hamburger { display:block; }
+    .content { padding:14px 12px; }
+    .dmwrap { flex-direction:column; }
+    .dmlist { width:100%; display:flex; gap:6px; overflow-x:auto; }
+    .dmi { flex:none; }
+    .topbar .title { font-size:17px; }
+    .tbtn { padding:7px 10px; font-size:13px; }
+  }
+</style>
+</head>
+<body class="locked">
+
+<!-- ================= KHOÁ ADMIN 2 LỚP ================= -->
+<div id="lockOverlay">
+  <div class="lockcard">
+    <div class="lg">
+      <div class="logo">K</div>
+      <div>
+        <h1>EduMaster Company</h1>
+        <div class="muted">Văn phòng ảo của thầy Khải — khu vực chỉ dành cho Giám đốc</div>
+      </div>
+    </div>
+    <div class="sub">App chứa toàn bộ tài sản sản xuất của thầy nên được khoá 2 lớp: mã chủ dùng chung + mật khẩu riêng của thầy.</div>
+
+    <div id="lockStep1">
+      <span class="steptag">LỚP 1 · MÃ CHỦ</span>
+      <label for="masterInput">Nhập mã chủ dùng chung</label>
+      <input class="inp" id="masterInput" type="password" autocomplete="off" placeholder="Mã chủ…">
+      <div class="err" id="masterErr"></div>
+      <button class="btn" id="masterBtn">Tiếp tục →</button>
+    </div>
+
+    <div id="lockStep2Create" class="hidden">
+      <span class="steptag">LỚP 2 · ĐẶT MẬT KHẨU LẦN ĐẦU</span>
+      <div class="sub" style="margin-top:8px">Chưa ai đặt mật khẩu lớp 2 cho công ty. Thầy đặt mật khẩu riêng của mình (ít nhất 4 ký tự) — từ nay mở app bằng mật khẩu này.</div>
+      <label for="pwNew">Mật khẩu lớp 2 mới</label>
+      <input class="inp" id="pwNew" type="password" autocomplete="new-password" placeholder="Mật khẩu mới…">
+      <label for="pwConfirm">Nhập lại mật khẩu</label>
+      <input class="inp" id="pwConfirm" type="password" autocomplete="new-password" placeholder="Nhập lại…">
+      <div class="err" id="createErr"></div>
+      <button class="btn" id="createBtn">Đặt mật khẩu &amp; vào công ty →</button>
+    </div>
+
+    <div id="lockStep2Verify" class="hidden">
+      <span class="steptag">LỚP 2 · MẬT KHẨU CỦA THẦY</span>
+      <label for="pwInput">Nhập mật khẩu lớp 2</label>
+      <input class="inp" id="pwInput" type="password" autocomplete="current-password" placeholder="Mật khẩu lớp 2…">
+      <div class="err" id="verifyErr"></div>
+      <button class="btn" id="verifyBtn">Mở khoá →</button>
+    </div>
+
+    <div id="lockStep2Blocked" class="hidden">
+      <span class="steptag">LỚP 2 · CHƯA KIỂM TRA ĐƯỢC</span>
+      <div class="sub" style="margin-top:8px">Chưa đọc được dữ liệu kiểm chứng mật khẩu (mất mạng hoặc máy chủ bận) và máy này chưa có bản ghi tại máy. App <b>không tự mở khoá</b> khi chưa kiểm chứng được — thầy kiểm tra mạng rồi thử lại nhé.</div>
+      <div class="err" id="blockedErr"></div>
+      <button class="btn" id="retryBtn">↻ Thử lại</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= APP ================= -->
+<div id="appShell">
+  <div class="topbar">
+    <div class="title">
+      <button id="hamburger" title="Menu">☰</button>
+      <span id="viewTitle">Chat toàn công ty</span>
+    </div>
+    <div class="actions">
+      <span class="connected"><span class="dot wait" id="syncDot"></span><span id="syncText">Đang nối Firebase…</span></span>
+      <button class="tbtn" id="syncBtn" title="Kéo dữ liệu mới nhất từ Firebase về hợp nhất">🔄 Đồng bộ</button>
+      <button class="tbtn" id="pauseBtn">⏸ Tạm dừng công ty</button>
+      <button class="tbtn search" id="searchBtn">Tìm nhanh <span>Ctrl+K</span></button>
+      <button class="tbtn" id="keysBtn">🔑 Hồ key Gemini</button>
+      <button class="tbtn" id="lockNowBtn">🔒 Khoá lại</button>
+    </div>
+  </div>
+  <div class="banner">EDUMASTER COMPANY · Mọi thao tác trên trang này đều ghi vào dữ liệu sản xuất <b>thật</b> của thầy — đồng bộ Firebase để đội Muse cùng làm việc.</div>
+  <div class="main">
+    <aside class="side" id="sidebar"></aside>
+    <section class="content" id="viewContainer"></section>
+    <aside class="members" id="membersPanel"></aside>
+  </div>
+</div>
+
+<div id="modalBackdrop" class="hidden"><div class="modal" id="modalBox"></div></div>
+<div id="toast"></div>
+<input type="file" id="importFile" accept=".json,application/json" class="hidden">
+<script>
+"use strict";
+/* =====================================================================
+   EduMaster Company — Văn phòng ảo của thầy Khải (1 file tự chứa)
+   Đội ngũ = 5 Muse: Đạo diễn "Em Yêu Của Thầy Khải" + 4 nhân viên.
+   Trục đồng bộ: Firebase edumaster-online (node company_*) + localStorage.
+   ===================================================================== */
+
+/* ---------------- Tiện ích ---------------- */
+function $(s, r) { return (r || document).querySelector(s); }
+function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+function nowMs() { return Date.now(); }
+function uid(p) { return (p || "e") + nowMs().toString(36) + Math.random().toString(36).slice(2, 8); }
+function fmtTime(ts) { try { return new Intl.DateTimeFormat("vi-VN", { timeZone: "Asia/Ho_Chi_Minh", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(new Date(ts)); } catch (e) { return ""; } }
+function fmtDT(ts) { try { return new Intl.DateTimeFormat("vi-VN", { timeZone: "Asia/Ho_Chi_Minh", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(new Date(ts)); } catch (e) { return ""; } }
+function toast(msg, ms) {
+  var t = document.getElementById("toast"); if (!t) return;
+  t.textContent = msg; t.classList.add("show");
+  clearTimeout(toast._h); toast._h = setTimeout(function () { t.classList.remove("show"); }, ms || 3400);
+}
+var LS = (typeof localStorage !== "undefined") ? localStorage : null;
+function lsGet(k, d) { try { var v = LS ? LS.getItem(k) : null; return v == null ? d : JSON.parse(v); } catch (e) { return d; } }
+function lsSet(k, v) { try { if (LS) LS.setItem(k, JSON.stringify(v)); } catch (e) { /* đầy bộ nhớ — bỏ qua */ } }
+function lsGetRaw(k) { try { return LS ? LS.getItem(k) : null; } catch (e) { return null; } }
+function lsSetRaw(k, v) { try { if (LS) LS.setItem(k, v); } catch (e) {} }
+function lsDel(k) { try { if (LS) LS.removeItem(k); } catch (e) {} }
+
+/* ---------------- SHA-256 (mẫu tronde) ---------------- */
+var SHA256_K = [0x428a2f98,0x71374491,0xb5c0fbcf,0xe9b5dba5,0x3956c25b,0x59f111f1,0x923f82a4,0xab1c5ed5,0xd807aa98,0x12835b01,0x243185be,0x550c7dc3,0x72be5d74,0x80deb1fe,0x9bdc06a7,0xc19bf174,0xe49b69c1,0xefbe4786,0x0fc19dc6,0x240ca1cc,0x2de92c6f,0x4a7484aa,0x5cb0a9dc,0x76f988da,0x983e5152,0xa831c66d,0xb00327c8,0xbf597fc7,0xc6e00bf3,0xd5a79147,0x06ca6351,0x14292967,0x27b70a85,0x2e1b2138,0x4d2c6dfc,0x53380d13,0x650a7354,0x766a0abb,0x81c2c92e,0x92722c85,0xa2bfe8a1,0xa81a664b,0xc24b8b70,0xc76c51a3,0xd192e819,0xd6990624,0xf40e3585,0x106aa070,0x19a4c116,0x1e376c08,0x2748774c,0x34b0bcb5,0x391c0cb3,0x4ed8aa4a,0x5b9cca4f,0x682e6ff3,0x748f82ee,0x78a5636f,0x84c87814,0x8cc70208,0x90befffa,0xa4506ceb,0xbef9a3f7,0xc67178f2];
+function sha256HexJs(input) {
+  var utf8 = unescape(encodeURIComponent(String(input)));
+  var bytes = []; for (var i = 0; i < utf8.length; i++) bytes.push(utf8.charCodeAt(i) & 0xff);
+  var bitLen = bytes.length * 8;
+  bytes.push(0x80); while (bytes.length % 64 !== 56) bytes.push(0);
+  bytes.push(0, 0, 0, 0, (bitLen >>> 24) & 0xff, (bitLen >>> 16) & 0xff, (bitLen >>> 8) & 0xff, bitLen & 0xff);
+  var H = [0x6a09e667,0xbb67ae85,0x3c6ef372,0xa54ff53a,0x510e527f,0x9b05688c,0x1f83d9ab,0x5be0cd19];
+  var w = new Array(64);
+  var rotr = function (x, n) { return (x >>> n) | (x << (32 - n)); };
+  for (var block = 0; block < bytes.length; block += 64) {
+    var t, o;
+    for (t = 0; t < 16; t++) { o = block + t * 4; w[t] = (bytes[o] << 24) | (bytes[o + 1] << 16) | (bytes[o + 2] << 8) | bytes[o + 3]; }
+    for (t = 16; t < 64; t++) {
+      var s0 = rotr(w[t - 15], 7) ^ rotr(w[t - 15], 18) ^ (w[t - 15] >>> 3);
+      var s1 = rotr(w[t - 2], 17) ^ rotr(w[t - 2], 19) ^ (w[t - 2] >>> 10);
+      w[t] = (w[t - 16] + s0 + w[t - 7] + s1) | 0;
+    }
+    var a = H[0], b = H[1], c = H[2], d = H[3], e = H[4], f = H[5], g = H[6], h = H[7];
+    for (t = 0; t < 64; t++) {
+      var S1 = rotr(e, 6) ^ rotr(e, 11) ^ rotr(e, 25);
+      var ch = (e & f) ^ (~e & g);
+      var temp1 = (h + S1 + ch + SHA256_K[t] + w[t]) | 0;
+      var S0 = rotr(a, 2) ^ rotr(a, 13) ^ rotr(a, 22);
+      var maj = (a & b) ^ (a & c) ^ (b & c);
+      var temp2 = (S0 + maj) | 0;
+      h = g; g = f; f = e; e = (d + temp1) | 0; d = c; c = b; b = a; a = (temp1 + temp2) | 0;
+    }
+    H[0] = (H[0] + a) | 0; H[1] = (H[1] + b) | 0; H[2] = (H[2] + c) | 0; H[3] = (H[3] + d) | 0;
+    H[4] = (H[4] + e) | 0; H[5] = (H[5] + f) | 0; H[6] = (H[6] + g) | 0; H[7] = (H[7] + h) | 0;
+  }
+  return H.map(function (x) { return (x >>> 0).toString(16).padStart(8, "0"); }).join("");
+}
+async function sha256Hex(text) {
+  try {
+    var subtle = (typeof crypto !== "undefined") ? crypto.subtle : null;
+    if (subtle) {
+      var buf = await subtle.digest("SHA-256", new TextEncoder().encode(String(text)));
+      return Array.from(new Uint8Array(buf)).map(function (b) { return b.toString(16).padStart(2, "0"); }).join("");
+    }
+  } catch (e) { /* rơi xuống JS thuần */ }
+  return sha256HexJs(text);
+}
+
+/* ---------------- Hằng số công ty ---------------- */
+var FB_BASE = "https://edumaster-online-default-rtdb.asia-southeast1.firebasedatabase.app";
+var MASTER_HASHES = [
+  "be7e5cf0fda9a345fc1ef61cb127b0db72fb8c915d72df043468d858d4c5ee3d",
+  "0eb8de755cf51e222ac7049e90f664fd1f4e7be66fe654940992609056aaeee1"
+];
+var ADMIN_REMEMBER_MS = 30 * 24 * 3600 * 1000;
+var INTRO_LINE = "Đội ngũ là các Muse: Đạo diễn Em Yêu Của Thầy Khải điều phối 4 nhân viên chuyên trách — giao việc tại đây, sản phẩm trả về Hộp Duyệt.";
+
+var MEMBERS = {
+  director:    { id: "director",    name: "Em Yêu Của Thầy Khải", short: "Đạo diễn", ava: "EY", role: "Đạo diễn · Điều phối sản xuất — chỉ nhận lệnh từ Giám đốc" },
+  giaoan01:    { id: "giaoan01",    name: "Giáo án 01",   short: "Giáo án 01",   ava: "Gi", role: "Nhân viên soạn KHBD chuẩn CV 5512 · Phòng Giáo Án" },
+  video01:     { id: "video01",     name: "Video 01",     short: "Video 01",     ava: "Vi", role: "Nhân viên viết kịch bản video bài giảng · Phòng Video" },
+  dethi01:     { id: "dethi01",     name: "Đề thi 01",    short: "Đề thi 01",    ava: "Đề", role: "Nhân viên ra dàn đề & chữa đề · Phòng Đề Thi" },
+  kiemdinh01:  { id: "kiemdinh01",  name: "Kiểm định 01", short: "Kiểm định 01", ava: "Ki", role: "Nhân viên rà soát đối chiếu SGK · kiêm Học Liệu" }
+};
+var MEMBER_ORDER = ["director", "giaoan01", "video01", "dethi01", "kiemdinh01"];
+var ROOMS = {
+  giaoan:  { id: "giaoan",  name: "Phòng Giáo Án",  lead: "giaoan01" },
+  video:   { id: "video",   name: "Phòng Video",    lead: "video01" },
+  dethi:   { id: "dethi",   name: "Phòng Đề Thi",   lead: "dethi01" },
+  hoclieu: { id: "hoclieu", name: "Phòng Học Liệu", lead: "kiemdinh01" }
+};
+var ROOM_ORDER = ["giaoan", "video", "dethi", "hoclieu"];
+var STATUSES = {
+  queue:    { name: "Chờ phân công", cls: "queue" },
+  assigned: { name: "Đã giao — chờ đội Muse xử lý", cls: "assigned" },
+  doing:    { name: "Đang làm", cls: "doing" },
+  review:   { name: "Chờ duyệt", cls: "review" },
+  done:     { name: "Đã xong", cls: "done" }
+};
+var TRANSITIONS = {
+  queue: ["assigned", "doing", "review"],
+  assigned: ["doing", "review", "queue"],
+  doing: ["review", "assigned", "queue"],
+  review: ["done", "assigned"],
+  done: []
+};
+var CHANNELS = ["company", "dm_director", "dm_giaoan01", "dm_video01", "dm_dethi01", "dm_kiemdinh01", "room_giaoan", "room_video", "room_dethi", "room_hoclieu"];
+function personaForChannel(ch) {
+  if (ch === "company") return "director";
+  if (ch.indexOf("dm_") === 0) return ch.slice(3);
+  if (ch.indexOf("room_") === 0) { var r = ROOMS[ch.slice(5)]; return r ? r.lead : null; }
+  return null;
+}
+function memberName(id) { var m = MEMBERS[id]; return m ? m.name : id; }
+function senderName(from) {
+  if (from === "boss") return "Giám đốc (Thầy Khải)";
+  if (from === "sys") return "Hệ thống";
+  return memberName(from);
+}
+function senderAva(from) {
+  if (from === "boss") return { cls: "boss", txt: "GĐ" };
+  if (from === "sys") return { cls: "sys", txt: "HT" };
+  var m = MEMBERS[from]; return m ? { cls: from, txt: m.ava } : { cls: "sys", txt: "?" };
+}
+
+/* ---------------- Hồ sơ chung mặc định ---------------- */
+var DEFAULT_CONTEXT = [
+  "HỒ SƠ CHUNG CỦA CÔNG TY — EduMaster Company (bộ nhớ dùng chung của cả đội Muse; mọi lượt làm việc đều theo tài liệu này)",
+  "",
+  "1) NGƯỜI DÙNG: Thầy Hồ Tấn Khải — giáo viên Sinh học và Công nghệ nông nghiệp, Trường THPT Mang Thít. Xưng hô: thầy – em. Sản phẩm làm ra phải DÙNG ĐƯỢC NGAY, đúng chuẩn đã chốt, không hỏi lại những điều đã có trong hồ sơ này.",
+  "",
+  "2) GIÁO ÁN / KHBD: theo khung Công văn 5512. Cấu trúc mục tiêu mẫu: I. MỤC TIÊU / 1. Kiến thức / 2. Năng lực (2.1 chung, 2.2 đặc thù, 2.3 Năng lực số, 2.4 Năng lực AI) / 3. Phẩm chất / 4. Nội dung tích hợp. Hoạt động 2 trình bày bảng 2 cột: cột hoạt động ghi rõ GV làm gì / HS làm gì / làm như thế nào theo từng bước; cột sản phẩm tương ứng từng bước, theo đề mục SGK, KHÔNG chép nguyên văn SGK, không dùng câu mẫu chung chung lặp lại. Thẻ tích hợp nằm TRONG hoạt động: 👉 [Tích hợp năng lực số] / 👉 [Tích hợp năng lực AI] / 👉 [Tích hợp khác]. Tài liệu: Times New Roman cỡ 12, tiêu đề mục luôn màu đen, bảng không tô nền, đầu file KHBD chỉ ghi tên tác giả \"Hồ Tấn Khải\" (đậm, tím đậm) — không ghi dòng Sở/Trường.",
+  "",
+  "3) VIDEO BÀI GIẢNG — KHUÔN \"ĐẶT ĐÚNG CHỖ\" (một khuôn chung cho mọi video): 7 vai cảnh, mỗi vai một nguồn hình chính danh — Tổng quan mở đầu + Tổng kết = POSTER nguyên tấm (lia khung, không cắt); Gợi mở + Liên hệ thực tế = ảnh đời thật từ slide PPT; Nội dung từng ý = hình SGK đúng số hiệu mà lời đọc nhắc tới; Nhấn mạnh = chữ/sơ đồ vẽ bằng mẫu + dải Ghi nhớ của poster; Cảnh kết = mẫu kêu gọi vào bài học + đăng ký kênh. Cuối mọi video Kể Chuyện có cảnh kết kêu gọi mở SGK đúng bài và đăng ký kênh của thầy. Mọi cảnh đều có chữ ký \"✍️ Thầy Hồ Tấn Khải\". Dựng MP4 thật làm ở app Video Bài Giảng AI; trong công ty này Video 01 chỉ viết KỊCH BẢN/STORYBOARD dạng chữ.",
+  "",
+  "4) LUẬT ĐÁP ÁN (tuyệt đối): đáp án lấy từ đề gốc/nguồn thầy cấp thế nào giữ nguyên thế đó. KHÔNG bịa đáp án khi không tìm thấy, KHÔNG tự ý sửa/chọn lại đáp án khi thấy bất thường — việc duy nhất được làm là CẢNH BÁO rõ ràng (câu nào, lỗi gì) để giáo viên tự sửa. Giáo viên là người quyết định cao nhất về đáp án. Khi soạn dàn câu hỏi mà nguồn không có đáp án: ghi \"CHƯA CÓ ĐÁP ÁN — chờ thầy\".",
+  "",
+  "5) TÊN BÀI: dùng đúng tên bài chuẩn theo SGK/KHBD (có dấu đầy đủ, vd \"Quang hợp ở thực vật\", \"Tế bào nhân thực\"), không tự rút gọn, không bịa dấu.",
+  "",
+  "6) THỨ TỰ MÔN ƯU TIÊN trong mọi bộ chọn/danh sách: Công nghệ nông nghiệp → Sinh học → Vật lí → Toán → các môn còn lại giữ nguyên → Công nghệ công nghiệp CUỐI CÙNG.",
+  "",
+  "7) GIỌNG ĐỌC VIDEO: một cặp cố định cho toàn hệ — Nữ = Thùy Dung, Nam = Thái Sơn (VieNeu; bên Gemini: nữ Kore, nam Charon). LUẬT PHÂN GIỌNG: đoạn lời nào mang vai thầy nói / có chữ \"thầy\" thì BẮT BUỘC giọng NAM, không để giọng nữ nói thay lời thầy.",
+  "",
+  "8) SỐ CÂU LUYỆN TẬP theo khối (khi ra dàn đề): khối 12 — môn 3 phần (Toán, Lí, Hoá, Sinh, Địa): 6 trắc nghiệm – 2 đúng/sai – 2 trả lời ngắn; môn 2 phần (Sử, KTPL, CNNN, CNCN, Tin): 6 – 4 – 0 (các môn này KHÔNG có Phần III ở mọi khối); Tiếng Anh chỉ Phần I (10 câu); Văn tự luận. Khối 10+11 (môn thi tốt nghiệp): 10 câu trắc nghiệm theo mẫu phần như khối 12 + 3 tự luận.",
+  "",
+  "9) KÊNH YOUTUBE của thầy: video đăng công khai; cuối video có QR/link dẫn học sinh vào làm bài tập tương tác. Mẫu CTA: kêu gọi đăng ký kênh + bật chuông để nhận bài học tiếp theo."
+].join("\n");
+
+/* ---------------- Trạng thái ---------------- */
+var LS_STATE = "emc_state_v1", LS_KEYS = "emc_keys_v1", LS_KMODELS = "emc_key_models_v1", LS_KSTATES = "emc_key_states_v1";
+var LS_ADMIN_HASH = "emc_admin_hash", LS_ADMIN_UNTIL = "emc_admin_until";
+function defaultState() {
+  var st = {
+    tasks: [], products: [], audit: [],
+    chats: {}, brand: { channel: "", signature: "✍️ Thầy Hồ Tấn Khải", cta: "Các em nhớ bấm Đăng ký kênh và bật chuông để nhận bài học tiếp theo của thầy nhé!" },
+    context: { text: DEFAULT_CONTEXT, updatedAt: 0 },
+    paused: false
+  };
+  CHANNELS.forEach(function (c) { st.chats[c] = []; });
+  st.chats.company.push({
+    id: "seed_welcome", at: nowMs(), from: "director", pinned: true,
+    text: "Chào Giám đốc! Em là Đạo diễn — Em Yêu Của Thầy Khải. " + INTRO_LINE + "\n\nCách dùng nhanh:\n- Gõ yêu cầu ngay tại đây (vd: \"Soạn dàn ý KHBD Sinh 10 Bài 8 Tế bào nhân thực\") — em sẽ phân tích và tạo việc cho đúng phòng.\n- Hoặc vào Bảng công việc để tạo việc tay, bấm \"Giao cho đội Muse\" để đội làm thật qua Firebase.\n- Sản phẩm xong sẽ nằm ở Hộp Duyệt chờ thầy duyệt mới vào Kho sản phẩm.\n\nCả đội làm việc theo Hồ sơ chung của công ty (mục 🧭 ở menu trái) nên thầy chỉ cần chốt chuẩn một lần."
+  });
+  return st;
+}
+var S = lsGet(LS_STATE, null);
+if (!S || typeof S !== "object" || !S.chats) { S = defaultState(); }
+CHANNELS.forEach(function (c) { if (!Array.isArray(S.chats[c])) S.chats[c] = []; });
+if (!Array.isArray(S.tasks)) S.tasks = [];
+if (!Array.isArray(S.products)) S.products = [];
+if (!Array.isArray(S.audit)) S.audit = [];
+if (!S.brand) S.brand = defaultState().brand;
+if (!S.context || typeof S.context.text !== "string") S.context = { text: DEFAULT_CONTEXT, updatedAt: 0 };
+function saveState() { lsSet(LS_STATE, S); }
+saveState();
+
+/* ---------------- Firebase REST + đồng bộ ---------------- */
+var syncOk = null; /* null = chưa biết, true/false */
+function fbUrl(path) { return FB_BASE + "/" + path + ".json"; }
+async function fbReq(method, path, data) {
+  var opts = { method: method, headers: { "Content-Type": "application/json" } };
+  if (data !== undefined) opts.body = JSON.stringify(data);
+  var res = await fetch(fbUrl(path), opts);
+  if (!res.ok) throw new Error("FB " + method + " " + path + " -> " + res.status);
+  return method === "GET" ? res.json() : null;
+}
+function fbGet(path) { return fbReq("GET", path); }
+function fbPut(path, data) { return fbReq("PUT", path, data); }
+function fbDel(path) { return fbReq("DELETE", path); }
+function setSync(ok, msg) {
+  syncOk = ok;
+  var dot = document.getElementById("syncDot"), txt = document.getElementById("syncText");
+  if (dot) dot.className = "dot " + (ok === null ? "wait" : ok ? "ok" : "bad");
+  if (txt) txt.textContent = msg || (ok === null ? "Đang nối Firebase…" : ok ? "Đã đồng bộ Firebase" : "Chưa đồng bộ được — đang lưu tại máy này");
+}
+async function pushQuiet(promise) { try { await promise; if (syncOk !== true) setSync(true); return true; } catch (e) { setSync(false); return false; } }
+function pushTask(t) { return pushQuiet(fbPut("company_tasks/" + t.id, t)); }
+function pushMsg(ch, m) { return pushQuiet(fbPut("company_chat/" + ch + "/" + m.id, m)); }
+function pushProduct(p) { return pushQuiet(fbPut("company_products/" + p.id, p)); }
+function pushAudit(e) { return pushQuiet(fbPut("company_audit/" + e.id, e)); }
+function pushContext() { return pushQuiet(fbPut("company_context", S.context)); }
+function delTaskRemote(id) { return pushQuiet(fbDel("company_tasks/" + id)); }
+function delProductRemote(id) { return pushQuiet(fbDel("company_products/" + id)); }
+
+function mergeById(localArr, remoteObj, key) {
+  var map = {};
+  (localArr || []).forEach(function (x) { if (x && x.id) map[x.id] = x; });
+  if (remoteObj) Object.keys(remoteObj).forEach(function (k) {
+    var r = remoteObj[k]; if (!r || !r.id) return;
+    var l = map[r.id];
+    if (!l) { map[r.id] = r; return; }
+    if (key === "updatedAt" && (r.updatedAt || 0) > (l.updatedAt || 0)) map[r.id] = r;
+  });
+  return Object.keys(map).map(function (k) { return map[k]; });
+}
+async function pullAll() {
+  try {
+    var res = await Promise.all([
+      fbGet("company_tasks"), fbGet("company_chat"), fbGet("company_products"), fbGet("company_audit"), fbGet("company_context")
+    ]);
+    var rTasks = res[0], rChats = res[1], rProducts = res[2], rAudit = res[3], rCtx = res[4];
+    S.tasks = mergeById(S.tasks, rTasks, "updatedAt");
+    S.products = mergeById(S.products, rProducts, null);
+    S.audit = mergeById(S.audit, rAudit, null).sort(function (a, b) { return (a.at || 0) - (b.at || 0); }).slice(-600);
+    if (rChats) CHANNELS.forEach(function (c) {
+      S.chats[c] = mergeById(S.chats[c], rChats[c], null).sort(function (a, b) { return (a.at || 0) - (b.at || 0); });
+    });
+    if (rCtx && typeof rCtx.text === "string" && (rCtx.updatedAt || 0) > (S.context.updatedAt || 0)) S.context = rCtx;
+    saveState(); setSync(true);
+    return true;
+  } catch (e) { setSync(false); return false; }
+}
+
+/* ---------------- Nhật ký kiểm toán ---------------- */
+function logEvent(text, taskId) {
+  var e = { id: uid("a"), at: nowMs(), text: text, taskId: taskId || "" };
+  S.audit.push(e); if (S.audit.length > 600) S.audit = S.audit.slice(-600);
+  saveState(); pushAudit(e);
+  return e;
+}
+
+/* ---------------- Dossier + gói bàn giao ---------------- */
+function buildHandover(t) {
+  var L = [];
+  L.push("=== GÓI BÀN GIAO VIỆC — EduMaster Company ===");
+  L.push("(Tài liệu tự chứa: bất kỳ thành viên Muse nào đọc riêng gói này cũng đủ ngữ cảnh để làm tiếp việc. Nguồn: bản ghi việc trên Firebase company_tasks/" + t.id + ")");
+  L.push("");
+  L.push("----- HỒ SƠ CHUNG CỦA CÔNG TY (chuẩn bắt buộc) -----");
+  L.push(S.context.text);
+  L.push("");
+  L.push("----- THÔNG TIN VIỆC -----");
+  L.push("Tiêu đề: " + t.title);
+  L.push("Phòng hiện tại: " + (ROOMS[t.room] ? ROOMS[t.room].name : t.room));
+  L.push("Người phụ trách: " + memberName(t.assignee) + " (" + t.assignee + ")");
+  L.push("Trạng thái: " + (STATUSES[t.status] ? STATUSES[t.status].name : t.status) + " (" + t.status + ")");
+  L.push("Các phòng đã qua: " + (t.roomsTouched || []).map(function (r) { return ROOMS[r] ? ROOMS[r].name : r; }).join(" → "));
+  L.push("");
+  L.push("----- YÊU CẦU GỐC CỦA GIÁM ĐỐC -----");
+  L.push(t.desc || "(chưa có mô tả)");
+  if (t.stageProducts && t.stageProducts.length) {
+    L.push("");
+    L.push("----- SẢN PHẨM CÁC KHÂU TRƯỚC -----");
+    t.stageProducts.forEach(function (sp, i) {
+      L.push("[" + (i + 1) + "] " + fmtDT(sp.at) + " · " + memberName(sp.by) + " · " + sp.kind);
+      L.push(sp.text);
+      L.push("");
+    });
+  }
+  if (t.notes && t.notes.length) {
+    L.push("----- GHI CHÚ DUYỆT / TRẢ LẠI -----");
+    t.notes.forEach(function (n) { L.push("- " + fmtDT(n.at) + " · " + n.by + ": " + n.text); });
+    L.push("");
+  }
+  if (t.history && t.history.length) {
+    L.push("----- LỊCH SỬ VIỆC -----");
+    t.history.forEach(function (h) { L.push("- " + fmtDT(h.at) + " · " + h.who + ": " + h.text); });
+  }
+  L.push("");
+  L.push("----- VIỆC CỦA NGƯỜI NHẬN TIẾP -----");
+  L.push("Làm tiếp việc trên theo đúng Hồ sơ chung. Khi xong: ghi sản phẩm vào trường product của việc, thêm sản phẩm vào stageProducts, đặt trạng thái review, cập nhật updatedAt — Giám đốc sẽ duyệt ở Hộp Duyệt.");
+  return L.join("\n");
+}
+function dossierSummary(t) {
+  var parts = ["YÊU CẦU GỐC: " + (t.desc || "")];
+  if (t.stageProducts && t.stageProducts.length) {
+    parts.push("SẢN PHẨM CÁC KHÂU TRƯỚC:");
+    t.stageProducts.forEach(function (sp, i) { parts.push("[" + (i + 1) + "] (" + memberName(sp.by) + ") " + sp.text); });
+  }
+  if (t.notes && t.notes.length) {
+    parts.push("GHI CHÚ CỦA GIÁM ĐỐC (duyệt/trả):");
+    t.notes.forEach(function (n) { parts.push("- " + n.text); });
+  }
+  return parts.join("\n");
+}
+function touchTask(t, who, text) {
+  t.updatedAt = nowMs();
+  t.history = t.history || [];
+  t.history.push({ at: t.updatedAt, who: who, text: text });
+  t.handover = buildHandover(t);
+  saveState(); pushTask(t);
+}
+function getTask(id) { for (var i = 0; i < S.tasks.length; i++) if (S.tasks[i].id === id) return S.tasks[i]; return null; }
+function createTask(fields, opts) {
+  opts = opts || {};
+  var room = ROOMS[fields.room] ? fields.room : "giaoan";
+  var t = {
+    id: uid("t"), title: String(fields.title || "Việc chưa đặt tên").trim() || "Việc chưa đặt tên",
+    room: room, assignee: MEMBERS[fields.assignee] ? fields.assignee : ROOMS[room].lead,
+    desc: String(fields.desc || ""), status: "queue", product: "",
+    stageProducts: [], notes: [], history: [], roomsTouched: [room],
+    createdAt: nowMs(), updatedAt: nowMs(), createdBy: opts.by || "boss"
+  };
+  t.history.push({ at: t.createdAt, who: opts.byName || "Giám đốc", text: "Tạo việc ở " + ROOMS[room].name + ", gán " + memberName(t.assignee) + "." });
+  t.handover = buildHandover(t);
+  S.tasks.push(t); saveState(); pushTask(t);
+  logEvent("Tạo việc \"" + t.title + "\" (" + ROOMS[room].name + " → " + memberName(t.assignee) + ").", t.id);
+  if (!opts.silent) postMsg("room_" + room, "sys", "📌 Việc mới: \"" + t.title + "\" — gán " + memberName(t.assignee) + ". Mở Bảng công việc để xem dossier đầy đủ.", false);
+  return t;
+}
+function transitionTask(id, to, opts) {
+  opts = opts || {};
+  var t = getTask(id); if (!t) return { ok: false, error: "Không thấy việc." };
+  var allowed = TRANSITIONS[t.status] || [];
+  if (allowed.indexOf(to) < 0) return { ok: false, error: "Không chuyển được từ \"" + (STATUSES[t.status] || {}).name + "\" sang \"" + (STATUSES[to] || {}).name + "\"." };
+  var from = t.status; t.status = to;
+  touchTask(t, opts.who || "Giám đốc", opts.text || ("Chuyển trạng thái: " + (STATUSES[from] || {}).name + " → " + (STATUSES[to] || {}).name + "."));
+  return { ok: true, task: t };
+}
+function addStageProduct(t, by, kind, text) {
+  t.stageProducts = t.stageProducts || [];
+  t.stageProducts.push({ at: nowMs(), by: by, kind: kind, text: text });
+  t.product = text;
+}
+function relatedEventsForRoom(roomId) {
+  var ids = {};
+  S.tasks.forEach(function (t) { if ((t.roomsTouched || []).indexOf(roomId) >= 0 && t.room !== roomId) ids[t.id] = t; });
+  return S.audit.filter(function (e) { return e.taskId && ids[e.taskId]; }).slice(-6).reverse();
+}
+
+/* ---------------- KHOÁ ADMIN 2 LỚP ---------------- */
+async function verifyMasterCode(input) {
+  var h = await sha256Hex(String(input || "").trim());
+  return MASTER_HASHES.indexOf(h) >= 0;
+}
+function decidePw2Step(localHash, remoteHash) {
+  if (localHash) return "local";
+  if (remoteHash === "error") return "blocked";
+  if (remoteHash) return "remote";
+  return "create";
+}
+function isSessionValid() { return (+(lsGetRaw(LS_ADMIN_UNTIL) || 0) || 0) > nowMs(); }
+function beginSession() { lsSetRaw(LS_ADMIN_UNTIL, String(nowMs() + ADMIN_REMEMBER_MS)); }
+function lockNow() { lsDel(LS_ADMIN_UNTIL); location.reload(); }
+var pw2Expected = "";
+function lockShow(id) {
+  ["lockStep1", "lockStep2Create", "lockStep2Verify", "lockStep2Blocked"].forEach(function (x) {
+    var el = document.getElementById(x); if (el) el.classList.toggle("hidden", x !== id);
+  });
+  var inp = { lockStep2Create: "pwNew", lockStep2Verify: "pwInput", lockStep1: "masterInput" }[id];
+  if (inp) { var el2 = document.getElementById(inp); if (el2) setTimeout(function () { el2.focus(); }, 60); }
+}
+async function decidePw2() {
+  var localHash = lsGetRaw(LS_ADMIN_HASH) || "";
+  var remoteHash;
+  if (localHash) { remoteHash = null; }
+  else {
+    try { var v = await fbGet("company_admin/pwHash"); remoteHash = (typeof v === "string" && v) ? v : null; }
+    catch (e) { remoteHash = "error"; }
+  }
+  var step = decidePw2Step(localHash, remoteHash);
+  if (step === "local") { pw2Expected = localHash; lockShow("lockStep2Verify"); }
+  else if (step === "remote") { pw2Expected = remoteHash; lockShow("lockStep2Verify"); }
+  else if (step === "create") { lockShow("lockStep2Create"); }
+  else { lockShow("lockStep2Blocked"); }
+}
+async function submitMaster() {
+  var inp = document.getElementById("masterInput"), err = document.getElementById("masterErr");
+  err.textContent = "";
+  var ok = await verifyMasterCode(inp.value);
+  if (!ok) { err.textContent = "Mã chủ chưa đúng — thầy kiểm tra lại nhé."; return; }
+  await decidePw2();
+}
+async function submitCreate() {
+  var a = document.getElementById("pwNew").value, b = document.getElementById("pwConfirm").value, err = document.getElementById("createErr");
+  err.textContent = "";
+  if (!a || a.length < 4) { err.textContent = "Mật khẩu cần ít nhất 4 ký tự."; return; }
+  if (a !== b) { err.textContent = "Hai lần nhập chưa khớp nhau."; return; }
+  var h = await sha256Hex(a);
+  try { await fbPut("company_admin/pwHash", h); }
+  catch (e) { err.textContent = "Chưa lưu được mật khẩu lên máy chủ — kiểm tra mạng rồi thử lại nhé."; return; }
+  lsSetRaw(LS_ADMIN_HASH, h); beginSession(); unlockApp();
+}
+async function submitVerify() {
+  var v = document.getElementById("pwInput").value, err = document.getElementById("verifyErr");
+  err.textContent = "";
+  var h = await sha256Hex(v || "");
+  if (h !== pw2Expected) { err.textContent = "Mật khẩu lớp 2 chưa đúng — thầy thử lại nhé."; return; }
+  lsSetRaw(LS_ADMIN_HASH, h); beginSession(); unlockApp();
+}
+function initLock() {
+  document.getElementById("masterBtn").addEventListener("click", submitMaster);
+  document.getElementById("createBtn").addEventListener("click", submitCreate);
+  document.getElementById("verifyBtn").addEventListener("click", submitVerify);
+  document.getElementById("retryBtn").addEventListener("click", decidePw2);
+  document.getElementById("masterInput").addEventListener("keydown", function (e) { if (e.key === "Enter") submitMaster(); });
+  document.getElementById("pwInput").addEventListener("keydown", function (e) { if (e.key === "Enter") submitVerify(); });
+  document.getElementById("pwConfirm").addEventListener("keydown", function (e) { if (e.key === "Enter") submitCreate(); });
+  if (isSessionValid()) unlockApp();
+  else { document.body.classList.add("locked"); lockShow("lockStep1"); }
+}
+
+/* ---------------- HỒ KEY GEMINI ---------------- */
+var gemKeys = lsGet(LS_KEYS, []);
+if (!Array.isArray(gemKeys)) gemKeys = [];
+var gemModels = lsGet(LS_KMODELS, {});
+var gemStates = lsGet(LS_KSTATES, {});
+var gemActive = 0;
+function keySuffix(k) { return String(k || "").slice(-8); }
+function saveGem() { lsSet(LS_KEYS, gemKeys); lsSet(LS_KMODELS, gemModels); lsSet(LS_KSTATES, gemStates); }
+function scoreTextModel(name) {
+  var n = String(name || "").toLowerCase();
+  if (n.indexOf("image") >= 0 || n.indexOf("tts") >= 0 || n.indexOf("embedding") >= 0 || n.indexOf("aqa") >= 0 || n.indexOf("computer-use") >= 0 || n.indexOf("robotics") >= 0) return -1;
+  if (n.indexOf("3.5-flash-lite") >= 0) return 100;
+  if (n.indexOf("3.1-flash-lite") >= 0) return 96;
+  if (n.indexOf("flash-lite") >= 0) return 92;
+  if (n.indexOf("3.8-flash") >= 0) return 84;
+  if (n.indexOf("3.6-flash") >= 0) return 82;
+  if (n.indexOf("3-flash") >= 0) return 80;
+  if (n.indexOf("2.5-flash") >= 0) return 74;
+  if (n.indexOf("flash-latest") >= 0) return 72;
+  if (n.indexOf("flash") >= 0) return 70;
+  if (n.indexOf("gemma") >= 0) return 30;
+  if (n.indexOf("pro") >= 0) return 40;
+  return 10;
+}
+function pickTextModel(names) {
+  var best = "", bestScore = 0;
+  (names || []).forEach(function (n) {
+    var s = scoreTextModel(n);
+    if (s > bestScore || (s === bestScore && s > 0 && n > best)) { best = n; bestScore = s; }
+  });
+  return bestScore > 0 ? best : "";
+}
+async function discoverModels(key) {
+  var suf = keySuffix(key);
+  var res = await fetch("https://generativelanguage.googleapis.com/v1beta/models?key=" + encodeURIComponent(key));
+  if (!res.ok) throw new Error("HTTP " + res.status + " khi khám phá model");
+  var data = await res.json();
+  var names = [];
+  (data.models || []).forEach(function (m) {
+    var methods = m.supportedGenerationMethods || [];
+    if (methods.indexOf("generateContent") >= 0) names.push(String(m.name || "").replace(/^models\//, ""));
+  });
+  var text = pickTextModel(names);
+  gemModels[suf] = { text: text, models: names, at: nowMs(), err: text ? "" : "Key không có model chữ nào dùng được" };
+  saveGem();
+  return text;
+}
+function vnErr(e) {
+  if (!e) return "lỗi không rõ";
+  if (e.code === "NO_KEY") return "chưa có key Gemini trong hồ";
+  var m = String(e.message || e);
+  if (/429/.test(m)) return "hết hạn mức hôm nay (HTTP 429) — app đã xoay hết các key";
+  if (/403/.test(m)) return "key bị từ chối quyền (HTTP 403)";
+  if (/400/.test(m)) return "yêu cầu/model không hợp lệ (HTTP 400)";
+  if (/404/.test(m)) return "không tìm thấy model (HTTP 404)";
+  if (e.name === "AbortError") return "đã dừng theo lệnh tạm dừng";
+  return m;
+}
+async function geminiGenerate(systemText, turns, opts) {
+  opts = opts || {};
+  if (!gemKeys.length) { var e0 = new Error("NO_KEY"); e0.code = "NO_KEY"; throw e0; }
+  var lastErr = null;
+  var order = [];
+  for (var i = 0; i < gemKeys.length; i++) order.push((gemActive + i) % gemKeys.length);
+  for (var oi = 0; oi < order.length; oi++) {
+    var ki = order[oi], key = gemKeys[ki], suf = keySuffix(key);
+    try {
+      var model = gemModels[suf] && gemModels[suf].text;
+      if (!model) model = await discoverModels(key);
+      if (!model) { gemStates[suf] = { err: "Không có model chữ", at: nowMs() }; saveGem(); continue; }
+      var body = {
+        systemInstruction: { parts: [{ text: systemText }] },
+        contents: turns.map(function (t) { return { role: t.role, parts: [{ text: t.text }] }; }),
+        generationConfig: { temperature: 0.7, maxOutputTokens: 8192 }
+      };
+      var res = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + encodeURIComponent(model) + ":generateContent?key=" + encodeURIComponent(key), {
+        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), signal: opts.signal
+      });
+      if (!res.ok) {
+        var et = ""; try { et = await res.text(); } catch (e2) {}
+        gemStates[suf] = { err: "HTTP " + res.status, at: nowMs() }; saveGem();
+        throw new Error("HTTP " + res.status + " " + et.slice(0, 160));
+      }
+      var data = await res.json();
+      var parts = (((data.candidates || [])[0] || {}).content || {}).parts || [];
+      var text = parts.map(function (p) { return p.text || ""; }).join("");
+      if (!text) throw new Error("Model trả về rỗng");
+      gemActive = ki; gemStates[suf] = { err: "", at: nowMs() }; saveGem();
+      return text;
+    } catch (e) {
+      if (e && e.name === "AbortError") throw e;
+      lastErr = e;
+    }
+  }
+  throw lastErr || new Error("Mọi key đều lỗi");
+}
+
+/* ---------------- PROMPT VAI ---------------- */
+function directorSystem() {
+  return [
+    "Bạn là ĐẠO DIỄN của EduMaster Company — tên của bạn là \"Em Yêu Của Thầy Khải\", trợ lý Muse của thầy Hồ Tấn Khải (Giám đốc). Bạn là Muse, điều phối 4 nhân viên Muse chuyên trách: Giáo án 01 (Phòng Giáo Án), Video 01 (Phòng Video), Đề thi 01 (Phòng Đề Thi), Kiểm định 01 (Phòng Học Liệu + rà soát).",
+    "Xưng hô: bạn xưng \"em\", gọi Giám đốc là \"thầy\". Trả lời tiếng Việt, ngắn gọn, rõ việc, thân thiện. Bạn nắm toàn bộ Hồ sơ chung ở cuối prompt này và PHẢI làm theo.",
+    "NHIỆM VỤ CHÍNH: tiếp nhận yêu cầu của Giám đốc, tư vấn/chốt ý, và PHÂN CÔNG VIỆC cho nhân viên bằng cách tạo việc trên Bảng công việc.",
+    "KHI Giám đốc yêu cầu làm một việc cụ thể (soạn, viết, rà soát, tóm tắt...), hãy xác nhận ngắn gọn trong lời trả lời VÀ chèn khối hành động theo ĐÚNG định dạng sau (có thể chèn nhiều khối nếu nhiều việc):",
+    "```emc-action",
+    "{\"type\":\"create_task\",\"title\":\"Tiêu đề việc ngắn gọn\",\"room\":\"giaoan\",\"assignee\":\"giaoan01\",\"desc\":\"Mô tả đầy đủ: làm gì, cho bài/môn/khối nào, nguồn dữ liệu, yêu cầu đầu ra\"}",
+    "```",
+    "Ánh xạ phòng → nhân viên: giaoan → giaoan01; video → video01; dethi → dethi01 (việc RÀ SOÁT/đối chiếu trong Phòng Đề Thi giao kiemdinh01); hoclieu → kiemdinh01.",
+    "Trong desc phải ghi đủ ngữ cảnh để nhân viên (và đội Muse qua Firebase) làm được ngay: môn, khối, tên bài chuẩn SGK, nguồn, định dạng đầu ra mong muốn.",
+    "Việc tạo ở đây sẽ đồng bộ lên Firebase: đội Muse thật sẽ nhận và làm, sản phẩm trả về Hộp Duyệt. Khi Giám đốc chỉ hỏi/trò chuyện thì trả lời bình thường, KHÔNG chèn khối hành động.",
+    "TUÂN THỦ TUYỆT ĐỐI: LUẬT ĐÁP ÁN trong Hồ sơ chung — không bao giờ bịa đáp án; nếu Giám đốc nhờ ra đáp án mà không có nguồn, nói rõ là chỉ lập dàn câu hỏi và ghi CHƯA CÓ ĐÁP ÁN chờ thầy cấp nguồn.",
+    "",
+    "=== HỒ SƠ CHUNG CỦA CÔNG TY ===",
+    S.context.text
+  ].join("\n");
+}
+function staffSystem(id) {
+  var base = {
+    giaoan01: "Bạn là GIÁO ÁN 01 — nhân viên Muse chuyên soạn kế hoạch bài dạy (KHBD) theo Công văn 5512 cho thầy Hồ Tấn Khải. Sản phẩm của bạn là DÀN Ý/KHUNG KHBD hoặc đoạn soạn hoàn chỉnh dạng văn bản theo yêu cầu việc: đủ mục tiêu (kiến thức, năng lực chung/đặc thù/số/AI, phẩm chất, tích hợp), các hoạt động dạy học với cột GV làm gì / HS làm gì / làm như thế nào theo từng bước và sản phẩm dự kiến tương ứng theo đề mục SGK — không chép nguyên văn SGK, không câu mẫu chung chung.",
+    video01: "Bạn là VIDEO 01 — nhân viên Muse chuyên viết KỊCH BẢN/STORYBOARD video bài giảng dạng chữ (việc dựng MP4 thật làm ở app Video Bài Giảng AI, không phải ở đây). Kịch bản phải theo khuôn ĐẶT ĐÚNG CHỖ trong Hồ sơ chung: chia cảnh rõ vai (Tổng quan/Gợi mở/Nội dung từng ý/Nhấn mạnh/Liên hệ/Tổng kết/Cảnh kết CTA), mỗi cảnh ghi: nguồn hình chính danh, lời đọc của MC (phân vai Nữ/Nam theo LUẬT PHÂN GIỌNG — đoạn có vai thầy/có chữ \"thầy\" là giọng NAM), chữ trên hình. Cuối kịch bản luôn có cảnh kết kêu gọi mở SGK + đăng ký kênh, và chữ ký ✍️ Thầy Hồ Tấn Khải trên mọi cảnh.",
+    dethi01: "Bạn là ĐỀ THI 01 — nhân viên Muse chuyên lập DÀN CÂU HỎI/MA TRẬN đề và soạn câu hỏi theo cấu trúc trong Hồ sơ chung. TUÂN THỦ LUẬT ĐÁP ÁN TUYỆT ĐỐI: đáp án CHỈ được lấy từ nguồn Giám đốc cấp trong mô tả việc; phần nào nguồn không có đáp án thì ghi rõ \"CHƯA CÓ ĐÁP ÁN — chờ thầy\"; thấy đáp án bất thường (2 đáp án đúng, xung đột) thì CẢNH BÁO, không tự sửa. Không bao giờ tự bịa đáp án.",
+    kiemdinh01: "Bạn là KIỂM ĐỊNH 01 — nhân viên Muse chuyên RÀ SOÁT văn bản/tài liệu đối chiếu SGK và các chuẩn trong Hồ sơ chung, đồng thời kiêm HỌC LIỆU (tóm tắt, phân loại, lập mục lục tài liệu). Sản phẩm rà soát là BÁO CÁO rõ ràng: mục nào đạt, mục nào lệch (trích dẫn chỗ lệch + đề xuất sửa), đặc biệt soi kỹ phần dự kiến sản phẩm theo đề mục SGK và lỗi đáp án theo LUẬT ĐÁP ÁN (chỉ cảnh báo, không tự sửa đáp án)."
+  };
+  return [
+    (base[id] || base.kiemdinh01),
+    "Xưng hô: xưng \"em\", gọi Giám đốc là \"thầy\". Trả lời tiếng Việt. Chỉ trả về SẢN PHẨM/KẾT QUẢ của việc được giao (không giải thích quy trình làm việc của bạn). Mọi sản phẩm đều theo Hồ sơ chung dưới đây.",
+    "",
+    "=== HỒ SƠ CHUNG CỦA CÔNG TY ===",
+    S.context.text
+  ].join("\n");
+}
+
+/* ---------------- CHAT + HÀNH ĐỘNG CỦA ĐẠO DIỄN ---------------- */
+var BUSY = {}; /* memberId -> nhãn việc đang chạy nhanh */
+var RUNS = {}; /* taskId -> AbortController */
+function postMsg(ch, from, text, pinned) {
+  if (!S.chats[ch]) S.chats[ch] = [];
+  var m = { id: uid("m"), at: nowMs(), from: from, text: String(text == null ? "" : text) };
+  if (pinned) m.pinned = true;
+  S.chats[ch].push(m); saveState(); pushMsg(ch, m);
+  if (VIEW.kind === "chat" && VIEW.channel === ch) renderChatMsgs(ch);
+  return m;
+}
+function buildTurns(ch, persona) {
+  var msgs = (S.chats[ch] || []).filter(function (m) { return m.from === "boss" || m.from === persona; }).slice(-14);
+  var turns = [];
+  msgs.forEach(function (m) {
+    var role = m.from === "boss" ? "user" : "model";
+    if (turns.length && turns[turns.length - 1].role === role) turns[turns.length - 1].text += "\n" + m.text;
+    else turns.push({ role: role, text: m.text });
+  });
+  if (turns.length && turns[0].role === "model") turns.unshift({ role: "user", text: "(Bắt đầu cuộc trò chuyện — chào Giám đốc.)" });
+  return turns;
+}
+function parseDirectorActions(text) {
+  var actions = [], errors = [];
+  var clean = String(text || "").replace(/```emc-action\s*([\s\S]*?)```/g, function (whole, body) {
+    try {
+      var a = JSON.parse(body);
+      if (a && a.type === "create_task" && a.title) {
+        actions.push({
+          type: "create_task",
+          title: String(a.title),
+          room: ROOMS[a.room] ? a.room : "giaoan",
+          assignee: MEMBERS[a.assignee] ? a.assignee : (ROOMS[a.room] ? ROOMS[a.room].lead : "giaoan01"),
+          desc: String(a.desc || "")
+        });
+      } else errors.push("Khối hành động thiếu type/title");
+    } catch (e) { errors.push("Khối hành động JSON lỗi: " + e.message); }
+    return "";
+  });
+  clean = clean.replace(/\n{3,}/g, "\n\n").trim();
+  return { clean: clean, actions: actions, errors: errors };
+}
+function applyDirectorAction(ch, a) {
+  if (a.type !== "create_task") return;
+  var t = createTask({ title: a.title, room: a.room, assignee: a.assignee, desc: a.desc }, { by: "director", byName: "Đạo diễn" });
+  postMsg(ch, "sys", "✅ Đạo diễn đã tạo việc \"" + t.title + "\" → " + ROOMS[t.room].name + " · " + memberName(t.assignee) + ". Mở Bảng công việc để bấm \"Giao cho đội Muse\" hoặc chạy nhanh bằng Gemini.", false);
+}
+async function aiReply(ch) {
+  var persona = personaForChannel(ch);
+  if (!persona) return;
+  if (S.paused) { postMsg(ch, "sys", "⏸ Công ty đang tạm dừng — Giám đốc bấm nút \"Tiếp tục công ty\" ở thanh trên để đội trả lời tiếp.", false); return; }
+  if (!gemKeys.length) {
+    postMsg(ch, "sys", "⚠️ Chưa có key Gemini nên " + memberName(persona) + " chưa trả lời tự động trong app được. Thầy dán key ở nút \"🔑 Hồ key Gemini\" (đường chạy nhanh tuỳ chọn) — còn giao việc cho đội Muse qua Bảng công việc thì không cần key.", false);
+    return;
+  }
+  BUSY[persona] = "Đang trả lời Giám đốc…"; renderMembers(); showTyping(ch, true);
+  try {
+    var sys = persona === "director" ? directorSystem() : staffSystem(persona);
+    var text = await geminiGenerate(sys, buildTurns(ch, persona));
+    if (persona === "director") {
+      var parsed = parseDirectorActions(text);
+      if (parsed.clean) postMsg(ch, persona, parsed.clean, false);
+      parsed.actions.forEach(function (a) { applyDirectorAction(ch, a); });
+      if (!parsed.clean && !parsed.actions.length) postMsg(ch, persona, "(Em đã nhận lệnh.)", false);
+      if (parsed.errors.length) postMsg(ch, "sys", "⚠️ Có khối hành động em chưa đọc được: " + parsed.errors.join("; "), false);
+    } else {
+      postMsg(ch, persona, text || "(không có nội dung)", false);
+    }
+  } catch (e) {
+    postMsg(ch, "sys", "⚠️ " + memberName(persona) + " chưa trả lời được: " + vnErr(e) + ".", false);
+  }
+  delete BUSY[persona]; showTyping(ch, false); renderMembers();
+}
+function showTyping(ch, on) {
+  if (VIEW.kind !== "chat" || VIEW.channel !== ch) return;
+  var box = document.getElementById("msgsBox"); if (!box) return;
+  var t = document.getElementById("typingRow");
+  if (on && !t) {
+    var d = document.createElement("div"); d.id = "typingRow"; d.className = "msg sys";
+    d.innerHTML = "<div class='body'>✍️ Đang soạn trả lời…</div>";
+    box.appendChild(d); box.scrollTop = box.scrollHeight;
+  } else if (!on && t) t.remove();
+}
+
+/* ---------------- THAO TÁC VIỆC ---------------- */
+function assignToTeam(id) {
+  var t = getTask(id); if (!t) return;
+  if (t.status === "assigned") { toast("Việc này đã giao đội Muse rồi — đang chờ xử lý."); return; }
+  if (t.status === "done") { toast("Việc đã xong, không giao lại được."); return; }
+  var r = transitionTask(id, "assigned", { who: "Giám đốc", text: "Giám đốc giao cho đội Muse xử lý qua Firebase." });
+  if (!r.ok) { toast("⚠️ " + r.error); return; }
+  postMsg("room_" + t.room, "sys", "🤝 Giám đốc đã GIAO việc \"" + t.title + "\" cho đội Muse (" + memberName(t.assignee) + ") — trạng thái: Đã giao, chờ đội Muse xử lý. Dossier đầy đủ nằm trong chi tiết việc.", false);
+  logEvent("Giao đội Muse: \"" + t.title + "\" → " + memberName(t.assignee) + ".", t.id);
+  toast("🤝 Đã giao đội Muse — việc đã lên Firebase, chờ đội xử lý.");
+  render();
+}
+async function quickRunTask(id) {
+  var t = getTask(id); if (!t) return;
+  if (S.paused) { toast("⏸ Công ty đang tạm dừng — bấm \"Tiếp tục công ty\" để chạy tiếp."); return; }
+  if (!gemKeys.length) { toast("Chưa có key Gemini — thầy dán key ở nút \"🔑 Hồ key Gemini\", hoặc dùng nút \"Giao cho đội Muse\" (không cần key).", 4600); return; }
+  if (RUNS[id]) { toast("Việc này đang chạy nhanh rồi."); return; }
+  var ctrl = (typeof AbortController !== "undefined") ? new AbortController() : null;
+  RUNS[id] = ctrl;
+  if (t.status === "queue" || t.status === "assigned") { t.status = "doing"; touchTask(t, "Hệ thống", "Bắt đầu chạy nhanh bằng Gemini trong app."); }
+  BUSY[t.assignee] = "Đang chạy nhanh: " + t.title;
+  renderMembers(); render();
+  try {
+    var user = "VIỆC: " + t.title + "\n\n" + dossierSummary(t) + "\n\nHãy thực hiện việc này và trả về SẢN PHẨM hoàn chỉnh dạng văn bản.";
+    var out = await geminiGenerate(staffSystem(t.assignee), [{ role: "user", text: user }], { signal: ctrl ? ctrl.signal : undefined });
+    addStageProduct(t, t.assignee, "Chạy nhanh bằng Gemini trong app", out);
+    t.status = "review";
+    touchTask(t, memberName(t.assignee), "Đã nộp sản phẩm (chạy nhanh bằng Gemini) — chuyển Chờ duyệt.");
+    logEvent("Sản phẩm chạy nhanh (Gemini) cho việc \"" + t.title + "\" đã vào Chờ duyệt.", t.id);
+    postMsg("room_" + t.room, t.assignee, "Em đã nộp sản phẩm cho việc \"" + t.title + "\" (chạy nhanh bằng Gemini trong app) — đang chờ Giám đốc duyệt ở Hộp Duyệt.", false);
+    toast("✅ Đã có sản phẩm — việc \"" + t.title + "\" chuyển sang Chờ duyệt.");
+  } catch (e) {
+    if (e && e.name === "AbortError") { touchTask(t, "Hệ thống", "Đã dừng lượt chạy nhanh do tạm dừng công ty."); toast("⏸ Đã dừng lượt chạy nhanh."); }
+    else { touchTask(t, "Hệ thống", "Chạy nhanh lỗi: " + vnErr(e)); toast("⚠️ Chạy nhanh lỗi: " + vnErr(e), 4600); }
+  }
+  delete RUNS[id]; delete BUSY[t.assignee];
+  renderMembers(); render();
+}
+function approveTask(id) {
+  var t = getTask(id); if (!t) return;
+  if (t.status !== "review") { toast("Việc chưa ở trạng thái Chờ duyệt."); return; }
+  if (!t.product) { toast("Việc chưa có sản phẩm để duyệt."); return; }
+  var p = { id: uid("p"), taskId: t.id, title: t.title, room: t.room, content: t.product, at: nowMs() };
+  S.products.push(p); saveState(); pushProduct(p);
+  t.status = "done";
+  touchTask(t, "Giám đốc", "Giám đốc ĐÃ DUYỆT — sản phẩm vào Kho sản phẩm.");
+  logEvent("Duyệt sản phẩm: \"" + t.title + "\" → Kho sản phẩm.", t.id);
+  postMsg("room_" + t.room, "sys", "🎉 Sản phẩm việc \"" + t.title + "\" đã được Giám đốc DUYỆT và vào Kho sản phẩm.", false);
+  postMsg("company", "sys", "🎉 Giám đốc vừa duyệt sản phẩm \"" + t.title + "\" (" + ROOMS[t.room].name + ") — sản phẩm đã vào Kho. Cả công ty cùng thấy để các phòng liên quan dùng tiếp.", false);
+  toast("🎉 Đã duyệt — sản phẩm vào Kho.");
+  render();
+}
+function returnTask(id, note) {
+  var t = getTask(id); if (!t) return;
+  if (t.status !== "review") { toast("Chỉ trả lại được việc đang Chờ duyệt."); return; }
+  t.notes = t.notes || [];
+  t.notes.push({ at: nowMs(), by: "Giám đốc", text: note });
+  t.status = "assigned";
+  touchTask(t, "Giám đốc", "Giám đốc TRẢ LẠI kèm ghi chú: " + note);
+  logEvent("Trả lại việc \"" + t.title + "\": " + note, t.id);
+  postMsg("room_" + t.room, "sys", "↩️ Giám đốc TRẢ LẠI việc \"" + t.title + "\" kèm ghi chú: \"" + note + "\" — việc đã giao lại đội Muse, dossier có đủ ghi chú này.", false);
+  toast("↩️ Đã trả lại việc kèm ghi chú.");
+  render();
+}
+function transferTask(id, room, assignee) {
+  var t = getTask(id); if (!t) return;
+  var oldRoom = t.room, oldName = ROOMS[oldRoom].name;
+  t.room = room; t.assignee = assignee;
+  t.roomsTouched = t.roomsTouched || [];
+  if (t.roomsTouched.indexOf(room) < 0) t.roomsTouched.push(room);
+  if (t.status === "done") t.status = "assigned";
+  touchTask(t, "Giám đốc", "Chuyển việc từ " + oldName + " sang " + ROOMS[room].name + ", gán " + memberName(assignee) + " — toàn bộ dossier đi kèm.");
+  logEvent("Chuyển việc \"" + t.title + "\": " + oldName + " → " + ROOMS[room].name + " (" + memberName(assignee) + ").", t.id);
+  postMsg("room_" + oldRoom, "sys", "➡️ Việc \"" + t.title + "\" đã chuyển sang " + ROOMS[room].name + " (" + memberName(assignee) + "). Phòng mình vẫn theo dõi được việc này ở mục Hoạt động liên quan.", false);
+  postMsg("room_" + room, "sys", "⬅️ Nhận việc \"" + t.title + "\" từ " + oldName + " — mở chi tiết việc để xem TOÀN BỘ dossier (yêu cầu gốc, sản phẩm các khâu, ghi chú) trước khi làm tiếp.", false);
+  toast("➡️ Đã chuyển việc kèm toàn bộ dossier.");
+  render();
+}
+
+/* ---------------- ĐIỀU HƯỚNG + KHUNG ---------------- */
+var VIEW = { kind: "chat", name: "chat", channel: "company", dm: "director" };
+var VIEW_TITLES = {
+  overview: "Tổng quan", chat: "Chat toàn công ty", dm: "Tin nhắn riêng", waiting: "Danh sách chờ",
+  board: "Bảng công việc", review: "Hộp Duyệt", warehouse: "Kho sản phẩm", brand: "Thương hiệu kênh",
+  context: "Hồ sơ chung của công ty", news: "Bản tin", audit: "Nhật ký kiểm toán"
+};
+function roomTitle(r) { return ROOMS[r].name; }
+function go(name, param) {
+  if (name.indexOf("room_") === 0) { VIEW = { kind: "chat", name: name, channel: name, dm: VIEW.dm }; }
+  else if (name === "chat") { VIEW = { kind: "chat", name: "chat", channel: "company", dm: VIEW.dm }; }
+  else if (name === "dm") { VIEW = { kind: "chat", name: "dm", channel: "dm_" + (param || VIEW.dm || "director"), dm: param || VIEW.dm || "director" }; }
+  else { VIEW = { kind: "page", name: name, channel: null, dm: VIEW.dm }; }
+  var t = VIEW_TITLES[name] || (name.indexOf("room_") === 0 ? roomTitle(name.slice(5)) : name);
+  document.getElementById("viewTitle").textContent = t;
+  document.getElementById("sidebar").classList.remove("open");
+  renderSidebar(); render();
+}
+function countBy(st) { return S.tasks.filter(function (t) { return t.status === st; }).length; }
+function renderSidebar() {
+  var nWait = countBy("queue"), nReview = countBy("review");
+  function item(name, icon, label, cnt) {
+    var active = VIEW.name === name ? " active" : "";
+    return "<div class='item" + active + "' onclick=\"go('" + name + "')\"><div class='ic'>" + icon + "</div>" + esc(label) + (cnt != null ? "<span class='cnt'>(" + cnt + ")</span>" : "") + "</div>";
+  }
+  var h = "<div class='brand'><div class='logo'>K</div><div><div class='bname'>EduMaster<br>Company</div><div class='bsub'>Văn phòng ảo của thầy Khải</div></div></div>";
+  h += "<div class='sec'>VĂN PHÒNG</div>";
+  h += item("overview", "◎", "Tổng quan");
+  h += item("chat", "#", "Chat toàn công ty");
+  h += item("dm", "○", "Tin nhắn riêng");
+  h += item("waiting", "◷", "Danh sách chờ", nWait);
+  h += "<div class='sec'>PHÒNG BAN</div>";
+  ROOM_ORDER.forEach(function (r) { h += item("room_" + r, "#", ROOMS[r].name); });
+  h += "<div class='sec'>ĐIỀU HÀNH</div>";
+  h += item("board", "▤", "Bảng công việc");
+  h += item("review", "✓", "Hộp Duyệt", nReview);
+  h += item("warehouse", "▣", "Kho sản phẩm");
+  h += item("context", "🧭", "Hồ sơ chung");
+  h += item("brand", "🎨", "Thương hiệu kênh");
+  h += item("news", "📰", "Bản tin");
+  h += item("audit", "📋", "Nhật ký kiểm toán");
+  h += "<div class='sidefoot'><button class='btn sec small' onclick='exportData()'>⬇ Xuất sao lưu JSON</button><button class='btn sec small' onclick='document.getElementById(\"importFile\").click()'>⬆ Nhập sao lưu JSON</button></div>";
+  document.getElementById("sidebar").innerHTML = h;
+}
+function memberStatus(id) {
+  if (BUSY[id]) return { chip: "busy", label: "Đang làm", text: BUSY[id] };
+  var doing = S.tasks.filter(function (t) { return t.assignee === id && t.status === "doing"; });
+  if (doing.length) return { chip: "busy", label: "Đang làm", text: "Đang làm: " + doing[0].title };
+  var asg = S.tasks.filter(function (t) { return t.assignee === id && t.status === "assigned"; });
+  if (asg.length) return { chip: "wait", label: "Chờ xử lý", text: "Đã giao, chờ đội Muse xử lý: " + asg[0].title };
+  if (id === "director") {
+    var open = S.tasks.filter(function (t) { return t.status !== "done"; }).length;
+    return { chip: "", label: "Sẵn sàng", text: open ? ("Đang điều phối " + open + " việc đang mở") : "Chưa có nhiệm vụ" };
+  }
+  return { chip: "", label: "Sẵn sàng", text: "Chưa có nhiệm vụ" };
+}
+function renderMembers() {
+  var el = document.getElementById("membersPanel"); if (!el) return;
+  var h = "<div class='mcard'><div class='mt'>Thành viên · đội Muse</div>";
+  MEMBER_ORDER.forEach(function (id) {
+    var m = MEMBERS[id], st = memberStatus(id);
+    h += "<div class='mem'><div class='row1'><div class='ava " + id + "'>" + m.ava + "</div><div><div class='nm'>" + esc(m.name) + "<span>" + esc(m.role) + "</span></div><div class='st'>" + esc(st.text) + "<br>Cập nhật " + fmtTime(nowMs()) + "</div></div></div>" +
+      "<div class='row2'><span class='chip " + st.chip + "'>" + st.label + "</span><button class='dm' onclick=\"go('dm','" + id + "')\">Nhắn riêng</button></div></div>";
+  });
+  h += "</div>";
+  el.innerHTML = h;
+}
+
+/* ---------------- MÀN CHAT ---------------- */
+function msgHtml(m) {
+  var a = senderAva(m.from);
+  var role = MEMBERS[m.from] ? "<span class='role'>" + esc(MEMBERS[m.from].short) + "</span>" : "";
+  var cls = m.from === "boss" ? "msg boss" : (m.from === "sys" ? "msg sys" : "msg");
+  return "<div class='" + cls + "'><div class='ava " + a.cls + "'>" + a.txt + "</div><div><div class='who'>" + esc(senderName(m.from)) + role + "<span>" + fmtTime(m.at) + "</span></div><div class='body'>" + esc(m.text) + "</div>" + (m.pinned ? "<div class='pin'>📌 Ghim</div>" : "") + "</div></div>";
+}
+function chatHeader(title, roomId) {
+  var btn = roomId
+    ? "<button class='assign' onclick=\"newTaskModal('" + roomId + "')\">+ Giao việc</button>"
+    : "<button class='assign' onclick='newTaskModal()'>+ Giao việc</button>";
+  return "<div class='chathead'><div class='ct'>" + esc(title) + "</div>" + btn + "</div>";
+}
+function relatedHtml(roomId) {
+  var evs = relatedEventsForRoom(roomId);
+  if (!evs.length) return "";
+  var h = "<div class='related'><div class='rt'>🔗 HOẠT ĐỘNG LIÊN QUAN — việc chung với phòng khác (cả đội thấy nhau)</div>";
+  evs.forEach(function (e) { h += "<div>· " + fmtDT(e.at) + " — " + esc(e.text) + "</div>"; });
+  return h + "</div>";
+}
+function chatViewHtml(channel, title, roomId) {
+  var intro = channel === "company" ? "<div class='introline'>🏢 <b>" + esc(INTRO_LINE) + "</b><br><span class='muted'>Gõ yêu cầu cho Đạo diễn ở đây — Đạo diễn sẽ tư vấn và tạo việc cho đúng phòng. Việc và sản phẩm đồng bộ qua Firebase để đội Muse thật cùng làm.</span></div>" : "";
+  var rel = roomId ? relatedHtml(roomId) : "";
+  return intro + "<div class='chatcard'>" + chatHeader(title, roomId) +
+    "<div class='msgs' id='msgsBox'></div>" + rel +
+    "<div class='composer'><textarea id='chatInput' placeholder='Nhập tin nhắn... (Enter: gửi · Shift+Enter: xuống dòng)'></textarea>" +
+    "<div class='sendrow'><span class='muted'>Người trả lời kênh này: <b>" + esc(memberName(personaForChannel(channel))) + "</b> (qua Gemini trong app — đường chạy nhanh; đội Muse thật làm việc qua Firebase)</span><button class='send' onclick='sendChat()'>Gửi tin</button></div></div></div>";
+}
+function renderChatMsgs(ch) {
+  var box = document.getElementById("msgsBox"); if (!box) return;
+  box.innerHTML = (S.chats[ch] || []).map(msgHtml).join("");
+  box.scrollTop = box.scrollHeight;
+  var inp = document.getElementById("chatInput");
+  if (inp && !inp._bound) {
+    inp._bound = true;
+    inp.addEventListener("keydown", function (e) { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChat(); } });
+  }
+}
+function sendChat() {
+  var inp = document.getElementById("chatInput"); if (!inp) return;
+  var text = inp.value.trim(); if (!text) return;
+  inp.value = "";
+  var ch = VIEW.channel;
+  postMsg(ch, "boss", text, false);
+  aiReply(ch);
+}
+function dmViewHtml() {
+  var cur = VIEW.dm || "director";
+  var list = MEMBER_ORDER.map(function (id) {
+    var m = MEMBERS[id];
+    return "<div class='dmi" + (id === cur ? " active" : "") + "' onclick=\"go('dm','" + id + "')\"><div class='ava " + id + "'>" + m.ava + "</div><div><div class='nm'>" + esc(m.short) + "</div><div class='rl'>" + esc(m.role.split("·")[0]) + "</div></div></div>";
+  }).join("");
+  var m = MEMBERS[cur];
+  var pane = "<div class='chatcard'>" + chatHeader("Tin nhắn riêng · " + m.name) +
+    "<div class='msgs' id='msgsBox'></div>" +
+    "<div class='composer'><textarea id='chatInput' placeholder='Nhắn riêng cho " + esc(m.short) + "... (Enter: gửi)'></textarea>" +
+    "<div class='sendrow'><span class='muted'>" + esc(m.role) + "</span><button class='send' onclick='sendChat()'>Gửi tin</button></div></div></div>";
+  return "<div class='dmwrap'><div class='dmlist'>" + list + "</div>" + pane + "</div>";
+}
+
+/* ---------------- CÁC MÀN ĐIỀU HÀNH ---------------- */
+function statusBadge(t) { var s = STATUSES[t.status]; return "<span class='bdg " + s.cls + "'>" + esc(s.name) + "</span>"; }
+function taskCard(t) {
+  return "<div class='tcard' onclick=\"openTask('" + t.id + "')\"><div class='tt'>" + esc(t.title) + "</div>" +
+    "<div><span class='bdg room'>" + esc(ROOMS[t.room].name) + "</span><span class='bdg who'>" + esc(memberName(t.assignee)) + "</span>" +
+    ((t.status === "assigned" || t.status === "doing") ? statusBadge(t) : "") +
+    (t.product ? "<span class='bdg done'>📄 Có sản phẩm</span>" : "") + "</div>" +
+    "<div class='tm'>Cập nhật " + fmtDT(t.updatedAt) + "</div></div>";
+}
+function overviewHtml() {
+  var stats = [
+    [countBy("queue"), "Việc chờ phân công"], [countBy("assigned"), "Đã giao đội Muse"], [countBy("doing"), "Việc đang làm"],
+    [countBy("review"), "Việc chờ duyệt"], [countBy("done"), "Việc đã xong"], [S.products.length, "Sản phẩm trong Kho"]
+  ];
+  var h = "<div class='introline'>🏢 <b>" + esc(INTRO_LINE) + "</b></div>";
+  h += "<div class='stats'>" + stats.map(function (s) { return "<div class='stat'><div class='n'>" + s[0] + "</div><div class='l'>" + s[1] + "</div></div>"; }).join("") + "</div>";
+  h += "<div class='card' style='margin-bottom:16px'><h3 class='vt' style='margin-top:0'>🧭 Hồ sơ chung — bộ nhớ dùng chung của cả đội</h3><div class='muted' style='white-space:pre-wrap;max-height:120px;overflow:hidden'>" + esc(S.context.text.slice(0, 700)) + "…</div><div class='btnrow'><button class='btn small' onclick=\"go('context')\">Mở Hồ sơ chung</button><span class='muted'>Mọi lượt làm việc (đội Muse qua Firebase + Gemini chạy nhanh) đều kèm hồ sơ này. Cập nhật lần cuối: " + (S.context.updatedAt ? fmtDT(S.context.updatedAt) : "bản mặc định") + "</span></div></div>";
+  h += "<div class='card' style='margin-bottom:16px'><h3 class='vt' style='margin-top:0'>🔑 Hồ key Gemini (đường chạy nhanh tuỳ chọn)</h3><div class='muted'>Hiện có <b>" + gemKeys.length + " key</b> trong hồ của máy này. Không có key vẫn giao việc cho đội Muse bình thường qua Firebase.</div><div class='btnrow'><button class='btn small sec' onclick='keysModal()'>Mở hồ key</button><button class='btn small sec' onclick='syncNow()'>🔄 Đồng bộ Firebase ngay</button></div></div>";
+  h += "<h3 class='vt'>Hoạt động gần đây</h3><div class='feed'>";
+  var evs = S.audit.slice(-10).reverse();
+  h += evs.length ? evs.map(function (e) { return "<div class='fi'><span>" + fmtDT(e.at) + "</span>" + esc(e.text) + "</div>"; }).join("") : "<div class='fi'>Chưa có hoạt động nào.</div>";
+  return h + "</div>";
+}
+function boardHtml() {
+  var cols = [
+    { title: "Chờ phân công", sts: ["queue"] },
+    { title: "Đang làm", sts: ["assigned", "doing"] },
+    { title: "Chờ duyệt", sts: ["review"] },
+    { title: "Đã xong", sts: ["done"] }
+  ];
+  var h = "<div style='display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;flex-wrap:wrap;gap:8px'><h2 class='vt' style='margin:0'>Bảng công việc</h2><button class='btn small' onclick='newTaskModal()'>+ Việc mới</button></div><div class='board'>";
+  cols.forEach(function (c) {
+    var ts = S.tasks.filter(function (t) { return c.sts.indexOf(t.status) >= 0; }).sort(function (a, b) { return b.updatedAt - a.updatedAt; });
+    h += "<div class='col'><div class='ch'>" + c.title + "<span>" + ts.length + "</span></div>" + (ts.map(taskCard).join("") || "<div class='muted' style='padding:4px'>Trống</div>") + "</div>";
+  });
+  return h + "</div><p class='muted' style='margin-top:12px'>Bấm vào thẻ việc để xem toàn bộ dossier + gói bàn giao. Mọi thành viên xem được mọi việc — không khoá theo phòng.</p>";
+}
+function waitingHtml() {
+  var ts = S.tasks.filter(function (t) { return t.status === "queue"; }).sort(function (a, b) { return b.updatedAt - a.updatedAt; });
+  var h = "<h2 class='vt'>Danh sách chờ — việc chưa phân công</h2>";
+  if (!ts.length) h += "<div class='card'>Không có việc nào đang chờ. 🎉</div>";
+  ts.forEach(function (t) {
+    h += "<div class='rowitem'><div class='rt1'><div><span class='ttl'>" + esc(t.title) + "</span><div><span class='bdg room'>" + esc(ROOMS[t.room].name) + "</span><span class='bdg who'>" + esc(memberName(t.assignee)) + "</span></div></div>" +
+      "<div class='acts'><button class='btn small' onclick=\"assignToTeam('" + t.id + "')\">🤝 Giao đội Muse</button><button class='btn small sec' onclick=\"quickRunTask('" + t.id + "')\">⚡ Chạy nhanh Gemini</button><button class='btn small sec' onclick=\"openTask('" + t.id + "')\">Chi tiết</button></div></div></div>";
+  });
+  return h;
+}
+function reviewHtml() {
+  var ts = S.tasks.filter(function (t) { return t.status === "review"; }).sort(function (a, b) { return b.updatedAt - a.updatedAt; });
+  var h = "<h2 class='vt'>Hộp Duyệt — sản phẩm chờ Giám đốc duyệt</h2>";
+  if (!ts.length) h += "<div class='card'>Chưa có sản phẩm nào chờ duyệt.</div>";
+  ts.forEach(function (t) {
+    h += "<div class='rowitem'><div class='rt1'><div><span class='ttl'>" + esc(t.title) + "</span><div><span class='bdg room'>" + esc(ROOMS[t.room].name) + "</span><span class='bdg who'>" + esc(memberName(t.assignee)) + "</span><span class='bdg review'>Chờ duyệt</span></div></div>" +
+      "<div class='acts'><button class='btn small' onclick=\"approveTask('" + t.id + "')\">✓ Duyệt → Kho</button><button class='btn small sec' onclick=\"returnModal('" + t.id + "')\">↩ Trả lại</button><button class='btn small sec' onclick=\"openTask('" + t.id + "')\">Chi tiết</button></div></div>" +
+      "<div class='prodbg'>" + esc(t.product || "(chưa có sản phẩm)") + "</div></div>";
+  });
+  return h;
+}
+function warehouseHtml() {
+  var ps = S.products.slice().sort(function (a, b) { return b.at - a.at; });
+  var h = "<h2 class='vt'>Kho sản phẩm — chỉ sản phẩm ĐÃ DUYỆT mới vào đây</h2>";
+  if (!ps.length) h += "<div class='card'>Kho đang trống. Sản phẩm được duyệt ở Hộp Duyệt sẽ vào đây.</div>";
+  ps.forEach(function (p) {
+    h += "<div class='rowitem'><div class='rt1'><div><span class='ttl'>" + esc(p.title) + "</span><div><span class='bdg room'>" + esc(ROOMS[p.room] ? ROOMS[p.room].name : p.room) + "</span><span class='bdg done'>" + fmtDT(p.at) + "</span></div></div>" +
+      "<div class='acts'><button class='btn small sec' onclick=\"openProduct('" + p.id + "')\">Xem</button><button class='btn small sec' onclick=\"downloadProduct('" + p.id + "','txt')\">⬇ .txt</button><button class='btn small sec' onclick=\"downloadProduct('" + p.id + "','md')\">⬇ .md</button><button class='btn small sec' onclick=\"deleteProduct('" + p.id + "')\">Xoá</button></div></div></div>";
+  });
+  return h;
+}
+function brandHtml() {
+  return "<div class='card'><h2 class='vt'>Thương hiệu kênh</h2><p class='muted' style='margin-bottom:14px'>Thông tin nhận diện dùng cho video và sản phẩm của công ty. Lưu tại máy này.</p>" +
+    "<div class='frow'><label>Tên kênh YouTube</label><input class='inp' id='brandChannel' value='" + esc(S.brand.channel) + "' placeholder='Tên kênh của thầy…'></div>" +
+    "<div class='frow'><label>Chữ ký</label><input class='inp' id='brandSignature' value='" + esc(S.brand.signature) + "'></div>" +
+    "<div class='frow'><label>Mẫu CTA cuối video (kêu gọi đăng ký kênh)</label><textarea class='txta' id='brandCta'>" + esc(S.brand.cta) + "</textarea></div>" +
+    "<div class='btnrow'><button class='btn' onclick='saveBrand()'>💾 Lưu thương hiệu</button></div></div>";
+}
+function contextHtml() {
+  return "<div class='card'><h2 class='vt'>🧭 Hồ sơ chung của công ty</h2>" +
+    "<p class='muted' style='margin-bottom:12px'>Đây là BỘ NHỚ DÙNG CHUNG của cả 5 thành viên Muse: mọi lượt làm việc — đội Muse qua Firebase lẫn đường Gemini chạy nhanh — đều kèm tài liệu này. Sửa ở đây là cả đội biết ngay (đồng bộ Firebase node <b>company_context</b>). Cập nhật lần cuối: " + (S.context.updatedAt ? fmtDT(S.context.updatedAt) : "bản mặc định") + "</p>" +
+    "<textarea class='txta' id='ctxText' style='min-height:380px'>" + esc(S.context.text) + "</textarea>" +
+    "<div class='btnrow'><button class='btn' onclick='saveContext()'>💾 Lưu hồ sơ chung</button><button class='btn sec' onclick='restoreContext()'>Khôi phục bản mặc định</button></div></div>";
+}
+function newsHtml() {
+  var evs = S.audit.slice(-40).reverse();
+  var h = "<h2 class='vt'>Bản tin công ty</h2><div class='feed'>";
+  h += evs.length ? evs.map(function (e) { return "<div class='fi'><span>" + fmtDT(e.at) + "</span>" + esc(e.text) + "</div>"; }).join("") : "<div class='fi'>Chưa có bản tin nào.</div>";
+  return h + "</div>";
+}
+function auditHtml() {
+  var evs = S.audit.slice(-200).reverse();
+  var h = "<h2 class='vt'>Nhật ký kiểm toán — dòng sự kiện chung toàn công ty</h2><div class='card'><div class='hist'>";
+  h += evs.length ? evs.map(function (e) { return "<div><span>" + fmtDT(e.at) + "</span>" + esc(e.text) + "</div>"; }).join("") : "<div>Chưa có sự kiện nào.</div>";
+  return h + "</div></div>";
+}
+function render() {
+  renderSidebar(); renderMembers();
+  var c = document.getElementById("viewContainer");
+  var n = VIEW.name;
+  var draftEl = document.getElementById("chatInput");
+  var draft = draftEl ? draftEl.value : null;
+  if (VIEW.kind === "chat" && n === "dm") { c.innerHTML = dmViewHtml(); renderChatMsgs(VIEW.channel); }
+  else if (VIEW.kind === "chat") {
+    var title = n === "chat" ? "Chat toàn công ty" : roomTitle(n.slice(5));
+    c.innerHTML = chatViewHtml(VIEW.channel, title, n.indexOf("room_") === 0 ? n.slice(5) : null);
+    renderChatMsgs(VIEW.channel);
+  }
+  else if (n === "overview") c.innerHTML = overviewHtml();
+  else if (n === "board") c.innerHTML = boardHtml();
+  else if (n === "waiting") c.innerHTML = waitingHtml();
+  else if (n === "review") c.innerHTML = reviewHtml();
+  else if (n === "warehouse") c.innerHTML = warehouseHtml();
+  else if (n === "brand") c.innerHTML = brandHtml();
+  else if (n === "context") c.innerHTML = contextHtml();
+  else if (n === "news") c.innerHTML = newsHtml();
+  else if (n === "audit") c.innerHTML = auditHtml();
+  if (draft) { var ni = document.getElementById("chatInput"); if (ni) ni.value = draft; }
+}
+
+/* ---------------- MODAL ---------------- */
+function openModal(html) { document.getElementById("modalBox").innerHTML = html; document.getElementById("modalBackdrop").classList.remove("hidden"); }
+function closeModal() { document.getElementById("modalBackdrop").classList.add("hidden"); }
+function modalHead(title) { return "<div class='xrow'><h3>" + esc(title) + "</h3><button class='xbtn' onclick='closeModal()'>✕</button></div>"; }
+function syncLeadByRoom(roomSelId, asgSelId) {
+  var r = document.getElementById(roomSelId), a = document.getElementById(asgSelId);
+  if (r && a && ROOMS[r.value]) a.value = ROOMS[r.value].lead;
+}
+function roomOptions(sel) { return ROOM_ORDER.map(function (r) { return "<option value='" + r + "'" + (r === sel ? " selected" : "") + ">" + ROOMS[r].name + "</option>"; }).join(""); }
+function memberOptions(sel) { return MEMBER_ORDER.map(function (id) { return "<option value='" + id + "'" + (id === sel ? " selected" : "") + ">" + MEMBERS[id].name + "</option>"; }).join(""); }
+function newTaskModal(roomId) {
+  var room = roomId || "giaoan";
+  openModal(modalHead("Tạo việc mới") +
+    "<div class='frow'><label>Tiêu đề việc</label><input class='inp' id='ntTitle' placeholder='Vd: Soạn dàn ý KHBD Sinh 10 Bài 8…'></div>" +
+    "<div class='frow'><label>Phòng ban</label><select class='inp' id='ntRoom' onchange=\"syncLeadByRoom('ntRoom','ntAssignee')\">" + roomOptions(room) + "</select></div>" +
+    "<div class='frow'><label>Gán cho nhân viên</label><select class='inp' id='ntAssignee'>" + memberOptions(ROOMS[room].lead) + "</select></div>" +
+    "<div class='frow'><label>Mô tả / yêu cầu gốc (đi vào dossier — ghi đủ môn, khối, tên bài, nguồn, đầu ra mong muốn)</label><textarea class='txta' id='ntDesc' placeholder='Mô tả chi tiết để nhân viên/đội Muse làm được ngay…'></textarea></div>" +
+    "<div class='btnrow'><button class='btn' onclick='doCreateTask()'>Tạo việc</button><button class='btn sec' onclick='closeModal()'>Huỷ</button></div>");
+  setTimeout(function () { var el = document.getElementById("ntTitle"); if (el) el.focus(); }, 50);
+}
+function doCreateTask() {
+  var title = document.getElementById("ntTitle").value.trim();
+  if (!title) { toast("Thầy nhập tiêu đề việc nhé."); return; }
+  var t = createTask({ title: title, room: document.getElementById("ntRoom").value, assignee: document.getElementById("ntAssignee").value, desc: document.getElementById("ntDesc").value }, {});
+  closeModal(); toast("📌 Đã tạo việc \"" + t.title + "\".");
+  go("board");
+}
+function openTask(id) {
+  var t = getTask(id); if (!t) return;
+  var stages = (t.stageProducts || []).map(function (sp, i) {
+    return "<h3 class='vt'>Sản phẩm khâu " + (i + 1) + " · " + esc(memberName(sp.by)) + " · " + esc(sp.kind) + " · " + fmtDT(sp.at) + "</h3><div class='prodbg' style='max-height:180px'>" + esc(sp.text) + "</div>";
+  }).join("");
+  var notes = (t.notes || []).map(function (n) { return "<div><span>" + fmtDT(n.at) + "</span><b>" + esc(n.by) + ":</b> " + esc(n.text) + "</div>"; }).join("");
+  var hist = (t.history || []).map(function (hh) { return "<div><span>" + fmtDT(hh.at) + "</span><b>" + esc(hh.who) + ":</b> " + esc(hh.text) + "</div>"; }).join("");
+  var h = modalHead(t.title);
+  h += "<div>" + statusBadge(t) + "<span class='bdg room'>" + esc(ROOMS[t.room].name) + "</span><span class='bdg who'>" + esc(memberName(t.assignee)) + "</span><span class='bdg queue'>Đã qua: " + (t.roomsTouched || []).map(function (r) { return ROOMS[r].name; }).join(" → ") + "</span></div>";
+  h += "<div class='frow' style='margin-top:12px'><label>Tiêu đề</label><input class='inp' id='tkTitle' value='" + esc(t.title) + "'></div>";
+  h += "<div class='frow'><label>Yêu cầu gốc (dossier)</label><textarea class='txta' id='tkDesc'>" + esc(t.desc) + "</textarea></div>";
+  h += "<div class='frow'><label>Sản phẩm hiện tại (thầy có thể dán tay vào đây)</label><textarea class='txta' id='tkProduct' style='min-height:130px'>" + esc(t.product || "") + "</textarea></div>";
+  h += "<div class='btnrow'><button class='btn small' onclick=\"saveTaskEdits('" + t.id + "')\">💾 Lưu</button>" +
+    (t.status !== "done" ? "<button class='btn small' onclick=\"closeModal();assignToTeam('" + t.id + "')\">🤝 Giao đội Muse</button>" : "") +
+    (t.status !== "done" ? "<button class='btn small sec' onclick=\"closeModal();quickRunTask('" + t.id + "')\">⚡ Chạy nhanh Gemini</button>" : "") +
+    ((t.product && ["queue", "assigned", "doing"].indexOf(t.status) >= 0) ? "<button class='btn small sec' onclick=\"submitReview('" + t.id + "')\">📥 Nộp duyệt</button>" : "") +
+    (t.status === "review" ? "<button class='btn small' onclick=\"closeModal();approveTask('" + t.id + "')\">✓ Duyệt → Kho</button><button class='btn small sec' onclick=\"returnModal('" + t.id + "')\">↩ Trả lại</button>" : "") +
+    "</div>";
+  h += "<h3 class='vt'>Chuyển phòng / đổi người (dossier đi kèm đầy đủ)</h3><div style='display:flex;gap:9px;flex-wrap:wrap'><select class='inp' id='tkRoom' style='flex:1;min-width:150px'>" + roomOptions(t.room) + "</select><select class='inp' id='tkAssignee' style='flex:1;min-width:150px'>" + memberOptions(t.assignee) + "</select><button class='btn small sec' onclick=\"doTransfer('" + t.id + "')\">➡️ Chuyển</button></div>";
+  if (stages) h += stages;
+  if (notes) h += "<h3 class='vt'>Ghi chú duyệt / trả lại</h3><div class='hist'>" + notes + "</div>";
+  h += "<h3 class='vt'>Lịch sử việc</h3><div class='hist'>" + (hist || "<div>Chưa có lịch sử.</div>") + "</div>";
+  h += "<h3 class='vt'>📦 Gói bàn giao tự chứa (bản ghi Firebase đã kèm sẵn — Muse mới đọc riêng gói này cũng làm tiếp được)</h3><pre class='pack'>" + esc(t.handover || buildHandover(t)) + "</pre>";
+  h += "<div class='btnrow'><button class='btn small sec' onclick=\"copyHandover('" + t.id + "')\">📋 Sao chép gói bàn giao</button><button class='btn small warn' onclick=\"deleteTask('" + t.id + "')\">🗑 Xoá việc</button></div>";
+  openModal(h);
+}
+function saveTaskEdits(id) {
+  var t = getTask(id); if (!t) return;
+  t.title = document.getElementById("tkTitle").value.trim() || t.title;
+  t.desc = document.getElementById("tkDesc").value;
+  var prod = document.getElementById("tkProduct").value;
+  if (prod !== (t.product || "")) {
+    if (prod.trim()) addStageProduct(t, "boss", "Giám đốc nhập tay", prod);
+    else t.product = "";
+  }
+  touchTask(t, "Giám đốc", "Cập nhật thông tin việc.");
+  logEvent("Cập nhật việc \"" + t.title + "\".", t.id);
+  toast("💾 Đã lưu việc."); closeModal(); render();
+}
+function submitReview(id) {
+  var t = getTask(id); if (!t || !t.product) { toast("Việc chưa có sản phẩm."); return; }
+  var r = transitionTask(id, "review", { who: "Giám đốc", text: "Giám đốc nộp sản phẩm lên Chờ duyệt." });
+  if (!r.ok) { toast("⚠️ " + r.error); return; }
+  logEvent("Việc \"" + t.title + "\" vào Chờ duyệt.", t.id);
+  closeModal(); toast("📥 Đã nộp duyệt."); go("review");
+}
+function doTransfer(id) {
+  var room = document.getElementById("tkRoom").value, asg = document.getElementById("tkAssignee").value;
+  closeModal(); transferTask(id, room, asg);
+}
+function copyHandover(id) {
+  var t = getTask(id); if (!t) return;
+  var txt = t.handover || buildHandover(t);
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(function () { toast("📋 Đã sao chép gói bàn giao."); }, function () { toast("Không sao chép được — thầy chọn tay trong khung gói bàn giao nhé."); });
+  else toast("Trình duyệt không hỗ trợ sao chép nhanh — thầy chọn tay trong khung gói bàn giao nhé.");
+}
+function deleteTask(id) {
+  var t = getTask(id); if (!t) return;
+  if (!confirm("Xoá hẳn việc \"" + t.title + "\" khỏi công ty (cả trên Firebase)?")) return;
+  S.tasks = S.tasks.filter(function (x) { return x.id !== id; });
+  saveState(); delTaskRemote(id);
+  logEvent("Đã xoá việc \"" + t.title + "\".", id);
+  closeModal(); toast("🗑 Đã xoá việc."); render();
+}
+function returnModal(id) {
+  openModal(modalHead("Trả lại việc kèm ghi chú") +
+    "<div class='frow'><label>Ghi chú cho đội (đi vào dossier + chat phòng — ghi rõ chỗ cần sửa)</label><textarea class='txta' id='returnNote' placeholder='Vd: Phần hoạt động 2 thiếu cột sản phẩm theo từng bước, bổ sung giúp em…'></textarea></div>" +
+    "<div class='btnrow'><button class='btn' onclick=\"doReturn('" + id + "')\">↩ Trả lại việc</button><button class='btn sec' onclick='closeModal()'>Huỷ</button></div>");
+}
+function doReturn(id) {
+  var note = document.getElementById("returnNote").value.trim();
+  if (!note) { toast("Thầy ghi chú lý do trả lại nhé — đội cần biết sửa chỗ nào."); return; }
+  closeModal(); returnTask(id, note);
+}
+function openProduct(id) {
+  var p = null; S.products.forEach(function (x) { if (x.id === id) p = x; });
+  if (!p) return;
+  openModal(modalHead(p.title) + "<div class='muted' style='margin-bottom:8px'>" + esc(ROOMS[p.room] ? ROOMS[p.room].name : p.room) + " · Vào kho " + fmtDT(p.at) + "</div><div class='prodbg' style='max-height:50vh'>" + esc(p.content) + "</div>" +
+    "<div class='btnrow'><button class='btn small sec' onclick=\"downloadProduct('" + p.id + "','txt')\">⬇ Tải .txt</button><button class='btn small sec' onclick=\"downloadProduct('" + p.id + "','md')\">⬇ Tải .md</button></div>");
+}
+function downloadFile(name, text) {
+  var blob = new Blob([text], { type: "text/plain;charset=utf-8" });
+  var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click();
+  setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 400);
+}
+function slugName(s) { return String(s || "san-pham").normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9]+/g, "_").replace(/^_+|_+$/g, "").slice(0, 60) || "san-pham"; }
+function downloadProduct(id, ext) {
+  var p = null; S.products.forEach(function (x) { if (x.id === id) p = x; });
+  if (!p) return;
+  downloadFile(slugName(p.title) + "." + ext, p.content);
+}
+function deleteProduct(id) {
+  var p = null; S.products.forEach(function (x) { if (x.id === id) p = x; });
+  if (!p || !confirm("Xoá sản phẩm \"" + p.title + "\" khỏi Kho (cả trên Firebase)?")) return;
+  S.products = S.products.filter(function (x) { return x.id !== id; });
+  saveState(); delProductRemote(id);
+  logEvent("Đã xoá sản phẩm \"" + p.title + "\" khỏi Kho.", p.taskId || "");
+  toast("🗑 Đã xoá sản phẩm."); render();
+}
+function saveBrand() {
+  S.brand = { channel: document.getElementById("brandChannel").value.trim(), signature: document.getElementById("brandSignature").value, cta: document.getElementById("brandCta").value };
+  saveState(); logEvent("Cập nhật Thương hiệu kênh.");
+  toast("💾 Đã lưu thương hiệu kênh.");
+}
+function saveContext() {
+  S.context = { text: document.getElementById("ctxText").value, updatedAt: nowMs() };
+  saveState(); pushContext();
+  S.tasks.forEach(function (t) { t.handover = buildHandover(t); pushTask(t); });
+  saveState();
+  logEvent("Cập nhật Hồ sơ chung của công ty — cả đội Muse làm theo bản mới.");
+  toast("🧭 Đã lưu Hồ sơ chung — đã đồng bộ Firebase và làm mới gói bàn giao của mọi việc.");
+  render();
+}
+function restoreContext() {
+  if (!confirm("Khôi phục Hồ sơ chung về bản mặc định ban đầu?")) return;
+  S.context = { text: DEFAULT_CONTEXT, updatedAt: nowMs() };
+  saveState(); pushContext(); render(); toast("Đã khôi phục Hồ sơ chung mặc định.");
+}
+
+/* ---------------- HỒ KEY (MODAL) ---------------- */
+function keysModal() {
+  var rows = gemKeys.map(function (k, i) {
+    var suf = keySuffix(k), md = gemModels[suf], st = gemStates[suf];
+    var status = md && md.text ? ("Model chữ: <b>" + esc(md.text) + "</b>") : (md && md.err ? esc(md.err) : "Chưa kiểm tra");
+    if (st && st.err) status += " · <span style='color:#b3261e'>" + esc(st.err) + "</span>";
+    return "<div class='rowitem'><div class='rt1'><div><span class='ttl'>Key " + (i + 1) + " · ••••" + esc(suf) + "</span><div class='muted'>" + status + "</div></div><div class='acts'><button class='btn small sec' onclick='removeKey(" + i + ")'>Xoá</button></div></div></div>";
+  }).join("");
+  openModal(modalHead("🔑 Hồ key Gemini — đường chạy nhanh tuỳ chọn") +
+    "<p class='muted' style='margin-bottom:12px'>Key chỉ lưu trong trình duyệt máy này, dùng cho chat trả lời nhanh và nút \"⚡ Chạy nhanh Gemini\". App tự khám phá model theo từng key và xoay vòng khi key lỗi/hết hạn mức. Đội Muse thật làm việc qua Firebase — không cần key này.</p>" +
+    (rows || "<div class='card'>Hồ đang trống.</div>") +
+    "<div class='frow' style='margin-top:12px'><label>Dán thêm key (mỗi key một dòng)</label><textarea class='txta' id='newKeys' placeholder='AIza…'></textarea></div>" +
+    "<div class='btnrow'><button class='btn' onclick='addKeys()'>➕ Thêm key</button><button class='btn sec' onclick='checkKeys(this)'>🔍 Kiểm tra tất cả key</button><button class='btn sec' onclick='closeModal()'>Đóng</button></div>");
+}
+function addKeys() {
+  var raw = document.getElementById("newKeys").value.split(/\n+/).map(function (x) { return x.trim(); }).filter(Boolean);
+  var added = 0;
+  raw.forEach(function (k) { if (gemKeys.indexOf(k) < 0) { gemKeys.push(k); added++; } });
+  saveGem(); keysModal();
+  toast(added ? ("➕ Đã thêm " + added + " key vào hồ.") : "Không có key mới nào (trùng hoặc trống).");
+}
+function removeKey(i) { gemKeys.splice(i, 1); saveGem(); keysModal(); }
+async function checkKeys(btn) {
+  if (!gemKeys.length) { toast("Hồ chưa có key nào."); return; }
+  btn.disabled = true; btn.textContent = "Đang kiểm tra…";
+  for (var i = 0; i < gemKeys.length; i++) {
+    try { await discoverModels(gemKeys[i]); } catch (e) { gemStates[keySuffix(gemKeys[i])] = { err: vnErr(e), at: nowMs() }; saveGem(); }
+  }
+  btn.disabled = false; keysModal();
+  toast("🔍 Đã kiểm tra xong " + gemKeys.length + " key.");
+}
+
+/* ---------------- TÌM NHANH ---------------- */
+function searchModal() {
+  openModal(modalHead("Tìm nhanh") +
+    "<div class='frow'><input class='inp' id='searchInput' placeholder='Tìm việc, sản phẩm theo chữ…' oninput='renderSearch()'></div><div id='searchResults'></div>");
+  setTimeout(function () { var el = document.getElementById("searchInput"); if (el) el.focus(); }, 50);
+}
+function renderSearch() {
+  var q = (document.getElementById("searchInput").value || "").toLowerCase().trim();
+  var box = document.getElementById("searchResults"); if (!box) return;
+  if (!q) { box.innerHTML = "<div class='muted'>Gõ để tìm trong việc và sản phẩm.</div>"; return; }
+  var h = "";
+  S.tasks.filter(function (t) { return (t.title + " " + t.desc).toLowerCase().indexOf(q) >= 0; }).slice(0, 8).forEach(function (t) {
+    h += "<div class='sres' onclick=\"closeModal();openTask('" + t.id + "')\"><div class='k'>VIỆC · " + esc(STATUSES[t.status].name) + "</div><b>" + esc(t.title) + "</b><div class='muted'>" + esc(ROOMS[t.room].name) + " · " + esc(memberName(t.assignee)) + "</div></div>";
+  });
+  S.products.filter(function (p) { return (p.title + " " + p.content).toLowerCase().indexOf(q) >= 0; }).slice(0, 8).forEach(function (p) {
+    h += "<div class='sres' onclick=\"closeModal();openProduct('" + p.id + "')\"><div class='k'>SẢN PHẨM</div><b>" + esc(p.title) + "</b><div class='muted'>" + fmtDT(p.at) + "</div></div>";
+  });
+  box.innerHTML = h || "<div class='muted'>Không tìm thấy gì khớp.</div>";
+}
+
+/* ---------------- SAO LƯU / TẠM DỪNG / ĐỒNG BỘ ---------------- */
+function exportData() {
+  var data = { app: "EduMaster Company", exportedAt: nowMs(), tasks: S.tasks, chats: S.chats, products: S.products, audit: S.audit, brand: S.brand, context: S.context };
+  downloadFile("edumaster-company-backup-" + new Date().toISOString().slice(0, 10) + ".json", JSON.stringify(data, null, 2));
+  toast("⬇ Đã xuất file sao lưu JSON.");
+}
+function importData(file) {
+  var rd = new FileReader();
+  rd.onload = function () {
+    try {
+      var d = JSON.parse(rd.result);
+      if (!d || !Array.isArray(d.tasks) || !d.chats) throw new Error("File không đúng định dạng sao lưu");
+      S.tasks = d.tasks; S.chats = d.chats; S.products = d.products || []; S.audit = d.audit || [];
+      if (d.brand) S.brand = d.brand;
+      if (d.context && typeof d.context.text === "string") S.context = d.context;
+      CHANNELS.forEach(function (c) { if (!Array.isArray(S.chats[c])) S.chats[c] = []; });
+      saveState();
+      S.tasks.forEach(pushTask); S.products.forEach(pushProduct); S.audit.forEach(pushAudit); pushContext();
+      CHANNELS.forEach(function (c) { (S.chats[c] || []).forEach(function (m) { pushMsg(c, m); }); });
+      logEvent("Nhập sao lưu JSON vào công ty.");
+      toast("⬆ Đã nhập sao lưu và đồng bộ lên Firebase."); render();
+    } catch (e) { toast("⚠️ Nhập sao lưu lỗi: " + e.message, 4600); }
+  };
+  rd.readAsText(file);
+}
+function togglePause() {
+  S.paused = !S.paused; saveState();
+  if (S.paused) {
+    Object.keys(RUNS).forEach(function (id) { if (RUNS[id] && RUNS[id].abort) RUNS[id].abort(); });
+    logEvent("Giám đốc TẠM DỪNG công ty — mọi lượt chạy nhanh đang chờ đều dừng.");
+    toast("⏸ Đã tạm dừng công ty.");
+  } else {
+    logEvent("Giám đốc cho công ty chạy tiếp.");
+    toast("▶ Công ty chạy tiếp.");
+  }
+  paintPauseBtn(); render();
+}
+function paintPauseBtn() {
+  var b = document.getElementById("pauseBtn"); if (!b) return;
+  b.textContent = S.paused ? "▶ Tiếp tục công ty" : "⏸ Tạm dừng công ty";
+  b.classList.toggle("on", !!S.paused);
+}
+async function syncNow() {
+  setSync(null, "Đang đồng bộ…");
+  var ok = await pullAll();
+  render();
+  toast(ok ? "🔄 Đã đồng bộ dữ liệu mới nhất từ Firebase." : "⚠️ Chưa đồng bộ được — kiểm tra mạng rồi thử lại.", 3800);
+}
+
+/* ---------------- KHỞI ĐỘNG ---------------- */
+var shellBound = false, syncTimer = null;
+function initShell() {
+  if (shellBound) return; shellBound = true;
+  document.getElementById("pauseBtn").addEventListener("click", togglePause);
+  document.getElementById("syncBtn").addEventListener("click", syncNow);
+  document.getElementById("searchBtn").addEventListener("click", searchModal);
+  document.getElementById("keysBtn").addEventListener("click", keysModal);
+  document.getElementById("lockNowBtn").addEventListener("click", lockNow);
+  document.getElementById("hamburger").addEventListener("click", function () { document.getElementById("sidebar").classList.toggle("open"); });
+  document.getElementById("modalBackdrop").addEventListener("click", function (e) { if (e.target === this) closeModal(); });
+  document.getElementById("importFile").addEventListener("change", function () { if (this.files && this.files[0]) importData(this.files[0]); this.value = ""; });
+  document.addEventListener("keydown", function (e) { if ((e.ctrlKey || e.metaKey) && (e.key === "k" || e.key === "K")) { e.preventDefault(); searchModal(); } });
+}
+function unlockApp() {
+  document.body.classList.remove("locked");
+  initShell(); paintPauseBtn();
+  renderSidebar(); go("chat"); renderMembers();
+  pullAll().then(function () { renderSidebar(); renderMembers(); render(); });
+  if (!syncTimer) syncTimer = setInterval(function () { pullAll().then(function () { renderSidebar(); renderMembers(); render(); }); }, 60000);
+}
+if (typeof document !== "undefined" && document.getElementById && document.getElementById("lockOverlay")) { initLock(); }
+</script>
+</body>
+</body>
+</html>
