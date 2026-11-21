@@ -104,6 +104,10 @@
   .gal-cell.pickable.sel img{border-color:var(--blue);box-shadow:0 0 0 2px var(--blue)}
   .gal-cell.pickable.sel .cap{color:var(--txt);font-weight:700}
   .obadge{display:inline-block;background:#123c5f;color:#c4e4ff;border-radius:6px;padding:2px 8px;font-size:12.5px;font-weight:700;margin-left:6px}
+  .kc11line{margin-top:8px;padding:8px 10px;border:1px dashed #3f6212;border-radius:8px;background:rgba(101,163,13,.08);font-size:13.5px;line-height:1.5}
+  .kc11line select{padding:6px 8px;min-height:36px;border-radius:8px;font-size:13.5px;font-weight:700}
+  .kc11chip{display:inline-block;border-radius:6px;padding:2px 8px;font-size:12.5px;font-weight:700;background:#3b2f0b;color:#ffe9a8;margin-left:6px}
+  .kc11banner{margin-bottom:10px}
   .phieu-item{border:1px solid var(--line);border-radius:12px;padding:12px 14px;margin-top:10px;background:var(--panel)}
   .phieu-item.dim{opacity:.6}
   /* ===== Trang bài tập tương tác (?bt=) — giao diện HỌC SINH, mobile là chính ===== */
@@ -203,6 +207,7 @@
   <header class="top">
     <h1>🎬 Video Bài Giảng <span class="ai">AI</span></h1>
     <p>Chỉ cần nêu <b>tên bài</b> hoặc dán <b>câu chuyện</b> — app tự viết kịch bản, tạo hình, vẽ sơ đồ, dựng bảng số liệu, thu giọng đọc và ghép thành video.</p>
+    <p class="small" id="buildTag">🏷️ Bản KC11 • 21/11/2026 — khuôn kịch bản “Đặt đúng chỗ”: mỗi cảnh một vai, mỗi vai một nguồn hình chính danh</p>
   </header>
 
   <!-- ===== HỒ KEY GEMINI ===== -->
@@ -1718,15 +1723,16 @@ function masterPrompt(){
     '  "subject": "Môn học",',
     '  "grade": "Lớp",',
     '  "segments": [',
-    '    { "type": "image",   "heading": "Tiêu đề đoạn", "narration": "Lời đọc tiếng Việt...", "imagePrompt": "English image prompt, no text in image" },',
-    '    { "type": "sgk",     "heading": "Tiêu đề đoạn", "narration": "...", "imageHint": "Hình 12.3 SGK — mô tả hình SGK cần tìm", "imagePrompt": "English fallback prompt if no textbook image, no text" },',
-    '    { "type": "diagram", "heading": "Tiêu đề đoạn", "narration": "...", "diagram": { "steps": [ {"label":"Bước 1","sub":"giải thích ngắn"}, {"label":"Bước 2","sub":"..."} ] } },',
-    '    { "type": "table",   "heading": "Tiêu đề đoạn", "narration": "...", "table": { "caption": "Tên bảng", "headers": ["Cột 1","Cột 2"], "rows": [["...","..."]] } },',
-    '    { "type": "text",    "heading": "Tiêu đề đoạn", "narration": "...", "bullets": ["Ý chính 1","Ý chính 2"] }',
+    '    { "type": "image",   "heading": "Tiêu đề đoạn", "narration": "Lời đọc tiếng Việt...", "vai": "goi_mo", "imagePrompt": "English image prompt, no text in image" },',
+    '    { "type": "sgk",     "heading": "Tiêu đề đoạn", "narration": "...", "vai": "noi_dung", "imageHint": "Hình 12.3 SGK — mô tả hình SGK cần tìm", "imagePrompt": "English fallback prompt if no textbook image, no text" },',
+    '    { "type": "diagram", "heading": "Tiêu đề đoạn", "narration": "...", "vai": "nhan_manh", "diagram": { "steps": [ {"label":"Bước 1","sub":"giải thích ngắn"}, {"label":"Bước 2","sub":"..."} ] } },',
+    '    { "type": "table",   "heading": "Tiêu đề đoạn", "narration": "...", "vai": "noi_dung", "table": { "caption": "Tên bảng", "headers": ["Cột 1","Cột 2"], "rows": [["...","..."]] } },',
+    '    { "type": "text",    "heading": "Tiêu đề đoạn", "narration": "...", "vai": "tong_ket", "bullets": ["Ý chính 1","Ý chính 2"] }',
     "  ]",
     "}",
     "QUY TẮC BẮT BUỘC:",
     "- Số segments tuỳ theo độ đầy đủ tự nhiên của nội dung bài: phủ đủ các phần chính của bài, KHÔNG cắt xén ý để vừa một độ dài định sẵn (video chạy theo độ dài thật của nội dung). Đoạn đầu là image hoặc sgk mở bài, đoạn cuối là text hoặc image tổng kết.",
+    "- Mỗi segment PHẢI có trường vai (vai cảnh trong khuôn \"Đặt đúng chỗ\"): một trong tong_quan, goi_mo, noi_dung, lien_he, nhan_manh, tong_ket, ket — gán theo khối KHUÔN VAI CẢNH ở cuối yêu cầu này.",
     "- Có ÍT NHẤT 1 segment diagram (sơ đồ dòng chảy 3–6 bước) và ÍT NHẤT 1 segment table (bảng số liệu).",
     "- ƯU TIÊN segment type sgk cho nội dung mà sách giáo khoa thường có sẵn hình hoặc sơ đồ minh hoạ (cấu tạo, quá trình, thí nghiệm...). Segment sgk PHẢI có trường imageHint mô tả chính xác hình SGK cần tìm, ví dụ: Hình 12.3 SGK — sơ đồ quang hợp. Nếu bài có hình SGK quen thuộc, hãy dùng ít nhất 1–2 segment sgk.",
     '- narration: lời đọc tiếng Việt tự nhiên cho học sinh nghe. Hãy viết ĐẦY ĐỦ ý chính của bài theo mạch nội dung tự nhiên — không giới hạn độ dài, mỗi câu văn phải trọn vẹn hoàn chỉnh, không viết dở dang. Mọi con số, phân số, công thức trong narration PHẢI viết thành dạng đọc được bằng chữ (ví dụ: "sáu phân tử", "một phần hai", "hai mươi phần trăm"), KHÔNG dùng ký hiệu như CO2, %, 1/2.',
@@ -1751,6 +1757,12 @@ function validateScript(s){
     if (sg.type === "text" && !Array.isArray(sg.bullets)) sg.bullets = [];
     if (sg.type === "image" && !sg.imagePrompt) sg.imagePrompt = sg.heading;
     if (sg.type === "sgk" && !sg.imageHint) sg.imageHint = sg.heading;
+    /* [KC11] Chuẩn hoá VAI CẢNH: AI khai đúng thì giữ nguyên; thiếu
+       hoặc lạ thì suy tất định theo loại đoạn + vị trí + loại video
+       (không chặn kịch bản vì thiếu vai). */
+    if (typeof kc11ValidRole === "function" && typeof kc11InferRole === "function"){
+      if (!kc11ValidRole(sg.vai)) sg.vai = kc11InferRole(sg, i, s.segments.length, (typeof videoType !== "undefined" ? videoType : "full"), false);
+    }
   });
   return s;
 }
@@ -1781,6 +1793,9 @@ async function generateScript(){
   }
   const typeBlock = videoTypeBlock(videoType);
   if (typeBlock) userPart += "\n\n" + typeBlock;
+  /* [KC11] Khối trình tự vai theo loại video (mục B1–B4 của khuôn) */
+  const kc11Block = (typeof kc11RolePromptBlock === "function") ? kc11RolePromptBlock(videoType) : "";
+  if (kc11Block) userPart += "\n\n" + kc11Block;
   const instrBlock = teacherInstructionBlock($("teacherInstr").value);
   if (instrBlock) userPart += "\n\n" + instrBlock;
   const data = await gemini("text", {
@@ -1804,6 +1819,56 @@ async function generateScript(){
 
 /* ---------- Màn hình duyệt kịch bản ---------- */
 const TYPE_LABEL = { image: "🖼 Hình ảnh", sgk: "📚 Hình SGK", diagram: "🔀 Sơ đồ", table: "📊 Bảng số liệu", text: "📄 Nội dung chữ", phieu: "📋 Phiếu học tập", chuade: "🎯 Chữa đề", kechuyen: "🎭 Kể chuyện" };
+/* [KC11] Dòng VAI CẢNH ở màn duyệt Bài giảng (mục D3 của khuôn
+   "Đặt đúng chỗ" — vẫn đúng 1 điểm dừng duyệt như cũ): nhãn vai
+   (thầy đổi được bằng select), nhãn nguồn hình THỰC DÙNG, lý do
+   1 dòng và trạng thái đúng chỗ / dự phòng / thiếu hình. Khi chưa
+   đúng chỗ, thầy có 3 lựa chọn: giữ nguyên (= chấp nhận dự phòng),
+   chọn/đổi hình ở phần gán hình của đoạn, hoặc Bỏ đoạn này. */
+function buildKc11RoleLine(sg, i){
+  const total = scriptData.segments.length;
+  const vai = kc11SegRole(sg, i, total, videoType, false);
+  const as = kc11Assess(sg, vai);
+  const wrap = document.createElement("div");
+  wrap.className = "kc11line";
+  wrap.dataset.kc11status = as.status;
+  const top = document.createElement("div");
+  const lab = document.createElement("span");
+  lab.innerHTML = "🎯 <b>Vai cảnh:</b> ";
+  top.appendChild(lab);
+  const sel = document.createElement("select");
+  KC11_ROLES.forEach(r => {
+    const o = document.createElement("option");
+    o.value = r.id; o.textContent = r.icon + " " + r.label;
+    if (r.id === vai) o.selected = true;
+    sel.appendChild(o);
+  });
+  sel.title = "Đổi vai cảnh của đoạn này (app sẽ chấm lại nguồn hình theo vai mới)";
+  sel.addEventListener("change", () => { sg.vai = sel.value; renderScriptReview(); });
+  top.appendChild(sel);
+  const chip = document.createElement("span");
+  chip.className = "kc11chip";
+  chip.textContent = "Nguồn: " + as.srcLabel;
+  top.appendChild(chip);
+  wrap.appendChild(top);
+  const st = document.createElement("div");
+  st.style.marginTop = "4px";
+  st.textContent = (as.status === "ok" ? "✅ " : (as.status === "missing" ? "🚫 " : "⚠️ ")) + as.reason;
+  wrap.appendChild(st);
+  if (as.status !== "ok"){
+    const hint = document.createElement("div");
+    hint.className = "small";
+    hint.style.marginTop = "4px";
+    hint.textContent = "Thầy có thể: giữ nguyên (chấp nhận dự phòng này) • chọn/đổi hình ở phần gán hình của đoạn • hoặc bỏ hẳn đoạn này:";
+    const bDel = mkBtn("🗑 Bỏ đoạn này", "btn-ghost");
+    bDel.style.marginLeft = "8px";
+    bDel.disabled = total <= 1;
+    bDel.addEventListener("click", () => { scriptData.segments.splice(i, 1); renderScriptReview(); });
+    hint.appendChild(bDel);
+    wrap.appendChild(hint);
+  }
+  return wrap;
+}
 function renderScriptReview(){
   if (!scriptData) return;
   $("scriptMeta").textContent = "🎬 " + (scriptData.title || "Video bài giảng") +
@@ -1835,6 +1900,7 @@ function renderScriptReview(){
       box.appendChild(w2);
     }
   }
+  let kc11OffCount = 0;
   scriptData.segments.forEach((sg, i) => {
     const d = document.createElement("div"); d.className = "seg";
     let extra = "";
@@ -1862,8 +1928,23 @@ function renderScriptReview(){
       '<p class="narr">🎙 ' + escapeHtml(sg.narration) + "</p>" + extra;
     if (sg.type === "image" || sg.type === "sgk") d.appendChild(buildAssignUI(sg, i));
     if (sg.type === "chuade" && sg.cdKind === "a") d.appendChild(buildChuadeExplEditor(sg, i));
+    /* [KC11] Dòng vai cảnh cho các đoạn BÀI GIẢNG (phiếu/chữa đề
+       giữ nguyên cấu trúc đã chốt, không qua nhánh này). */
+    if (["image", "sgk", "diagram", "table", "text"].indexOf(sg.type) >= 0 && typeof buildKc11RoleLine === "function"){
+      const rl = buildKc11RoleLine(sg, i);
+      d.appendChild(rl);
+      if (rl.dataset.kc11status && rl.dataset.kc11status !== "ok") kc11OffCount++;
+    }
     box.appendChild(d);
   });
+  /* [KC11] Banner một lần ở đầu màn duyệt khi có đoạn chưa đúng
+     chỗ — nói rõ nguồn chính danh nào chưa trực tuyến, chi tiết
+     nằm ở dòng vai cảnh của từng đoạn. */
+  if (kc11OffCount > 0){
+    const bn = document.createElement("div"); bn.className = "warn kc11banner";
+    bn.innerHTML = "🎯 <b>Khuôn “Đặt đúng chỗ”:</b> có <b>" + kc11OffCount + " đoạn</b> chưa dùng được nguồn hình chính danh của vai cảnh — poster nguyên tấm và ảnh PPT kho mua <b>chưa trực tuyến</b> nên app tạm lùi về nguồn dự phòng và ghi rõ ở từng đoạn. Thầy xem dòng 🎯 <b>Vai cảnh</b> dưới mỗi đoạn để biết đoạn nào đang dự phòng, đoạn nào thiếu hình — app <b>không tự lấp hình lạ</b> vào chỗ thiếu.";
+    box.insertBefore(bn, box.firstChild);
+  }
   $("scriptJson").value = JSON.stringify(scriptData, null, 2);
   updateDurInfo();
   $("scriptCard").classList.remove("hidden");
@@ -2133,6 +2214,10 @@ function scoreOnlineEntry(e, ctx){
   if (ctx.hint) s += captionHitScore(ctx.hint, e.caption);
   if (ctx.lesson && e.lessonCode === "bai-" + ctx.lesson) s += 40;
   if (ctx.grade && e.grade === ctx.grade) s += 20;
+  /* [KC11] Điểm THẺ VAI (mục D2 của khuôn "Đặt đúng chỗ"): hình có
+     thẻ vai khớp vai cảnh của đoạn +30; hình bị cấm dùng (camDung —
+     vd dính watermark) bị trừ nặng để không bao giờ được tự gán. */
+  if (ctx.vai) s += kc11RoleBonus(e, ctx.vai);
   return s;
 }
 /*__END_PURE_SCORE__*/
@@ -2505,6 +2590,174 @@ function kc9AppendClosing(segments, ctx, opts){
   return segments.concat([kc9ClosingSegment(ctx)]);
 }
 /*__END_PURE_KC9__*/
+/*__PURE_KC11__*/
+/* [KC11] KHUÔN KỊCH BẢN "ĐẶT ĐÚNG CHỖ" — logic thuần (không DOM,
+   test Node eval trực tiếp khối này). Thầy duyệt khuôn ngày
+   21/11/2026 sau video mẫu Bài 8 và chốt "phải làm chung hết theo
+   1 khuôn". Tài liệu khuôn: NGHIEN_CUU_KICH_BAN_DUNG_CHO.md.
+   - 7 VAI CẢNH, mỗi vai có thứ tự nguồn hình CHÍNH DANH -> dự phòng
+     (KC11_ROLE_SRC, đúng bảng mục A của tài liệu khuôn).
+   - Nguồn CHƯA TRỰC TUYẾN (poster nguyên tấm, ảnh PPT kho mua, ô
+     cắt poster — hiện chỉ ở máy local) vẫn nằm trong thứ tự với cờ
+     online:false: app lùi về nguồn trực tuyến sẵn có và BÁO RÕ ở
+     màn duyệt (kc11Assess), không giả vờ đã đủ khuôn, không bịa
+     hình. Khi các kho đó lên online, chỉ cần manifest của chúng
+     mang sẵn thẻ vai (vaiGoiY) là cơ chế này dùng ngay.
+   - Thẻ vai của HÌNH (D1): hình SGK (sgk-lib) mặc định mang vai
+     "noi_dung"; entry có trường vaiGoiY (manifest mở rộng) thì
+     theo trường đó; entry camDung (watermark...) bị loại khỏi
+     mọi lượt tự gán/chọn.
+   - kc11SegRole: vai của 1 đoạn — ưu tiên sg.vai (AI khai trong
+     kịch bản hoặc thầy chọn tay ở màn duyệt); thiếu/lạ thì SUY
+     tất định theo loại đoạn + vị trí + loại video. */
+const KC11_ROLES = [
+  { id: "tong_quan", label: "Tổng quan", icon: "🧭" },
+  { id: "goi_mo", label: "Gợi mở", icon: "🔥" },
+  { id: "noi_dung", label: "Nội dung", icon: "📖" },
+  { id: "lien_he", label: "Liên hệ thực tế", icon: "🌍" },
+  { id: "nhan_manh", label: "Nhấn mạnh", icon: "⭐" },
+  { id: "tong_ket", label: "Tổng kết", icon: "🧩" },
+  { id: "ket", label: "Kết — kêu gọi", icon: "🏁" }
+];
+const KC11_SRC_META = {
+  poster: { label: "🗺 Poster nguyên tấm", online: false },
+  ppt: { label: "🖼 Ảnh PPT đời thật", online: false },
+  cat: { label: "✂️ Ô cắt poster", online: false },
+  sgk: { label: "📚 Hình SGK", online: true },
+  mau: { label: "🎨 Mẫu vẽ của app", online: true },
+  ai: { label: "🤖 AI vẽ", online: true },
+  upload: { label: "⬆ Ảnh của thầy", online: true }
+};
+const KC11_ROLE_SRC = {
+  tong_quan: ["poster", "mau", "sgk"],
+  goi_mo: ["ppt", "ai", "mau"],
+  noi_dung: ["sgk", "ppt", "mau"],
+  lien_he: ["ppt", "sgk", "ai"],
+  nhan_manh: ["mau", "cat", "sgk"],
+  tong_ket: ["poster", "mau", "sgk"],
+  ket: ["mau"]
+};
+function kc11Norm(s){
+  return String(s || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/đ/g, "d");
+}
+function kc11ValidRole(v){ return KC11_ROLES.some(r => r.id === v); }
+function kc11RoleDef(id){ return KC11_ROLES.filter(r => r.id === id)[0] || null; }
+function kc11EntryRole(e){
+  if (!e) return null;
+  if (e.vaiGoiY && kc11ValidRole(e.vaiGoiY)) return e.vaiGoiY;
+  return "noi_dung"; /* kho trực tuyến hiện nay là sgk-lib: mặc định vai Nội dung (D1) */
+}
+function kc11RoleBonus(e, vai){
+  if (!e || !vai) return 0;
+  if (e.camDung) return -10000;
+  return kc11EntryRole(e) === vai ? 30 : 0;
+}
+function kc11InferRole(sg, idx, total, vtype, isKc){
+  if (!sg) return "noi_dung";
+  if (sg.kcClosing) return "ket";
+  const n = Math.max(1, total || 1), i = Math.max(0, idx || 0);
+  if (isKc) return i === 0 ? "tong_quan" : "noi_dung";
+  if (sg.type === "sgk") return "noi_dung";
+  if (sg.type === "diagram") return "nhan_manh";
+  if (sg.type === "table") return "noi_dung";
+  const last = i === n - 1 && n > 1;
+  if (last){
+    if (vtype === "warmup") return "ket";
+    if (sg.type === "text" || sg.type === "image") return "tong_ket";
+  }
+  if (i === 0){
+    if (vtype === "warmup" || vtype === "part") return "goi_mo";
+    return "tong_quan";
+  }
+  if (sg.type === "image"){
+    const hay = kc11Norm((sg.heading || "") + " " + (sg.narration || ""));
+    if (/(thuc te|doi song|lien he|ung dung|ngoai doi|quanh ta)/.test(hay)) return "lien_he";
+    return i <= 1 ? "goi_mo" : "noi_dung";
+  }
+  return "noi_dung";
+}
+function kc11SegRole(sg, idx, total, vtype, isKc){
+  if (sg && kc11ValidRole(sg.vai)) return sg.vai;
+  return kc11InferRole(sg, idx, total, vtype, isKc);
+}
+function kc11SegSource(sg){
+  if (!sg) return "none";
+  if (sg.type === "kechuyen"){
+    if (sg.kcSrc === "sgk") return (sg.onlinePath || sg.sgkImageId) ? "sgk" : "none";
+    if (sg.kcSrc === "upload") return sg.kcUpload ? "upload" : "none";
+    return "mau";
+  }
+  if (sg.onlinePath || sg.sgkImageId) return "sgk";
+  if (sg.type === "diagram" || sg.type === "table" || sg.type === "text") return "mau";
+  if (sg.type === "image") return "ai";
+  return "none"; /* type sgk chưa có hình nào */
+}
+function kc11OkReason(sg, vai, src){
+  if (src === "sgk"){
+    if (sg.onlineFigure) return "Đúng chỗ: hình SGK đúng số hiệu Hình " + sg.onlineFigure + " mà lời đọc nhắc tới.";
+    return "Đúng chỗ: hình SGK của bài — vai này cần đúng hình sách giáo khoa.";
+  }
+  if (src === "mau"){
+    if (sg.kcClosing || sg.kcTpl === "ket_bai") return "Đúng chỗ: mẫu cảnh kết KC9 — khép chuyện, dẫn vào bài học, kêu gọi đăng ký kênh.";
+    if (sg.type === "diagram") return "Đúng chỗ: sơ đồ vẽ bằng mẫu — các bước và số liệu chính xác, chữ to rõ.";
+    if (sg.type === "table") return "Đúng chỗ: bảng vẽ bằng mẫu — số liệu chính xác theo kịch bản.";
+    return "Đúng chỗ: mẫu vẽ của app — vai này cần chữ/sơ đồ rõ hơn ảnh.";
+  }
+  if (src === "upload") return "Đúng chỗ: ảnh của thầy tự chọn cho cảnh này.";
+  if (src === "ai") return "Đúng chỗ: AI vẽ minh hoạ — vai này cần hình gợi mở, không phải hình kiến thức chuẩn.";
+  return "Đúng chỗ.";
+}
+function kc11Assess(sg, vai){
+  const pref = KC11_ROLE_SRC[vai] || KC11_ROLE_SRC.noi_dung;
+  const src = kc11SegSource(sg);
+  const srcMeta = KC11_SRC_META[src] || null;
+  const wantMeta = KC11_SRC_META[pref[0]];
+  const base = {
+    vai: vai, src: src,
+    srcLabel: srcMeta ? srcMeta.label : "🚫 Chưa có hình",
+    want: pref[0], wantLabel: wantMeta.label
+  };
+  if (src === "none"){
+    base.status = "missing";
+    base.reason = "Chưa có hình nào — vai này cần " + wantMeta.label +
+      (wantMeta.online ? "" : " (kho này chưa trực tuyến)") +
+      ". Thầy chọn hình ở phần gán hình bên dưới, hoặc giữ nguyên để app chuyển đoạn này thành slide chữ khi dựng — app không tự lấp hình lạ vào.";
+    return base;
+  }
+  const ix = pref.indexOf(src);
+  if (ix === 0){
+    base.status = "ok";
+    base.reason = kc11OkReason(sg, vai, src);
+    return base;
+  }
+  if (ix > 0){
+    base.status = "fallback";
+    base.reason = "Đang dùng dự phòng: vai này ưu tiên " + wantMeta.label + " — " +
+      (wantMeta.online ? ("chưa có " + wantMeta.label + " cho đoạn này") : ("nguồn chính danh này chưa trực tuyến")) +
+      ", nên tạm dùng " + srcMeta.label + ".";
+    if (vai === "goi_mo" && src === "sgk") base.reason += " Lưu ý: hình SGK ở cảnh gợi mở có thể lộ trước nội dung sắp học.";
+    return base;
+  }
+  base.status = "warn";
+  base.reason = srcMeta.label + " không nằm trong thứ tự nguồn của vai này (ưu tiên " +
+    pref.map(p => KC11_SRC_META[p].label).join(" → ") + ") — thầy cân nhắc đổi vai cảnh hoặc đổi hình.";
+  if (vai === "goi_mo" && src === "sgk") base.reason += " Đặc biệt lưu ý: hình SGK ở cảnh gợi mở có thể lộ trước nội dung sắp học, phá mất vai gợi mở.";
+  return base;
+}
+const KC11_ROLE_SEQ = {
+  full: "tong_quan (đoạn đầu) → goi_mo → noi_dung (lặp theo từng mục của bài; chen lien_he sau mỗi cụm ý lớn, nhan_manh ở cuối mục khó) → tong_ket (đoạn cuối)",
+  warmup: "goi_mo (hầu hết các đoạn, chỉ khơi gợi, KHÔNG giảng kiến thức) → tong_quan (chớp nhoáng gần cuối) → ket (đoạn cuối: câu hỏi treo dẫn vào bài)",
+  part: "goi_mo (đoạn đầu, ngay trong nội bộ mục) → noi_dung (toàn bộ phần đào sâu) → nhan_manh → tong_ket (đoạn cuối: ghi nhớ riêng của mục)",
+  review: "tong_quan (đoạn đầu) → noi_dung (đi nhanh, mỗi ý một đoạn) → nhan_manh (nhiều, chốt điểm trọng tâm/hay thi) → tong_ket (đoạn cuối)"
+};
+function kc11RolePromptBlock(vtype){
+  if (vtype === "chuade" || vtype === "kechuyen") return "";
+  const seq = KC11_ROLE_SEQ[vtype] || KC11_ROLE_SEQ.full;
+  return "KHUÔN VAI CẢNH \"ĐẶT ĐÚNG CHỖ\" (bắt buộc): mỗi segment PHẢI có thêm trường \"vai\" — một trong: tong_quan (mở đầu, cho thấy toàn chủ đề), goi_mo (gợi mở, gây tò mò, chưa lộ kiến thức), noi_dung (giảng nội dung chính), lien_he (ví dụ, liên hệ thực tế đời sống), nhan_manh (chốt một điểm cần nhớ), tong_ket (hệ thống hoá cuối bài), ket (kết, dẫn vào bài học).\n" +
+    "- Trình tự vai của loại video này: " + seq + ".\n" +
+    "- Quy tắc gán vai: segment type sgk LUÔN là noi_dung; type diagram là nhan_manh; type table là noi_dung; đoạn image mang tính tình huống đời sống mở đầu là goi_mo, mang tính ví dụ ứng dụng là lien_he.";
+}
+/*__END_PURE_KC11__*/
 /* Danh sách hình của BÀI ĐÃ CHỐT (theo danh tính _picked của kịch bản) —
    nguồn cho lưới chọn hình từng đoạn ở luồng chọn bài. */
 function pickedLessonEntries(){
@@ -2520,7 +2773,7 @@ function pickedLessonEntries(){
    bài; gõ tự do -> nhóm hình khớp theo môn/khối/số hiệu (ứng viên điểm cao). */
 function segGridEntries(sg){
   const pe = pickedLessonEntries();
-  if (pe) return pe;
+  if (pe) return pe.filter(e => !e.camDung);   /* [KC11] hình bị cấm dùng không vào lưới chọn */
   return onlineCandidates(sg).slice(0, 12).map(c => {
     const cp = Object.assign({}, c); delete cp._score; return cp;
   });
@@ -2543,8 +2796,15 @@ function toggleSegImage(sg, entry){
 }
 function onlineCandidates(sg){
   if (!onlineLibReady) return [];
-  const ctx = { subj: ctxSubjectCode(), grade: ctxGrade(), lesson: ctxLessonNo(), fig: figOfHint(sg), picked: (scriptData && scriptData._picked) || null, hint: (sg && sg.imageHint) || "" };
+  /* [KC11] Vai cảnh của đoạn (để chấm điểm thẻ vai trong
+     scoreOnlineEntry); hình camDung bị loại khỏi mọi lưới chọn. */
+  const kc11Idx = (scriptData && Array.isArray(scriptData.segments)) ? scriptData.segments.indexOf(sg) : 0;
+  const kc11Vai = (typeof kc11SegRole === "function")
+    ? kc11SegRole(sg, kc11Idx < 0 ? 0 : kc11Idx, (scriptData && scriptData.segments.length) || 1, (typeof videoType !== "undefined" ? videoType : "full"), false)
+    : null;
+  const ctx = { subj: ctxSubjectCode(), grade: ctxGrade(), lesson: ctxLessonNo(), fig: figOfHint(sg), picked: (scriptData && scriptData._picked) || null, hint: (sg && sg.imageHint) || "", vai: kc11Vai };
   return onlineLib
+    .filter(e => !e.camDung)
     .map(e => ({ e, s: scoreOnlineEntry(e, ctx) }))
     .filter(x => x.s >= 0)
     .sort((a, b) => b.s - a.s)
@@ -2564,8 +2824,16 @@ function autoAssignOnline(){
   if (scriptData._mode === "story") return;   /* kể chuyện: ưu tiên ảnh AI minh hoạ, không tự gán hình SGK */
   const used = {};
   scriptData.segments.forEach(sg => { if (sg.onlinePath) used[sg.onlinePath] = 1; });
-  scriptData.segments.forEach(sg => {
+  scriptData.segments.forEach((sg, kc11Idx) => {
     if (sg.type !== "sgk" || sg.sgkImageId || sg.onlinePath || Array.isArray(sg.onlineSel)) return;   /* onlineSel đã là mảng = thầy đã tự chọn hình cho đoạn — không tự gán đè */
+    /* [KC11] Chỉ tự gán HÌNH SGK cho đoạn vai NỘI DUNG — vai mà hình
+       SGK là nguồn chính danh. Đoạn thuộc vai khác (gợi mở, liên hệ,
+       tổng quan...) không tự gán SGK: màn duyệt ghi rõ đang thiếu
+       nguồn chính danh nào để thầy quyết (chọn tay vẫn được). */
+    if (typeof kc11SegRole === "function"){
+      const vai = kc11SegRole(sg, kc11Idx, scriptData.segments.length, (typeof videoType !== "undefined" ? videoType : "full"), false);
+      if (vai !== "noi_dung") return;
+    }
     const cands = onlineCandidates(sg);
     if (!cands.length) return;
     /* luân phiên: ưu tiên ứng viên chưa đoạn nào dùng, để các đoạn trong cùng
@@ -6618,6 +6886,22 @@ function renderKcReviewInto(box){
     head.appendChild(bDel);
     d.appendChild(head);
 
+    /* [KC11] Nhãn VAI CẢNH cho truyện: vai theo VỊ TRÍ (mở đầu /
+       cảnh truyện / kết KC9) nên đổi thứ tự ▲▼ (KC5) là nhãn tự
+       cập nhật theo vị trí mới. Cảnh mở đầu: nguồn chính danh là
+       poster nguyên tấm — chưa trực tuyến — nên ghi rõ nguồn
+       đang dùng thay thế, không giả vờ đã có poster. */
+    {
+      const kv = kc11SegRole(sg, i, scriptData.segments.length, videoType, true);
+      const kSrc = kc11SegSource(sg);
+      const kSrcLabel = (KC11_SRC_META[kSrc] || {}).label || "🚫 Chưa có hình";
+      const rl = document.createElement("div"); rl.className = "small kc11role"; rl.style.marginTop = "6px";
+      if (sg.kcClosing) rl.innerHTML = "🎯 Vai: <b>🏁 Kết — kêu gọi</b> • Nguồn: 🎨 Mẫu vẽ của app — ✅ đúng chỗ: mẫu cảnh kết KC9.";
+      else if (kv === "tong_quan") rl.innerHTML = "🎯 Vai: <b>🧭 Mở đầu</b> • Nguồn: " + escapeHtml(kSrcLabel) + " — vai này chính danh là 🗺 Poster nguyên tấm (chưa trực tuyến), app tạm dùng nguồn này.";
+      else rl.innerHTML = "🎯 Vai: <b>🎭 Cảnh truyện</b> • Nguồn: " + escapeHtml(kSrcLabel) + (kSrc === "none" ? " — chưa chọn hình; khi dựng, cảnh này chuyển slide chữ." : ".");
+      d.appendChild(rl);
+    }
+
     const hInp = document.createElement("input");
     hInp.type = "text"; hInp.value = sg.heading || ""; hInp.placeholder = "Tiêu đề cảnh";
     hInp.style.width = "100%"; hInp.style.marginTop = "8px"; hInp.style.fontWeight = "700";
@@ -6756,10 +7040,12 @@ async function routeKechuyenCreate(){
   const kc9Ctx = pickedLesson
     ? { topic: pickedLesson.topic, subjectName: pickedLesson.subjectName, grade: pickedLesson.grade }
     : { storyTitle: $("kcTitle").value.trim() };
-  const kcSegs = kc9AppendClosing(scenes.map(s => ({
+  const kcSegs = kc9AppendClosing(scenes.map((s, si) => ({
     type: "kechuyen", heading: s.heading, narration: s.narration,
-    kcSrc: "draw", kcTpl: kcGuessTemplate(s.narration), kcUpload: null
+    kcSrc: "draw", kcTpl: kcGuessTemplate(s.narration), kcUpload: null,
+    vai: si === 0 ? "tong_quan" : "noi_dung"   /* [KC11] vai cảnh theo vị trí */
   })), kc9Ctx, { skipIfClosingLike: true });
+  kcSegs.forEach(s2 => { if (s2.kcClosing) s2.vai = "ket"; });   /* [KC11] cảnh kết KC9 mang vai "ket" */
   scriptData = {
     title: $("kcTitle").value.trim() || "Truyện kể",
     subject: "", grade: "",
@@ -7112,18 +7398,21 @@ function kc2BuildScriptData(lesson, entries, narrations){
       type: "kechuyen",
       heading: narrations[i] ? kcHeadingFrom(narrations[i]) : kc2CaptionLine(e),
       narration: narrations[i] || "",
-      kcSrc: "sgk", kcTpl: kcGuessTemplate(narrations[i] || e.caption || ""), kcUpload: null
+      kcSrc: "sgk", kcTpl: kcGuessTemplate(narrations[i] || e.caption || ""), kcUpload: null,
+      vai: i === 0 ? "tong_quan" : "noi_dung"   /* [KC11] vai cảnh: đầu = tổng quan, giữa = nội dung truyện */
     };
     setOnlineAssign(sg, e);
     return sg;
   });
+  /* [KC9] Tự thêm cảnh kết kêu gọi vào bài học ở cuối truyện —
+     văn mẫu có sẵn, không cần AI, nêu đúng tên bài của bài
+     trung tâm. [KC11] Cảnh kết mang vai "ket". */
+  const kc11Segs = kc9AppendClosing(segments, { topic: lesson.topic, subjectName: lesson.subjectName, grade: lesson.grade }, {});
+  kc11Segs.forEach(s2 => { if (s2.kcClosing) s2.vai = "ket"; });
   return {
     title: ($("kcTitle").value.trim()) || (lesson.topic ? ("Chuyện kể: " + lesson.topic) : ("Chuyện kể Bài " + lesson.lessonNo)),
     subject: lesson.subjectName, grade: lesson.grade,
-    /* [KC9] Tự thêm cảnh kết kêu gọi vào bài học ở cuối truyện —
-       văn mẫu có sẵn, không cần AI, nêu đúng tên bài của bài
-       trung tâm. */
-    segments: kc9AppendClosing(segments, { topic: lesson.topic, subjectName: lesson.subjectName, grade: lesson.grade }, {}),
+    segments: kc11Segs,
     _mode: "kechuyen",
     _picked: { subjectCode: lesson.subjectCode, subjectName: lesson.subjectName, grade: lesson.grade, lessonNo: lesson.lessonNo, lessonCode: lesson.lessonCode, topic: lesson.topic, count: lesson.count, entries: lesson.entries },
     _kcNarrator: $("kcNarrator").value === "male" ? "male" : "female",
