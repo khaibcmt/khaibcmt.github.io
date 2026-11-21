@@ -244,7 +244,7 @@
 
     <div id="paneName">
       <div id="pickerBox" style="border:1px dashed var(--line);border-radius:12px;padding:12px 14px;background:var(--panel2)">
-        <label style="margin-top:0">📚 <b>Bài mẫu trong kho SGK</b> — chọn môn, khối, bài để app chốt đúng bài (viết kịch bản và khớp hình SGK chuẩn nhất):</label>
+        <label style="margin-top:0">🎯 <b>BÀI HỌC TRUNG TÂM</b> — chọn Môn → Khối → Bài MỘT LẦN ở đây: <b>mọi hình thức xuất bản</b> (🎬 Video bài giảng • 📋 Phiếu Học Tập • 🎭 Kể Chuyện • 🎯 Chữa Đề theo bài) đều dùng chung bài này và kho nguồn sẵn có của bài (hình/sơ đồ SGK, phiếu, đề). Đổi bài ở đây là mọi hình thức dùng bài mới:</label>
         <div class="row">
           <div><label>Môn học</label>
             <select id="pickSubject">
@@ -326,6 +326,21 @@
     <div id="kcPanel" class="hidden" style="margin-top:14px;border:1px dashed var(--line);border-radius:12px;padding:12px 14px;background:var(--panel2)">
       <div style="font-weight:700;font-size:16px">🎭 Video Kể Chuyện — dán kịch bản có sẵn, chọn ảnh từng cảnh, dựng thành phim</div>
       <div class="small" style="margin-top:4px">Không cần AI viết kịch bản, không cần key sinh ảnh: thầy dán kịch bản truyện, app <b>tự chia cảnh theo đoạn văn</b> (đoạn dài tự chia nhỏ theo câu). Mỗi cảnh chọn 1 nguồn ảnh: <b>🎨 Vẽ mẫu có sẵn</b> (có hình ngay, nhân vật giọt nước nhất quán), <b>📚 ảnh trong kho SGK</b>, hoặc <b>⬆ ảnh của thầy</b>. Một giọng dẫn chuyện đọc toàn bộ truyện, phụ đề lời kể chạy theo từng câu trên hình.</div>
+      <div id="kc2Box" style="margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--panel)">
+        <div style="font-weight:700;font-size:16px">📚 KỂ CHUYỆN TỰ ĐỘNG THEO BÀI — app tự lấy hình của bài và viết truyện</div>
+        <div class="small" style="margin-top:4px">Thầy chỉ cần <b>chọn bài ở khung 🎯 Bài Học Trung Tâm</b> phía trên, rồi bấm đúng 1 nút 🚀: app <b>tự nạp toàn bộ hình/sơ đồ SGK của bài</b>, <b>tự chọn hình</b> (tối đa 12, ưu tiên hình/sơ đồ có số hiệu), nhờ <b>AI xem từng hình và viết lời kể chuyện</b> nối tiếp nhau thành truyện hoàn chỉnh, gắn đúng hình vào từng cảnh rồi <b>tự dựng luôn thành phim</b> (giọng đọc Edge miễn phí, không cần key). Tick chọn lại hình hay sửa lời từng cảnh chỉ là tuỳ chọn phụ cho thầy nào muốn tự tay.</div>
+        <div id="kc2Status" class="small" style="margin-top:8px">⏳ Đang chờ bài trung tâm…</div>
+        <div id="kc2Gallery" class="hidden" style="margin-top:8px">
+          <div class="small" id="kc2Count"></div>
+          <div class="gal-grid" id="kc2Grid" style="margin-top:6px"></div>
+        </div>
+        <div class="row" style="margin-top:12px;gap:10px">
+          <button class="btn-accent" id="kc2AutoBtn" type="button" style="flex:2;padding:13px;font-size:17px">🚀 LÀM TRUYỆN TỰ ĐỘNG A–Z</button>
+          <button class="btn shrink" id="kc2WriteBtn" type="button">✍️ Chỉ viết truyện — xem/sửa cảnh trước khi dựng</button>
+        </div>
+        <div id="kc2Msg" style="margin-top:8px"></div>
+      </div>
+            <div class="small" style="margin-top:14px;border-top:1px dashed var(--line);padding-top:10px">✍️ <b>Đường phụ — dán kịch bản tay:</b> nếu thầy đã có sẵn kịch bản truyện, dán vào khung dưới rồi bấm nút 🎬 TẠO VIDEO phía dưới như trước (không cần AI viết, không cần key Gemini).</div>
       <label style="margin-top:10px">Tiêu đề truyện</label>
       <input type="text" id="kcTitle" placeholder="Ví dụ: Cuộc phiêu lưu của giọt nước trong thân cây">
       <label style="margin-top:10px">Dán kịch bản truyện *</label>
@@ -1184,6 +1199,7 @@ function lessonImageLines(entries){
 function renderPickStatus(){
   const el = $("pickStatus"); if (!el) return;
   renderLessonGallery();
+  if (typeof kc2OnCentralLessonChange === "function") kc2OnCentralLessonChange();
   if (pickedLesson) {
     el.innerHTML = "✔ <b>Đã chốt bài:</b> " + escapeHtml(pickedLesson.subjectName) + " • Lớp " + pickedLesson.grade +
       " • Bài " + pickedLesson.lessonNo + (pickedLesson.topic ? " — " + escapeHtml(pickedLesson.topic) : "") +
@@ -3021,6 +3037,64 @@ function kcCaptionAt(narration, t){
   return s.slice(Math.max(0, idx - 1), idx + 1).join(" ");
 }
 /*__END_PURE_KC__*/
+/*__PURE_KC2__*/
+/* [KC2] KỂ CHUYỆN TỰ ĐỘNG THEO BÀI TRUNG TÂM — logic thuần (không DOM,
+   test Node eval trực tiếp khối này):
+   - kc2AutoPick: tự chọn hình của bài — ưu tiên hình/sơ đồ CÓ SỐ HIỆU
+     (hình chính), giữ thứ tự bài, tối đa KC2_MAX_IMAGES hình.
+   - kc2CaptionLine: dòng mô tả 1 hình (số hiệu + chú thích manifest).
+   - kc2BuildScenePrompt: prompt viết lời kể cho 1 cảnh từ chính hình
+     đó (mở/thân/kết theo vị trí, nối mạch bằng lời cảnh trước, kèm
+     khối chỉ dẫn của thầy nếu có — ctx.instr đã định dạng sẵn).
+   - kc2CleanNarration: làm sạch lời AI trả về (bỏ rào code, tiền tố
+     "Lời kể:", ngoặc kép bao ngoài, xuống dòng thừa). */
+const KC2_MAX_IMAGES = 12;
+function kc2AutoPick(entries, max){
+  const list = Array.isArray(entries) ? entries.filter(Boolean) : [];
+  const cap = Math.max(1, Number(max) || KC2_MAX_IMAGES);
+  const figs = list.filter(e => e && e.figure);
+  const rest = list.filter(e => !(e && e.figure));
+  return figs.concat(rest).slice(0, cap).map(e => e.path);
+}
+function kc2FigureLabel(e){
+  return (e && e.figure) ? ("Hình " + e.figure) : "Hình SGK";
+}
+function kc2CaptionLine(e){
+  if (!e) return "Hình SGK";
+  return kc2FigureLabel(e) + (e.caption ? (" — " + e.caption) : "");
+}
+function kc2BuildScenePrompt(ctx){
+  const n = Math.max(1, Number(ctx.total) || 1);
+  const i = Math.max(0, Number(ctx.idx) || 0);
+  let role;
+  if (n === 1) role = "Đây là cảnh DUY NHẤT của truyện: phải có cả mở truyện hấp dẫn lẫn kết truyện trọn vẹn.";
+  else if (i === 0) role = "Đây là cảnh MỞ ĐẦU truyện: mở đầu hấp dẫn, giới thiệu bối cảnh và chủ thể chính của câu chuyện, khơi gợi tò mò cho học sinh.";
+  else if (i === n - 1) role = "Đây là cảnh KẾT truyện: khép lại câu chuyện trọn vẹn, rút ra ý nghĩa hoặc bài học nhẹ nhàng cho học sinh.";
+  else role = "Đây là cảnh giữa truyện: tiếp nối mạch truyện của cảnh trước một cách tự nhiên và đẩy câu chuyện tiến lên.";
+  const lines = [];
+  lines.push("Bạn là người kể chuyện cho học sinh phổ thông Việt Nam. Hãy viết LỜI KỂ CHUYỆN cho đúng MỘT cảnh của một video kể chuyện bài học, dựa vào HÌNH ẢNH/SƠ ĐỒ đính kèm — đó là hình SGK thật của bài học.");
+  lines.push("Ngữ cảnh bài học: môn " + (ctx.subjectName || "") + ", lớp " + (ctx.grade || "") + ", bài " + (ctx.lessonNo || "") + (ctx.topic ? (" — chủ đề bài: " + ctx.topic) : "") + ".");
+  lines.push("Cảnh " + (i + 1) + "/" + n + ". " + role);
+  lines.push("Hình của cảnh này: " + kc2CaptionLine(ctx.entry) + ".");
+  if (ctx.prev) lines.push("Lời kể của cảnh liền trước (chỉ để nối mạch, KHÔNG kể lại): \"" + ctx.prev + "\"");
+  lines.push("YÊU CẦU:");
+  lines.push("- Viết đúng 60–110 từ tiếng Việt, giọng kể chuyện sinh động, dễ nghe, phù hợp học sinh.");
+  lines.push("- Bám sát nội dung mà hình/sơ đồ cho thấy cùng ngữ cảnh bài học; TUYỆT ĐỐI không bịa số liệu hay chi tiết ngoài hình.");
+  lines.push("- Các cảnh nối tiếp nhau thành MỘT câu chuyện thống nhất: cùng chủ thể/nhân vật, cùng mạch diễn biến.");
+  lines.push("- CHỈ trả về đúng lời kể của cảnh này: văn bản thuần, không tiêu đề, không đánh số cảnh, không ngoặc kép bao ngoài, không giải thích thêm.");
+  let p = lines.join("\n");
+  if (ctx.instr) p += "\n\n" + ctx.instr;
+  return p;
+}
+function kc2CleanNarration(txt){
+  let t = String(txt || "").trim();
+  t = t.replace(/```[a-zA-Z]*\s*/g, "").replace(/```/g, "");
+  t = t.replace(/^(lời kể|lời dẫn|narration|cảnh\s*\d+|canh\s*\d+)\s*[:：\-–]\s*/i, "");
+  t = t.replace(/^["“”']+/, "").replace(/["“”']+$/, "").trim();
+  t = t.replace(/\s*\n+\s*/g, " ").replace(/\s{2,}/g, " ");
+  return t.trim();
+}
+/*__END_PURE_KC2__*/
 /* Danh sách hình của BÀI ĐÃ CHỐT (theo danh tính _picked của kịch bản) —
    nguồn cho lưới chọn hình từng đoạn ở luồng chọn bài. */
 function pickedLessonEntries(){
@@ -5750,13 +5824,10 @@ function renderPhieuPanel(){
     list.innerHTML = ""; return;
   }
   if (phieuLibState !== "ready"){ st.textContent = "⏳ Chuẩn bị tải kho phiếu…"; return; }
-  if (mode === "story"){
-    st.textContent = "📋 Chế độ phiếu học tập dùng bộ chọn bài ở thẻ 📌 Theo Tên Bài — thầy chuyển sang thẻ đó để chọn bài và xem phiếu của bài.";
-    list.innerHTML = ""; return;
-  }
+  /* [KC2] Bộ chọn bài đã là khung 🎯 Bài Học Trung Tâm luôn hiển thị ở mọi chế độ — phiếu đọc bài trung tâm ở cả 2 chế độ, không còn chặn riêng ở chế độ câu chuyện. */
   const items = phieuForCurrentLesson();
   if (!items){
-    st.textContent = "👆 Thầy chọn Môn → Khối → Bài ở bộ chọn \"Bài mẫu trong kho SGK\" phía trên, app sẽ liệt kê phiếu học tập của đúng bài đó.";
+    st.textContent = "👆 Thầy chọn Môn → Khối → Bài ở khung 🎯 Bài Học Trung Tâm phía trên, app sẽ liệt kê phiếu học tập của đúng bài đó.";
     list.innerHTML = ""; return;
   }
   if (!items.length){
@@ -6298,6 +6369,7 @@ async function loadChuadeLib(){
     chuadeManifest = null;
   }
   renderChuadePanel();
+  if (typeof kc2SyncChuade === "function") kc2SyncChuade();
 }
 function chuadeSubjectsForSource(){
   if (!chuadeManifest) return [];
@@ -6573,6 +6645,7 @@ function syncChuadePanel(){
   if (on) {
     if (chuadeLibState === "idle") loadChuadeLib();
     else renderChuadePanel();
+    if (typeof kc2SyncChuade === "function") kc2SyncChuade();
   }
 }
 function initChuade(){
@@ -7184,6 +7257,7 @@ function syncKcPanel(){
   const panel = $("kcPanel");
   if (!panel) return;
   panel.classList.toggle("hidden", videoType !== "kechuyen");
+  if (videoType === "kechuyen" && typeof kc2SyncGallery === "function") kc2SyncGallery();
 }
 function initKc(){
   document.querySelectorAll(".type-chip").forEach(c =>
@@ -7199,6 +7273,295 @@ function initKc(){
     nr.addEventListener("change", () => { try { localStorage.setItem("vbg_kc_narrator", nr.value); } catch (e) {} });
   }
   syncKcPanel();
+}
+
+/* =========================================================
+   [KC2] KỂ CHUYỆN TỰ ĐỘNG THEO BÀI TRUNG TÂM + BÀI HỌC TRUNG TÂM
+   DÙNG CHUNG TOÀN APP (thầy chốt sáng 21/11/2026 — "quy trình khép
+   kín"): pickerBox được nâng thành khung 🎯 BÀI HỌC TRUNG TÂM đặt
+   trên các thẻ chế độ; pickedLesson là MỘT nguồn sự thật cho mọi
+   hình thức xuất bản — Video bài giảng (vốn đã bám bộ chọn này),
+   Phiếu Học Tập (đọc thẳng bộ chọn này), Kể Chuyện (đợt này) và
+   Chữa Đề theo bài (đồng bộ 1 chiều từ trung tâm, không giành quyền
+   khi thầy chỉnh tay trong panel chữa đề).
+   Luồng chính của Kể Chuyện: chọn bài → 1 nút 🚀 → app tự nạp hình
+   của bài, tự chọn hình, AI xem từng hình viết truyện, gắn cảnh,
+   TỰ DỰNG luôn thành phim. Tick lại hình / sửa lời = tuỳ chọn phụ.
+   ========================================================= */
+let kc2LessonKey = "";       // khoá bài trung tâm mà gallery KC2 đang bám theo
+let kc2Sel = {};             // path -> true: hình đang tick trong gallery KC2
+let kc2Busy = false;
+let kc2CdSyncedKey = "";     // khoá bài trung tâm đã đồng bộ sang Chữa Đề
+let kc2CdSyncing = false;
+
+function kc2CentralKey(){
+  if (!pickedLesson) return "";
+  return pickedLesson.subjectCode + "|" + pickedLesson.grade + "|" + pickedLesson.lessonCode;
+}
+function kc2SelectedEntries(){
+  if (!pickedLesson || !Array.isArray(pickedLesson.entries)) return [];
+  return pickedLesson.entries.filter(e => e && kc2Sel[e.path]);
+}
+function kc2SetMsg(html, isWarn){
+  const m = $("kc2Msg"); if (!m) return;
+  if (!html) { m.innerHTML = ""; return; }
+  m.innerHTML = '<div class="' + (isWarn ? "warn" : "ok-box") + '">' + html + "</div>";
+}
+function kc2RenderCount(){
+  const cnt = $("kc2Count"); if (!cnt || !pickedLesson) return;
+  cnt.innerHTML = "🖼 Đã chọn <b>" + kc2SelectedEntries().length + "/" + KC2_MAX_IMAGES + "</b> hình cho truyện (app tự tick sẵn theo thứ tự bài, ưu tiên hình/sơ đồ có số hiệu — thầy tick/bỏ tick lại nếu muốn). Thứ tự cảnh = thứ tự hình trong bài.";
+}
+function kc2RenderGallery(){
+  const st = $("kc2Status"), gal = $("kc2Gallery"), grid = $("kc2Grid");
+  if (!st || !gal || !grid) return;
+  if (!pickedLesson){
+    st.textContent = onlineLibReady
+      ? "👆 Thầy chọn Môn → Khối → Bài ở khung 🎯 Bài Học Trung Tâm phía trên — app sẽ tự nạp toàn bộ hình của bài vào đây."
+      : "⏳ Đang tải kho hình SGK… (kho sẵn sàng thì chọn bài ở khung 🎯 Bài Học Trung Tâm phía trên).";
+    gal.classList.add("hidden"); grid.innerHTML = "";
+    return;
+  }
+  st.innerHTML = "📚 Bài trung tâm: <b>" + escapeHtml(pickedLesson.subjectName) + " • Lớp " + pickedLesson.grade + " • Bài " + pickedLesson.lessonNo + (pickedLesson.topic ? (" — " + escapeHtml(pickedLesson.topic)) : "") + "</b> — bài có " + pickedLesson.entries.length + " hình/sơ đồ có sẵn:";
+  gal.classList.remove("hidden");
+  grid.innerHTML = "";
+  pickedLesson.entries.forEach(e => {
+    const cell = document.createElement("div"); cell.className = "gal-cell";
+    const lab = document.createElement("label"); lab.style.display = "block"; lab.style.cursor = "pointer";
+    const cb = document.createElement("input"); cb.type = "checkbox"; cb.checked = !!kc2Sel[e.path];
+    cb.addEventListener("change", () => {
+      if (cb.checked && kc2SelectedEntries().length >= KC2_MAX_IMAGES){
+        cb.checked = false;
+        kc2SetMsg("⚠️ Mỗi truyện dùng tối đa <b>" + KC2_MAX_IMAGES + " hình</b> để video không quá dài — thầy bỏ tick bớt một hình khác trước đã.", true);
+        return;
+      }
+      kc2Sel[e.path] = cb.checked;
+      kc2RenderCount();
+    });
+    const im = document.createElement("img"); im.src = onlineImgUrl(e); im.loading = "lazy";
+    im.title = e.caption || e.path;
+    const cap = document.createElement("div"); cap.className = "cap"; cap.textContent = kc2CaptionLine(e);
+    lab.appendChild(cb); lab.appendChild(im); lab.appendChild(cap);
+    cell.appendChild(lab); grid.appendChild(cell);
+  });
+  kc2RenderCount();
+}
+function kc2SyncGallery(){
+  if (!pickedLesson){
+    if (kc2LessonKey) { kc2LessonKey = ""; kc2Sel = {}; }
+    kc2RenderGallery();
+    return;
+  }
+  const key = kc2CentralKey();
+  if (key !== kc2LessonKey){
+    kc2LessonKey = key;
+    kc2Sel = {};
+    kc2AutoPick(pickedLesson.entries, KC2_MAX_IMAGES).forEach(p => { kc2Sel[p] = 1; });
+    kc2SetMsg("");
+  }
+  kc2RenderGallery();
+}
+/* Đồng bộ 1 chiều BÀI TRUNG TÂM → Chữa Đề (nguồn 📚 Theo bài): chỉ
+   chạy khi bài trung tâm THAY ĐỔI (so khoá đã đồng bộ); thầy chỉnh
+   tay trong panel chữa đề sau đó thì app không giành lại. Pipeline
+   chữa đề phía sau giữ nguyên — chỉ mượn renderChuadePanel sẵn có. */
+function kc2SyncChuade(){
+  if (kc2CdSyncing || !pickedLesson) return;
+  const key = kc2CentralKey();
+  if (!key || key === kc2CdSyncedKey) return;
+  if (chuadeLibState !== "ready" || !chuadeManifest) return;
+  if (chuadeSource !== "bank") { kc2CdSyncedKey = key; return; }
+  const subj = (chuadeManifest.subjects || []).filter(s => s.mon === pickedLesson.subjectName)[0];
+  if (!subj) { kc2CdSyncedKey = key; return; }
+  kc2CdSyncing = true;
+  try {
+    const selS = $("cdSubject"), selG = $("cdGrade"), selE = $("cdEntry");
+    if (selS && selG && selE){
+      if (selS.value !== subj.id) { selS.value = subj.id; renderChuadePanel(); }
+      if (selG.value !== String(pickedLesson.grade)) { selG.value = String(pickedLesson.grade); renderChuadePanel(); }
+      const wantKey = pickedLesson.subjectName + " " + pickedLesson.grade + "|" + pickedLesson.lessonNo;
+      const ent = (subj.entries || []).filter(e => e.source === "bank" && e.khoi === pickedLesson.grade && (Number(e.bai) === Number(pickedLesson.lessonNo) || e.key === wantKey))[0];
+      if (ent && selE.value !== ent.key) { selE.value = ent.key; renderChuadePanel(); }
+    }
+    kc2CdSyncedKey = key;
+  } catch (e) { /* đồng bộ phụ — lỗi thì giữ nguyên lựa chọn chữa đề hiện tại */ }
+  kc2CdSyncing = false;
+}
+function kc2OnCentralLessonChange(){
+  try { kc2SyncGallery(); } catch (e) {}
+  try { kc2SyncChuade(); } catch (e) {}
+}
+/* Tải 1 hình SGK về dạng base64 để đính kèm cho Gemini XEM. Hình nhỏ
+   giữ nguyên; hình lớn thu về cạnh dài 1280px JPEG cho nhẹ request. */
+async function kc2FetchImageB64(entry){
+  const res = await fetch(onlineImgUrl(entry));
+  if (!res.ok) throw new Error("HTTP " + res.status);
+  const blob = await res.blob();
+  if (blob.size <= 2000000 && /^image\//.test(blob.type || "")){
+    const d = await new Promise((res2, rej2) => {
+      const r = new FileReader();
+      r.onload = () => res2(r.result);
+      r.onerror = () => rej2(r.error || new Error("không đọc được ảnh"));
+      r.readAsDataURL(blob);
+    });
+    const m = String(d).match(/^data:([^;]+);base64,(.*)$/);
+    if (m) return { mimeType: m[1], data: m[2] };
+    throw new Error("ảnh không đọc được dạng base64");
+  }
+  const url = URL.createObjectURL(blob);
+  try {
+    const img = await loadImageEl(url);
+    const s = Math.min(1, 1280 / Math.max(img.width, img.height));
+    const cv = document.createElement("canvas");
+    cv.width = Math.max(1, Math.round(img.width * s));
+    cv.height = Math.max(1, Math.round(img.height * s));
+    cv.getContext("2d").drawImage(img, 0, 0, cv.width, cv.height);
+    const m = cv.toDataURL("image/jpeg", 0.85).match(/^data:([^;]+);base64,(.*)$/);
+    if (m) return { mimeType: m[1], data: m[2] };
+    throw new Error("không nén được ảnh");
+  } finally { URL.revokeObjectURL(url); }
+}
+/* AI viết lời kể cho TỪNG hình đã chọn, theo thứ tự bài, nối mạch
+   nhau (mỗi prompt kèm lời cảnh trước). Mỗi lượt gọi đính kèm CHÍNH
+   hình đó qua geminiCall (hồ key + khám phá model sẵn có); model
+   không nhận ảnh (lỗi 400) thì lùi về prompt chỉ chữ với tên bài +
+   số hiệu hình + chú thích hình trong manifest. */
+async function kc2WriteNarrations(lesson, entries){
+  const instr = teacherInstructionBlock($("teacherInstr") ? $("teacherInstr").value : "");
+  const out = [];
+  let prev = "";
+  for (let i = 0; i < entries.length; i++){
+    const e = entries[i];
+    logWarn("✍️ Đang viết lời cảnh " + (i + 1) + "/" + entries.length + " — " + escapeHtml(kc2CaptionLine(e)) + "…");
+    const prompt = kc2BuildScenePrompt({
+      subjectName: lesson.subjectName, grade: lesson.grade, lessonNo: lesson.lessonNo, topic: lesson.topic,
+      idx: i, total: entries.length, entry: e, prev: prev ? prev.slice(0, 400) : "", instr: instr
+    });
+    let narr = "", b64 = null;
+    try { b64 = await kc2FetchImageB64(e); } catch (err) { b64 = null; }
+    try {
+      const parts = [{ text: prompt }];
+      if (b64) parts.push({ inlineData: { mimeType: b64.mimeType, data: b64.data } });
+      const data = await geminiCall("text", { contents: [{ parts: parts }], generationConfig: { temperature: 0.7 } });
+      narr = kc2CleanNarration(firstText(data));
+    } catch (err1) {
+      if (b64 && /\(400\)/.test(String((err1 && err1.message) || ""))){
+        try {
+          const data2 = await geminiCall("text", { contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.7 } });
+          narr = kc2CleanNarration(firstText(data2));
+        } catch (err2) { narr = ""; }
+      }
+    }
+    out.push(narr);
+    if (narr) prev = narr;
+  }
+  return out;
+}
+function kc2BuildScriptData(lesson, entries, narrations){
+  const segments = entries.map((e, i) => {
+    const sg = {
+      type: "kechuyen",
+      heading: narrations[i] ? kcHeadingFrom(narrations[i]) : kc2CaptionLine(e),
+      narration: narrations[i] || "",
+      kcSrc: "sgk", kcTpl: kcGuessTemplate(narrations[i] || e.caption || ""), kcUpload: null
+    };
+    setOnlineAssign(sg, e);
+    return sg;
+  });
+  return {
+    title: ($("kcTitle").value.trim()) || (lesson.topic ? ("Chuyện kể: " + lesson.topic) : ("Chuyện kể Bài " + lesson.lessonNo)),
+    subject: lesson.subjectName, grade: lesson.grade,
+    segments: segments,
+    _mode: "kechuyen",
+    _picked: { subjectCode: lesson.subjectCode, subjectName: lesson.subjectName, grade: lesson.grade, lessonNo: lesson.lessonNo, lessonCode: lesson.lessonCode, topic: lesson.topic, count: lesson.count, entries: lesson.entries },
+    _kcNarrator: $("kcNarrator").value === "male" ? "male" : "female",
+    _kcVoiceSource: resolveVoiceSource($("kcVoiceSource").value),
+    _kc2Lesson: { subjectCode: lesson.subjectCode, grade: lesson.grade, lessonCode: lesson.lessonCode }
+  };
+}
+/* Luồng AUTO A–Z (autoBuild=true): viết truyện xong TỰ DỰNG luôn.
+   Chỉ viết (false): dừng ở màn duyệt KC1 cho thầy xem/sửa — tuỳ chọn.
+   Không key / AI viết hỏng toàn bộ: dừng ở khâu viết, cảnh + hình vẫn
+   xếp sẵn ở màn duyệt, báo rõ lý do — không chặn cứng, không tự dựng. */
+async function kc2Run(autoBuild){
+  if (kc2Busy || building) return;
+  const lesson = pickedLesson;
+  if (!lesson){
+    kc2SetMsg("⚠️ Thầy chưa chọn bài ở khung 🎯 Bài Học Trung Tâm phía trên — chọn Môn → Khối → Bài trước đã.", true);
+    const pb = $("pickerBox"); if (pb) pb.scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+  const entries = kc2SelectedEntries();
+  if (!entries.length){
+    kc2SetMsg("⚠️ Chưa có hình nào được tick chọn cho truyện — thầy tick ít nhất 1 hình của bài trong lưới phía trên.", true);
+    return;
+  }
+  kc2Busy = true;
+  const bA = $("kc2AutoBtn"), bW = $("kc2WriteBtn");
+  if (bA) bA.disabled = true;
+  if (bW) bW.disabled = true;
+  try {
+    demoMode = false;
+    assets = {}; audios = {};
+    $("inputError").innerHTML = "";
+    $("progressCard").classList.remove("hidden");
+    $("resultCard").classList.add("hidden");
+    $("renderCard").classList.add("hidden");
+    $("assetBox").classList.add("hidden");
+    $("buildLog").innerHTML = "";
+    resetSteps();
+    $("progressNote").textContent = "— 🎭 KỂ CHUYỆN TỰ ĐỘNG THEO BÀI: " + lesson.subjectName + " • Lớp " + lesson.grade + " • Bài " + lesson.lessonNo + (lesson.topic ? (" — " + lesson.topic) : "") + " (" + entries.length + " hình)";
+    if (!keyPool.length){
+      setStep(1, "err");
+      scriptData = kc2BuildScriptData(lesson, entries, entries.map(() => ""));
+      renderScriptReview();
+      kc2SetMsg("⚠️ <b>Chưa có key Gemini trong hồ</b> nên AI chưa viết được lời kể (khâu viết truyện cần key — giọng đọc Edge thì không cần key). App đã <b>xếp sẵn " + entries.length + " cảnh gắn đúng hình của bài</b> ở màn duyệt bên dưới, lời kể đang để trống kèm chú thích hình làm gợi ý. Thầy dán key vào mục 1 ở đầu trang rồi bấm lại nút 🚀, hoặc tự gõ lời kể cho từng cảnh rồi bấm DỰNG VIDEO.", true);
+      const sc = $("scriptCard"); if (sc) sc.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    setStep(1, "run");
+    logWarn("📚 Đã nạp <b>" + entries.length + " hình</b> của bài — AI đang xem từng hình và viết truyện…");
+    const narrations = await kc2WriteNarrations(lesson, entries);
+    const okCount = narrations.filter(Boolean).length;
+    if (!okCount){
+      setStep(1, "err");
+      scriptData = kc2BuildScriptData(lesson, entries, narrations);
+      renderScriptReview();
+      kc2SetMsg("⚠️ AI chưa viết được lời kể cho cảnh nào (có thể các key đều hết hạn mức hôm nay hoặc đang lỗi mạng). App đã xếp sẵn " + entries.length + " cảnh gắn đúng hình của bài ở màn duyệt bên dưới — thầy thử lại sau, hoặc tự gõ lời kể rồi bấm DỰNG VIDEO.", true);
+      const sc2 = $("scriptCard"); if (sc2) sc2.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    scriptData = kc2BuildScriptData(lesson, entries, narrations);
+    renderScriptReview();
+    setStep(1, "done");
+    if (autoBuild){
+      $("progressNote").textContent = "— 🎭 KỂ CHUYỆN TỰ ĐỘNG A–Z: đã viết xong truyện (" + okCount + "/" + entries.length + " cảnh có lời) — app đang TỰ DỰNG VIDEO, thầy không cần bấm thêm gì";
+      await buildVideo();
+    } else {
+      kc2SetMsg("✍️ <b>Đã viết xong truyện</b> (" + okCount + "/" + entries.length + " cảnh có lời kể) và gắn đúng hình của bài vào từng cảnh. Thầy xem/sửa lời ở màn duyệt bên dưới rồi bấm <b>DỰNG VIDEO</b> khi ưng ý.", false);
+      const sc3 = $("scriptCard"); if (sc3) sc3.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  } catch (e) {
+    showErr("inputError", "Kể chuyện tự động gặp lỗi: " + ((e && e.message) || e));
+  } finally {
+    kc2Busy = false;
+    if (bA) bA.disabled = false;
+    if (bW) bW.disabled = false;
+  }
+}
+function kc2Init(){
+  /* Nâng bộ chọn bài thành khung TRUNG TÂM: dời pickerBox lên trên các
+     thẻ chế độ để luôn nhìn thấy ở mọi chế độ/hình thức xuất bản. Mọi
+     id + sự kiện giữ nguyên — chỉ đổi vị trí trong DOM. */
+  const pb = $("pickerBox");
+  if (pb && pb.parentNode && pb.parentNode.id === "paneName"){
+    const card = pb.closest(".card");
+    const tabs = card ? card.querySelector(".tabs") : null;
+    if (card && tabs) card.insertBefore(pb, tabs);
+  }
+  const bA = $("kc2AutoBtn"), bW = $("kc2WriteBtn");
+  if (bA) bA.addEventListener("click", () => kc2Run(true));
+  if (bW) bW.addEventListener("click", () => kc2Run(false));
+  kc2SyncGallery();
 }
 function drawSlide(ctx, sg, asset, t){
   if (sg.type === "kechuyen") { drawKcSlide(ctx, sg, asset, t || 0); return; }
@@ -7992,6 +8355,7 @@ try { loadOnlineLib(); } catch (e) {}
 try { initPhieu(); } catch (e) {}
 try { initChuade(); } catch (e) {}
 try { initKc(); } catch (e) {}
+try { kc2Init(); } catch (e) {}
 try { initLamDe(); } catch (e) {}
 try { initBaiTap(); } catch (e) {}
 </script>
