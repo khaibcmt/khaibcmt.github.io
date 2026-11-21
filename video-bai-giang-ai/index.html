@@ -328,7 +328,7 @@
       <div class="small" style="margin-top:4px">Không cần AI viết kịch bản, không cần key sinh ảnh: thầy dán kịch bản truyện, app <b>tự chia cảnh theo đoạn văn</b> (đoạn dài tự chia nhỏ theo câu). Mỗi cảnh chọn 1 nguồn ảnh: <b>🎨 Vẽ mẫu có sẵn</b> (có hình ngay, nhân vật giọt nước nhất quán), <b>📚 ảnh trong kho SGK</b>, hoặc <b>⬆ ảnh của thầy</b>. Một giọng dẫn chuyện đọc toàn bộ truyện, phụ đề lời kể chạy theo từng câu trên hình.</div>
       <div id="kc2Box" style="margin-top:12px;border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--panel)">
         <div style="font-weight:700;font-size:16px">📚 KỂ CHUYỆN TỰ ĐỘNG THEO BÀI — app tự lấy hình của bài và viết truyện</div>
-        <div class="small" style="margin-top:4px">Thầy chỉ cần <b>chọn bài ở khung 🎯 Bài Học Trung Tâm</b> phía trên, rồi bấm đúng 1 nút 🚀: app <b>tự nạp toàn bộ hình/sơ đồ SGK của bài</b>, <b>tự nhận diện và gom các hình giống nhau</b> (bản đánh số + bản nguyên chữ của cùng một hình chỉ tính là 1 hình — không lặp hình trong phim), <b>tự chọn hình</b> (tối đa 12, ưu tiên hình/sơ đồ có số hiệu), nhờ <b>AI xem từng hình và viết lời kể chuyện</b> nối tiếp nhau thành truyện hoàn chỉnh, gắn đúng hình vào từng cảnh rồi <b>tự dựng luôn thành phim</b> (giọng đọc Gemini — dùng key trong hồ của thầy). Tick chọn lại hình hay sửa lời từng cảnh chỉ là tuỳ chọn phụ cho thầy nào muốn tự tay.</div>
+        <div class="small" style="margin-top:4px">Thầy chỉ cần <b>chọn bài ở khung 🎯 Bài Học Trung Tâm</b> phía trên, rồi bấm đúng 1 nút 🚀: app <b>tự nạp toàn bộ hình/sơ đồ SGK của bài</b>, <b>tự nhận diện và gom các hình giống nhau</b> (bản đánh số + bản nguyên chữ của cùng một hình chỉ tính là 1 hình — không lặp hình trong phim), <b>tự chọn hình</b> (tối đa 12 hình đầu tiên theo đúng thứ tự xuất hiện trong bài), nhờ <b>AI xem từng hình và viết lời kể chuyện</b> nối tiếp nhau thành truyện hoàn chỉnh, gắn đúng hình vào từng cảnh rồi <b>tự dựng luôn thành phim</b> (giọng đọc Gemini — dùng key trong hồ của thầy). Tick chọn lại hình hay sửa lời từng cảnh chỉ là tuỳ chọn phụ cho thầy nào muốn tự tay.</div>
         <div id="kc2Status" class="small" style="margin-top:8px">⏳ Đang chờ bài trung tâm…</div>
         <div id="kc2Gallery" class="hidden" style="margin-top:8px">
           <div class="small" id="kc2Count"></div>
@@ -2266,8 +2266,9 @@ function kcCaptionAt(narration, t){
 /*__PURE_KC2__*/
 /* [KC2] KỂ CHUYỆN TỰ ĐỘNG THEO BÀI TRUNG TÂM — logic thuần (không DOM,
    test Node eval trực tiếp khối này):
-   - kc2AutoPick: tự chọn hình của bài — ưu tiên hình/sơ đồ CÓ SỐ HIỆU
-     (hình chính), giữ thứ tự bài, tối đa KC2_MAX_IMAGES hình.
+   - kc2AutoPick: tự chọn hình của bài — [KC8] đúng THỨ TỰ BÀI (vị
+     trí xuất hiện trong bài), tối đa KC2_MAX_IMAGES hình đầu tiên.
+     (Trước KC8: ưu tiên hình có số hiệu lên trước — lệch mạch bài.)
    - kc2CaptionLine: dòng mô tả 1 hình (số hiệu + chú thích manifest).
    - kc2BuildScenePrompt: prompt viết lời kể cho 1 cảnh từ chính hình
      đó (mở/thân/kết theo vị trí, nối mạch bằng lời cảnh trước, kèm
@@ -2278,9 +2279,7 @@ const KC2_MAX_IMAGES = 12;
 function kc2AutoPick(entries, max){
   const list = Array.isArray(entries) ? entries.filter(Boolean) : [];
   const cap = Math.max(1, Number(max) || KC2_MAX_IMAGES);
-  const figs = list.filter(e => e && e.figure);
-  const rest = list.filter(e => !(e && e.figure));
-  return figs.concat(rest).slice(0, cap).map(e => e.path);
+  return list.slice(0, cap).map(e => e.path);
 }
 function kc2FigureLabel(e){
   return (e && e.figure) ? ("Hình " + e.figure) : "Hình SGK";
@@ -2344,8 +2343,11 @@ function kc2CleanNarration(txt){
    - kc4MainOf: hình chính của nhóm — ưu tiên bản có số hiệu hình, rồi
      bản bytes lớn hơn (bản nguyên chữ đầy chữ thường nặng hơn bản
      đánh số để trống), rồi thứ tự bài.
-   - kc4AutoPickGroups: tự tick tối đa max NHÓM (nhóm có hình chính
-     mang số hiệu trước, như kc2AutoPick).
+   - kc4AutoPickGroups: tự tick tối đa max NHÓM — [KC8] theo đúng
+     THỨ TỰ BÀI: vị trí của nhóm = vị trí entry SỚM NHẤT của nhóm
+     trong bài (kc4GroupEntries vốn sinh nhóm theo đúng thứ tự đó)
+     rồi lấy max nhóm đầu tiên. Số hiệu hình chỉ còn dùng để chọn
+     hình chính BÊN TRONG nhóm (kc4MainOf), không sắp thứ tự nữa.
    - kc4PairNote: đoạn prompt dặn AI khi cảnh có bản đi kèm. */
 const KC4_T32 = 22;
 const KC4_T64 = 22;
@@ -2397,9 +2399,7 @@ function kc4GroupEntries(entries, vecOf){
 function kc4AutoPickGroups(groups, max){
   const list = (Array.isArray(groups) ? groups : []).filter(g => g && g.main);
   const cap = Math.max(1, Number(max) || KC2_MAX_IMAGES);
-  const figs = list.filter(g => g.main.figure);
-  const rest = list.filter(g => !g.main.figure);
-  return figs.concat(rest).slice(0, cap).map(g => g.main.path);
+  return list.slice(0, cap).map(g => g.main.path);
 }
 function kc4PairNote(n){
   const c = Number(n) || 0;
@@ -6673,10 +6673,10 @@ function kc2RenderCount(){
     return;
   }
   if (kc4Groups){
-    cnt.innerHTML = "🖼 Đã chọn <b>" + kc2SelectedEntries().length + "/" + KC2_MAX_IMAGES + "</b> hình cho truyện — bài có " + pickedLesson.entries.length + " hình gốc, app đã gom các hình giống nhau (bản đánh số + bản nguyên chữ của cùng một hình) còn <b>" + kc4Groups.length + " hình</b>, mỗi nhóm tính là 1 hình (app tự tick sẵn, ưu tiên hình/sơ đồ có số hiệu — thầy tick/bỏ tick lại nếu muốn). Thứ tự cảnh = thứ tự hình trong bài.";
+    cnt.innerHTML = "🖼 Đã chọn <b>" + kc2SelectedEntries().length + "/" + KC2_MAX_IMAGES + "</b> hình cho truyện — bài có " + pickedLesson.entries.length + " hình gốc, app đã gom các hình giống nhau (bản đánh số + bản nguyên chữ của cùng một hình) còn <b>" + kc4Groups.length + " hình</b>, mỗi nhóm tính là 1 hình (app tự tick sẵn các hình đầu tiên theo đúng thứ tự xuất hiện trong bài — thầy tick/bỏ tick lại nếu muốn). Thứ tự cảnh = thứ tự hình trong bài.";
     return;
   }
-  cnt.innerHTML = "🖼 Đã chọn <b>" + kc2SelectedEntries().length + "/" + KC2_MAX_IMAGES + "</b> hình cho truyện (app tự tick sẵn theo thứ tự bài, ưu tiên hình/sơ đồ có số hiệu — thầy tick/bỏ tick lại nếu muốn). Thứ tự cảnh = thứ tự hình trong bài.";
+  cnt.innerHTML = "🖼 Đã chọn <b>" + kc2SelectedEntries().length + "/" + KC2_MAX_IMAGES + "</b> hình cho truyện (app tự tick sẵn theo đúng thứ tự xuất hiện trong bài — thầy tick/bỏ tick lại nếu muốn). Thứ tự cảnh = thứ tự hình trong bài.";
 }
 function kc2RenderGallery(){
   const st = $("kc2Status"), gal = $("kc2Gallery"), grid = $("kc2Grid");
@@ -6697,10 +6697,14 @@ function kc2RenderGallery(){
   const kc4Units = kc4Groups
     ? kc4Groups.map(g => ({ main: g.main, members: g.members }))
     : pickedLesson.entries.map(e => ({ main: e, members: [e] }));
-  kc4Units.forEach(u => {
+  kc4Units.forEach((u, ui) => {
     const e = u.main; if (!e) return;
     const cell = document.createElement("div"); cell.className = "gal-cell";
     const lab = document.createElement("label"); lab.style.display = "block"; lab.style.cursor = "pointer";
+    /* [KC8] Số thứ tự theo vị trí trong bài — nhìn là thấy mạch bài. */
+    const num = document.createElement("div"); num.className = "cap"; num.style.fontWeight = "700"; num.style.color = "var(--blue)";
+    num.textContent = "Thứ " + (ui + 1) + "/" + kc4Units.length + " trong bài";
+    lab.appendChild(num);
     const cb = document.createElement("input"); cb.type = "checkbox"; cb.checked = !!kc2Sel[e.path]; cb.disabled = kc4Pending;
     cb.addEventListener("change", () => {
       if (cb.checked && kc2SelectedEntries().length >= KC2_MAX_IMAGES){
