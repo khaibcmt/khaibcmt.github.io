@@ -199,16 +199,71 @@
   .de-pick label{display:block;margin-top:12px;font-weight:700;font-size:15px}
   .de-pick select{width:100%;box-sizing:border-box;margin-top:6px;padding:12px;min-height:48px;font-size:16px;border-radius:10px}
   .de-topbar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;margin-top:12px}
+  /* ===== [KC13] MÀN HÌNH KHOÁ ADMIN 2 LỚP — phủ toàn trang studio ===== */
+  body.kc13-locked{overflow:hidden}
+  body.kc13-locked .wrap{visibility:hidden}
+  #kc13Lock{position:fixed;inset:0;z-index:99999;background:linear-gradient(160deg,#07271d,#0b3d2e 55%,#04160f);overflow-y:auto;display:flex;align-items:flex-start;justify-content:center;padding:30px 14px 40px}
+  .kc13-box{background:var(--panel);border:1px solid var(--line);border-radius:16px;max-width:430px;width:100%;padding:26px 24px 22px;margin-top:4vh;box-shadow:0 18px 50px rgba(0,0,0,.45)}
+  .kc13-ico{font-size:42px;text-align:center}
+  .kc13-title{margin:8px 0 4px;text-align:center;font-size:21px;line-height:1.35}
+  .kc13-sub{margin:0 0 16px;text-align:center;color:var(--muted);font-size:14.5px;line-height:1.55}
+  .kc13-label{display:block;font-weight:700;font-size:15px;margin:14px 0 6px}
+  .kc13-box input[type="password"]{width:100%;box-sizing:border-box;padding:13px 14px;min-height:50px;font-size:16.5px;border-radius:10px;border:1px solid var(--line);background:var(--panel2);color:var(--txt)}
+  .kc13-btn{width:100%;margin-top:16px;padding:14px;font-size:16.5px;font-weight:700;border:none;border-radius:10px;background:var(--accent);color:#20301f;cursor:pointer;min-height:52px}
+  .kc13-btn:disabled{opacity:.55;cursor:wait}
+  .kc13-err{color:var(--red);font-size:14.5px;min-height:20px;margin-top:8px;line-height:1.45}
+  .kc13-note{font-size:15.5px;line-height:1.6;text-align:center;margin:14px 0 2px}
 </style>
 </head>
 <body>
+<!-- ===== [KC13] MÀN HÌNH KHOÁ ADMIN 2 LỚP — chỉ khoá STUDIO; trang học sinh ?bt=/?de= mở thẳng không qua khoá.
+     Lớp phủ này vẽ sẵn ở trạng thái KHOÁ: chỉ khi JS kiểm đủ điều kiện (phiên Admin còn hạn / qua đủ 2 lớp)
+     nó mới ẩn đi — JS lỗi hay mất mạng cũng không tự mở khoá. ===== -->
+<div id="kc13Lock">
+  <div class="kc13-box">
+    <div class="kc13-ico">🔐</div>
+    <h2 class="kc13-title">Video Bài Giảng AI<br>Khu vực làm video của thầy</h2>
+    <p class="kc13-sub">App này chỉ dành cho thầy sử dụng. Nhập đủ <b>2 lớp khoá</b> để vào studio làm video.</p>
+    <div id="kc13Step1">
+      <label class="kc13-label" for="kc13MasterInput">Lớp 1 — Mã chủ</label>
+      <input id="kc13MasterInput" type="password" autocomplete="off" placeholder="Nhập mã chủ…">
+      <div class="kc13-err" id="kc13MasterErr"></div>
+      <button class="kc13-btn" id="kc13MasterBtn" type="button">Tiếp tục →</button>
+    </div>
+    <div id="kc13Step2Load" class="hidden">
+      <p class="kc13-note">⏳ Đang kiểm tra mật khẩu lớp 2…</p>
+    </div>
+    <div id="kc13Step2Blocked" class="hidden">
+      <p class="kc13-note">⚠️ <b>Chưa kiểm tra được mật khẩu lớp 2</b> — có thể do mất kết nối mạng. Thầy kiểm tra mạng rồi thử lại nhé.</p>
+      <button class="kc13-btn" id="kc13RetryBtn" type="button">↻ Thử lại</button>
+    </div>
+    <div id="kc13Step2Create" class="hidden">
+      <label class="kc13-label" for="kc13PwNew">Lớp 2 — Đặt mật khẩu của thầy (lần đầu tiên)</label>
+      <input id="kc13PwNew" type="password" autocomplete="new-password" placeholder="Mật khẩu mới…">
+      <label class="kc13-label" for="kc13PwConfirm">Nhập lại mật khẩu</label>
+      <input id="kc13PwConfirm" type="password" autocomplete="new-password" placeholder="Nhập lại cho khớp…">
+      <div class="kc13-err" id="kc13CreateErr"></div>
+      <button class="kc13-btn" id="kc13CreateBtn" type="button">💾 Đặt mật khẩu &amp; Mở khoá</button>
+    </div>
+    <div id="kc13Step2Verify" class="hidden">
+      <label class="kc13-label" for="kc13PwInput">Lớp 2 — Mật khẩu của thầy</label>
+      <input id="kc13PwInput" type="password" autocomplete="current-password" placeholder="Nhập mật khẩu…">
+      <div class="kc13-err" id="kc13VerifyErr"></div>
+      <button class="kc13-btn" id="kc13VerifyBtn" type="button">🔓 Mở khoá</button>
+    </div>
+  </div>
+</div>
 <div class="wrap">
 
   <header class="top">
     <h1>🎬 Video Bài Giảng <span class="ai">AI</span></h1>
     <p>Chỉ cần nêu <b>tên bài</b> hoặc dán <b>câu chuyện</b> — app tự viết kịch bản, tạo hình, vẽ sơ đồ, dựng bảng số liệu, thu giọng đọc và ghép thành video.</p>
-    <p class="small" id="buildTag">🏷️ Bản KC12 • 21/11/2026 — thêm nguồn giọng VieNeu trên máy này (miễn phí) + luật phân giọng: đoạn có chữ “thầy” luôn do MC Nam đọc</p>
+    <p class="small" id="buildTag">🏷️ Bản KC13 • 21/11/2026 — KHOÁ ADMIN 2 LỚP cho studio (trang học sinh ?bt=/?de= mở thẳng) + giọng VieNeu trên máy này (miễn phí) + luật phân giọng: đoạn có chữ “thầy” luôn do MC Nam đọc</p>
     <div id="voiceBadge" class="hidden"></div>
+    <div id="kc13AdminBar" class="hidden" style="margin-top:10px">
+      <button class="btn-ghost shrink" id="kc13LockNowBtn" type="button">🔒 Khoá lại ngay</button>
+      <div class="small" style="margin-top:4px">Đã mở khoá Admin — phiên còn hiệu lực 30 ngày trên máy này; hết hạn app tự khoá và hỏi lại 2 lớp.</div>
+    </div>
   </header>
 
   <!-- ===== HỒ KEY GEMINI ===== -->
@@ -8406,9 +8461,281 @@ $("againBtn").addEventListener("click", () => {
   window.scrollTo({ top: 0, behavior: "smooth" });
 });
 
+/* ================= [KC13] KHOÁ ADMIN 2 LỚP CHO STUDIO =================
+   Lệnh thầy 16:59 ngày 21/11/2026: app này chỉ một mình thầy xài → studio
+   phải nhập đủ 2 lớp khoá mới dùng được (theo mẫu tronde, rút gọn cho
+   app 1 người dùng — không đăng ký / license / panel quản lý máy):
+   - Lớp 1: MÃ CHỦ dùng chung, đối chiếu bằng SHA-256 — hằng số HASH lấy
+     nguyên từ tronde (cùng giá trị Học Liệu / trochoi). Chỉ có HASH
+     trong code, tuyệt đối không có mã dạng rõ ở bất cứ đâu.
+   - Lớp 2: mật khẩu thầy TỰ ĐẶT, lưu HASH SHA-256 tại Firebase
+     edumaster-online node vbg_admin/pwHash. Chưa có hash → đặt lần đầu
+     (nhập 2 lần khớp nhau mới lưu); đã có → nhập để đối chiếu.
+   - Qua đủ 2 lớp: phiên Admin ghi localStorage, hạn 30 ngày như mẫu
+     tronde. Còn phiên hợp lệ → vào thẳng kể cả mất mạng. Chưa có phiên
+     mà không kiểm chứng được mật khẩu (mất mạng) → GIỮ KHOÁ + báo rõ,
+     tuyệt đối không tự mở khoá.
+   - NGOẠI LỆ: trang học sinh ?bt= / ?de= (mở từ QR / link YouTube)
+     KHÔNG qua khoá — khoá là hỏng vòng video → bài tập. */
+
+/* --- SHA-256 thuần JS (rút từ mẫu tronde; dự phòng khi crypto.subtle vắng) --- */
+const KC13_SHA256_K = [
+  0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b, 0x59f111f1, 0x923f82a4, 0xab1c5ed5,
+  0xd807aa98, 0x12835b01, 0x243185be, 0x550c7dc3, 0x72be5d74, 0x80deb1fe, 0x9bdc06a7, 0xc19bf174,
+  0xe49b69c1, 0xefbe4786, 0x0fc19dc6, 0x240ca1cc, 0x2de92c6f, 0x4a7484aa, 0x5cb0a9dc, 0x76f988da,
+  0x983e5152, 0xa831c66d, 0xb00327c8, 0xbf597fc7, 0xc6e00bf3, 0xd5a79147, 0x06ca6351, 0x14292967,
+  0x27b70a85, 0x2e1b2138, 0x4d2c6dfc, 0x53380d13, 0x650a7354, 0x766a0abb, 0x81c2c92e, 0x92722c85,
+  0xa2bfe8a1, 0xa81a664b, 0xc24b8b70, 0xc76c51a3, 0xd192e819, 0xd6990624, 0xf40e3585, 0x106aa070,
+  0x19a4c116, 0x1e376c08, 0x2748774c, 0x34b0bcb5, 0x391c0cb3, 0x4ed8aa4a, 0x5b9cca4f, 0x682e6ff3,
+  0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208, 0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
+];
+function kc13Sha256HexJs(input){
+  const utf8 = unescape(encodeURIComponent(String(input == null ? "" : input)));
+  const bytes = [];
+  for (let i = 0; i < utf8.length; i++) bytes.push(utf8.charCodeAt(i) & 0xff);
+  const bitLen = bytes.length * 8;
+  bytes.push(0x80);
+  while (bytes.length % 64 !== 56) bytes.push(0);
+  bytes.push(0, 0, 0, 0, (bitLen >>> 24) & 0xff, (bitLen >>> 16) & 0xff, (bitLen >>> 8) & 0xff, bitLen & 0xff);
+  const H = [0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19];
+  const w = new Array(64);
+  const rotr = (x, n) => (x >>> n) | (x << (32 - n));
+  for (let block = 0; block < bytes.length; block += 64){
+    for (let t = 0; t < 16; t++){
+      const o = block + t * 4;
+      w[t] = (bytes[o] << 24) | (bytes[o + 1] << 16) | (bytes[o + 2] << 8) | bytes[o + 3];
+    }
+    for (let t = 16; t < 64; t++){
+      const s0 = rotr(w[t - 15], 7) ^ rotr(w[t - 15], 18) ^ (w[t - 15] >>> 3);
+      const s1 = rotr(w[t - 2], 17) ^ rotr(w[t - 2], 19) ^ (w[t - 2] >>> 10);
+      w[t] = (w[t - 16] + s0 + w[t - 7] + s1) | 0;
+    }
+    let a = H[0], b = H[1], c = H[2], d = H[3], e = H[4], f = H[5], g = H[6], h = H[7];
+    for (let t = 0; t < 64; t++){
+      const S1 = rotr(e, 6) ^ rotr(e, 11) ^ rotr(e, 25);
+      const ch = (e & f) ^ (~e & g);
+      const temp1 = (h + S1 + ch + KC13_SHA256_K[t] + w[t]) | 0;
+      const S0 = rotr(a, 2) ^ rotr(a, 13) ^ rotr(a, 22);
+      const maj = (a & b) ^ (a & c) ^ (b & c);
+      const temp2 = (S0 + maj) | 0;
+      h = g; g = f; f = e; e = (d + temp1) | 0;
+      d = c; c = b; b = a; a = (temp1 + temp2) | 0;
+    }
+    H[0] = (H[0] + a) | 0; H[1] = (H[1] + b) | 0; H[2] = (H[2] + c) | 0; H[3] = (H[3] + d) | 0;
+    H[4] = (H[4] + e) | 0; H[5] = (H[5] + f) | 0; H[6] = (H[6] + g) | 0; H[7] = (H[7] + h) | 0;
+  }
+  return H.map(x => (x >>> 0).toString(16).padStart(8, "0")).join("");
+}
+/* SHA-256 hex: ưu tiên crypto.subtle, dự phòng JS thuần (như mẫu tronde). */
+async function kc13Sha256Hex(text){
+  try {
+    const subtle = (typeof crypto !== "undefined") ? crypto.subtle : null;
+    if (subtle){
+      const buf = await subtle.digest("SHA-256", new TextEncoder().encode(String(text == null ? "" : text)));
+      return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+    }
+  } catch (e) { /* rơi xuống JS thuần */ }
+  return kc13Sha256HexJs(text);
+}
+
+/* --- Hằng số khoá (chỉ HASH, không mã rõ) --- */
+const KC13_MASTER_HASHES = [
+  "be7e5cf0fda9a345fc1ef61cb127b0db72fb8c915d72df043468d858d4c5ee3d",
+  "0eb8de755cf51e222ac7049e90f664fd1f4e7be66fe654940992609056aaeee1"
+];
+const KC13_FB_BASE = "https://edumaster-online-default-rtdb.asia-southeast1.firebasedatabase.app";
+const KC13_PW_PATH = "vbg_admin/pwHash";
+const KC13_LS_UNTIL = "vbg_admin_until";
+const KC13_REMEMBER_MS = 30 * 24 * 3600 * 1000;
+const kc13DefaultFetch = (url, opts) => fetch(url, opts);
+
+/* --- Logic thuần (test Node được) --- */
+async function kc13VerifyMaster(input, hashes){
+  const list = hashes || KC13_MASTER_HASHES;
+  const h = await kc13Sha256Hex(String(input == null ? "" : input).trim());
+  return list.indexOf(h) >= 0;
+}
+async function kc13VerifyPw(input, expectedHash){
+  if (!expectedHash) return false;
+  const h = await kc13Sha256Hex(String(input == null ? "" : input).trim());
+  return h === expectedHash;
+}
+function kc13SessionValid(store, now){
+  try { return (+(store.getItem(KC13_LS_UNTIL) || 0) || 0) > now; } catch (e) { return false; }
+}
+function kc13BeginSession(store, now){
+  try { store.setItem(KC13_LS_UNTIL, String(now + KC13_REMEMBER_MS)); } catch (e) {}
+}
+function kc13EndSession(store){
+  try { store.removeItem(KC13_LS_UNTIL); } catch (e) {}
+}
+/* Đọc hash lớp 2 từ Firebase: {ok:true, hash:string|null} — null = chưa ai đặt;
+   {ok:false} = không kiểm chứng được (mất mạng / lỗi HTTP) → nơi gọi GIỮ KHOÁ. */
+async function kc13FetchPwHash(fetchFn){
+  try {
+    const res = await fetchFn(KC13_FB_BASE + "/" + KC13_PW_PATH + ".json", { method: "GET" });
+    if (!res || !res.ok) return { ok: false };
+    const v = await res.json();
+    return { ok: true, hash: (typeof v === "string" && v) ? v : null };
+  } catch (e) { return { ok: false }; }
+}
+async function kc13SavePwHash(fetchFn, hash){
+  const res = await fetchFn(KC13_FB_BASE + "/" + KC13_PW_PATH + ".json", {
+    method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify(hash)
+  });
+  if (!res || !res.ok) throw new Error("FB PUT pwHash -> " + (res ? res.status : "no-res"));
+}
+/* Bước lớp 2 từ kết quả đọc Firebase: 'verify' | 'create' | 'blocked'. */
+function kc13DecidePwStep(fetchResult){
+  if (!fetchResult || !fetchResult.ok) return "blocked";
+  return fetchResult.hash ? "verify" : "create";
+}
+/* Kiểm tra 2 lần nhập khi ĐẶT mật khẩu: trả chuỗi lỗi hoặc null. */
+function kc13ValidateCreate(pw1, pw2){
+  const a = String(pw1 == null ? "" : pw1).trim(), b = String(pw2 == null ? "" : pw2).trim();
+  if (!a) return "Thầy nhập mật khẩu muốn đặt nhé.";
+  if (a !== b) return "Hai lần nhập chưa khớp nhau — thầy nhập lại nhé.";
+  return null;
+}
+/* Trang học sinh (?bt= / ?de=) — dùng lại đúng hàm đọc tham số của app. */
+function kc13IsStudentMode(search){
+  try {
+    if (btParseParams(search).bt) return true;
+    if (deParseParams(search).has) return true;
+  } catch (e) {}
+  return false;
+}
+/* Quyết định lúc mở app: 'student' (mở thẳng) | 'session' (phiên còn hạn → vào
+   thẳng, không cần mạng) | 'locked' (hiện màn khoá). */
+function kc13BootDecision(isStudent, sessionValid){
+  if (isStudent) return "student";
+  if (sessionValid) return "session";
+  return "locked";
+}
+
+/* --- Giao diện khoá --- */
+let kc13Unlocked = false;
+let kc13Busy = false;
+let kc13RemoteHash = "";
+let kc13UiWired = false;
+const KC13_PANELS = ["kc13Step1", "kc13Step2Load", "kc13Step2Blocked", "kc13Step2Create", "kc13Step2Verify"];
+function kc13ShowStep(id){
+  KC13_PANELS.forEach(p => { const el = $(p); if (el) el.classList.toggle("hidden", p !== id); });
+}
+function kc13ShowAdminBar(){
+  const bar = $("kc13AdminBar");
+  if (bar) bar.classList.remove("hidden");
+  const btn = $("kc13LockNowBtn");
+  if (btn && !btn.dataset.kc13Wired){
+    btn.dataset.kc13Wired = "1";
+    btn.addEventListener("click", () => { kc13EndSession(localStorage); location.reload(); });
+  }
+}
+function kc13ApplyUnlocked(){
+  kc13Unlocked = true;
+  try { document.body.classList.remove("kc13-locked"); } catch (e) {}
+  const overlay = $("kc13Lock");
+  if (overlay) overlay.classList.add("hidden");
+  kc13ShowAdminBar();
+}
+async function kc13LoadPwStep(){
+  kc13ShowStep("kc13Step2Load");
+  const r = await kc13FetchPwHash(kc13DefaultFetch);
+  const step = kc13DecidePwStep(r);
+  if (step === "verify"){
+    kc13RemoteHash = r.hash;
+    kc13ShowStep("kc13Step2Verify");
+    const inp = $("kc13PwInput"); if (inp) try { inp.focus(); } catch (e) {}
+  } else if (step === "create"){
+    kc13ShowStep("kc13Step2Create");
+    const inp = $("kc13PwNew"); if (inp) try { inp.focus(); } catch (e) {}
+  } else {
+    kc13ShowStep("kc13Step2Blocked");
+  }
+}
+async function kc13SubmitMaster(){
+  const inp = $("kc13MasterInput"), err = $("kc13MasterErr"), btn = $("kc13MasterBtn");
+  if (!inp || kc13Busy) return;
+  kc13Busy = true; if (btn) btn.disabled = true;
+  try {
+    const okMaster = await kc13VerifyMaster(inp.value);
+    if (!okMaster){ if (err) err.textContent = "Mã chủ chưa đúng — thầy kiểm tra lại nhé."; return; }
+    if (err) err.textContent = "";
+    inp.value = "";
+    kc13LoadPwStep();
+  } finally { kc13Busy = false; if (btn) btn.disabled = false; }
+}
+async function kc13SubmitCreate(){
+  const a = $("kc13PwNew"), b = $("kc13PwConfirm"), err = $("kc13CreateErr"), btn = $("kc13CreateBtn");
+  if (!a || !b || kc13Busy) return;
+  const verr = kc13ValidateCreate(a.value, b.value);
+  if (verr){ if (err) err.textContent = verr; return; }
+  kc13Busy = true; if (btn) btn.disabled = true;
+  try {
+    const hash = await kc13Sha256Hex(String(a.value).trim());
+    await kc13SavePwHash(kc13DefaultFetch, hash);
+    a.value = ""; b.value = "";
+    if (err) err.textContent = "";
+    kc13BeginSession(localStorage, Date.now());
+    kc13ApplyUnlocked();
+  } catch (e) {
+    if (err) err.textContent = "Chưa lưu được mật khẩu — kiểm tra mạng rồi thử lại nhé.";
+  } finally { kc13Busy = false; if (btn) btn.disabled = false; }
+}
+async function kc13SubmitVerify(){
+  const inp = $("kc13PwInput"), err = $("kc13VerifyErr"), btn = $("kc13VerifyBtn");
+  if (!inp || kc13Busy) return;
+  kc13Busy = true; if (btn) btn.disabled = true;
+  try {
+    const okPw = await kc13VerifyPw(inp.value, kc13RemoteHash);
+    if (!okPw){ if (err) err.textContent = "Mật khẩu chưa đúng — thầy kiểm tra lại nhé."; return; }
+    inp.value = "";
+    if (err) err.textContent = "";
+    kc13BeginSession(localStorage, Date.now());
+    kc13ApplyUnlocked();
+  } finally { kc13Busy = false; if (btn) btn.disabled = false; }
+}
+function kc13WireLockUi(){
+  if (kc13UiWired) return;
+  kc13UiWired = true;
+  const masterBtn = $("kc13MasterBtn");
+  if (masterBtn) masterBtn.addEventListener("click", kc13SubmitMaster);
+  const masterInp = $("kc13MasterInput");
+  if (masterInp) masterInp.addEventListener("keydown", ev => { if (ev.key === "Enter"){ ev.preventDefault(); kc13SubmitMaster(); } });
+  const retryBtn = $("kc13RetryBtn");
+  if (retryBtn) retryBtn.addEventListener("click", () => kc13LoadPwStep());
+  const createBtn = $("kc13CreateBtn");
+  if (createBtn) createBtn.addEventListener("click", kc13SubmitCreate);
+  const pwNew = $("kc13PwNew");
+  if (pwNew) pwNew.addEventListener("keydown", ev => { if (ev.key === "Enter"){ ev.preventDefault(); const c = $("kc13PwConfirm"); if (c) c.focus(); } });
+  const pwConfirm = $("kc13PwConfirm");
+  if (pwConfirm) pwConfirm.addEventListener("keydown", ev => { if (ev.key === "Enter"){ ev.preventDefault(); kc13SubmitCreate(); } });
+  const verifyBtn = $("kc13VerifyBtn");
+  if (verifyBtn) verifyBtn.addEventListener("click", kc13SubmitVerify);
+  const pwInput = $("kc13PwInput");
+  if (pwInput) pwInput.addEventListener("keydown", ev => { if (ev.key === "Enter"){ ev.preventDefault(); kc13SubmitVerify(); } });
+}
+/* Cổng khoá chạy ĐẦU TIÊN khi mở app: học sinh → ẩn khoá ngay; phiên Admin
+   còn hạn → vào thẳng; còn lại → khoá cứng (studio ẩn sau lớp phủ). */
+function kc13Init(){
+  const decision = kc13BootDecision(kc13IsStudentMode(location.search), kc13SessionValid(localStorage, Date.now()));
+  if (decision !== "locked"){
+    const overlay = $("kc13Lock");
+    if (overlay) overlay.classList.add("hidden");
+    if (decision === "session") kc13ShowAdminBar();
+    return decision;
+  }
+  try { document.body.classList.add("kc13-locked"); } catch (e) {}
+  kc13WireLockUi();
+  const inp = $("kc13MasterInput");
+  if (inp) setTimeout(() => { try { inp.focus(); } catch (e) {} }, 60);
+  return decision;
+}
+
 /* ---------- Khởi tạo ----------
    Mỗi bước khởi tạo bọc try/catch riêng: một bước vấp (dữ liệu cũ, IndexedDB
    lỗi...) không được kéo sập các bước còn lại hay làm trắng trang. */
+try { kc13Init(); } catch (e) {}
 try { refreshKeyUI(); } catch (e) {}
 try { renderLessonOptions(); renderPickStatus(); } catch (e) {}
 try { idbLoadAll(); } catch (e) {}
