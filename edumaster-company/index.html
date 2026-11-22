@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>EduMaster Company — Văn phòng ảo của thầy Khải</title>
+<title>EduMaster Company — Xưởng phim hoạt hình của thầy Khải</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; font-family:'Be Vietnam Pro','Segoe UI','DejaVu Sans',sans-serif; }
   body { background:#f2f1f7; color:#1d1b2e; }
@@ -194,7 +194,7 @@
       <div class="logo">K</div>
       <div>
         <h1>EduMaster Company</h1>
-        <div class="muted">Văn phòng ảo của thầy Khải — khu vực chỉ dành cho Giám đốc</div>
+        <div class="muted">Xưởng sản xuất phim hoạt hình của thầy Khải — khu vực chỉ dành cho Giám đốc</div>
       </div>
     </div>
     <div class="sub">App chứa toàn bộ tài sản sản xuất của thầy nên được khoá 2 lớp: mã chủ dùng chung + mật khẩu riêng của thầy.</div>
@@ -777,7 +777,7 @@ async function geminiGenerate(systemText, turns, opts) {
 /* ---------------- PROMPT VAI ---------------- */
 function directorSystem() {
   return [
-    "Bạn là ĐẠO DIỄN của EduMaster Company — tên của bạn là \"Em Yêu Của Thầy Khải\", trợ lý Muse của thầy Hồ Tấn Khải (Giám đốc). Bạn là Muse, điều phối 4 nhân viên Muse ĐA NĂNG: Mây, Nắng, Mưa, Gió — nhân viên nào cũng nhận được mọi loại việc, Đạo diễn phân công theo lượng token còn lại của từng tài khoản.",
+    "Bạn là ĐẠO DIỄN của EduMaster Company — tên của bạn là \"Em Yêu Của Thầy Khải\", trợ lý Muse của thầy Hồ Tấn Khải (Giám đốc). Bạn là Muse, điều phối 4 nhân viên Muse ĐA NĂNG trong XƯỞNG SẢN XUẤT PHIM HOẠT HÌNH (các mảng giáo án/đề thi/học liệu đã có app riêng lo; công ty nay tập trung làm phim hoạt hình): Mây, Nắng, Mưa, Gió — nhân viên nào cũng nhận được mọi loại việc, Đạo diễn phân công theo lượng token còn lại của từng tài khoản.",
     "Xưng hô: bạn xưng \"em\", gọi Giám đốc là \"thầy\". Trả lời tiếng Việt, ngắn gọn, rõ việc, thân thiện. Bạn nắm toàn bộ Hồ sơ chung ở cuối prompt này và PHẢI làm theo.",
     "NHIỆM VỤ CHÍNH: tiếp nhận yêu cầu của Giám đốc, tư vấn/chốt ý, và PHÂN CÔNG VIỆC cho nhân viên bằng cách tạo việc trên Bảng công việc.",
     "KHI Giám đốc yêu cầu làm một việc cụ thể (soạn, viết, rà soát, tóm tắt...), hãy xác nhận ngắn gọn trong lời trả lời VÀ chèn khối hành động theo ĐÚNG định dạng sau (có thể chèn nhiều khối nếu nhiều việc):",
@@ -997,7 +997,7 @@ function renderSidebar() {
     var active = VIEW.name === name ? " active" : "";
     return "<div class='item" + active + "' onclick=\"go('" + name + "')\"><div class='ic'>" + icon + "</div>" + esc(label) + (cnt != null ? "<span class='cnt'>(" + cnt + ")</span>" : "") + "</div>";
   }
-  var h = "<div class='brand'><div class='logo'>K</div><div><div class='bname'>EduMaster<br>Company</div><div class='bsub'>Văn phòng ảo của thầy Khải</div></div></div>";
+  var h = "<div class='brand'><div class='logo'>K</div><div><div class='bname'>EduMaster<br>Company</div><div class='bsub'>Xưởng phim hoạt hình</div></div></div>";
   h += "<div class='sec'>VĂN PHÒNG</div>";
   h += item("overview", "◎", "Tổng quan");
   h += item("chat", "#", "Chat toàn công ty");
