@@ -49,7 +49,7 @@ GHI CHÚ LÀM RÕ (theo yêu cầu cụ thể của Giám đốc, sửa lúc 06:
      Giọng khi dựng: Trúc Ly.
 
    - BÁC RỄ:
-     Mô tả nguyên văn: "Old Root: a lifelike 3D animated character, ancient tree-root elder with warm brown bark skin and fine wrinkles, long flowing white root-beard, round brass glasses, kind wise eyes, holding a small wooden cane, cinematic lighting, ultra-detailed 3D render"
+     Mô tả nguyên văn: "Old Root: a lifelike 3D animated character, ancient tree-root elder with warm brown bark skin and fine wrinkles, fresh vibrant green moss and young leaves growing on his bark, rosy healthy cheeks, bright lively kind eyes, long flowing white root-beard, round brass glasses, holding a small wooden cane, cinematic lighting, ultra-detailed 3D render"
      Tính cách: ông già trong vườn, chậm rãi, hay kể chuyện xưa. Hiền từ, điềm đạm, là chỗ dựa của cả nhóm.
      Giọng khi dựng: Hải Đăng.
 
@@ -59,7 +59,7 @@ GHI CHÚ LÀM RÕ (theo yêu cầu cụ thể của Giám đốc, sửa lúc 06:
      Giọng khi dựng: Thùy Dung.
 
    - ÔNG MẶT TRỜI:
-     Mô tả nguyên văn: "Grandpa Sun: a lifelike 3D animated character, majestic golden sun with a warm round face, soft glowing rays like gentle hair, short golden beard, kind squinting smile, cinematic lighting, ultra-detailed 3D render"
+     Mô tả nguyên văn: "Grandpa Sun: a lifelike 3D animated character, majestic sun with a small warm red-orange face nestled deep among thick lush golden-yellow rays and a full golden beard, the glowing rays dominating the silhouette, kind squinting smile, cinematic lighting, ultra-detailed 3D render"
      Tính cách: hiền từ, xuất hiện ít nhưng toàn lúc quan trọng. Nói chậm, ấm áp, mỗi câu đều như một lời dặn.
      Giọng khi dựng: Minh Triết.
 
@@ -106,7 +106,7 @@ Ghi chú: Nhạc nền nhẹ, hơi bí ẩn. Tí dụi mắt, ngó nghiêng, gi�
 ---
 CẢNH 3 — GẶP BÁC RỄ LẦN ĐẦU (khoảng 30 giây)
 Prompt vẽ ảnh (tiếng Anh):
-"Ti the water drop: a lifelike 3D animated character, small glossy translucent light-blue water-droplet body with realistic refraction and tiny sparkles inside, big expressive amber-brown eyes with detailed irises, soft pink cheeks, tiny water arms and feet, cinematic lighting, ultra-detailed 3D render, meeting Old Root: a lifelike 3D animated character, ancient tree-root elder with warm brown bark skin and fine wrinkles, long flowing white root-beard, round brass glasses, kind wise eyes, holding a small wooden cane, cinematic lighting, ultra-detailed 3D render, under a big old tree in a magical garden, warm morning light, lifelike 3D animation, cinematic, ultra-detailed"
+"Ti the water drop: a lifelike 3D animated character, small glossy translucent light-blue water-droplet body with realistic refraction and tiny sparkles inside, big expressive amber-brown eyes with detailed irises, soft pink cheeks, tiny water arms and feet, cinematic lighting, ultra-detailed 3D render, meeting Old Root: a lifelike 3D animated character, ancient tree-root elder with warm brown bark skin and fine wrinkles, fresh vibrant green moss and young leaves growing on his bark, rosy healthy cheeks, bright lively kind eyes, long flowing white root-beard, round brass glasses, holding a small wooden cane, cinematic lighting, ultra-detailed 3D render, under a big old tree in a magical garden, warm morning light, lifelike 3D animation, cinematic, ultra-detailed"
 Lời thoại:
 BÁC RỄ: "Chào cháu, giọt nước nhỏ. Cháu làm Bác giật cả mình!"
 TÍ: "Á! Ông là ai ạ? Sao ông lại có râu dài thế? Ông... ông là một cái cây ạ?"
@@ -129,7 +129,7 @@ Ghi chú: Nhạc nền vui nhộn, nhanh hơn. Chị Lá chống nạnh, Tí cư
 ---
 CẢNH 5 — CAO TRÀO NHỎ: CƠN GIÓ MẠNH (khoảng 35 giây)
 Prompt vẽ ảnh (tiếng Anh):
-"Ti the water drop: a lifelike 3D animated character, small glossy translucent light-blue water-droplet body with realistic refraction and tiny sparkles inside, big expressive amber-brown eyes with detailed irises, soft pink cheeks, tiny water arms and feet, cinematic lighting, ultra-detailed 3D render, being blown by strong wind on a shaking leaf, holding on tight, scared but brave, Sister Leaf: a lifelike 3D animated character, graceful leaf girl with a glossy heart-shaped green leaf body, delicate leaf-vein patterns, bright emerald eyes, cheerful smile, tiny leaf dress, cinematic lighting, ultra-detailed 3D render, reaching out to help, Old Root: a lifelike 3D animated character, ancient tree-root elder with warm brown bark skin and fine wrinkles, long flowing white root-beard, round brass glasses, kind wise eyes, holding a small wooden cane, cinematic lighting, ultra-detailed 3D render, holding the leaf steady, magical garden in wind, dynamic lifelike 3D animation, cinematic, ultra-detailed"
+"Ti the water drop: a lifelike 3D animated character, small glossy translucent light-blue water-droplet body with realistic refraction and tiny sparkles inside, big expressive amber-brown eyes with detailed irises, soft pink cheeks, tiny water arms and feet, cinematic lighting, ultra-detailed 3D render, being blown by strong wind on a shaking leaf, holding on tight, scared but brave, Sister Leaf: a lifelike 3D animated character, graceful leaf girl with a glossy heart-shaped green leaf body, delicate leaf-vein patterns, bright emerald eyes, cheerful smile, tiny leaf dress, cinematic lighting, ultra-detailed 3D render, reaching out to help, Old Root: a lifelike 3D animated character, ancient tree-root elder with warm brown bark skin and fine wrinkles, fresh vibrant green moss and young leaves growing on his bark, rosy healthy cheeks, bright lively kind eyes, long flowing white root-beard, round brass glasses, holding a small wooden cane, cinematic lighting, ultra-detailed 3D render, holding the leaf steady, magical garden in wind, dynamic lifelike 3D animation, cinematic, ultra-detailed"
 Lời thoại:
 DẪN CHUYỆN: "Bỗng nhiên, một cơn gió mạnh ùa tới, làm cả khu vườn rung lên."
 TÍ: "Á á á! Gió ơi, đừng thổi nữa! Mình sắp rơi rồi! Cứu với!"
@@ -141,7 +141,7 @@ Ghi chú: Nhạc nền dồn dập, tiếng gió vù vù, rồi dịu lại khi 
 ---
 CẢNH 6 — KẾT BẠN DƯỚI GỐC CÂY (khoảng 30 giây)
 Prompt vẽ ảnh (tiếng Anh):
-"Ti the water drop: a lifelike 3D animated character, small glossy translucent light-blue water-droplet body with realistic refraction and tiny sparkles inside, big expressive amber-brown eyes with detailed irises, soft pink cheeks, tiny water arms and feet, cinematic lighting, ultra-detailed 3D render, Old Root: a lifelike 3D animated character, ancient tree-root elder with warm brown bark skin and fine wrinkles, long flowing white root-beard, round brass glasses, kind wise eyes, holding a small wooden cane, cinematic lighting, ultra-detailed 3D render, and Sister Leaf: a lifelike 3D animated character, graceful leaf girl with a glossy heart-shaped green leaf body, delicate leaf-vein patterns, bright emerald eyes, cheerful smile, tiny leaf dress, cinematic lighting, ultra-detailed 3D render, sitting together happily under a big old tree, sharing stories, warm afternoon light, magical garden, lifelike 3D animation, cinematic, ultra-detailed"
+"Ti the water drop: a lifelike 3D animated character, small glossy translucent light-blue water-droplet body with realistic refraction and tiny sparkles inside, big expressive amber-brown eyes with detailed irises, soft pink cheeks, tiny water arms and feet, cinematic lighting, ultra-detailed 3D render, Old Root: a lifelike 3D animated character, ancient tree-root elder with warm brown bark skin and fine wrinkles, fresh vibrant green moss and young leaves growing on his bark, rosy healthy cheeks, bright lively kind eyes, long flowing white root-beard, round brass glasses, holding a small wooden cane, cinematic lighting, ultra-detailed 3D render, and Sister Leaf: a lifelike 3D animated character, graceful leaf girl with a glossy heart-shaped green leaf body, delicate leaf-vein patterns, bright emerald eyes, cheerful smile, tiny leaf dress, cinematic lighting, ultra-detailed 3D render, sitting together happily under a big old tree, sharing stories, warm afternoon light, magical garden, lifelike 3D animation, cinematic, ultra-detailed"
 Lời thoại:
 BÁC RỄ: "Khu vườn này kỳ diệu lắm, cháu ạ. Ở đây, ai cũng có một nơi để thuộc về."
 BÁC RỄ: "Từ nay, cháu là một phần của khu vườn này rồi, Tí ạ."
@@ -153,7 +153,7 @@ Ghi chú: Nhạc nền ấm áp, dịu dàng. Cả ba ngồi quây quần, Tí c
 ---
 CẢNH 7 — ÔNG MẶT TRỜI XUẤT HIỆN (khoảng 30 giây)
 Prompt vẽ ảnh (tiếng Anh):
-"Ti the water drop: a lifelike 3D animated character, small glossy translucent light-blue water-droplet body with realistic refraction and tiny sparkles inside, big expressive amber-brown eyes with detailed irises, soft pink cheeks, tiny water arms and feet, cinematic lighting, ultra-detailed 3D render, looking up at Grandpa Sun: a lifelike 3D animated character, majestic golden sun with a warm round face, soft glowing rays like gentle hair, short golden beard, kind squinting smile, cinematic lighting, ultra-detailed 3D render, in the sky above a magical garden at golden hour, warm light, hopeful mood, lifelike 3D animation, cinematic, ultra-detailed"
+"Ti the water drop: a lifelike 3D animated character, small glossy translucent light-blue water-droplet body with realistic refraction and tiny sparkles inside, big expressive amber-brown eyes with detailed irises, soft pink cheeks, tiny water arms and feet, cinematic lighting, ultra-detailed 3D render, looking up at Grandpa Sun: a lifelike 3D animated character, majestic sun with a small warm red-orange face nestled deep among thick lush golden-yellow rays and a full golden beard, the glowing rays dominating the silhouette, kind squinting smile, cinematic lighting, ultra-detailed 3D render, in the sky above a magical garden at golden hour, warm light, hopeful mood, lifelike 3D animation, cinematic, ultra-detailed"
 Lời thoại:
 ÔNG MẶT TRỜI: "Chào các cháu, hôm nay vườn mình vui quá nhỉ?"
 TÍ: "Ông Mặt Trời ơi, ông có biết nhà của cháu ở đâu không ạ?"
@@ -164,7 +164,7 @@ Ghi chú: Nhạc nền vang lên nhẹ nhàng, ánh nắng vàng chiếu xuống
 ---
 CẢNH 8 — KẾT TẬP: TIẾNG GỌI LẠ DƯỚI LÒNG ĐẤT (khoảng 30 giây)
 Prompt vẽ ảnh (tiếng Anh):
-"Ti the water drop: a lifelike 3D animated character, small glossy translucent light-blue water-droplet body with realistic refraction and tiny sparkles inside, big expressive amber-brown eyes with detailed irises, soft pink cheeks, tiny water arms and feet, cinematic lighting, ultra-detailed 3D render, Old Root: a lifelike 3D animated character, ancient tree-root elder with warm brown bark skin and fine wrinkles, long flowing white root-beard, round brass glasses, kind wise eyes, holding a small wooden cane, cinematic lighting, ultra-detailed 3D render, and Sister Leaf: a lifelike 3D animated character, graceful leaf girl with a glossy heart-shaped green leaf body, delicate leaf-vein patterns, bright emerald eyes, cheerful smile, tiny leaf dress, cinematic lighting, ultra-detailed 3D render, listening carefully to a mysterious sound coming from underground at sunset in a magical garden, curious and slightly worried, warm sunset light, lifelike 3D animation, cinematic, ultra-detailed"
+"Ti the water drop: a lifelike 3D animated character, small glossy translucent light-blue water-droplet body with realistic refraction and tiny sparkles inside, big expressive amber-brown eyes with detailed irises, soft pink cheeks, tiny water arms and feet, cinematic lighting, ultra-detailed 3D render, Old Root: a lifelike 3D animated character, ancient tree-root elder with warm brown bark skin and fine wrinkles, fresh vibrant green moss and young leaves growing on his bark, rosy healthy cheeks, bright lively kind eyes, long flowing white root-beard, round brass glasses, holding a small wooden cane, cinematic lighting, ultra-detailed 3D render, and Sister Leaf: a lifelike 3D animated character, graceful leaf girl with a glossy heart-shaped green leaf body, delicate leaf-vein patterns, bright emerald eyes, cheerful smile, tiny leaf dress, cinematic lighting, ultra-detailed 3D render, listening carefully to a mysterious sound coming from underground at sunset in a magical garden, curious and slightly worried, warm sunset light, lifelike 3D animation, cinematic, ultra-detailed"
 Lời thoại:
 DẪN CHUYỆN: "Và thế là, Tí đã có những người bạn đầu tiên. Nhưng khi hoàng hôn buông xuống, một chuyện lạ đã xảy ra."
 CHỊ LÁ: "Này Tí, em nghe thấy gì không? Hình như... có tiếng gì đó dưới lòng đất..."
