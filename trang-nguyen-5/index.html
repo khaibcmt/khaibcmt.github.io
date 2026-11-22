@@ -70,6 +70,15 @@
   .expick button { flex: 1 1 30%; padding: 11px 6px; font-size: 16px; font-weight: 700; border-radius: 12px; border: 2px solid #c9d9ec; background: #f6faff; color: #33506e; cursor: pointer; }
   .expick button.sel { background: #0b78d0; border-color: #0b78d0; color: #fff; }
   .expick button:disabled { opacity: .45; cursor: not-allowed; }
+  #stagePick button { flex: 1 1 45%; background: #fff; }
+  #stagePick button[data-stage="7"] { --c:#0b78d0; }
+  #stagePick button[data-stage="8"] { --c:#1da851; }
+  #stagePick button[data-stage="9"] { --c:#e8890c; }
+  #stagePick button[data-stage="10"] { --c:#8e44ad; }
+  #stagePick button { color: var(--c); border-color: var(--c); }
+  #stagePick button.sel { background: var(--c); border-color: var(--c); color: #fff; }
+  #examPick button.sel { background: var(--stageC, #0b78d0); border-color: var(--stageC, #0b78d0); }
+  .sec-title { color: var(--stageC, #0b5cad); }
 </style>
 </head>
 <body>
@@ -91,10 +100,10 @@
       <p style="font-size:16.5px; line-height:1.6; margin-top:0">Chào con! Đề này giống hệt đề thi thật: có đủ 7 dạng câu hỏi (trắc nghiệm, điền từ, ghép cặp, sắp xếp, kéo thả, đọc hiểu…). Làm xong bấm <b>Nộp bài</b> là biết điểm ngay. Hết 30 phút máy tự nộp bài nhé!</p>
       <label style="font-weight:700">Chọn chặng thi:</label>
       <div class="expick" id="stagePick">
-        <button type="button" class="sel" onclick="selectStage(7)">Vòng 7 – Sơ khảo cấp trường (thi 9/12)</button>
-        <button type="button" onclick="selectStage(8)">Vòng 8 – Thi Hương (thi 7/1)</button>
-        <button type="button" onclick="selectStage(9)">Vòng 9 – Thi Hội (thi 11/3)</button>
-        <button type="button" onclick="selectStage(10)">Vòng 10 – Thi Đình (thi 10/4)</button>
+        <button type="button" data-stage="7" class="sel" onclick="selectStage(7)">🔵 Vòng 7 – Sơ khảo cấp trường (thi 9/12)</button>
+        <button type="button" data-stage="8" onclick="selectStage(8)">🟢 Vòng 8 – Thi Hương (thi 7/1)</button>
+        <button type="button" data-stage="9" onclick="selectStage(9)">🟠 Vòng 9 – Thi Hội (thi 11/3)</button>
+        <button type="button" data-stage="10" onclick="selectStage(10)">🟣 Vòng 10 – Thi Đình (thi 10/4)</button>
       </div>
       <label style="font-weight:700">Chọn đề luyện tập của chặng:</label>
       <div class="expick" id="examPick">
@@ -242,6 +251,7 @@ function syncStageExams(){
 }
 syncStageExams();
 const STAGE_NAMES = { 7: "Vòng 7 – Sơ khảo cấp trường", 8: "Vòng 8 – Thi Hương", 9: "Vòng 9 – Thi Hội", 10: "Vòng 10 – Thi Đình" };
+const STAGE_COLORS = { 7: "#0b78d0", 8: "#1da851", 9: "#e8890c", 10: "#8e44ad" };
 let curStage = 7, curExam = 1;
 let SECTIONS = null, CLOZE = null, PASSAGE = null, ALLQ = [];
 function loadExam(){
@@ -262,6 +272,7 @@ function refreshExamPick(){
 }
 function selectStage(n){
   curStage = n; curExam = 1;
+  document.documentElement.style.setProperty("--stageC", STAGE_COLORS[n] || "#0b78d0");
   const btns = document.querySelectorAll("#stagePick button");
   btns.forEach(b => b.classList.remove("sel"));
   const idx = [7,8,9,10].indexOf(n); if(btns[idx]) btns[idx].classList.add("sel");
@@ -632,6 +643,6 @@ loadBoard();
 <script src="v8b.js"></script>
 <script src="v10a.js"></script>
 <script src="v10b.js"></script>
-<script>refreshExamPick();</script>
+<script>selectStage(7);</script>
 </body>
 </html>
