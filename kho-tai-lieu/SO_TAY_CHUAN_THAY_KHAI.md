@@ -128,6 +128,11 @@
 - Hình SGK đánh số phải đi cặp với bản nguyên chữ của nó và chỉ tính là 1 hình,
   không lặp lại trong video. Thứ tự hình/cảnh theo thứ tự xuất hiện trong bài.
 - **Không triển khai thu giọng thật của thầy** (thầy đã từ chối) — không gợi lại.
+- ⭐ **LUẬT NHẠC BẢN QUYỀN** (thầy chốt 22/11/2026): nhạc hiệu, nhạc nền, nhạc chuyển
+  cảnh trong MỌI video/phim — TUYỆT ĐỐI không vi phạm bản quyền. Chỉ dùng nhạc tự
+  sáng tác/sinh bằng AI cho riêng hệ của thầy, hoặc nhạc miễn phí có giấy phép rõ ràng
+  (ghi nguồn khi giấy phép yêu cầu). Cấm lấy nhạc thương mại/nhạc hot của người khác
+  dù chỉ vài giây. Sản phẩm có nhạc phải ghi rõ nguồn nhạc.
 
 ## 6. CHUẨN LÀM APP/PHẦN MỀM (khi được giao việc kỹ thuật)
 

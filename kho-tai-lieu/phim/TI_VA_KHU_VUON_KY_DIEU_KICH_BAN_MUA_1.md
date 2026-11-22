@@ -426,3 +426,4 @@ Luật phân giọng của thầy vẫn áp dụng: đoạn nào mang vai "thầ
 3. Cảnh đánh dấu 🎤 là cảnh thoại chính, cần cận mặt để khớp miệng.
 4. Độ dài thoại mỗi tập đã cân ở mức 3–5 phút đọc với tốc độ ~15 ký tự/giây.
 5. Khi Giám đốc gán vai: nhân viên nhận tập nào thì nộp kịch bản tập đó vào việc tương ứng trên Bảng việc; Đạo diễn tổng hợp, kiểm đồng nhất nhân vật và thoại, rồi mới chuyển khâu dựng.
+6. ⭐ NHẠC (luật của thầy, chốt 22/11/2026): nhạc hiệu series và nhạc nền mỗi tập TUYỆT ĐỐI không vi phạm bản quyền — nhạc hiệu phải là giai điệu SÁNG TÁC RIÊNG cho series (sinh bằng AI/tự dựng, là tài sản của xưởng), nhạc nền chỉ lấy từ nguồn miễn phí có giấy phép rõ ràng và phải ghi rõ nguồn trong hồ sơ tập. Cấm dùng nhạc thương mại/nhạc hot dù chỉ vài giây.
