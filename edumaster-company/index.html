@@ -1147,6 +1147,11 @@ function waitingHtml() {
   });
   return h;
 }
+function videoPreviewHtml(text) {
+  var m = String(text || "").match(/https?:\/\/[^\s"'<>]+\.mp4/);
+  if (!m) return "";
+  return "<video controls preload='metadata' playsinline src='" + esc(m[0]) + "' style='width:100%;max-height:430px;border-radius:10px;background:#000;margin:10px 0 4px'></video>";
+}
 function reviewHtml() {
   var ts = S.tasks.filter(function (t) { return t.status === "review"; }).sort(function (a, b) { return b.updatedAt - a.updatedAt; });
   var h = "<h2 class='vt'>Hộp Duyệt — sản phẩm chờ Giám đốc duyệt</h2>";
@@ -1154,7 +1159,7 @@ function reviewHtml() {
   ts.forEach(function (t) {
     h += "<div class='rowitem'><div class='rt1'><div><span class='ttl'>" + esc(t.title) + "</span><div><span class='bdg room'>" + esc(ROOMS[t.room].name) + "</span><span class='bdg who'>" + esc(memberName(t.assignee)) + "</span><span class='bdg review'>Chờ duyệt</span></div></div>" +
       "<div class='acts'><button class='btn small' onclick=\"approveTask('" + t.id + "')\">✓ Duyệt → Kho</button><button class='btn small sec' onclick=\"returnModal('" + t.id + "')\">↩ Trả lại</button><button class='btn small sec' onclick=\"openTask('" + t.id + "')\">Chi tiết</button></div></div>" +
-      "<div class='prodbg'>" + esc(t.product || "(chưa có sản phẩm)") + "</div></div>";
+      videoPreviewHtml(t.product) + "<div class='prodbg'>" + esc(t.product || "(chưa có sản phẩm)") + "</div></div>";
   });
   return h;
 }
@@ -1321,7 +1326,7 @@ function doReturn(id) {
 function openProduct(id) {
   var p = null; S.products.forEach(function (x) { if (x.id === id) p = x; });
   if (!p) return;
-  openModal(modalHead(p.title) + "<div class='muted' style='margin-bottom:8px'>" + esc(ROOMS[p.room] ? ROOMS[p.room].name : p.room) + " · Vào kho " + fmtDT(p.at) + "</div><div class='prodbg' style='max-height:50vh'>" + esc(p.content) + "</div>" +
+  openModal(modalHead(p.title) + "<div class='muted' style='margin-bottom:8px'>" + esc(ROOMS[p.room] ? ROOMS[p.room].name : p.room) + " · Vào kho " + fmtDT(p.at) + "</div>" + videoPreviewHtml(p.content) + "<div class='prodbg' style='max-height:50vh'>" + esc(p.content) + "</div>" +
     "<div class='btnrow'><button class='btn small sec' onclick=\"downloadProduct('" + p.id + "','txt')\">⬇ Tải .txt</button><button class='btn small sec' onclick=\"downloadProduct('" + p.id + "','md')\">⬇ Tải .md</button></div>");
 }
 function downloadFile(name, text) {
