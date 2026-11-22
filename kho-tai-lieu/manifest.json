@@ -121,6 +121,12 @@
    "loai": "kich_ban_phim",
    "tieu_de": "Kịch bản Mùa 1 series phim hoạt hình 'Tí và Khu Vườn Kỳ Diệu' (hồ sơ series + phiếu nhân vật + 6 tập) — bản thảo Đạo diễn",
    "url": "https://khaibcmt.github.io/kho-tai-lieu/phim/TI_VA_KHU_VUON_KY_DIEU_KICH_BAN_MUA_1.md"
+  },
+  {
+   "id": "ho-so-series-chuan-v2",
+   "loai": "ho_so_phim",
+   "tieu_de": "HỒ SƠ SERIES CHUẨN v2 (Đạo diễn tổng hợp từ sản phẩm của Nắng) — bộ mô tả nhân vật 3D giống thật bản khoá + phiếu nhân vật + kịch bản Tập 1 + dàn ý mùa 1",
+   "url": "https://khaibcmt.github.io/kho-tai-lieu/phim/HO_SO_SERIES_CHUAN.md"
   }
  ],
  "ten": "Kho tài liệu chung — EduMaster Company"
