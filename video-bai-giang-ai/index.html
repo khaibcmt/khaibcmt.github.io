@@ -258,7 +258,7 @@
   <header class="top">
     <h1>🎬 Video Bài Giảng <span class="ai">AI</span></h1>
     <p>Chỉ cần nêu <b>tên bài</b> hoặc dán <b>câu chuyện</b> — app tự viết kịch bản, tạo hình, vẽ sơ đồ, dựng bảng số liệu, thu giọng đọc và ghép thành video.</p>
-    <p class="small" id="buildTag">🏷️ Bản KC15 • 22/11/2026 — ĐOẠN MỞ ĐẦU TỰA BÀI tất định cho video Bài giảng (công bố tên bài + giới thiệu; hình là poster nguyên tấm hoặc THẺ TỰA app tự vẽ in tên bài) + poster-lib + ppt-lib đã nối vào khuôn “Đặt đúng chỗ” + KHOÁ ADMIN 2 LỚP cho studio (trang học sinh ?bt=/?de= mở thẳng) + giọng VieNeu trên máy này (miễn phí) + luật phân giọng: đoạn có chữ “thầy” luôn do MC Nam đọc</p>
+    <p class="small" id="buildTag">🏷️ Bản KC16 • 22/11/2026 — TỰ ĐỘNG TẠO THUMBNAIL YouTube kèm video khi dựng xong (ảnh bìa 1280×720 vẽ ngay trong app từ hình đoạn mở đầu + tên bài, có nút TẢI VIDEO + THUMBNAIL một chạm) + ĐOẠN MỞ ĐẦU TỰA BÀI tất định cho video Bài giảng (công bố tên bài + giới thiệu; hình là poster nguyên tấm hoặc THẺ TỰA app tự vẽ in tên bài) + poster-lib + ppt-lib đã nối vào khuôn “Đặt đúng chỗ” + KHOÁ ADMIN 2 LỚP cho studio (trang học sinh ?bt=/?de= mở thẳng) + giọng VieNeu trên máy này (miễn phí) + luật phân giọng: đoạn có chữ “thầy” luôn do MC Nam đọc</p>
     <div id="voiceBadge" class="hidden"></div>
     <div id="kc13AdminBar" class="hidden" style="margin-top:10px">
       <button class="btn-ghost shrink" id="kc13LockNowBtn" type="button">🔒 Khoá lại ngay</button>
@@ -511,6 +511,18 @@
         <button class="btn-accent" style="width:100%;padding:15px;font-size:18px">⬇ TẢI VIDEO (.webm)</button>
       </a>
       <button class="btn shrink" id="againBtn">🔄 Làm Video Khác</button>
+    </div>
+    <!-- [KC16] Thumbnail YouTube tự tạo kèm video -->
+    <div id="thumbBox" class="hidden" style="margin-top:14px">
+      <div class="small" style="margin-bottom:6px">🖼️ <b>Thumbnail YouTube đi kèm</b> — app đã tự làm sẵn từ hình đoạn mở đầu + tên bài. Khi đăng video lên YouTube, thầy chọn đúng file này ở ô <b>“Hình thu nhỏ”</b> là xong.</div>
+      <img id="thumbPreview" alt="Thumbnail YouTube" style="width:100%;max-width:640px;border-radius:10px;border:2px solid #37d67a;display:block">
+      <div class="row" style="margin-top:10px">
+        <button class="btn-accent" id="dlBothBtn" style="flex:1;padding:13px;font-size:16px">⬇ Tải video + thumbnail</button>
+        <a id="thumbLink" href="#" download="thumbnail.png" style="text-decoration:none">
+          <button class="btn shrink" style="padding:13px">⬇ Chỉ tải thumbnail (.png)</button>
+        </a>
+      </div>
+      <div class="small" id="thumbNote" style="margin-top:6px"></div>
     </div>
     <div class="warn" id="formatNote">📌 <b>Ghi chú:</b> app ưu tiên ghi thẳng <b>MP4</b> nếu trình duyệt hỗ trợ; trình duyệt chưa hỗ trợ thì xuất <b>WebM</b> (YouTube vẫn nhận).</div>
     <div id="resultNote"></div>
@@ -8642,6 +8654,197 @@ function buildDownloadName(sd, ext){
   return "Video_" + (slugPascal((sd && sd.title) || "", 70) || "BaiGiang") + ext;
 }
 
+/* =========================================================
+   [KC16] THUMBNAIL YOUTUBE TỰ ĐỘNG KÈM VIDEO (lệnh thầy
+   08:45 ngày 22/11/2026: "mấy cái này em bỏ vào video tự
+   động luôn chứ thầy làm sao biết bỏ ở đâu!!" + chuẩn giao
+   video "tải về là đăng"). Dựng xong video là app tự vẽ
+   thêm 1 thumbnail PNG 1280×720 trên canvas phụ:
+   - Nền: hình đoạn mở đầu (poster chính của bài nếu có —
+   đúng asset của đoạn 0; không có thì hình đầu tiên lấy
+   được; không có hình nào thì vẽ lại khung đoạn mở đầu
+   bằng chính drawSlide của pipeline; cuối cùng mới là
+   nền gradient tông app như slideBg).
+   - Chữ: dòng 1 + dòng 2 lấy từ ĐÚNG nguồn chữ app đã
+   tính cho video đó (cùng thứ tự rẽ nhánh như
+   buildDownloadName): Chữa đề -> "CHỮA ĐỀ THI" /
+   "<Môn> — <tên đề>" từ sd._chuade; Phiếu -> "PHIẾU HỌC
+   TẬP" / tên bài từ sd._phieu; Kể chuyện -> tên truyện
+   sd.title / "<Môn> <khối> • <tên bài>" từ sd._picked
+   (đường auto KC2) hoặc để trống (đường dán tay); Bài
+   giảng -> "<MÔN> <KHỐI>" viết hoa / tên bài lessonName
+   chuẩn KC10 từ sd._picked.topic; còn lại -> môn/khối
+   sd.subject/sd.grade + sd.title.
+   - Huy hiệu pill góc phải trên: "Thầy Khaibcmt".
+   Thumbnail lỗi thì bỏ qua êm — TUYỆT ĐỐI không làm hỏng
+   kết quả video đã dựng xong. */
+const KC16_TW = 1280, KC16_TH = 720;
+let kc16ThumbState = null;   /* {url, name} của lượt dựng hiện tại */
+function kc16Lines(sd){
+  if (sd && sd._chuade) {
+    const mon = sd._chuade.mon || sd.subject || "";
+    return { l1: "CHỮA ĐỀ THI", l2: (mon ? mon + " — " : "") + (sd._chuade.tenBai || "") };
+  }
+  if (sd && sd._phieu) {
+    return { l1: "PHIẾU HỌC TẬP", l2: sd._phieu.tenBai || sd._phieu.tieuDePhieu || "" };
+  }
+  if (sd && sd._mode === "kechuyen") {
+    const p = sd._picked;
+    return {
+      l1: sd.title || "Truyện kể",
+      l2: p ? ((p.subjectName || "") + " " + (p.grade || "") + (p.topic ? " • " + p.topic : "")).trim() : ""
+    };
+  }
+  if (sd && sd._picked) {
+    const p = sd._picked;
+    return { l1: ((p.subjectName || "") + " " + (p.grade || "")).trim().toUpperCase(), l2: p.topic || sd.title || "" };
+  }
+  const mon = (sd && sd.subject) || "", lop = (sd && sd.grade) || "";
+  if (mon) return { l1: (mon + (lop ? " " + lop : "")).trim().toUpperCase(), l2: (sd && sd.title) || "" };
+  return { l1: (sd && sd.title) || "Video bài giảng", l2: "" };
+}
+function kc16Cover(ctx, img, w, h){
+  const iw = img.naturalWidth || img.width, ih = img.naturalHeight || img.height;
+  if (!iw || !ih) return false;
+  const s = Math.max(w / iw, h / ih);
+  const dw = iw * s, dh = ih * s;
+  ctx.drawImage(img, (w - dw) / 2, (h - dh) / 2, dw, dh);
+  return true;
+}
+function kc16RoundRect(ctx, x, y, w, h, r){
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+function kc16Badge(ctx){
+  const label = "Thầy Khaibcmt";
+  ctx.font = "700 34px " + FONT;
+  const tw = ctx.measureText(label).width;
+  const bw = tw + 48, bh = 56, bx = KC16_TW - bw - 28, by = 26;
+  ctx.save();
+  ctx.shadowColor = "rgba(0,0,0,0.45)"; ctx.shadowBlur = 8; ctx.shadowOffsetY = 2;
+  ctx.fillStyle = "#1447c8";
+  kc16RoundRect(ctx, bx, by, bw, bh, bh / 2); ctx.fill();
+  ctx.restore();
+  ctx.fillStyle = "#ffffff"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.fillText(label, bx + bw / 2, by + bh / 2 + 1);
+  ctx.textAlign = "left"; ctx.textBaseline = "top";
+}
+/* Co chữ cho vừa bề ngang: thu cỡ tới sàn thì ngắt 2 dòng. */
+function kc16Fit(ctx, text, maxW, startPx, minPx, weight){
+  let px = startPx;
+  ctx.font = weight + " " + px + "px " + FONT;
+  while (px > minPx && ctx.measureText(text).width > maxW) {
+    px -= 4; ctx.font = weight + " " + px + "px " + FONT;
+  }
+  if (ctx.measureText(text).width <= maxW) return { px: px, lines: [text] };
+  return { px: px, lines: wrapLines(ctx, text, maxW).slice(0, 2) };
+}
+function kc16StrokeText(ctx, text, x, y, px, weight, fill){
+  ctx.font = weight + " " + px + "px " + FONT;
+  ctx.textAlign = "left"; ctx.textBaseline = "top";
+  ctx.save();
+  ctx.lineJoin = "round"; ctx.miterLimit = 2;
+  ctx.strokeStyle = "rgba(0,0,0,0.88)"; ctx.lineWidth = Math.max(4, px / 11);
+  ctx.shadowColor = "rgba(0,0,0,0.55)"; ctx.shadowBlur = 10; ctx.shadowOffsetY = 3;
+  ctx.strokeText(text, x, y);
+  ctx.fillStyle = fill;
+  ctx.fillText(text, x, y);
+  ctx.restore();
+}
+function kc16PickBg(sd, assetsMap){
+  const pick = a => (a && a.status === "ok") ? (a.img || (a.imgs && a.imgs[0]) || null) : null;
+  if (assetsMap) {
+    const first = pick(assetsMap[0]);
+    if (first) return first;
+    const keys = Object.keys(assetsMap).sort((a, b) => Number(a) - Number(b));
+    for (const k of keys) { const im = pick(assetsMap[k]); if (im) return im; }
+  }
+  return null;
+}
+async function kc16MakeThumbnail(sd, assetsMap){
+  const cv = document.createElement("canvas");
+  cv.width = KC16_TW; cv.height = KC16_TH;
+  const ctx = cv.getContext("2d");
+  /* Nền dự phòng: gradient tông app (như slideBg). */
+  const g0 = ctx.createLinearGradient(0, 0, 0, KC16_TH);
+  g0.addColorStop(0, "#0d4a33"); g0.addColorStop(1, "#052418");
+  ctx.fillStyle = g0; ctx.fillRect(0, 0, KC16_TW, KC16_TH);
+  const bgImg = kc16PickBg(sd, assetsMap);
+  if (bgImg) {
+    kc16Cover(ctx, bgImg, KC16_TW, KC16_TH);
+  } else if (sd && sd.segments && sd.segments.length) {
+    /* Không có hình thật nào (Phiếu / Chữa đề / slide chữ):
+       vẽ lại khung đoạn mở đầu bằng chính drawSlide. */
+    try {
+      const tmp = document.createElement("canvas");
+      tmp.width = W; tmp.height = H;
+      drawSlide(tmp.getContext("2d"), sd.segments[0], (assetsMap && assetsMap[0]) || { status: "skip", img: null, source: "none" }, 0);
+      ctx.drawImage(tmp, 0, 0, KC16_TW, KC16_TH);
+    } catch (e) { /* giữ nền gradient */ }
+  }
+  /* Lớp phủ gradient: đậm dần xuống đáy + tối nhẹ phía trái. */
+  const g = ctx.createLinearGradient(0, KC16_TH * 0.32, 0, KC16_TH);
+  g.addColorStop(0, "rgba(0,0,0,0)");
+  g.addColorStop(0.55, "rgba(0,0,0,0.45)");
+  g.addColorStop(1, "rgba(0,0,0,0.86)");
+  ctx.fillStyle = g; ctx.fillRect(0, 0, KC16_TW, KC16_TH);
+  const g2 = ctx.createLinearGradient(0, 0, KC16_TW * 0.72, 0);
+  g2.addColorStop(0, "rgba(0,0,0,0.35)"); g2.addColorStop(1, "rgba(0,0,0,0)");
+  ctx.fillStyle = g2; ctx.fillRect(0, 0, KC16_TW, KC16_TH);
+  kc16Badge(ctx);
+  /* Khối chữ bám đáy trái. */
+  const lines = kc16Lines(sd);
+  const maxW = KC16_TW - 92;
+  const padX = 46, bottom = KC16_TH - 38;
+  const f2 = lines.l2 ? kc16Fit(ctx, lines.l2, maxW, 62, 40, "700") : null;
+  const f1 = kc16Fit(ctx, lines.l1, maxW, 96, 46, "800");
+  const h2 = f2 ? f2.lines.length * f2.px * 1.14 : 0;
+  const h1 = f1.lines.length * f1.px * 1.1;
+  let y = bottom - h2 - (f2 ? 12 : 0) - h1;
+  f1.lines.forEach(ln => { kc16StrokeText(ctx, ln, padX, y, f1.px, "800", "#ffd94d"); y += f1.px * 1.1; });
+  if (f2) {
+    y += 12;
+    f2.lines.forEach(ln => { kc16StrokeText(ctx, ln, padX, y, f2.px, "700", "#ffffff"); y += f2.px * 1.14; });
+  }
+  return new Promise(res => { try { cv.toBlob(b => res(b), "image/png"); } catch (e) { res(null); } });
+}
+/* Sinh thumbnail + gắn vào khu vực kết quả. Chạy NGAY trong
+   buildVideo sau khi có file video, trước khi hiện resultCard. */
+async function kc16AttachThumbnail(){
+  kc16ThumbState = null;
+  const box = $("thumbBox");
+  if (box) box.classList.add("hidden");
+  try {
+    const blob = await kc16MakeThumbnail(scriptData, assets);
+    if (!blob) return;
+    const videoName = $("downloadLink").getAttribute("download") || "Video.mp4";
+    const name = videoName.replace(/\.[^.]+$/, "") + "_thumbnail.png";
+    const url = URL.createObjectURL(blob);
+    kc16ThumbState = { url: url, name: name };
+    $("thumbPreview").src = url;
+    const tl = $("thumbLink");
+    tl.href = url;
+    tl.setAttribute("download", name);
+    const noteEl = $("thumbNote");
+    if (noteEl) noteEl.textContent = "📦 " + name + " — " + (blob.size / 1024).toFixed(0) + " KB • 1280×720 (đúng cỡ thumbnail YouTube)";
+    if (box) box.classList.remove("hidden");
+  } catch (e) { /* thumbnail lỗi thì bỏ qua — video vẫn là chính */ }
+}
+/* Nút gộp: 1 chạm tải video trước, ~600ms sau tải thumbnail.
+   Trình duyệt chặn tải kép thì vẫn còn nút tải PNG riêng. */
+$("dlBothBtn").addEventListener("click", () => {
+  const dl = $("downloadLink");
+  if (dl && dl.href && dl.href !== "#" && !dl.href.endsWith("#")) dl.click();
+  if (kc16ThumbState && kc16ThumbState.url) {
+    setTimeout(() => { const tl = $("thumbLink"); if (tl) tl.click(); }, 600);
+  }
+});
+
 /* ---------- Điều phối: bấm DỰNG VIDEO NGAY ---------- */
 function logWarn(html){
   const d = document.createElement("div");
@@ -8792,6 +8995,8 @@ async function buildVideo(){
     let note = '<div class="ok-box">📦 Dung lượng file: <b>' + (blob.size / 1048576).toFixed(2) + ' MB</b> — ' + scriptData.segments.length + ' đoạn — định dạng <b>' + (fmt.isMp4 ? "MP4" : "WebM") + '</b>.</div>';
     if (demoMode) note += '<div class="warn">👀 Đây là <b>bản xem thử không cần key</b>: hình AI và giọng đọc bị tắt để chạy thử quy trình. Muốn có hình thật + giọng đọc thật, thầy tạo key miễn phí rồi bấm TẠO VIDEO.</div>';
     $("resultNote").innerHTML = note;
+    /* [KC16] Tự sinh thumbnail YouTube đi kèm trước khi hiện kết quả. */
+    await kc16AttachThumbnail();
     $("resultCard").classList.remove("hidden");
     $("resultCard").scrollIntoView({ behavior: "smooth", block: "start" });
   } catch (e) {
