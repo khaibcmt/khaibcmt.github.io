@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Trạng Nguyên Tiếng Việt — Lớp 5 — Đề luyện tập số 1</title>
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin:0; font-family: "Segoe UI", Tahoma, Arial, sans-serif; background: linear-gradient(180deg,#dbeeff 0%,#eef7ff 220px,#f4f9ff 100%); color:#1c2b3a; }
+  .wrap { max-width: 780px; margin: 0 auto; padding: 14px 12px 60px; }
+  h1 { font-size: 24px; text-align:center; color:#0b5cad; margin: 10px 0 2px; }
+  .sub { text-align:center; color:#44607c; margin: 2px 0 14px; font-size: 15px; }
+  .card { background:#fff; border-radius:16px; box-shadow: 0 3px 14px rgba(20,80,140,.10); padding: 18px 16px; margin-bottom: 16px; }
+  .btn { display:inline-block; border:none; cursor:pointer; background:#0b78d0; color:#fff; font-size:18px; font-weight:700; padding: 13px 30px; border-radius: 999px; box-shadow: 0 3px 0 #095da3; }
+  .btn:active { transform: translateY(2px); box-shadow:none; }
+  .btn.green { background:#1da851; box-shadow: 0 3px 0 #147a3b; }
+  .btn.gray { background:#e8eef5; color:#33506e; box-shadow: 0 3px 0 #c3d2e2; }
+  .btn.orange { background:#f39c2c; box-shadow: 0 3px 0 #c67a16; }
+  input[type=text] { font-size:17px; padding: 11px 13px; border:2px solid #c9d9ec; border-radius: 10px; width: 100%; outline:none; }
+  input[type=text]:focus { border-color:#0b78d0; }
+  #topbar { position: sticky; top:0; z-index: 50; background: rgba(255,255,255,.96); border-bottom: 2px solid #d7e6f5; padding: 8px 12px; display:none; }
+  #topbar .row { max-width:780px; margin:0 auto; display:flex; justify-content: space-between; align-items:center; gap:8px; flex-wrap:wrap; }
+  #timer { font-size: 20px; font-weight: 800; color:#0b5cad; }
+  #timer.low { color:#d43a2a; }
+  #progressTxt { font-size: 14px; color:#44607c; font-weight:600; }
+  .pbar { height: 8px; background:#e2edf8; border-radius: 99px; margin-top:6px; overflow:hidden; }
+  .pbar > div { height:100%; background:#1da851; width:0%; transition: width .3s; }
+  .sec-title { font-size: 18px; font-weight: 800; color:#0b5cad; margin: 22px 0 4px; }
+  .sec-note { color:#5a748e; font-size: 14px; margin-bottom: 10px; }
+  .q { background:#fff; border-radius: 14px; box-shadow: 0 2px 10px rgba(20,80,140,.08); padding: 15px 15px 13px; margin-bottom: 14px; border-left: 6px solid #bcd8f5; }
+  .q.done { border-left-color:#1da851; }
+  .q-head { font-size: 16.5px; line-height: 1.5; margin-bottom: 10px; }
+  .q-head b { color:#0b5cad; }
+  .opt { display:block; width:100%; text-align:left; background:#f6faff; border:2px solid #d5e4f4; border-radius: 12px; padding: 11px 13px; margin: 7px 0; font-size: 16.5px; cursor:pointer; line-height:1.45; }
+  .opt.sel { background:#e3f0ff; border-color:#0b78d0; font-weight:700; }
+  .opt .letter { display:inline-block; min-width: 26px; font-weight:800; color:#0b5cad; }
+  select.match-sel { font-size:16px; padding: 8px; border:2px solid #c9d9ec; border-radius: 9px; max-width: 100%; }
+  .match-row { display:flex; gap:10px; align-items:center; padding: 8px 0; border-bottom: 1px dashed #e0ebf6; flex-wrap: wrap; }
+  .match-left { flex: 1 1 220px; font-size:16px; line-height:1.45; }
+  .chips { display:flex; flex-wrap:wrap; gap:8px; margin: 8px 0; }
+  .chip { background:#fff4d6; border:2px solid #eec25e; color:#6b4e00; padding: 9px 14px; border-radius: 999px; font-size: 16px; cursor:pointer; font-weight:600; line-height:1.35; }
+  .chip.sel { background:#0b78d0; border-color:#0b78d0; color:#fff; }
+  .chip.used { opacity:.35; pointer-events:none; }
+  .zone { border:2px dashed #9dbfdd; border-radius: 12px; padding: 10px; min-height: 64px; margin: 8px 0 12px; background:#f8fbff; }
+  .zone h4 { margin: 0 0 8px; font-size: 15px; color:#0b5cad; }
+  .zone .chip { background:#e3f0ff; border-color:#0b78d0; color:#0b3f70; }
+  .built { background:#f2f8ff; border:2px solid #d5e4f4; border-radius: 12px; padding: 10px; min-height: 52px; font-size: 16.5px; line-height:1.6; }
+  .built .chip { background:#e3f0ff; border-color:#0b78d0; color:#0b3f70; }
+  .seq-badge { display:inline-block; background:#d43a2a; color:#fff; border-radius:50%; width:22px; height:22px; line-height:22px; text-align:center; font-size:13px; font-weight:800; margin-right:6px; vertical-align: middle;}
+  .passage { background:#fffdf3; border:2px solid #f0dfae; border-radius: 12px; padding: 13px 15px; font-size: 16.5px; line-height: 1.75; text-align: justify; }
+  .blank { display:inline-block; min-width: 92px; text-align:center; border-bottom: 3px solid #0b78d0; color:#0b5cad; font-weight:800; cursor:pointer; padding: 0 6px; background:#eaf4ff; border-radius: 6px 6px 0 0; }
+  .blank.empty { color:#9db6cf; font-weight:600; }
+  .bank { display:flex; flex-wrap:wrap; gap:8px; margin: 10px 0 4px; }
+  .result-big { font-size: 44px; font-weight: 900; color:#0b5cad; text-align:center; margin: 6px 0; }
+  .rev { border-radius: 12px; padding: 12px 14px; margin-bottom: 10px; font-size: 15.5px; line-height: 1.55; }
+  .rev.ok { background:#eafaf0; border:2px solid #8fd6a8; }
+  .rev.bad { background:#fdeeea; border:2px solid #f2b1a5; }
+  .rev .pts { float:right; font-weight:800; }
+  .rev .ans { color:#0b7a37; font-weight:700; }
+  .rev .mine { color:#b03024; }
+  table.board { width:100%; border-collapse: collapse; font-size: 15px; }
+  table.board th, table.board td { padding: 8px 6px; border-bottom: 1px solid #e3edf7; text-align:left; }
+  table.board th { color:#0b5cad; }
+  .center { text-align:center; }
+  .small { font-size: 13.5px; color:#5a748e; }
+  .hidden { display:none !important; }
+  .name-row { display:flex; gap:10px; }
+  .name-row input { flex:1; }
+</style>
+</head>
+<body>
+<div id="topbar">
+  <div class="row">
+    <div>✏️ <b id="tbName"></b></div>
+    <div id="progressTxt">Đã làm 0/30 câu</div>
+    <div id="timer">⏰ 30:00</div>
+  </div>
+  <div class="row"><div class="pbar" style="flex:1"><div id="pfill"></div></div></div>
+</div>
+
+<div class="wrap">
+  <!-- MAN HINH BAT DAU -->
+  <div id="startScreen">
+    <h1>🏆 Trạng Nguyên Tiếng Việt — Lớp 5</h1>
+    <p class="sub">Đề luyện tập số 1 • Vòng Sơ khảo cấp Trường<br>30 câu • 300 điểm • Thời gian 30 phút</p>
+    <div class="card">
+      <p style="font-size:16.5px; line-height:1.6; margin-top:0">Chào con! Đề này giống hệt đề thi thật: có đủ 7 dạng câu hỏi (trắc nghiệm, điền từ, ghép cặp, sắp xếp, kéo thả, đọc hiểu…). Làm xong bấm <b>Nộp bài</b> là biết điểm ngay. Hết 30 phút máy tự nộp bài nhé!</p>
+      <label style="font-weight:700">Tên của con:</label>
+      <div class="name-row" style="margin:8px 0 14px">
+        <input type="text" id="nameInput" placeholder="Ví dụ: Bé Na" maxlength="30">
+      </div>
+      <div class="center"><button class="btn green" onclick="startExam()">▶ Bắt đầu làm bài</button></div>
+      <p class="small center" style="margin-bottom:0">Hai anh em mỗi người một máy, làm cùng lúc rồi so điểm ở bảng bên dưới nè!</p>
+    </div>
+    <div class="card">
+      <h3 style="margin:0 0 8px; color:#0b5cad">🥇 Bảng điểm của hai anh em</h3>
+      <div id="boardBox"><p class="small">Đang tải bảng điểm…</p></div>
+      <div class="center" style="margin-top:8px"><button class="btn gray" onclick="loadBoard()">↻ Tải lại bảng điểm</button></div>
+    </div>
+  </div>
+
+  <!-- MAN HINH LAM BAI -->
+  <div id="examScreen" class="hidden">
+    <div id="examBody"></div>
+    <div class="center" style="margin: 22px 0">
+      <button class="btn orange" style="font-size:20px" onclick="submitExam(false)">📤 Nộp bài — Chấm điểm ngay</button>
+      <p class="small">Kiểm tra kỹ rồi hãy nộp bài nha con!</p>
+    </div>
+  </div>
+
+  <!-- MAN HINH KET QUA -->
+  <div id="resultScreen" class="hidden">
+    <div class="card center">
+      <div style="font-size:19px">🎉 <b id="resName"></b> đã hoàn thành!</div>
+      <div class="result-big"><span id="resScore">0</span><span style="font-size:22px; color:#44607c"> / 300 điểm</span></div>
+      <div id="resDetail" style="font-size:16px; line-height:1.6"></div>
+      <div style="margin-top:14px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap">
+        <button class="btn green" onclick="retake()">🔁 Làm lại đề này</button>
+        <button class="btn gray" onclick="backHome()">🏠 Về trang đầu</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3 style="margin:0 0 8px; color:#0b5cad">🥇 Bảng điểm của hai anh em</h3>
+      <div id="boardBox2"></div>
+    </div>
+    <h3 style="color:#0b5cad">📝 Xem lại bài làm</h3>
+    <div id="reviewBody"></div>
+    <div class="center" style="margin-top:16px">
+      <button class="btn green" onclick="retake()">🔁 Làm lại đề này</button>
+    </div>
+  </div>
+</div>
+<script>
+/* ================= DU LIEU DE THI ================= */
+const PASSAGE = "Quê em có một dòng sông nhỏ chảy quanh làng. Nước sông trong xanh, in bóng những hàng tre rì rào trong gió. Buổi sáng, mặt sông phẳng lặng như một tấm gương khổng lồ. Những chú cá nhỏ tung tăng bơi lội dưới làn nước mát. Chiều về, chúng em thường ra bờ sông thả diều và ngắm hoàng hôn đỏ rực phía chân trời. Dòng sông không chỉ cho làng em nước tưới mát lành mà còn là nơi gắn bó với bao kỉ niệm tuổi thơ của em. Em yêu dòng sông quê hương và tự hứa sẽ giữ gìn cho dòng sông mãi trong xanh.";
+
+const SECTIONS = [
+ { title: "PHẦN A — TRẮC NGHIỆM", note: "Bấm chọn đáp án đúng nhất (Câu 1–8).", qs: [
+  { n:1, type:"mc", q:"Điền từ đúng chính tả vào chỗ trống: “Mẹ dùng kim để …… chuỗi hạt.”", opts:["sâu","xâu","xau","sây"], ans:"xâu" },
+  { n:2, type:"mc", q:"Điền từ đúng chính tả vào chỗ trống: “Đàn …… đang gặm cỏ trên đồng.”", opts:["châu","trâu","trầu","chầu"], ans:"trâu" },
+  { n:3, type:"mc", q:"Từ nào đồng nghĩa với từ “siêng năng”?", opts:["lười biếng","chăm chỉ","nhanh nhẹn","thông minh"], ans:"chăm chỉ" },
+  { n:4, type:"mc", q:"Từ nào trái nghĩa với từ “tiết kiệm”?", opts:["hoang phí","dành dụm","chắt chiu","tằn tiện"], ans:"hoang phí" },
+  { n:5, type:"mc", q:"Trong câu nào, từ “chân” được dùng với nghĩa khác (không chỉ bộ phận cơ thể)?", opts:["Em bé tập đi, đôi chân còn yếu.","Chiếc bàn này bị gãy một chân.","Bạn Lan chạy bằng đôi chân trần.","Chân của chú mèo bị thương."], ans:"Chiếc bàn này bị gãy một chân." },
+  { n:6, type:"mc", q:"Câu nào có chứa đại từ?", opts:["Mẹ em là giáo viên.","Chúng ta cùng nhau trồng cây.","Bầu trời hôm nay trong xanh.","Chú chim hót líu lo."], ans:"Chúng ta cùng nhau trồng cây." },
+  { n:7, type:"mc", q:"Câu nào dùng dấu câu đúng?", opts:["Cô giáo nói: “Các em hãy chăm ngoan.”","Cô giáo nói “các em hãy chăm ngoan”.","Cô giáo nói: Các em hãy chăm ngoan.","Cô giáo, nói: “Các em hãy chăm ngoan.”"], ans:"Cô giáo nói: “Các em hãy chăm ngoan.”" },
+  { n:8, type:"mc", q:"Câu nào có sử dụng biện pháp so sánh?", opts:["Chị gió thổi qua vườn hoa.","Mặt trăng tròn như cái đĩa bạc.","Ông mặt trời thức dậy sớm.","Dòng sông uốn lượn quanh làng."], ans:"Mặt trăng tròn như cái đĩa bạc." }
+ ]},
+ { title: "PHẦN B — ĐIỀN TỪ", note: "Gõ từ thích hợp vào ô trống (Câu 9–12). Nhớ gõ đúng chính tả và dấu tiếng Việt nhé!", qs: [
+  { n:9, type:"fill", q:"Điền từ còn thiếu trong câu tục ngữ: “Uống nước nhớ ……”", ans:"nguồn" },
+  { n:10, type:"mc", q:"Chọn chữ cái đúng chính tả để điền vào chỗ trống: chim ……ẻ", opts:["s","x"], ans:"s" },
+  { n:11, type:"fill", q:"Điền một từ trái nghĩa với từ “khó”: Trái nghĩa với “khó” là “……”", ans:"dễ" },
+  { n:12, type:"fill", q:"Thêm dấu phẩy vào vị trí thích hợp rồi gõ lại cả câu: “Trong vườn có hoa hồng hoa cúc và hoa mai.”", ans:"Trong vườn có hoa hồng, hoa cúc và hoa mai.", sentence:true }
+ ]},
+ { title: "PHẦN C — GHÉP CẶP", note: "Chọn đáp án ở cột B ghép với mỗi ý ở cột A (Câu 13–15).", qs: [
+  { n:13, type:"match", q:"Nối tục ngữ, thành ngữ với nghĩa phù hợp:",
+    left:["Uống nước nhớ nguồn","Lá lành đùm lá rách","Chậm mà chắc","Thương người như thể thương thân"],
+    right:["Làm việc cẩn thận, không vội vàng","Biết ơn những người đã sinh thành, giúp đỡ mình","Yêu thương, đùm bọc người khác như chính bản thân mình","Người may mắn, đủ đầy giúp đỡ người kém may mắn, khó khăn"],
+    pairs:{0:"Biết ơn những người đã sinh thành, giúp đỡ mình",1:"Người may mắn, đủ đầy giúp đỡ người kém may mắn, khó khăn",2:"Làm việc cẩn thận, không vội vàng",3:"Yêu thương, đùm bọc người khác như chính bản thân mình"} },
+  { n:14, type:"match", q:"Nối từ với từ trái nghĩa của nó:",
+    left:["cao","nhanh","sáng","rộng"],
+    right:["chậm","tối","thấp","hẹp"],
+    pairs:{0:"thấp",1:"chậm",2:"tối",3:"hẹp"} },
+  { n:15, type:"match", q:"Nối câu đố với đáp án đúng:",
+    left:["Con gì sáng sớm gáy vang, gọi ông mặt trời thức dậy?","Quả gì năm múi, da vàng, chua chua ngọt ngọt?","Cái gì có cổ mà không có đầu?","Hoa gì nở giữa mùa hè, đỏ tươi rực rỡ trên đầm?"],
+    right:["hoa sen","cái chai","con gà trống","quả khế"],
+    pairs:{0:"con gà trống",1:"quả khế",2:"cái chai",3:"hoa sen"} }
+ ]},
+ { title: "PHẦN D — SẮP XẾP TRẬT TỰ", note: "Bấm các thẻ theo đúng thứ tự. Muốn sửa thì bấm lại vào thẻ đã xếp để bỏ ra (Câu 16–18).", qs: [
+  { n:16, type:"orderwords", q:"Sắp xếp các từ sau thành câu hoàn chỉnh:",
+    words:["bầu trời","những đám mây trắng","trên","trôi nhẹ"],
+    order:["những đám mây trắng","trôi nhẹ","trên","bầu trời"], sentence:"Những đám mây trắng trôi nhẹ trên bầu trời." },
+  { n:17, type:"orderseq", q:"Sắp xếp các cụm từ sau thành câu hoàn chỉnh (bấm theo thứ tự đúng):",
+    items:["(1) Em","(2) quê hương","(3) rất yêu","(4) của mình"], order:[0,2,1,3], sentence:"Em rất yêu quê hương của mình." },
+  { n:18, type:"orderseq", q:"Sắp xếp các câu sau thành một đoạn văn hợp lý (bấm theo thứ tự đúng):",
+    items:["Cây bàng trước sân trường em đã trồng được ba năm.","Hằng ngày, chúng em tưới nước và bắt sâu cho cây.","Giờ đây, cây đã cao lớn, tán lá xanh mát che bóng cả một góc sân.","Em rất yêu quý cây bàng của lớp mình."], order:[0,1,2,3], sentence:"Đoạn văn đúng: a → b → c → d (theo thứ tự các câu như đề bài)." }
+ ]},
+ { title: "PHẦN E — KÉO THẢ VÀO Ô CHỦ ĐỀ", note: "Bấm chọn một thẻ rồi bấm vào ô nhóm để xếp vào. Bấm vào thẻ đã xếp để lấy ra (Câu 19–21).", qs: [
+  { n:19, type:"classify", q:"Xếp mỗi từ vào đúng nhóm từ loại:",
+    chips:["bàn","chạy","xanh","cô giáo","nhảy","đỏ","quyển sách","hát"],
+    zones:["Danh từ","Động từ","Tính từ"],
+    key:{"bàn":"Danh từ","cô giáo":"Danh từ","quyển sách":"Danh từ","chạy":"Động từ","nhảy":"Động từ","hát":"Động từ","xanh":"Tính từ","đỏ":"Tính từ"} },
+  { n:20, type:"classify", q:"Xếp các cặp từ sau vào hai nhóm:",
+    chips:["to lớn – khổng lồ","cao – thấp","chăm chỉ – siêng năng","nóng – lạnh"],
+    zones:["Đồng nghĩa","Trái nghĩa"],
+    key:{"to lớn – khổng lồ":"Đồng nghĩa","chăm chỉ – siêng năng":"Đồng nghĩa","cao – thấp":"Trái nghĩa","nóng – lạnh":"Trái nghĩa"} },
+  { n:21, type:"classify", q:"Xếp các câu sau vào hai nhóm biện pháp tu từ:",
+    chips:["Trăng tròn như quả bóng.","Chị gió nhẹ nhàng vuốt tóc em.","Những hàng cây như những người lính đứng gác.","Ông mặt trời mỉm cười nhìn xuống sân trường."],
+    zones:["So sánh","Nhân hóa"],
+    key:{"Trăng tròn như quả bóng.":"So sánh","Những hàng cây như những người lính đứng gác.":"So sánh","Chị gió nhẹ nhàng vuốt tóc em.":"Nhân hóa","Ông mặt trời mỉm cười nhìn xuống sân trường.":"Nhân hóa"} }
+ ]},
+ { title: "PHẦN F — KÉO THẢ VÀO Ô TRỐNG", note: "Bấm vào một chỗ trống trong đoạn văn, rồi bấm vào từ trong ngân hàng từ để điền. Có một từ thừa (Câu 22–25).", qs: [
+  { n:22, type:"cloze", group:"cloze1", blank:0 },
+  { n:23, type:"cloze", group:"cloze1", blank:1 },
+  { n:24, type:"cloze", group:"cloze1", blank:2 },
+  { n:25, type:"cloze", group:"cloze1", blank:3 }
+ ]},
+ { title: "PHẦN G — ĐỌC HIỂU", note: "Đọc đoạn văn “Dòng sông quê em” rồi trả lời Câu 26–30.", passage:true, qs: [
+  { n:26, type:"mc", q:"Dòng sông trong bài chảy ở đâu?", opts:["quanh làng","qua thành phố","giữa cánh đồng"], ans:"quanh làng" },
+  { n:27, type:"mc", q:"Buổi sáng, mặt sông được so sánh với hình ảnh nào?", opts:["quả bóng","tấm gương khổng lồ","bầu trời trong xanh"], ans:"tấm gương khổng lồ" },
+  { n:28, type:"mc", q:"Từ “trong xanh” trong câu “Nước sông trong xanh…” thuộc từ loại nào?", opts:["danh từ","động từ","tính từ"], ans:"tính từ" },
+  { n:29, type:"fill", q:"Điền từ còn thiếu (theo đúng đoạn văn): “Dòng sông không chỉ cho làng em nước tưới …… mà còn là nơi gắn bó với bao kỉ niệm tuổi thơ của em.”", ans:"mát lành" },
+  { n:30, type:"mc", q:"Đoạn văn muốn nhắn nhủ em điều gì?", opts:["Hãy giữ gìn cho dòng sông quê hương mãi trong xanh.","Hãy ra bờ sông thả diều mỗi ngày.","Hãy bắt thật nhiều cá dưới sông."], ans:"Hãy giữ gìn cho dòng sông quê hương mãi trong xanh." }
+ ]}
+];
+const CLOZE = {
+  text1: "Mùa xuân đến, cây cối đâm chồi nảy lộc. Những bông hoa đào nở ",
+  text2: " khắp vườn. Chim chóc hót ",
+  text3: " trên cành. Em cùng các bạn ",
+  text4: " ra sân trường ngắm cảnh xuân. Ai cũng cảm thấy ",
+  text5: " và yêu đời hơn.",
+  bank: ["rực rỡ","líu lo","háo hức","vui vẻ","buồn bã"],
+  answers: ["rực rỡ","líu lo","háo hức","vui vẻ"]
+};
+const ALLQ = [];
+SECTIONS.forEach(s => s.qs.forEach(q => ALLQ.push(q)));
+const FB = "https://edumaster-online-default-rtdb.asia-southeast1.firebasedatabase.app/tn5_ketqua";
+
+/* ================= TRANG THAI ================= */
+let studentName = "";
+let answers = {};       // n -> gia tri tuy theo dang
+let timerId = null, remainSec = 30*60, startAt = null, submitted = false;
+let selChip = null;      // chip dang chon (classify)
+let activeBlank = 0;     // o trong dang chon (cloze)
+
+function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
+function norm(s){ return (s||"").toLowerCase().trim().replace(/\s+/g," ").replace(/\s+([,.!?])/g,"$1").replace(/[.\s]+$/,""); }
+
+function startExam(){
+  const v = document.getElementById("nameInput").value.trim();
+  if(!v){ alert("Con nhập tên của mình trước nhé!"); document.getElementById("nameInput").focus(); return; }
+  studentName = v;
+  answers = {}; submitted = false; selChip = null; activeBlank = 0;
+  document.getElementById("startScreen").classList.add("hidden");
+  document.getElementById("resultScreen").classList.add("hidden");
+  document.getElementById("examScreen").classList.remove("hidden");
+  document.getElementById("topbar").style.display = "block";
+  document.getElementById("tbName").textContent = studentName;
+  renderExam();
+  remainSec = 30*60; startAt = Date.now();
+  tickTimer();
+  clearInterval(timerId);
+  timerId = setInterval(()=>{ remainSec--; tickTimer(); if(remainSec<=0){ clearInterval(timerId); alert("⏰ Hết giờ rồi! Máy sẽ tự nộp bài cho con."); submitExam(true); } }, 1000);
+  window.scrollTo(0,0);
+}
+function tickTimer(){
+  const m = Math.floor(remainSec/60), s = remainSec%60;
+  const el = document.getElementById("timer");
+  el.textContent = "⏰ " + String(m).padStart(2,"0") + ":" + String(s).padStart(2,"0");
+  el.classList.toggle("low", remainSec <= 300);
+}
+
+/* ================= DUNG GIAO DIEN LAM BAI ================= */
+function renderExam(){
+  const body = document.getElementById("examBody");
+  let html = "";
+  SECTIONS.forEach(sec => {
+    html += `<div class="sec-title">${sec.title}</div><div class="sec-note">${sec.note}</div>`;
+    if(sec.passage){
+      html += `<div class="passage"><b style="display:block;text-align:center;margin-bottom:6px">DÒNG SÔNG QUÊ EM</b>${esc(PASSAGE)}</div><div style="height:12px"></div>`;
+    }
+    let clozeRendered = false;
+    sec.qs.forEach(q => {
+      if(q.type === "cloze"){
+        if(!clozeRendered){ html += renderCloze(); clozeRendered = true; }
+        return;
+      }
+      html += renderQ(q);
+    });
+  });
+  body.innerHTML = html;
+  // gan su kien
+  ALLQ.forEach(q => bindQ(q));
+  updateProgress();
+}
+function qwrap(q, inner){
+  return `<div class="q" id="qbox${q.n}"><div class="q-head"><b>Câu ${q.n}.</b> ${esc(q.q||"")}</div>${inner}</div>`;
+}
+function renderQ(q){
+  if(q.type === "mc"){
+    const letters = ["A","B","C","D","E"];
+    const opts = shuffle(q.opts);
+    return qwrap(q, opts.map((o,i)=>`<button class="opt" data-q="${q.n}" data-val="${esc(o)}"><span class="letter">${letters[i]}.</span>${esc(o)}</button>`).join(""));
+  }
+  if(q.type === "fill"){
+    return qwrap(q, `<input type="text" id="fill${q.n}" placeholder="Gõ đáp án của con vào đây…" autocomplete="off">`);
+  }
+  if(q.type === "match"){
+    const rows = q.left.map((l,i)=>{
+      const sels = [`<option value="">— chọn —</option>`].concat(q.right.map(r=>`<option value="${esc(r)}">${esc(r)}</option>`)).join("");
+      return `<div class="match-row"><div class="match-left"><b>${i+1}.</b> ${esc(l)}</div><select class="match-sel" data-q="${q.n}" data-row="${i}">${sels}</select></div>`;
+    }).join("");
+    return qwrap(q, rows);
+  }
+  if(q.type === "orderwords"){
+    const chips = shuffle(q.words).map(w=>`<span class="chip" data-q="${q.n}" data-val="${esc(w)}">${esc(w)}</span>`).join("");
+    return qwrap(q, `<div class="chips" id="pool${q.n}">${chips}</div><div class="small">Câu của con:</div><div class="built" id="built${q.n}"><span class="small">Bấm các thẻ ở trên theo thứ tự…</span></div>`);
+  }
+  if(q.type === "orderseq"){
+    const idx = shuffle(q.items.map((_,i)=>i));
+    const chips = idx.map(i=>`<span class="chip" data-q="${q.n}" data-idx="${i}">${esc(q.items[i])}</span>`).join("");
+    return qwrap(q, `<div class="chips" id="pool${q.n}">${chips}</div><div class="small">Thứ tự con đã chọn sẽ hiện số đỏ trên thẻ.</div>`);
+  }
+  if(q.type === "classify"){
+    const chips = shuffle(q.chips).map(c=>`<span class="chip" data-q="${q.n}" data-val="${esc(c)}">${esc(c)}</span>`).join("");
+    const zones = q.zones.map(z=>`<div class="zone" data-q="${q.n}" data-zone="${esc(z)}"><h4>📁 ${esc(z)}</h4><div class="chips zin"></div></div>`).join("");
+    return qwrap(q, `<div class="small">Thẻ chưa xếp:</div><div class="chips" id="pool${q.n}">${chips}</div>${zones}`);
+  }
+  return "";
+}
+function renderCloze(){
+  const blanks = [0,1,2,3].map(i=>`<span class="blank empty" data-blank="${i}">(${22+i}) ……</span>`).join("");
+  const passage = `${esc(CLOZE.text1)}<span class="blank empty" data-blank="0">(22) ……</span>${esc(CLOZE.text2)}<span class="blank empty" data-blank="1">(23) ……</span>${esc(CLOZE.text3)}<span class="blank empty" data-blank="2">(24) ……</span>${esc(CLOZE.text4)}<span class="blank empty" data-blank="3">(25) ……</span>${esc(CLOZE.text5)}`;
+  const bank = shuffle(CLOZE.bank).map(w=>`<span class="chip" data-bank="${esc(w)}">${esc(w)}</span>`).join("");
+  return `<div class="q" id="qbox22"><div class="q-head"><b>Câu 22–25.</b> Điền từ trong ngân hàng từ vào mỗi chỗ trống trong đoạn văn:</div><div class="passage">${passage}</div><div class="small" style="margin-top:8px">Ngân hàng từ:</div><div class="bank" id="bankBox">${bank}</div></div>`;
+}
+
+/* ================= GAN SU KIEN ================= */
+function bindQ(q){
+  if(q.type === "mc"){
+    document.querySelectorAll(`.opt[data-q="${q.n}"]`).forEach(b => b.addEventListener("click", ()=>{
+      document.querySelectorAll(`.opt[data-q="${q.n}"]`).forEach(x=>x.classList.remove("sel"));
+      b.classList.add("sel"); answers[q.n] = b.dataset.val; updateProgress();
+    }));
+  }
+  if(q.type === "fill"){
+    const inp = document.getElementById("fill"+q.n);
+    if(inp) inp.addEventListener("input", ()=>{ answers[q.n] = inp.value; updateProgress(); });
+  }
+  if(q.type === "match"){
+    answers[q.n] = {};
+    document.querySelectorAll(`select[data-q="${q.n}"]`).forEach(s => s.addEventListener("change", ()=>{
+      answers[q.n][s.dataset.row] = s.value; updateProgress();
+    }));
+  }
+  if(q.type === "orderwords"){
+    answers[q.n] = [];
+    document.querySelectorAll(`.chip[data-q="${q.n}"]`).forEach(ch => ch.addEventListener("click", ()=>{
+      const arr = answers[q.n];
+      if(ch.classList.contains("used")) return;
+      ch.classList.add("used"); arr.push(ch.dataset.val); drawBuilt(q); updateProgress();
+    }));
+  }
+  if(q.type === "orderseq"){
+    answers[q.n] = [];
+    document.querySelectorAll(`.chip[data-q="${q.n}"]`).forEach(ch => ch.addEventListener("click", ()=>{
+      const arr = answers[q.n]; const idx = Number(ch.dataset.idx);
+      const pos = arr.indexOf(idx);
+      if(pos >= 0){ arr.splice(pos,1); } else { arr.push(idx); }
+      drawSeq(q); updateProgress();
+    }));
+  }
+  if(q.type === "classify"){
+    answers[q.n] = {};
+    document.querySelectorAll(`.chip[data-q="${q.n}"]`).forEach(ch => ch.addEventListener("click", (e)=>{
+      e.stopPropagation();
+      const val = ch.dataset.val;
+      if(ch.parentElement.classList.contains("zin")){
+        // lay ra khoi nhom
+        delete answers[q.n][val];
+        document.getElementById("pool"+q.n).appendChild(ch);
+      } else {
+        document.querySelectorAll(`.chip[data-q="${q.n}"]`).forEach(x=>x.classList.remove("sel"));
+        ch.classList.add("sel"); selChip = { qn:q.n, el:ch, val };
+      }
+      updateProgress();
+    }));
+    document.querySelectorAll(`.zone[data-q="${q.n}"]`).forEach(z => z.addEventListener("click", ()=>{
+      if(selChip && selChip.qn === q.n){
+        answers[q.n][selChip.val] = z.dataset.zone;
+        z.querySelector(".zin").appendChild(selChip.el);
+        selChip.el.classList.remove("sel"); selChip = null; updateProgress();
+      }
+    }));
+  }
+  if(q.type === "cloze"){
+    // khoi tao 1 lan cho nhom
+    if(q.n === 22){
+      answers[22] = answers[23] = answers[24] = answers[25] = "";
+      document.querySelectorAll(".blank").forEach(b => b.addEventListener("click", ()=>{
+        const bi = Number(b.dataset.blank);
+        if(b.dataset.word){ // xoa tu khoi o
+          const w = b.dataset.word;
+          document.querySelectorAll(`.chip[data-bank]`).forEach(c=>{ if(c.dataset.bank === w) c.classList.remove("used"); });
+          b.textContent = `(${22+bi}) ……`; b.classList.add("empty"); delete b.dataset.word;
+          answers[22+bi] = ""; activeBlank = bi; updateProgress();
+        } else { activeBlank = bi; }
+        highlightBlank();
+      }));
+      document.querySelectorAll(`.chip[data-bank]`).forEach(c => c.addEventListener("click", ()=>{
+        if(c.classList.contains("used")) return;
+        const b = document.querySelector(`.blank[data-blank="${activeBlank}"]`);
+        if(!b || b.dataset.word) { // tim o trong tiep theo
+          const nxt = [0,1,2,3].find(i => !document.querySelector(`.blank[data-blank="${i}"]`).dataset.word);
+          if(nxt === undefined) return; activeBlank = nxt;
+        }
+        const bb = document.querySelector(`.blank[data-blank="${activeBlank}"]`);
+        bb.textContent = c.dataset.bank; bb.classList.remove("empty"); bb.dataset.word = c.dataset.bank;
+        c.classList.add("used"); answers[22+activeBlank] = c.dataset.bank;
+        const nxt2 = [0,1,2,3].find(i => !document.querySelector(`.blank[data-blank="${i}"]`).dataset.word);
+        if(nxt2 !== undefined) activeBlank = nxt2;
+        highlightBlank(); updateProgress();
+      }));
+      highlightBlank();
+    }
+  }
+}
+function highlightBlank(){
+  document.querySelectorAll(".blank").forEach(b=>{
+    b.style.outline = (Number(b.dataset.blank) === activeBlank && !b.dataset.word) ? "3px solid #f39c2c" : "none";
+  });
+}
+function drawBuilt(q){
+  const box = document.getElementById("built"+q.n);
+  const arr = answers[q.n];
+  if(!arr.length){ box.innerHTML = `<span class="small">Bấm các thẻ ở trên theo thứ tự…</span>`; return; }
+  box.innerHTML = arr.map(w=>`<span class="chip" data-rm="${esc(w)}">${esc(w)}</span>`).join(" ");
+  box.querySelectorAll(".chip").forEach(c => c.addEventListener("click", ()=>{
+    const w = c.dataset.rm; const i = answers[q.n].indexOf(w);
+    if(i>=0) answers[q.n].splice(i,1);
+    document.querySelectorAll(`.chip[data-q="${q.n}"]`).forEach(x=>{ if(x.dataset.val===w) x.classList.remove("used"); });
+    drawBuilt(q); updateProgress();
+  }));
+}
+function drawSeq(q){
+  const arr = answers[q.n];
+  document.querySelectorAll(`.chip[data-q="${q.n}"]`).forEach(ch=>{
+    const idx = Number(ch.dataset.idx); const pos = arr.indexOf(idx);
+    const old = ch.querySelector(".seq-badge"); if(old) old.remove();
+    if(pos >= 0){ const b = document.createElement("span"); b.className="seq-badge"; b.textContent = pos+1; ch.prepend(b); ch.classList.add("sel"); }
+    else ch.classList.remove("sel");
+  });
+}
+function isAnswered(q){
+  const a = answers[q.n];
+  switch(q.type){
+    case "mc": return !!a;
+    case "fill": return !!(a && a.trim());
+    case "match": return a && q.left.every((_,i)=>a[i]);
+    case "orderwords": return a && a.length === q.words.length;
+    case "orderseq": return a && a.length === q.items.length;
+    case "classify": return a && Object.keys(a).length === q.chips.length;
+    case "cloze": return !!a;
+    default: return false;
+  }
+}
+function updateProgress(){
+  let done = 0;
+  ALLQ.forEach(q => { if(isAnswered(q)) done++; const box = document.getElementById("qbox"+q.n); if(box) box.classList.toggle("done", isAnswered(q)); });
+  document.getElementById("progressTxt").textContent = `Đã làm ${done}/30 câu`;
+  document.getElementById("pfill").style.width = (done/30*100) + "%";
+}
+
+/* ================= CHAM DIEM ================= */
+function gradeQ(q){
+  const a = answers[q.n];
+  switch(q.type){
+    case "mc": return { pts: a === q.ans ? 10 : 0, mine: a || "(chưa làm)", right: q.ans };
+    case "fill": return { pts: norm(a) === norm(q.ans) ? 10 : 0, mine: (a||"").trim() || "(chưa làm)", right: q.ans };
+    case "match": {
+      let c = 0; const mineArr = [], rightArr = [];
+      q.left.forEach((l,i)=>{ const mine = (a||{})[i] || "…"; mineArr.push(`${i+1} – ${mine}`); rightArr.push(`${i+1} – ${q.pairs[i]}`); if(mine === q.pairs[i]) c++; });
+      return { pts: c===4 ? 10 : (c>=2 ? 5 : 0), mine: mineArr.join("; "), right: rightArr.join("; ") };
+    }
+    case "orderwords": {
+      const built = (a||[]).join(" ");
+      const mine = built ? built.charAt(0).toUpperCase()+built.slice(1)+"." : "(chưa làm)";
+      return { pts: norm(mine) === norm(q.sentence) ? 10 : 0, mine, right: q.sentence };
+    }
+    case "orderseq": {
+      const ok = a && a.length === q.order.length && a.every((v,i)=>v===q.order[i]);
+      const mine = a && a.length ? a.map(i=>q.items[i]).join(" → ") : "(chưa làm)";
+      return { pts: ok ? 10 : 0, mine, right: q.order.map(i=>q.items[i]).join(" → ") };
+    }
+    case "classify": {
+      let wrong = 0; const mineArr = [], rightArr = [];
+      q.chips.forEach(c => { const z = (a||{})[c]; mineArr.push(`${c} → ${z||"chưa xếp"}`); rightArr.push(`${c} → ${q.key[c]}`); if(z !== q.key[c]) wrong++; });
+      return { pts: wrong===0 ? 10 : (wrong===1 ? 5 : 0), mine: mineArr.join("; "), right: rightArr.join("; ") };
+    }
+    case "cloze": {
+      const right = CLOZE.answers[q.blank];
+      return { pts: a === right ? 10 : 0, mine: a || "(chưa điền)", right };
+    }
+  }
+  return { pts:0, mine:"", right:"" };
+}
+
+function submitExam(auto){
+  if(submitted) return;
+  if(!auto){
+    const left = ALLQ.filter(q=>!isAnswered(q));
+    if(left.length && !confirm(`Con còn ${left.length} câu chưa làm. Nộp bài luôn nhé?`)) return;
+  }
+  submitted = true;
+  clearInterval(timerId);
+  const usedSec = startAt ? Math.round((Date.now()-startAt)/1000) : 0;
+  let total = 0, dung = 0;
+  const revHtml = ALLQ.map(q=>{
+    const g = gradeQ(q); total += g.pts; if(g.pts === 10) dung++;
+    const ok = g.pts === 10, part = g.pts > 0 && g.pts < 10;
+    return `<div class="rev ${ok ? "ok" : "bad"}"><span class="pts">${g.pts}/10đ</span><b>Câu ${q.n}.</b> ${ok ? "✅ Đúng rồi!" : (part ? "🟡 Đúng một phần" : "❌ Chưa đúng")}<br><span class="mine">Bài làm của con: ${esc(g.mine)}</span><br><span class="ans">Đáp án đúng: ${esc(g.right)}</span></div>`;
+  }).join("");
+  document.getElementById("examScreen").classList.add("hidden");
+  document.getElementById("topbar").style.display = "none";
+  document.getElementById("resultScreen").classList.remove("hidden");
+  document.getElementById("resName").textContent = studentName;
+  document.getElementById("resScore").textContent = total;
+  const mm = Math.floor(usedSec/60), ss = usedSec%60;
+  const khen = total >= 270 ? "Xuất sắc! Con sẵn sàng thi thật rồi đó! 🌟" : total >= 210 ? "Giỏi lắm! Ôn thêm một chút nữa là vững luôn! 💪" : total >= 150 ? "Khá tốt! Xem lại các câu sai rồi làm lại nhé! 📚" : "Đừng nản nha, xem lại đáp án rồi làm lại đề, lần sau sẽ cao hơn! 🌱";
+  document.getElementById("resDetail").innerHTML = `Đúng trọn vẹn <b>${dung}/30 câu</b> • Thời gian làm: <b>${mm} phút ${ss} giây</b><br>${khen}`;
+  document.getElementById("reviewBody").innerHTML = revHtml;
+  window.scrollTo(0,0);
+  saveResult(total, dung, usedSec);
+}
+
+/* ================= BANG DIEM (FIREBASE) ================= */
+function saveResult(diem, dung, giay){
+  const rec = { ten: studentName, diem, dung, giay, luc: Date.now() };
+  try {
+    const hist = JSON.parse(localStorage.getItem("tn5_hist") || "[]");
+    hist.push(rec); localStorage.setItem("tn5_hist", JSON.stringify(hist.slice(-30)));
+  } catch(e){}
+  fetch(FB + ".json", { method:"POST", headers:{ "Content-Type":"application/json" }, body: JSON.stringify(rec) })
+    .then(()=> loadBoard()).catch(()=> renderBoard(null));
+}
+function loadBoard(){
+  fetch(FB + ".json").then(r=>r.json()).then(data => renderBoard(data)).catch(()=> renderBoard(null));
+}
+function renderBoard(data){
+  let rows = [];
+  if(data){ rows = Object.values(data); }
+  if(!rows.length){
+    try { rows = JSON.parse(localStorage.getItem("tn5_hist") || "[]"); } catch(e){}
+  }
+  rows.sort((a,b)=> b.diem - a.diem || a.giay - b.giay);
+  rows = rows.slice(0, 10);
+  let html;
+  if(!rows.length) html = `<p class="small">Chưa có điểm nào. Con làm bài đầu tiên để lên bảng nhé!</p>`;
+  else {
+    html = `<table class="board"><tr><th>🏅</th><th>Tên</th><th>Điểm</th><th>Đúng</th><th>Thời gian</th><th>Ngày</th></tr>` +
+      rows.map((r,i)=>{
+        const d = new Date(r.luc);
+        const ngay = `${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}`;
+        return `<tr><td>${["🥇","🥈","🥉"][i] || (i+1)}</td><td><b>${esc(r.ten)}</b></td><td><b>${r.diem}</b>/300</td><td>${r.dung}/30</td><td>${Math.floor(r.giay/60)}p${String(r.giay%60).padStart(2,"0")}s</td><td>${ngay}</td></tr>`;
+      }).join("") + `</table>`;
+  }
+  const b1 = document.getElementById("boardBox"); if(b1) b1.innerHTML = html;
+  const b2 = document.getElementById("boardBox2"); if(b2) b2.innerHTML = html;
+}
+function retake(){
+  document.getElementById("resultScreen").classList.add("hidden");
+  document.getElementById("startScreen").classList.remove("hidden");
+  document.getElementById("nameInput").value = studentName;
+  startExam();
+}
+function backHome(){
+  document.getElementById("resultScreen").classList.add("hidden");
+  document.getElementById("startScreen").classList.remove("hidden");
+  loadBoard(); window.scrollTo(0,0);
+}
+loadBoard();
+</script>
+</body>
+</html>
