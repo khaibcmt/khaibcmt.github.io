@@ -63,6 +63,14 @@ GHI CHÚ LÀM RÕ (theo yêu cầu cụ thể của Giám đốc, sửa lúc 06:
      Tính cách: hiền từ, xuất hiện ít nhưng toàn lúc quan trọng. Nói chậm, ấm áp, mỗi câu đều như một lời dặn.
      Giọng khi dựng: Minh Triết.
 
+   - NHÂN VẬT PHỤ (mô tả khoá do Đạo diễn cấp ngày 22/11/2026 — nhân viên KHÔNG tự bịa mô tả cho nhân vật mới; tập nào cần nhân vật khác nữa thì xin Đạo diễn cấp trước):
+     + GIUN ĐẤT (Tập 2):
+     Mô tả nguyên văn: "Wiggly the earthworm: a lifelike 3D animated character, cheerful earthworm with glossy pink-brown segmented skin, big round friendly eyes, wide happy smile, rosy cheeks, cinematic lighting, ultra-detailed 3D render"
+     + SÂU XANH (Tập 3):
+     Mô tả nguyên văn: "Nibbles the green caterpillar: a lifelike 3D animated character, chubby bright-green caterpillar with soft fuzzy skin and faint yellow stripes, big curious eyes, tiny antennae, a small leaf on his head, cinematic lighting, ultra-detailed 3D render"
+     + CHỊ MÂY (Tập 4):
+     Mô tả nguyên văn: "Sister Cloud: a lifelike 3D animated character, gentle cloud lady with a soft fluffy white cloud body, kind sleepy eyes with long lashes, rosy glowing cheeks, a tiny rainbow scarf, cinematic lighting, ultra-detailed 3D render"
+
    - DẪN CHUYỆN (chỉ có tiếng, không xuất hiện hình):
      Giọng khi dựng: Thái Sơn. Giọng ấm, chậm rãi, dẫn dắt như đang kể chuyện cổ tích cho trẻ nghe.
 
