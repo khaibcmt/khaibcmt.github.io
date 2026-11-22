@@ -66,6 +66,9 @@
   .hidden { display:none !important; }
   .name-row { display:flex; gap:10px; }
   .name-row input { flex:1; }
+  .expick { display:flex; flex-wrap:wrap; gap:8px; margin: 8px 0 14px; }
+  .expick button { flex: 1 1 30%; padding: 11px 6px; font-size: 16px; font-weight: 700; border-radius: 12px; border: 2px solid #c9d9ec; background: #f6faff; color: #33506e; cursor: pointer; }
+  .expick button.sel { background: #0b78d0; border-color: #0b78d0; color: #fff; }
 </style>
 </head>
 <body>
@@ -82,9 +85,18 @@
   <!-- MAN HINH BAT DAU -->
   <div id="startScreen">
     <h1>🏆 Trạng Nguyên Tiếng Việt — Lớp 5</h1>
-    <p class="sub">Đề luyện tập số 1 • Vòng Sơ khảo cấp Trường<br>30 câu • 300 điểm • Thời gian 30 phút</p>
+    <p class="sub">6 đề luyện tập • Vòng Sơ khảo cấp Trường<br>Mỗi đề 30 câu • 300 điểm • Thời gian 30 phút</p>
     <div class="card">
       <p style="font-size:16.5px; line-height:1.6; margin-top:0">Chào con! Đề này giống hệt đề thi thật: có đủ 7 dạng câu hỏi (trắc nghiệm, điền từ, ghép cặp, sắp xếp, kéo thả, đọc hiểu…). Làm xong bấm <b>Nộp bài</b> là biết điểm ngay. Hết 30 phút máy tự nộp bài nhé!</p>
+      <label style="font-weight:700">Chọn đề luyện tập:</label>
+      <div class="expick" id="examPick">
+        <button data-ex="1" class="sel" onclick="selectExam(1)">Đề số 1</button>
+        <button data-ex="2" onclick="selectExam(2)">Đề số 2</button>
+        <button data-ex="3" onclick="selectExam(3)">Đề số 3</button>
+        <button data-ex="4" onclick="selectExam(4)">Đề số 4</button>
+        <button data-ex="5" onclick="selectExam(5)">Đề số 5</button>
+        <button data-ex="6" onclick="selectExam(6)">Đề số 6</button>
+      </div>
       <label style="font-weight:700">Tên của con:</label>
       <div class="name-row" style="margin:8px 0 14px">
         <input type="text" id="nameInput" placeholder="Ví dụ: Bé Na" maxlength="30">
@@ -132,9 +144,9 @@
 </div>
 <script>
 /* ================= DU LIEU DE THI ================= */
-const PASSAGE = "Quê em có một dòng sông nhỏ chảy quanh làng. Nước sông trong xanh, in bóng những hàng tre rì rào trong gió. Buổi sáng, mặt sông phẳng lặng như một tấm gương khổng lồ. Những chú cá nhỏ tung tăng bơi lội dưới làn nước mát. Chiều về, chúng em thường ra bờ sông thả diều và ngắm hoàng hôn đỏ rực phía chân trời. Dòng sông không chỉ cho làng em nước tưới mát lành mà còn là nơi gắn bó với bao kỉ niệm tuổi thơ của em. Em yêu dòng sông quê hương và tự hứa sẽ giữ gìn cho dòng sông mãi trong xanh.";
+const PASSAGE1 = "Quê em có một dòng sông nhỏ chảy quanh làng. Nước sông trong xanh, in bóng những hàng tre rì rào trong gió. Buổi sáng, mặt sông phẳng lặng như một tấm gương khổng lồ. Những chú cá nhỏ tung tăng bơi lội dưới làn nước mát. Chiều về, chúng em thường ra bờ sông thả diều và ngắm hoàng hôn đỏ rực phía chân trời. Dòng sông không chỉ cho làng em nước tưới mát lành mà còn là nơi gắn bó với bao kỉ niệm tuổi thơ của em. Em yêu dòng sông quê hương và tự hứa sẽ giữ gìn cho dòng sông mãi trong xanh.";
 
-const SECTIONS = [
+const SECTIONS1 = [
  { title: "PHẦN A — TRẮC NGHIỆM", note: "Bấm chọn đáp án đúng nhất (Câu 1–8).", qs: [
   { n:1, type:"mc", q:"Điền từ đúng chính tả vào chỗ trống: “Mẹ dùng kim để …… chuỗi hạt.”", opts:["sâu","xâu","xau","sây"], ans:"xâu" },
   { n:2, type:"mc", q:"Điền từ đúng chính tả vào chỗ trống: “Đàn …… đang gặm cỏ trên đồng.”", opts:["châu","trâu","trầu","chầu"], ans:"trâu" },
@@ -202,7 +214,7 @@ const SECTIONS = [
   { n:30, type:"mc", q:"Đoạn văn muốn nhắn nhủ em điều gì?", opts:["Hãy giữ gìn cho dòng sông quê hương mãi trong xanh.","Hãy ra bờ sông thả diều mỗi ngày.","Hãy bắt thật nhiều cá dưới sông."], ans:"Hãy giữ gìn cho dòng sông quê hương mãi trong xanh." }
  ]}
 ];
-const CLOZE = {
+const CLOZE1 = {
   text1: "Mùa xuân đến, cây cối đâm chồi nảy lộc. Những bông hoa đào nở ",
   text2: " khắp vườn. Chim chóc hót ",
   text3: " trên cành. Em cùng các bạn ",
@@ -211,8 +223,14 @@ const CLOZE = {
   bank: ["rực rỡ","líu lo","háo hức","vui vẻ","buồn bã"],
   answers: ["rực rỡ","líu lo","háo hức","vui vẻ"]
 };
-const ALLQ = [];
-SECTIONS.forEach(s => s.qs.forEach(q => ALLQ.push(q)));
+const EXAMS = { 1: { passage: PASSAGE1, sections: SECTIONS1, cloze: CLOZE1 } };
+let curExam = 1;
+let SECTIONS = null, CLOZE = null, PASSAGE = null, ALLQ = [];
+function loadExam(n){
+  const ex = EXAMS[n];
+  SECTIONS = ex.sections; CLOZE = ex.cloze; PASSAGE = ex.passage;
+  ALLQ = []; SECTIONS.forEach(s => s.qs.forEach(q => ALLQ.push(q)));
+}
 const FB = "https://edumaster-online-default-rtdb.asia-southeast1.firebasedatabase.app/tn5_ketqua";
 
 /* ================= TRANG THAI ================= */
@@ -226,16 +244,21 @@ function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.fl
 function esc(s){ return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;"); }
 function norm(s){ return (s||"").toLowerCase().trim().replace(/\s+/g," ").replace(/\s+([,.!?])/g,"$1").replace(/[.\s]+$/,""); }
 
+function selectExam(n){
+  curExam = n;
+  document.querySelectorAll("#examPick button").forEach(b => b.classList.toggle("sel", Number(b.dataset.ex) === n));
+}
 function startExam(){
   const v = document.getElementById("nameInput").value.trim();
   if(!v){ alert("Con nhập tên của mình trước nhé!"); document.getElementById("nameInput").focus(); return; }
   studentName = v;
+  loadExam(curExam);
   answers = {}; submitted = false; selChip = null; activeBlank = 0;
   document.getElementById("startScreen").classList.add("hidden");
   document.getElementById("resultScreen").classList.add("hidden");
   document.getElementById("examScreen").classList.remove("hidden");
   document.getElementById("topbar").style.display = "block";
-  document.getElementById("tbName").textContent = studentName;
+  document.getElementById("tbName").textContent = studentName + " • Đề số " + curExam;
   renderExam();
   remainSec = 30*60; startAt = Date.now();
   tickTimer();
@@ -456,7 +479,7 @@ function gradeQ(q){
   const a = answers[q.n];
   switch(q.type){
     case "mc": return { pts: a === q.ans ? 10 : 0, mine: a || "(chưa làm)", right: q.ans };
-    case "fill": return { pts: norm(a) === norm(q.ans) ? 10 : 0, mine: (a||"").trim() || "(chưa làm)", right: q.ans };
+    case "fill": { const ok = [q.ans].concat(q.accept || []).some(x => norm(x) === norm(a)); return { pts: ok ? 10 : 0, mine: (a||"").trim() || "(chưa làm)", right: q.ans }; }
     case "match": {
       let c = 0; const mineArr = [], rightArr = [];
       q.left.forEach((l,i)=>{ const mine = (a||{})[i] || "…"; mineArr.push(`${i+1} – ${mine}`); rightArr.push(`${i+1} – ${q.pairs[i]}`); if(mine === q.pairs[i]) c++; });
@@ -503,7 +526,7 @@ function submitExam(auto){
   document.getElementById("examScreen").classList.add("hidden");
   document.getElementById("topbar").style.display = "none";
   document.getElementById("resultScreen").classList.remove("hidden");
-  document.getElementById("resName").textContent = studentName;
+  document.getElementById("resName").textContent = studentName + " (Đề số " + curExam + ")";
   document.getElementById("resScore").textContent = total;
   const mm = Math.floor(usedSec/60), ss = usedSec%60;
   const khen = total >= 270 ? "Xuất sắc! Con sẵn sàng thi thật rồi đó! 🌟" : total >= 210 ? "Giỏi lắm! Ôn thêm một chút nữa là vững luôn! 💪" : total >= 150 ? "Khá tốt! Xem lại các câu sai rồi làm lại nhé! 📚" : "Đừng nản nha, xem lại đáp án rồi làm lại đề, lần sau sẽ cao hơn! 🌱";
@@ -515,7 +538,7 @@ function submitExam(auto){
 
 /* ================= BANG DIEM (FIREBASE) ================= */
 function saveResult(diem, dung, giay){
-  const rec = { ten: studentName, diem, dung, giay, luc: Date.now() };
+  const rec = { ten: studentName, de: curExam, diem, dung, giay, luc: Date.now() };
   try {
     const hist = JSON.parse(localStorage.getItem("tn5_hist") || "[]");
     hist.push(rec); localStorage.setItem("tn5_hist", JSON.stringify(hist.slice(-30)));
@@ -537,11 +560,11 @@ function renderBoard(data){
   let html;
   if(!rows.length) html = `<p class="small">Chưa có điểm nào. Con làm bài đầu tiên để lên bảng nhé!</p>`;
   else {
-    html = `<table class="board"><tr><th>🏅</th><th>Tên</th><th>Điểm</th><th>Đúng</th><th>Thời gian</th><th>Ngày</th></tr>` +
+    html = `<table class="board"><tr><th>🏅</th><th>Tên</th><th>Đề</th><th>Điểm</th><th>Đúng</th><th>Thời gian</th><th>Ngày</th></tr>` +
       rows.map((r,i)=>{
         const d = new Date(r.luc);
         const ngay = `${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}`;
-        return `<tr><td>${["🥇","🥈","🥉"][i] || (i+1)}</td><td><b>${esc(r.ten)}</b></td><td><b>${r.diem}</b>/300</td><td>${r.dung}/30</td><td>${Math.floor(r.giay/60)}p${String(r.giay%60).padStart(2,"0")}s</td><td>${ngay}</td></tr>`;
+        return `<tr><td>${["🥇","🥈","🥉"][i] || (i+1)}</td><td><b>${esc(r.ten)}</b></td><td>${r.de || 1}</td><td><b>${r.diem}</b>/300</td><td>${r.dung}/30</td><td>${Math.floor(r.giay/60)}p${String(r.giay%60).padStart(2,"0")}s</td><td>${ngay}</td></tr>`;
       }).join("") + `</table>`;
   }
   const b1 = document.getElementById("boardBox"); if(b1) b1.innerHTML = html;
@@ -560,5 +583,10 @@ function backHome(){
 }
 loadBoard();
 </script>
+<script src="de2.js"></script>
+<script src="de3.js"></script>
+<script src="de4.js"></script>
+<script src="de5.js"></script>
+<script src="de6.js"></script>
 </body>
 </html>
