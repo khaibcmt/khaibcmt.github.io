@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Trạng Nguyên Tiếng Việt — Lớp 5 — Đề luyện tập số 1</title>
+<title>Trạng Nguyên Tiếng Việt — Lớp 5 — Luyện thi 4 chặng</title>
 <style>
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body { margin:0; font-family: "Segoe UI", Tahoma, Arial, sans-serif; background: linear-gradient(180deg,#dbeeff 0%,#eef7ff 220px,#f4f9ff 100%); color:#1c2b3a; }
@@ -69,6 +69,7 @@
   .expick { display:flex; flex-wrap:wrap; gap:8px; margin: 8px 0 14px; }
   .expick button { flex: 1 1 30%; padding: 11px 6px; font-size: 16px; font-weight: 700; border-radius: 12px; border: 2px solid #c9d9ec; background: #f6faff; color: #33506e; cursor: pointer; }
   .expick button.sel { background: #0b78d0; border-color: #0b78d0; color: #fff; }
+  .expick button:disabled { opacity: .45; cursor: not-allowed; }
 </style>
 </head>
 <body>
@@ -85,10 +86,17 @@
   <!-- MAN HINH BAT DAU -->
   <div id="startScreen">
     <h1>🏆 Trạng Nguyên Tiếng Việt — Lớp 5</h1>
-    <p class="sub">6 đề luyện tập • Vòng Sơ khảo cấp Trường<br>Mỗi đề 30 câu • 300 điểm • Thời gian 30 phút</p>
+    <p class="sub">4 chặng thi • Mỗi chặng 10 đề luyện tập<br>Mỗi đề 30 câu • 300 điểm • Thời gian 30 phút</p>
     <div class="card">
       <p style="font-size:16.5px; line-height:1.6; margin-top:0">Chào con! Đề này giống hệt đề thi thật: có đủ 7 dạng câu hỏi (trắc nghiệm, điền từ, ghép cặp, sắp xếp, kéo thả, đọc hiểu…). Làm xong bấm <b>Nộp bài</b> là biết điểm ngay. Hết 30 phút máy tự nộp bài nhé!</p>
-      <label style="font-weight:700">Chọn đề luyện tập:</label>
+      <label style="font-weight:700">Chọn chặng thi:</label>
+      <div class="expick" id="stagePick">
+        <button type="button" class="sel" onclick="selectStage(7)">Vòng 7 – Sơ khảo cấp trường (thi 9/12)</button>
+        <button type="button" onclick="selectStage(8)">Vòng 8 – Thi Hương (thi 7/1)</button>
+        <button type="button" onclick="selectStage(9)">Vòng 9 – Thi Hội (thi 11/3)</button>
+        <button type="button" onclick="selectStage(10)">Vòng 10 – Thi Đình (thi 10/4)</button>
+      </div>
+      <label style="font-weight:700">Chọn đề luyện tập của chặng:</label>
       <div class="expick" id="examPick">
         <button data-ex="1" class="sel" onclick="selectExam(1)">Đề số 1</button>
         <button data-ex="2" onclick="selectExam(2)">Đề số 2</button>
@@ -96,6 +104,10 @@
         <button data-ex="4" onclick="selectExam(4)">Đề số 4</button>
         <button data-ex="5" onclick="selectExam(5)">Đề số 5</button>
         <button data-ex="6" onclick="selectExam(6)">Đề số 6</button>
+        <button data-ex="7" onclick="selectExam(7)">Đề số 7</button>
+        <button data-ex="8" onclick="selectExam(8)">Đề số 8</button>
+        <button data-ex="9" onclick="selectExam(9)">Đề số 9</button>
+        <button data-ex="10" onclick="selectExam(10)">Đề số 10</button>
       </div>
       <label style="font-weight:700">Tên của con:</label>
       <div class="name-row" style="margin:8px 0 14px">
@@ -224,12 +236,36 @@ const CLOZE1 = {
   answers: ["rực rỡ","líu lo","háo hức","vui vẻ"]
 };
 const EXAMS = { 1: { passage: PASSAGE1, sections: SECTIONS1, cloze: CLOZE1 } };
-let curExam = 1;
+const STAGE_EXAMS = {};
+function syncStageExams(){
+  [1,2,3,4,5,6].forEach(i => { if(!STAGE_EXAMS["7-" + i] && EXAMS[i]) STAGE_EXAMS["7-" + i] = EXAMS[i]; });
+}
+syncStageExams();
+const STAGE_NAMES = { 7: "Vòng 7 – Sơ khảo cấp trường", 8: "Vòng 8 – Thi Hương", 9: "Vòng 9 – Thi Hội", 10: "Vòng 10 – Thi Đình" };
+let curStage = 7, curExam = 1;
 let SECTIONS = null, CLOZE = null, PASSAGE = null, ALLQ = [];
-function loadExam(n){
-  const ex = EXAMS[n];
+function loadExam(){
+  syncStageExams();
+  const ex = STAGE_EXAMS[curStage + "-" + curExam];
   SECTIONS = ex.sections; CLOZE = ex.cloze; PASSAGE = ex.passage;
   ALLQ = []; SECTIONS.forEach(s => s.qs.forEach(q => ALLQ.push(q)));
+}
+function refreshExamPick(){
+  syncStageExams();
+  const btns = document.querySelectorAll("#examPick button");
+  btns.forEach((b, i) => {
+    const n = i + 1, ok = !!STAGE_EXAMS[curStage + "-" + n];
+    b.disabled = !ok;
+    b.textContent = ok ? ("Đề số " + n) : ("Đề " + n + " ⏳");
+    b.classList.toggle("sel", ok && n === curExam);
+  });
+}
+function selectStage(n){
+  curStage = n; curExam = 1;
+  const btns = document.querySelectorAll("#stagePick button");
+  btns.forEach(b => b.classList.remove("sel"));
+  const idx = [7,8,9,10].indexOf(n); if(btns[idx]) btns[idx].classList.add("sel");
+  refreshExamPick();
 }
 const FB = "https://edumaster-online-default-rtdb.asia-southeast1.firebasedatabase.app/tn5_ketqua";
 
@@ -252,13 +288,15 @@ function startExam(){
   const v = document.getElementById("nameInput").value.trim();
   if(!v){ alert("Con nhập tên của mình trước nhé!"); document.getElementById("nameInput").focus(); return; }
   studentName = v;
-  loadExam(curExam);
+  syncStageExams();
+  if(!STAGE_EXAMS[curStage + "-" + curExam]){ alert("Đề này đang được soạn, con chọn đề khác nhé!"); return; }
+  loadExam();
   answers = {}; submitted = false; selChip = null; activeBlank = 0;
   document.getElementById("startScreen").classList.add("hidden");
   document.getElementById("resultScreen").classList.add("hidden");
   document.getElementById("examScreen").classList.remove("hidden");
   document.getElementById("topbar").style.display = "block";
-  document.getElementById("tbName").textContent = studentName + " • Đề số " + curExam;
+  document.getElementById("tbName").textContent = studentName + " • Vòng " + curStage + " – Đề số " + curExam;
   renderExam();
   remainSec = 30*60; startAt = Date.now();
   tickTimer();
@@ -280,7 +318,7 @@ function renderExam(){
   SECTIONS.forEach(sec => {
     html += `<div class="sec-title">${sec.title}</div><div class="sec-note">${sec.note}</div>`;
     if(sec.passage){
-      html += `<div class="passage"><b style="display:block;text-align:center;margin-bottom:6px">DÒNG SÔNG QUÊ EM</b>${esc(PASSAGE)}</div><div style="height:12px"></div>`;
+      html += `<div class="passage"><b style="display:block;text-align:center;margin-bottom:6px">ĐOẠN VĂN ĐỌC HIỂU</b>${esc(PASSAGE)}</div><div style="height:12px"></div>`;
     }
     let clozeRendered = false;
     sec.qs.forEach(q => {
@@ -526,7 +564,7 @@ function submitExam(auto){
   document.getElementById("examScreen").classList.add("hidden");
   document.getElementById("topbar").style.display = "none";
   document.getElementById("resultScreen").classList.remove("hidden");
-  document.getElementById("resName").textContent = studentName + " (Đề số " + curExam + ")";
+  document.getElementById("resName").textContent = studentName + " (Vòng " + curStage + " – Đề số " + curExam + ")";
   document.getElementById("resScore").textContent = total;
   const mm = Math.floor(usedSec/60), ss = usedSec%60;
   const khen = total >= 270 ? "Xuất sắc! Con sẵn sàng thi thật rồi đó! 🌟" : total >= 210 ? "Giỏi lắm! Ôn thêm một chút nữa là vững luôn! 💪" : total >= 150 ? "Khá tốt! Xem lại các câu sai rồi làm lại nhé! 📚" : "Đừng nản nha, xem lại đáp án rồi làm lại đề, lần sau sẽ cao hơn! 🌱";
@@ -538,7 +576,7 @@ function submitExam(auto){
 
 /* ================= BANG DIEM (FIREBASE) ================= */
 function saveResult(diem, dung, giay){
-  const rec = { ten: studentName, de: curExam, diem, dung, giay, luc: Date.now() };
+  const rec = { ten: studentName, chang: curStage, de: curExam, diem, dung, giay, luc: Date.now() };
   try {
     const hist = JSON.parse(localStorage.getItem("tn5_hist") || "[]");
     hist.push(rec); localStorage.setItem("tn5_hist", JSON.stringify(hist.slice(-30)));
@@ -560,11 +598,11 @@ function renderBoard(data){
   let html;
   if(!rows.length) html = `<p class="small">Chưa có điểm nào. Con làm bài đầu tiên để lên bảng nhé!</p>`;
   else {
-    html = `<table class="board"><tr><th>🏅</th><th>Tên</th><th>Đề</th><th>Điểm</th><th>Đúng</th><th>Thời gian</th><th>Ngày</th></tr>` +
+    html = `<table class="board"><tr><th>🏅</th><th>Tên</th><th>Chặng–Đề</th><th>Điểm</th><th>Đúng</th><th>Thời gian</th><th>Ngày</th></tr>` +
       rows.map((r,i)=>{
         const d = new Date(r.luc);
         const ngay = `${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}`;
-        return `<tr><td>${["🥇","🥈","🥉"][i] || (i+1)}</td><td><b>${esc(r.ten)}</b></td><td>${r.de || 1}</td><td><b>${r.diem}</b>/300</td><td>${r.dung}/30</td><td>${Math.floor(r.giay/60)}p${String(r.giay%60).padStart(2,"0")}s</td><td>${ngay}</td></tr>`;
+        return `<tr><td>${["🥇","🥈","🥉"][i] || (i+1)}</td><td><b>${esc(r.ten)}</b></td><td>${r.chang || 7}–${r.de || 1}</td><td><b>${r.diem}</b>/300</td><td>${r.dung}/30</td><td>${Math.floor(r.giay/60)}p${String(r.giay%60).padStart(2,"0")}s</td><td>${ngay}</td></tr>`;
       }).join("") + `</table>`;
   }
   const b1 = document.getElementById("boardBox"); if(b1) b1.innerHTML = html;
@@ -588,5 +626,7 @@ loadBoard();
 <script src="de4.js"></script>
 <script src="de5.js"></script>
 <script src="de6.js"></script>
+<script src="de7_10.js"></script>
+<script>refreshExamPick();</script>
 </body>
 </html>
