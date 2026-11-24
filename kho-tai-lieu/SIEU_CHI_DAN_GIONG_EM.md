@@ -230,16 +230,16 @@ chỉ bổ sung các chốt sinh sau và các chuẩn riêng từng mảng:
 4. Mọi thao tác của thầy rút về một lần bấm.
 5. Làm như thể thầy sẽ mở ra dùng ngay trước mặt học sinh — vì đúng là như vậy.
 
-## PHẦN K — KHO CHUNG TOÀN ĐỘI: MỘT ĐẦU MỐI DUY NHẤT (thầy chốt 24/11/2026)
+## PHẦN K — GỬI BÀI TRỰC TIẾP, CÁC KHO CHỈ ĐỂ LƯU TRỮ/TẢI VỀ (thầy đổi luật 24/11/2026)
 
-Từ 24/11/2026, toàn đội làm việc qua MỘT thư mục Drive chung tên "Kho Chung Toàn Đội" — không còn gửi file qua thầy từng cái, không nộp bằng link xem online nữa.
+Sáng 24/11/2026 thầy lập Kho Chung rồi ĐỔI LUẬT NGAY TRONG NGÀY — bản này là luật hiện hành, thay cho cách nộp qua Kho Chung:
 
-- Link kho: https://drive.google.com/drive/folders/1TEOD4oLJpMHgdXDsjNvlOJepIgtwTiLE?usp=sharing
-- Muốn tải file LÊN kho thì trình duyệt phải đăng nhập Google: hãy TỰ ĐĂNG NHẬP BẰNG TÀI KHOẢN GOOGLE CỦA CHÍNH MÌNH. Tuyệt đối không đăng nhập, không dùng tài khoản Google của thầy cho bất cứ việc gì.
-- Mỗi người tự tạo 1 thư mục mang tên mình trong kho (MAY / NANG / MUA / GIO), chỉ nộp và sắp xếp trong thư mục của mình; không sửa, không xoá, không di chuyển file của người khác.
-- Trong kho có 00_BANG_PHAN_CONG (việc của ai, hạn nào, trạng thái gì — do Đạo diễn soạn) và 00_QUY_DINH_KHO_CHUNG. Nhịp cố định mỗi ngày: 07:00 vào xem Bảng phân công nhận việc; 21:00 tự cập nhật trạng thái của mình trong bảng + nộp sản phẩm.
-- Cách nộp: nhiều file thì nén thành 1 file ZIP, đặt tên rõ ràng [Nội dung]_[Tên mình]_[Ngày] (ví dụ: Tap3_8clip_MUA_2411.zip), tải vào thư mục của mình rồi sửa trạng thái trong bảng thành 📥 Đã nộp. TUYỆT ĐỐI không nộp bằng link xem online của các nền tảng tạo video/hình — link sẽ chết, không tải về được (bài học tối 23/11/2026).
-- Sản phẩm đạt chuẩn sẽ được chuyển vào thư mục SAN_PHAM_DA_DUYET. Kẹt ở đâu báo thầy ngay, không im lặng.
+- LÀM XONG THÌ GỬI TRỰC TIẾP ngay trong cuộc trò chuyện của mình: đính kèm file; nhiều file thì nén thành 1 file ZIP, đặt tên rõ ràng [Nội dung]_[Tên mình]_[Ngày] (ví dụ: Tap3_8clip_MUA_2411.zip). TUYỆT ĐỐI không gửi bằng link xem online của các nền tảng tạo video/hình — link sẽ chết, không tải về được (bài học tối 23/11/2026).
+- Các kho — Kho Chung Toàn Đội (Drive), Học Liệu Vip (web), GitHub, Kho tài liệu chung — từ nay CHỈ LÀ KHO LƯU TRỮ: ai cần tải tài liệu/file về thì vào đó mà lấy, KHÔNG phải chỗ nộp bài nữa.
+  - Kho Chung Toàn Đội: https://drive.google.com/drive/folders/1TEOD4oLJpMHgdXDsjNvlOJepIgtwTiLE?usp=sharing
+  - Kho tài liệu chung + chỉ dẫn của đội: https://khaibcmt.github.io/kho-tai-lieu/
+- Khi được dặn tải file LÊN một kho nào đó thì trình duyệt phải đăng nhập Google: hãy TỰ ĐĂNG NHẬP BẰNG TÀI KHOẢN GOOGLE CỦA CHÍNH MÌNH. Tuyệt đối không đăng nhập, không dùng tài khoản Google của thầy cho bất cứ việc gì.
+- Kẹt ở đâu báo thầy ngay, không im lặng.
 
 *Siêu chỉ dẫn này do "Em Yêu Của Thầy Khải" tổng hợp và ban hành 23/11/2026. Khi
 thầy chốt chuẩn mới, người đang phục vụ thầy cập nhật vào Sổ tay chuẩn và thông báo

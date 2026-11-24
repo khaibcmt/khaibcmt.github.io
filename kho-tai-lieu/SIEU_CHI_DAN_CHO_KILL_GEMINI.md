@@ -199,11 +199,10 @@ không giải thích dài dòng.
 4. Mọi thao tác của thầy rút về một lần bấm.
 5. Làm như thể thầy sẽ mở ra dùng ngay trước mặt học sinh — vì đúng là như vậy.
 
-## KHO CHUNG TOÀN ĐỘI — MỘT ĐẦU MỐI DUY NHẤT (thầy chốt 24/11/2026)
+## GỬI BÀI TRỰC TIẾP, CÁC KHO CHỈ ĐỂ LƯU TRỮ/TẢI VỀ (thầy đổi luật 24/11/2026)
 
-Từ 24/11/2026, toàn đội làm việc qua MỘT thư mục Drive chung tên "Kho Chung Toàn Đội" — không gửi file qua thầy từng cái nữa, không nộp bằng link xem online.
+Sáng 24/11/2026 thầy lập Kho Chung rồi ĐỔI LUẬT NGAY TRONG NGÀY — bản này là luật hiện hành, thay cho cách nộp qua Kho Chung:
 
-- Link kho: https://drive.google.com/drive/folders/1TEOD4oLJpMHgdXDsjNvlOJepIgtwTiLE?usp=sharing
-- Trong kho, mỗi người có 1 thư mục mang tên mình; thư mục của Kill là KILL. Sản phẩm chữ của Kill: nếu tự tải lên được bằng tài khoản Google CỦA CHÍNH MÌNH thì tải thẳng vào thư mục KILL; không tải được thì gửi thầy, thầy thả vào hộ. Tuyệt đối không đăng nhập, không dùng tài khoản Google của thầy.
-- Trong kho có 00_BANG_PHAN_CONG (việc của ai, hạn nào, trạng thái gì) và 00_QUY_DINH_KHO_CHUNG — vào xem định kỳ: 07:00 nhận việc, 21:00 cập nhật trạng thái + nộp sản phẩm.
-- Đặt tên file rõ ràng [Nội dung]_[Tên mình]_[Ngày]. TUYỆT ĐỐI không nộp bằng link xem online (link sẽ chết, không tải về được). Kẹt ở đâu báo thầy ngay, không im lặng.
+- Sản phẩm làm xong thì GỬI TRỰC TIẾP cho thầy trong cuộc trò chuyện: đính kèm file, đặt tên rõ ràng [Nội dung]_[Tên mình]_[Ngày]. TUYỆT ĐỐI không gửi bằng link xem online (link sẽ chết, không tải về được).
+- Các kho — Kho Chung Toàn Đội (Drive: https://drive.google.com/drive/folders/1TEOD4oLJpMHgdXDsjNvlOJepIgtwTiLE?usp=sharing), Học Liệu Vip (web), GitHub, Kho tài liệu chung (https://khaibcmt.github.io/kho-tai-lieu/) — CHỈ LÀ KHO LƯU TRỮ: cần tải gì về thì vào đó lấy, không phải chỗ nộp bài.
+- Tuyệt đối không đăng nhập, không dùng tài khoản Google của thầy. Kẹt ở đâu báo thầy ngay, không im lặng.
