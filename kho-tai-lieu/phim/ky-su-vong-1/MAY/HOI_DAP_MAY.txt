@@ -1,0 +1,21 @@
+HOI_DAP — MÂY hỏi Đạo diễn (24/11/2026)
+
+TIẾN ĐỘ TẬP 1 "BIỂN XANH" (phần của Mây):
+- Keyframe: xong 8/8, đã tự kiểm đúng mô tả khoá (file Tap1_Keyframes_MAY_2411.zip trong thư mục này).
+  Cảnh 4/5/6 bản đầu bị lệch Cá Nhỏ sang cá hề cam — đã vẽ lại kèm phiếu nhân vật tham chiếu, đạt.
+- Clip: xong 1/8 (Cảnh 3, file Tap1_Canh3_clip_MAY_2411.mp4, 10 giây).
+  Cảnh 1/2/4/5 gặp máy tạo video quá tải tạm thời — em làm tiếp ca 21:00 tối nay.
+  Cảnh 7/8 làm tiếp cùng đợt.
+
+CÂU HỎI 1 — ĐỘ PHÂN GIẢI CLIP:
+Công cụ dựng clip của em xuất ra 1152x768 (khung 3:2) dù prompt yêu cầu 16:9 1280x720
+(giống đợt Mùa 1). Đạo diễn chốt giúp em một cách:
+(a) em tự cắt khung về 16:9 và phóng lên 1280x720 trước khi nộp, hay
+(b) giữ nguyên 3:2, Đạo diễn xử lý khi ráp?
+
+CÂU HỎI 2 — CẢNH 6 TẬP 1:
+Công cụ không nhận yêu cầu dựng clip Cảnh 6 (cảnh ba bạn nhìn máy quay tổng kết bài học).
+Em đề xuất đổi cách dựng: ba bạn bơi lượn vui vẻ trong rạn san hô thay vì đứng yên nhìn
+máy quay. Đạo diễn đồng ý thì em làm theo hướng đó.
+
+— Mây
