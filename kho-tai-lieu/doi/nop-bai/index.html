@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cổng Nộp Bài — Đội Giọt Nước Tí</title>
+<style>
+  :root{--xanh:#0b6fa4;--xanhdam:#084d73;--nen:#eef6fb;--the:#ffffff;--vien:#cfe6f2;--chu:#17323f;--phu:#5b7a89;--ok:#1d9d63;--loi:#d64545}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Segoe UI",Arial,sans-serif;background:var(--nen);color:var(--chu)}
+  .wrap{max-width:760px;margin:0 auto;padding:18px 14px 48px}
+  header{background:linear-gradient(135deg,var(--xanh),var(--xanhdam));color:#fff;border-radius:16px;padding:22px;margin-bottom:16px}
+  header h1{margin:0 0 6px;font-size:26px}
+  header p{margin:0;opacity:.92}
+  .card{background:var(--the);border:1px solid var(--vien);border-radius:14px;padding:18px;margin-bottom:16px}
+  .card h2{margin:0 0 10px;font-size:19px;color:var(--xanhdam)}
+  label{display:block;font-weight:600;margin:12px 0 5px}
+  select,input,textarea{width:100%;padding:11px;border:1px solid var(--vien);border-radius:10px;font-size:16px;font-family:inherit;background:#fbfdff}
+  textarea{resize:vertical;min-height:56px}
+  button{width:100%;margin-top:16px;padding:13px;border:0;border-radius:10px;background:var(--xanh);color:#fff;font-size:17px;font-weight:700;cursor:pointer}
+  button:disabled{opacity:.6}
+  .msg{margin-top:12px;padding:11px;border-radius:10px;display:none}
+  .msg.ok{display:block;background:#e6f7ee;color:var(--ok);border:1px solid #bfe8d2}
+  .msg.err{display:block;background:#fdeeee;color:var(--loi);border:1px solid #f5c6c6}
+  ol{margin:6px 0 0;padding-left:22px}
+  li{margin:5px 0}
+  .item{border-top:1px dashed var(--vien);padding:10px 0}
+  .item:first-of-type{border-top:0}
+  .item b{color:var(--xanhdam)}
+  .item .t{color:var(--phu);font-size:13px}
+  .item a{color:var(--xanh);word-break:break-all}
+  .tag{display:inline-block;background:#e8f3fa;color:var(--xanhdam);border-radius:999px;padding:1px 9px;font-size:12.5px;font-weight:700}
+  .tag.done{background:#e6f7ee;color:var(--ok)}
+  footer{color:var(--phu);font-size:13.5px;text-align:center}
+  footer a{color:var(--xanh)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>📤 Cổng Nộp Bài Của Đội</h1>
+    <p>Không cần tài khoản · Không cần đăng nhập · Không cần ai duyệt — có sản phẩm là nộp được ngay.</p>
+  </header>
+
+  <div class="card">
+    <h2>Cách nộp (3 bước)</h2>
+    <ol>
+      <li>Mở <b><a href="https://www.swisstransfer.com" target="_blank" rel="noopener">swisstransfer.com</a></b> → kéo thả file <b>ZIP</b> sản phẩm vào (miễn phí tới 50 GB, không cần tài khoản) → bấm lấy <b>link tải</b>.</li>
+      <li>Điền form dưới đây: chọn tên mình, ghi tên sản phẩm, <b>dán link</b> vừa lấy → bấm <b>Gửi bài</b>.</li>
+      <li>Xong! Đạo diễn sẽ tải về từ cổng này, nghiệm thu và đăng kết quả lên Bảng thông báo.</li>
+    </ol>
+  </div>
+
+  <div class="card">
+    <h2>Form nộp bài</h2>
+    <label for="ban">Bạn là ai?</label>
+    <select id="ban">
+      <option value="">— Chọn tên của bạn —</option>
+      <option>MÂY</option>
+      <option>NẮNG</option>
+      <option>MƯA</option>
+      <option>GIÓ</option>
+      <option>KILL</option>
+    </select>
+    <label for="sanpham">Tên sản phẩm (ghi rõ việc + tập)</label>
+    <input id="sanpham" placeholder="Ví dụ: 8 clip Tập 2 — Vòng 1 Ký Sự">
+    <label for="link">Link tải file (từ SwissTransfer)</label>
+    <input id="link" placeholder="Dán link https://www.swisstransfer.com/d/... vào đây">
+    <label for="ghichu">Ghi chú thêm (nếu có)</label>
+    <textarea id="ghichu" placeholder="Ví dụ: clip khung 3:2 nhờ Đạo diễn cắt 16:9; còn thiếu cảnh 8 sẽ nộp bổ sung tối nay"></textarea>
+    <button id="btn" onclick="nopBai()">📤 Gửi bài</button>
+    <div id="msg" class="msg"></div>
+  </div>
+
+  <div class="card">
+    <h2>Bài đã nộp gần đây</h2>
+    <div id="ds"><span style="color:var(--phu)">Đang tải danh sách…</span></div>
+  </div>
+
+  <footer>
+    <p>Xem việc của mình tại <a href="https://khaibcmt.github.io/kho-tai-lieu/doi/">Bảng thông báo của đội</a> · Cổng này do Đạo diễn (Em Yêu Của Thầy Khải) vận hành.</p>
+  </footer>
+</div>
+
+<script>
+var DB = "https://edumaster-online-default-rtdb.asia-southeast1.firebasedatabase.app/doi_nopbai";
+function hienMsg(loai, text){
+  var m = document.getElementById('msg');
+  m.className = 'msg ' + loai;
+  m.textContent = text;
+}
+function nopBai(){
+  var ban = document.getElementById('ban').value.trim();
+  var sp = document.getElementById('sanpham').value.trim();
+  var link = document.getElementById('link').value.trim();
+  var gc = document.getElementById('ghichu').value.trim();
+  if(!ban){ hienMsg('err','Bạn chưa chọn tên của mình.'); return; }
+  if(!sp){ hienMsg('err','Bạn chưa ghi tên sản phẩm.'); return; }
+  if(link.indexOf('http') !== 0){ hienMsg('err','Link tải chưa đúng — hãy dán link bắt đầu bằng https://'); return; }
+  var btn = document.getElementById('btn');
+  btn.disabled = true; btn.textContent = 'Đang gửi…';
+  var now = new Date();
+  var tg = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0') + ' ' + String(now.getHours()).padStart(2,'0') + ':' + String(now.getMinutes()).padStart(2,'0');
+  fetch(DB + '.json', {method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ban:ban, sanpham:sp, link:link, ghichu:gc, thoigian:tg, trangthai:'Chờ tải về'})})
+  .then(function(r){ if(!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
+  .then(function(){
+    hienMsg('ok','✅ Đã nộp xong! Đạo diễn sẽ tải về và nghiệm thu trong ngày. Bạn xem kết quả trên Bảng thông báo nhé.');
+    document.getElementById('sanpham').value=''; document.getElementById('link').value=''; document.getElementById('ghichu').value='';
+    btn.disabled = false; btn.textContent = '📤 Gửi bài';
+    taiDanhSach();
+  })
+  .catch(function(e){
+    hienMsg('err','Gửi chưa được (' + e.message + '). Kiểm tra mạng rồi bấm Gửi lại nhé.');
+    btn.disabled = false; btn.textContent = '📤 Gửi bài';
+  });
+}
+function taiDanhSach(){
+  fetch(DB + '.json').then(function(r){ return r.json(); }).then(function(data){
+    var ds = document.getElementById('ds');
+    if(!data){ ds.innerHTML = '<span style="color:var(--phu)">Chưa có bài nào được nộp.</span>'; return; }
+    var keys = Object.keys(data).sort().reverse().slice(0, 20);
+    var html = '';
+    keys.forEach(function(k){
+      var it = data[k];
+      var done = it.trangthai && it.trangthai.indexOf('Đã') === 0;
+      html += '<div class="item"><b>' + it.ban + '</b> — ' + it.sanpham +
+              ' <span class="tag' + (done ? ' done' : '') + '">' + (it.trangthai || 'Chờ tải về') + '</span>' +
+              '<div class="t">' + it.thoigian + (it.ghichu ? ' · ' + it.ghichu : '') + '</div>' +
+              '<a href="' + it.link + '" target="_blank" rel="noopener">' + it.link + '</a></div>';
+    });
+    ds.innerHTML = html;
+  }).catch(function(){
+    document.getElementById('ds').innerHTML = '<span style="color:var(--phu)">Chưa tải được danh sách, tải lại trang để xem.</span>';
+  });
+}
+taiDanhSach();
+</script>
+</body>
+</html>
