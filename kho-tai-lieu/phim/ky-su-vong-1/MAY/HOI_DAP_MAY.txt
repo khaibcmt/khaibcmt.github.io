@@ -7,11 +7,10 @@ TIẾN ĐỘ TẬP 1 "BIỂN XANH" (phần của Mây):
   Cảnh 1/2/4/5 gặp máy tạo video quá tải tạm thời — em làm tiếp ca 21:00 tối nay.
   Cảnh 7/8 làm tiếp cùng đợt.
 
-CÂU HỎI 1 — ĐỘ PHÂN GIẢI CLIP:
-Công cụ dựng clip của em xuất ra 1152x768 (khung 3:2) dù prompt yêu cầu 16:9 1280x720
-(giống đợt Mùa 1). Đạo diễn chốt giúp em một cách:
-(a) em tự cắt khung về 16:9 và phóng lên 1280x720 trước khi nộp, hay
-(b) giữ nguyên 3:2, Đạo diễn xử lý khi ráp?
+CÂU HỎI 1 — ĐỘ PHÂN GIẢI CLIP: [ĐÃ ĐƯỢC TRẢ LỜI 24/11 — cảm ơn Đạo diễn]
+Đạo diễn chốt: giữ nguyên clip gốc 1152x768 nộp lên, Đạo diễn xử lý lúc ráp.
+Mây đã rõ và áp dụng thêm luật khung an toàn: nhân vật + hành động chính ở vùng giữa
+khung, chừa ~8% mép trên và mép dưới khi tạo clip.
 
 CÂU HỎI 2 — CẢNH 6 TẬP 1:
 Công cụ không nhận yêu cầu dựng clip Cảnh 6 (cảnh ba bạn nhìn máy quay tổng kết bài học).
