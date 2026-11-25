@@ -729,6 +729,7 @@ function classifyHttp(status, data, txt){
   const st  = (data && data.error && data.error.status) || "";
   if (status === 429 || st === "RESOURCE_EXHAUSTED" || /resource_exhausted|quota|rate limit/i.test(msg)) return { kind: "quota", msg: msg };
   if (st === "API_KEY_INVALID" || /api key/i.test(msg) || status === 403) return { kind: "invalid", msg: msg };
+  if (status === 500 || status === 502 || status === 503 || status === 504 || st === "UNAVAILABLE" || st === "INTERNAL") return { kind: "temp", msg: msg };
   return { kind: "other", msg: msg };
 }
 
@@ -1759,6 +1760,19 @@ async function geminiCall(role, body, meta){
         /* model không còn khả dụng cho key này (bản ghi khám phá đã cũ) → ứng viên kế tiếp */
         logKeyRotate("⚠️ Model " + model + " không khả dụng cho Key #" + (idx + 1) + " (404) — thử ứng viên kế tiếp");
         lastErr = new Error("Model " + model + " không khả dụng cho Key #" + (idx + 1) + " (404)");
+        break;
+      }
+      if (c.kind === "temp"){
+        /* Google quá tải tạm thời (503/500/502/504) — KHÔNG phải lỗi key:
+           chờ vài giây thử lại cùng ứng viên 1 lần, vẫn lỗi thì chuyển
+           ứng viên kế tiếp (model khác/key khác), tuyệt đối không dừng luôn. */
+        if (attempt === 0){
+          logKeyRotate("⏳ Google đang quá tải tạm thời (" + res.status + ") — chờ 4 giây rồi thử lại model " + model + " (Key #" + (idx + 1) + ")...");
+          await new Promise(r => setTimeout(r, 4000));
+          continue;
+        }
+        logKeyRotate("⏳ Model " + model + " (Key #" + (idx + 1) + ") vẫn quá tải (" + res.status + ") — tự chuyển ứng viên kế tiếp");
+        lastErr = new Error("Google đang quá tải tạm thời (" + res.status + ") ở model " + model + " của Key #" + (idx + 1) + " — thầy chờ vài phút rồi bấm tạo lại là được");
         break;
       }
       throw new Error("Gemini báo lỗi (" + res.status + "): " + emsg);
