@@ -259,7 +259,7 @@
   <header class="top">
     <h1>🎬 Video Bài Giảng <span class="ai">AI</span></h1>
     <p>Chỉ cần nêu <b>tên bài</b> hoặc dán <b>câu chuyện</b> — app tự viết kịch bản, tạo hình, vẽ sơ đồ, dựng bảng số liệu, thu giọng đọc và ghép thành video.</p>
-    <p class="small" id="buildTag">🏷️ Bản KC18 • 27/11/2026 — 🎬 DỰNG PHIM: bỏ hết chữ phủ lên cảnh (chỉ giữ chữ ký góc phải trên + thẻ kết), chuyển động zoom/lia khung rõ hơn xen kẽ từng cảnh + [KC17] tải nguyên kịch bản khuôn Kill (.docx/.txt) hoặc dán text, app tự tách 10 cảnh × 5 mục, đủ dàn giọng theo bảng giọng chuẩn toàn series (VieNeu từng nhân vật), tự gán hình đúng cảnh (hình tải kèm theo thứ tự / AI vẽ theo prompt / kho SGK), hình trôi khung liên tục không đứng hình, thẻ kết + thumbnail tự sinh + [KC16] thumbnail YouTube kèm video + đoạn mở đầu tựa bài + KHOÁ ADMIN 2 LỚP + giọng VieNeu trên máy này + luật phân giọng: đoạn có chữ “thầy” luôn do MC Nam đọc</p>
+    <p class="small" id="buildTag">🏷️ Bản KC19 • 27/11/2026 — sửa lỗi tiếng chậm rề khi dựng lại lần 2 (cache giọng VieNeu lưu sai sample rate → phát chậm gấp đôi; nay cache resample về 24kHz + đổi tag cache bỏ bản cũ) + [KC18] 🎬 DỰNG PHIM: bỏ hết chữ phủ lên cảnh (chỉ giữ chữ ký góc phải trên + thẻ kết), chuyển động zoom/lia khung rõ hơn xen kẽ từng cảnh + [KC17] tải nguyên kịch bản khuôn Kill (.docx/.txt) hoặc dán text, app tự tách 10 cảnh × 5 mục, đủ dàn giọng theo bảng giọng chuẩn toàn series (VieNeu từng nhân vật), tự gán hình đúng cảnh (hình tải kèm theo thứ tự / AI vẽ theo prompt / kho SGK), hình trôi khung liên tục không đứng hình, thẻ kết + thumbnail tự sinh + [KC16] thumbnail YouTube kèm video + đoạn mở đầu tựa bài + KHOÁ ADMIN 2 LỚP + giọng VieNeu trên máy này + luật phân giọng: đoạn có chữ “thầy” luôn do MC Nam đọc</p>
     <div id="voiceBadge" class="hidden"></div>
     <div id="kc13AdminBar" class="hidden" style="margin-top:10px">
       <button class="btn-ghost shrink" id="kc13LockNowBtn" type="button">🔒 Khoá lại ngay</button>
@@ -3077,7 +3077,12 @@ function kc11RolePromptBlock(vtype){
    CHỈ nhận máy chủ khi service == "vieneu-local"; mọi trường hợp
    còn lại nguồn hiệu lực là "gemini" — app chạy y hệt bản KC11. */
 const KC12_LOCAL_URL = "http://127.0.0.1:8770";
-const KC12_LOCAL_MODEL_TAG = "vieneu-local";
+/* [KC19] Tag cache giọng VieNeu ĐỔI sang v2: bản ghi cũ (tag
+   "vieneu-local") lưu PCM ở sample rate của AudioContext (44,1/48kHz)
+   nhưng khi đọc lại bị gắn nhãn 24kHz → phát chậm gấp đôi (lỗi thầy
+   báo 20:13 ngày 27/11/2026). Đổi tag để bỏ hẳn cache cũ; từ KC19
+   cache chỉ lưu PCM đã resample về đúng 24000 Hz (ttsCacheSaveBuffer). */
+const KC12_LOCAL_MODEL_TAG = "vieneu-local-v2";
 /* Cặp giọng VieNeu thầy chốt 21/11/2026 ("1 cặp thôi, cho học sinh
    quen luôn"): Nữ Thùy Dung thay vai Kore, Nam Thái Sơn thay vai
    Charon. Máy chủ có thể trả default_voices riêng qua /health —
@@ -8939,7 +8944,7 @@ async function dpSynthLineBuffer(text, voiceName, gender){
     if (resp && resp.ok){
       const abuf = await decodeAudioBlob(await resp.blob());
       applyFadesArr(abuf.getChannelData(0), abuf.sampleRate, 12);
-      ttsCacheSave(clean, KC12_LOCAL_MODEL_TAG, audioBufferToPcmBase64(abuf), voiceName);
+      ttsCacheSaveBuffer(clean, KC12_LOCAL_MODEL_TAG, abuf, voiceName);
       return abuf;
     }
     if (netErr){
@@ -9247,6 +9252,29 @@ function audioBufferToPcmBase64(buf){
   for (let i = 0; i < bytes.length; i += CHUNK) bin += String.fromCharCode.apply(null, bytes.subarray(i, i + CHUNK));
   return btoa(bin);
 }
+/* [KC19] Resample AudioBuffer về đúng 24000 Hz trước khi lưu cache —
+   pcmToAudioBuffer luôn tạo buffer 24kHz (đúng cho PCM Gemini), nên
+   buffer VieNeu (44,1/48kHz) phải hạ về 24kHz tại đây, nếu không lần
+   đọc cache sau sẽ phát chậm theo tỉ lệ sample rate. Buffer đã 24kHz
+   thì giữ nguyên. */
+async function resampleBufferTo24k(buf){
+  if (!buf || buf.sampleRate === 24000) return buf;
+  const len = Math.max(1, Math.ceil(buf.duration * 24000));
+  const off = new OfflineAudioContext(1, len, 24000);
+  const src = off.createBufferSource();
+  src.buffer = buf;
+  src.connect(off.destination);
+  src.start(0);
+  return await off.startRendering();
+}
+/* [KC19] Lưu cache giọng từ AudioBuffer bất kỳ sample rate: resample
+   về 24kHz rồi mới trích PCM — mọi đường lưu cache (VieNeu KC12,
+   Dựng Phim, Gemini) đều đi qua đây. */
+async function ttsCacheSaveBuffer(text, model, buf, voice){
+  if (!model || !buf) return;
+  const b24 = await resampleBufferTo24k(buf);
+  await ttsCacheSave(text, model, audioBufferToPcmBase64(b24), voice);
+}
 /*__PURE_PCM__*/
 /* Tìm điểm cắt ÊM nhất quanh vị trí ước lượng: trong cửa sổ ±win mẫu, chọn
    điểm có năng lượng âm thanh thấp nhất (khoảng lặng giữa hai câu) — cắt ở
@@ -9314,7 +9342,7 @@ async function kc12SynthSegment(i){
   const abuf = await decodeAudioBlob(await resp.blob());
   applyFadesArr(abuf.getChannelData(0), abuf.sampleRate, 12);
   audios[i] = { status: "ok", buffer: abuf, err: "", mc: mc };
-  ttsCacheSave(sg.narration, KC12_LOCAL_MODEL_TAG, audioBufferToPcmBase64(abuf), voice);
+  ttsCacheSaveBuffer(sg.narration, KC12_LOCAL_MODEL_TAG, abuf, voice);
   renderAssetRows();
   return true;
 }
@@ -9474,7 +9502,7 @@ async function genAudioGroup(indices){
       const buf = audioCtx().createBuffer(1, Math.max(1, part.length), full.sampleRate);
       buf.getChannelData(0).set(part);
       audios[segIdx] = { status: "ok", buffer: buf, err: "", mc: mc };
-      ttsCacheSave(scriptData.segments[segIdx].narration, meta.model || "", audioBufferToPcmBase64(buf), voice);
+      ttsCacheSaveBuffer(scriptData.segments[segIdx].narration, meta.model || "", buf, voice);
     });
   } catch (e) {
     for (const i of missing) await genAudioForSegment(i);   /* cụm lỗi → gọi từng đoạn */
