@@ -259,7 +259,7 @@
   <header class="top">
     <h1>🎬 Video Bài Giảng <span class="ai">AI</span></h1>
     <p>Chỉ cần nêu <b>tên bài</b> hoặc dán <b>câu chuyện</b> — app tự viết kịch bản, tạo hình, vẽ sơ đồ, dựng bảng số liệu, thu giọng đọc và ghép thành video.</p>
-    <p class="small" id="buildTag">🏷️ Bản KC17 • 27/11/2026 — THÊM 🎬 DỰNG PHIM: tải nguyên kịch bản khuôn Kill (.docx/.txt) hoặc dán text, app tự tách 10 cảnh × 5 mục, đủ dàn giọng theo bảng giọng chuẩn toàn series (VieNeu từng nhân vật), tự gán hình đúng cảnh (hình tải kèm theo thứ tự / AI vẽ theo prompt / kho SGK), hình trôi khung liên tục không đứng hình, thẻ kết + thumbnail tự sinh + [KC16] thumbnail YouTube kèm video + đoạn mở đầu tựa bài + KHOÁ ADMIN 2 LỚP + giọng VieNeu trên máy này + luật phân giọng: đoạn có chữ “thầy” luôn do MC Nam đọc</p>
+    <p class="small" id="buildTag">🏷️ Bản KC18 • 27/11/2026 — 🎬 DỰNG PHIM: bỏ hết chữ phủ lên cảnh (chỉ giữ chữ ký góc phải trên + thẻ kết), chuyển động zoom/lia khung rõ hơn xen kẽ từng cảnh + [KC17] tải nguyên kịch bản khuôn Kill (.docx/.txt) hoặc dán text, app tự tách 10 cảnh × 5 mục, đủ dàn giọng theo bảng giọng chuẩn toàn series (VieNeu từng nhân vật), tự gán hình đúng cảnh (hình tải kèm theo thứ tự / AI vẽ theo prompt / kho SGK), hình trôi khung liên tục không đứng hình, thẻ kết + thumbnail tự sinh + [KC16] thumbnail YouTube kèm video + đoạn mở đầu tựa bài + KHOÁ ADMIN 2 LỚP + giọng VieNeu trên máy này + luật phân giọng: đoạn có chữ “thầy” luôn do MC Nam đọc</p>
     <div id="voiceBadge" class="hidden"></div>
     <div id="kc13AdminBar" class="hidden" style="margin-top:10px">
       <button class="btn-ghost shrink" id="kc13LockNowBtn" type="button">🔒 Khoá lại ngay</button>
@@ -9061,18 +9061,30 @@ function dpScheduleMusic(actx, dest, t0, total){
   gain.gain.linearRampToValueAtTime(0, t0 + total);
 }
 /* [KC17] Vẽ cảnh phim: hình toàn khung TRÔI KHUNG LIÊN TỤC
-   (zoom chậm + lia ngang nhẹ theo tiến độ đoạn — chuẩn không
-   đứng hình của đội, cách Mưa), băng phụ đề hiện đúng lượt
-   thoại đang đọc theo mốc thời gian thật, chữ ký thầy góc
-   phải trên mọi cảnh. */
+   (zoom + lia khung theo tiến độ đoạn — chuẩn không đứng
+   hình của đội, cách Mưa; [KC18] tăng mức chuyển động + bỏ
+   hết chữ phủ lên cảnh), chữ ký thầy góc phải trên mọi cảnh. */
 function dpDrawKenBurns(ctx, img, f, seed){
-  const zoom = 1.10 + 0.12 * f;
+  /* [KC18] Chuyển động rõ hơn (lệnh thầy 19:38 ngày 27/11/2026:
+     "cho nó chuyển động ngon ngon chút") — zoom 16–24% + lia khung
+     dùng ~85% phần hình thừa mỗi phía, hướng xen kẽ theo số cảnh:
+     0 = lia trái→phải, 1 = lia phải→trái, 2 = zoom vào mạnh,
+     3 = zoom ra. Lia luôn nằm trong phần hình thừa nên không hở
+     mép đen; chuyển động liên tục, không đứng hình. */
+  const mode = ((Number(seed) || 1) % 4 + 4) % 4;
+  let zoom;
+  if (mode === 3) zoom = 1.38 - 0.24 * f;
+  else if (mode === 2) zoom = 1.14 + 0.24 * f;
+  else zoom = 1.16 + 0.16 * f;
   const s = Math.max(W / img.width, H / img.height) * zoom;
   const w = img.width * s, h = img.height * s;
-  const dir = (seed % 2 === 0) ? 1 : -1;
-  const panX = dir * (f - 0.5) * 0.06 * W;
-  const panY = (0.5 - f) * 0.03 * H;
-  ctx.drawImage(img, (W - w) / 2 + panX, (H - h) / 2 + panY, w, h);
+  const ox = Math.max(0, (w - W) / 2), oy = Math.max(0, (h - H) / 2);
+  let px = 0, py = 0;
+  if (mode === 0){ px = (f - 0.5) * 1.7 * ox; py = (0.5 - f) * 0.8 * oy; }
+  else if (mode === 1){ px = (0.5 - f) * 1.7 * ox; py = (f - 0.5) * 0.8 * oy; }
+  else if (mode === 2){ px = (f - 0.5) * 0.9 * ox; py = (f - 0.5) * 0.9 * oy; }
+  else { px = (0.5 - f) * 0.9 * ox; py = (0.5 - f) * 0.9 * oy; }
+  ctx.drawImage(img, (W - w) / 2 + px, (H - h) / 2 + py, w, h);
 }
 function dpDrawFallbackBg(ctx, f){
   const g = ctx.createLinearGradient(0, 0, W, H);
@@ -9131,36 +9143,11 @@ function drawDungPhimSlide(ctx, sg, asset, t){
   } else {
     dpDrawFallbackBg(ctx, f);
   }
-  const bandH = 250;
-  const g = ctx.createLinearGradient(0, H - bandH - 70, 0, H);
-  g.addColorStop(0, "rgba(0,0,0,0)"); g.addColorStop(0.4, "rgba(0,0,0,0.8)"); g.addColorStop(1, "rgba(0,0,0,0.93)");
-  ctx.fillStyle = g; ctx.fillRect(0, H - bandH - 70, W, bandH + 70);
-  ctx.textAlign = "left"; ctx.textBaseline = "top";
-  ctx.fillStyle = "#ffd94d"; ctx.font = "700 44px " + FONT;
-  wrapLines(ctx, sg.heading || "", 1700).slice(0, 1).forEach(ln => ctx.fillText(ln, 110, H - bandH + 2));
-  const localT = f * (sg.dpDur || 20);
-  const cur = dpLineAt(sg, localT);
-  if (cur){
-    ctx.font = "700 42px " + FONT;
-    ctx.fillStyle = "#7dd87d";
-    const nameTxt = cur.char + ": ";
-    ctx.fillText(nameTxt, 110, H - bandH + 68);
-    const nameW = ctx.measureText(nameTxt).width;
-    ctx.font = "400 42px " + FONT;
-    ctx.fillStyle = "#ffffff";
-    const lines = wrapLines(ctx, cur.text, 1700 - nameW);
-    lines.slice(0, 1).forEach(ln => ctx.fillText(ln, 110 + nameW, H - bandH + 68));
-    if (lines.length > 1){
-      const rest = lines.slice(1).join(" ");
-      ctx.font = "400 42px " + FONT;
-      wrapLines(ctx, rest, 1700).slice(0, 2).forEach((ln, k) => ctx.fillText(ln, 110, H - bandH + 122 + k * 54));
-    }
-  }
+  /* [KC18] Bỏ hết chữ phủ lên cảnh (lệnh thầy 19:38 ngày
+     27/11/2026: "bỏ chữ hết") — không phụ đề thoại, không dòng
+     tiêu đề cảnh, không tên tập phủ đầu cảnh. Chỉ giữ chữ ký
+     ✍ Thầy Hồ Tấn Khải góc phải trên theo chuẩn đội. */
   kc9DrawTeacherSign(ctx);
-  if (scriptData && scriptData.title){
-    ctx.fillStyle = "#ffd94d"; ctx.font = "600 30px " + FONT; ctx.textAlign = "right";
-    ctx.fillText(scriptData.title, W - 110, 88); ctx.textAlign = "left";
-  }
 }
 
 function drawSlide(ctx, sg, asset, t){
