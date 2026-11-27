@@ -82,6 +82,7 @@
   .count{font-size:14px;color:var(--accent);font-weight:700}
   .seg .tag.sgk{background:#0f5132;color:#b6ffd2}
   .seg .tag.kcclosing{background:#7a3b00;color:#ffd9a8}
+  .seg .tag.dungphim{background:#5b2a86;color:#ecd9ff}
   .mini{padding:6px 12px;font-size:13.5px;border-radius:8px}
   #libDrop{border:2px dashed var(--line);border-radius:12px;padding:18px;text-align:center;margin-top:10px;background:var(--panel2)}
   #libDrop.over{border-color:var(--accent);background:#14532d}
@@ -258,7 +259,7 @@
   <header class="top">
     <h1>🎬 Video Bài Giảng <span class="ai">AI</span></h1>
     <p>Chỉ cần nêu <b>tên bài</b> hoặc dán <b>câu chuyện</b> — app tự viết kịch bản, tạo hình, vẽ sơ đồ, dựng bảng số liệu, thu giọng đọc và ghép thành video.</p>
-    <p class="small" id="buildTag">🏷️ Bản KC16 • 22/11/2026 — TỰ ĐỘNG TẠO THUMBNAIL YouTube kèm video khi dựng xong (ảnh bìa 1280×720 vẽ ngay trong app từ hình đoạn mở đầu + tên bài, có nút TẢI VIDEO + THUMBNAIL một chạm) + ĐOẠN MỞ ĐẦU TỰA BÀI tất định cho video Bài giảng (công bố tên bài + giới thiệu; hình là poster nguyên tấm hoặc THẺ TỰA app tự vẽ in tên bài) + poster-lib + ppt-lib đã nối vào khuôn “Đặt đúng chỗ” + KHOÁ ADMIN 2 LỚP cho studio (trang học sinh ?bt=/?de= mở thẳng) + giọng VieNeu trên máy này (miễn phí) + luật phân giọng: đoạn có chữ “thầy” luôn do MC Nam đọc</p>
+    <p class="small" id="buildTag">🏷️ Bản KC17 • 27/11/2026 — THÊM 🎬 DỰNG PHIM: tải nguyên kịch bản khuôn Kill (.docx/.txt) hoặc dán text, app tự tách 10 cảnh × 5 mục, đủ dàn giọng theo bảng giọng chuẩn toàn series (VieNeu từng nhân vật), tự gán hình đúng cảnh (hình tải kèm theo thứ tự / AI vẽ theo prompt / kho SGK), hình trôi khung liên tục không đứng hình, thẻ kết + thumbnail tự sinh + [KC16] thumbnail YouTube kèm video + đoạn mở đầu tựa bài + KHOÁ ADMIN 2 LỚP + giọng VieNeu trên máy này + luật phân giọng: đoạn có chữ “thầy” luôn do MC Nam đọc</p>
     <div id="voiceBadge" class="hidden"></div>
     <div id="kc13AdminBar" class="hidden" style="margin-top:10px">
       <button class="btn-ghost shrink" id="kc13LockNowBtn" type="button">🔒 Khoá lại ngay</button>
@@ -353,6 +354,7 @@
         <span class="chip type-chip" data-type="phieu">📋 Phiếu Học Tập</span>
         <span class="chip type-chip" data-type="chuade">🎯 Chữa Đề Thi</span>
         <span class="chip type-chip" data-type="kechuyen">🎭 Kể Chuyện</span>
+        <span class="chip type-chip" data-type="dungphim">🎬 Dựng Phim</span>
       </div>
       <div class="small" style="margin-top:6px">App tự nhớ loại video đã chọn cho lần mở sau.</div>
     </div>
@@ -419,6 +421,35 @@
         </div>
       </div>
       <div class="small" style="margin-top:8px">Điền xong, thầy bấm nút <b>🎬 TẠO VIDEO</b> phía dưới: app chia cảnh rồi mở màn hình duyệt — ở đó thầy sửa lời từng cảnh, chọn ảnh cho từng cảnh, thêm/xoá cảnh, rồi bấm <b>DỰNG VIDEO</b>.</div>
+    </div>
+
+    <div id="dungphimPanel" class="hidden" style="margin-top:14px;border:1px dashed var(--line);border-radius:12px;padding:12px 14px;background:var(--panel2)">
+      <div style="font-weight:700;font-size:16px">🎬 Dựng Phim — dựng phim hoạt hình thẳng từ kịch bản khuôn Kill (10 cảnh × 5 mục), đủ dàn giọng</div>
+      <div class="small" style="margin-top:4px">Tải <b>nguyên file kịch bản</b> (.docx của Kill hoặc .txt) lên <b>một lần</b> — app tự đọc hết và tách từng cảnh, từng lượt thoại, từng nhân vật. Mỗi nhân vật đọc bằng <b>đúng giọng trong bảng giọng chuẩn toàn series</b> (VieNeu trên máy này; không có VieNeu thì lùi về 2 MC Gemini). Hình từng cảnh: ưu tiên <b>hình thầy tải kèm theo thứ tự</b> (scene_01 → Cảnh 1, scene_02 → Cảnh 2…), chưa có thì <b>AI vẽ từ prompt hình của chính cảnh đó</b>, hoặc chọn trong kho SGK. Hình chạy <b>trôi khung liên tục</b> (không đứng hình, không tua ngược), mỗi cảnh tối thiểu 20 giây, có thẻ kết + thumbnail YouTube tự sinh như chuẩn đội.</div>
+      <div class="row" style="margin-top:12px;gap:10px">
+        <button class="btn-accent" id="dpFileBtn" type="button" style="flex:2;padding:13px;font-size:17px">📂 TẢI FILE KỊCH BẢN (.docx / .txt)</button>
+        <button class="btn shrink" id="dpSampleBtn" type="button">📄 Nạp kịch bản mẫu</button>
+      </div>
+      <input type="file" id="dpFile" accept=".docx,.txt" class="hidden">
+      <div class="row" style="margin-top:10px;gap:10px">
+        <button class="btn" id="dpImgBtn" type="button" style="flex:1;padding:11px">🖼 TẢI HÌNH CẢNH KÈM THEO (chọn nhiều hình một lần)</button>
+      </div>
+      <input type="file" id="dpImgFile" accept="image/*" multiple class="hidden">
+      <div class="small" id="dpImgStatus" style="margin-top:6px">Chưa tải hình kèm — cảnh nào chưa có hình, app sẽ dùng nguồn dự phòng thầy chọn ở màn duyệt (AI vẽ theo prompt / kho SGK / vẽ mẫu).</div>
+      <div id="dpEpWrap" class="hidden" style="margin-top:10px">
+        <label>File có nhiều tập — chọn tập muốn dựng</label>
+        <select id="dpEpSelect"></select>
+      </div>
+      <label style="margin-top:10px">Tiêu đề phim (để trống = lấy tên tập trong kịch bản)</label>
+      <input type="text" id="dpTitle" placeholder="Ví dụ: Khi Cả Đội Lớn Lên &amp; Màn Cầu Hôn Có Một Không Hai">
+      <label style="margin-top:10px">…hoặc dán text kịch bản vào đây (khi không tải được file)</label>
+      <textarea id="dpText" rows="10" placeholder="Dán nguyên kịch bản khuôn Kill vào đây:&#10;Cảnh 1 — ...&#10;- 1. Prompt hình (EN): ...&#10;- 2. Hành động: ...&#10;- 3. Lời thoại:&#10;Giọt Nước Tí: ...&#10;- 4. Giọng đọc (VieNeu): ...&#10;- 5. Ghi chú nhạc không bản quyền: ..."></textarea>
+      <div class="row" style="margin-top:10px;gap:10px;align-items:center">
+        <button class="btn shrink" id="dpParseBtn" type="button">🔍 Đọc &amp; tách cảnh</button>
+        <label class="small" style="cursor:pointer"><input type="checkbox" id="dpMusic" checked> 🎵 Nhạc nền tự sinh trong app (êm, không bản quyền)</label>
+      </div>
+      <div id="dpStatus"></div>
+      <div class="small" style="margin-top:8px">Đọc xong, thầy bấm nút <b>🎬 TẠO VIDEO</b> phía dưới: app mở <b>bảng đối chiếu Cảnh ↔ Hình</b> để thầy kiểm từng cảnh (đổi hình/thoại/giọng ngay tại cảnh nếu lệch) rồi bấm <b>DỰNG VIDEO</b>.</div>
     </div>
 
     <div style="margin-top:16px">
@@ -1863,7 +1894,8 @@ const VIDEO_TYPE_BLOCKS = {
     "- Nhấn mạnh các điểm trọng tâm, các điểm hay ra thi và những lỗi học sinh hay nhầm.\n" +
     "- Kết thúc bằng một vài câu hỏi TỰ KIỂM TRA (segment text) để học sinh tự đánh giá; không cần lời giải chi tiết.",
   chuade: "LOẠI VIDEO: 🎯 CHỮA ĐỀ THI — loại này dựng thẳng từ kho đề có đáp án, không đi qua AI viết kịch bản.",
-  kechuyen: "LOẠI VIDEO: 🎭 KỂ CHUYỆN — loại này dựng thẳng từ kịch bản thầy dán sẵn, không đi qua AI viết kịch bản."
+  kechuyen: "LOẠI VIDEO: 🎭 KỂ CHUYỆN — loại này dựng thẳng từ kịch bản thầy dán sẵn, không đi qua AI viết kịch bản.",
+  dungphim: "LOẠI VIDEO: 🎬 DỰNG PHIM — loại này dựng thẳng từ kịch bản phim khuôn Kill (10 cảnh × 5 mục), không đi qua AI viết kịch bản."
 };
 let videoType = "full";
 try { videoType = localStorage.getItem(TYPE_KEY) || "full"; } catch (e) {}
@@ -2004,7 +2036,7 @@ async function generateScript(){
 }
 
 /* ---------- Màn hình duyệt kịch bản ---------- */
-const TYPE_LABEL = { image: "🖼 Hình ảnh", sgk: "📚 Hình SGK", diagram: "🔀 Sơ đồ", table: "📊 Bảng số liệu", text: "📄 Nội dung chữ", phieu: "📋 Phiếu học tập", chuade: "🎯 Chữa đề", kechuyen: "🎭 Kể chuyện" };
+const TYPE_LABEL = { image: "🖼 Hình ảnh", sgk: "📚 Hình SGK", diagram: "🔀 Sơ đồ", table: "📊 Bảng số liệu", text: "📄 Nội dung chữ", phieu: "📋 Phiếu học tập", chuade: "🎯 Chữa đề", kechuyen: "🎭 Kể chuyện", dungphim: "🎬 Dựng phim" };
 /* [KC11] Dòng VAI CẢNH ở màn duyệt Bài giảng (mục D3 của khuôn
    "Đặt đúng chỗ" — vẫn đúng 1 điểm dừng duyệt như cũ): nhãn vai
    (thầy đổi được bằng select), nhãn nguồn hình THỰC DÙNG, lý do
@@ -2062,6 +2094,15 @@ function renderScriptReview(){
   if (scriptData._mode === "kechuyen") {
     const kbox = $("scriptSegs"); kbox.innerHTML = "";
     renderKcReviewInto(kbox);
+    $("scriptJson").value = JSON.stringify(scriptData, null, 2);
+    updateDurInfo();
+    $("scriptCard").classList.remove("hidden");
+    $("scriptCard").scrollIntoView({ behavior: "smooth", block: "start" });
+    return;
+  }
+  if (scriptData._mode === "dungphim") {
+    const dbox = $("scriptSegs"); dbox.innerHTML = "";
+    renderDpReviewInto(dbox);
     $("scriptJson").value = JSON.stringify(scriptData, null, 2);
     updateDurInfo();
     $("scriptCard").classList.remove("hidden");
@@ -2177,6 +2218,10 @@ $("applyJsonBtn").addEventListener("click", () => {
   }
   if (scriptData && scriptData._mode === "kechuyen") {
     $("jsonMsg").textContent = "ℹ️ Kịch bản kể chuyện sửa trực tiếp ở danh sách cảnh phía trên (sửa lời, đổi nguồn ảnh từng cảnh, thêm/xoá cảnh) — không sửa bằng JSON.";
+    return;
+  }
+  if (scriptData && scriptData._mode === "dungphim") {
+    $("jsonMsg").textContent = "ℹ️ Kịch bản Dựng Phim sửa trực tiếp ở danh sách cảnh phía trên (sửa thoại, đổi nguồn hình từng cảnh, thêm/xoá cảnh) — không sửa bằng JSON.";
     return;
   }
   try {
@@ -3627,6 +3672,44 @@ async function genImageForSegment(i){
     renderAssetRows();
     return assets[i].status === "ok";
   }
+  if (scriptData._mode === "dungphim") {
+    /* [KC17] Hình cảnh phim: ảnh thầy tải kèm (đã gán đúng cảnh)
+       -> AI vẽ từ prompt của chính cảnh -> kho SGK -> vẽ mẫu.
+       Mọi lỗi đều lùi về vẽ mẫu để cảnh không bao giờ trống. */
+    try {
+      if (sg.dpEnd) {
+        assets[i] = { status: "skip", img: null, source: "none", err: "" };
+      } else if (sg.dpImgSrc === "upload" && sg.dpUpload) {
+        const uimg = await loadImageEl(sg.dpUpload);
+        assets[i] = { status: "ok", img: uimg, source: "upload", err: "" };
+      } else if (sg.dpImgSrc === "lib" && sg.onlinePath) {
+        const oimg = await loadOnlineImage(sg.onlineUrl || ("../" + sg.onlinePath));
+        assets[i] = { status: "ok", img: oimg, source: "online", err: "" };
+      } else if (sg.dpImgSrc === "lib" && sg.sgkImageId && library.get(sg.sgkImageId) && library.get(sg.sgkImageId).img) {
+        assets[i] = { status: "ok", img: library.get(sg.sgkImageId).img, source: "sgk", err: "" };
+      } else if (sg.dpImgSrc === "draw" || sg.dpImgSrc === "lib" || sg.dpImgSrc === "upload") {
+        assets[i] = { status: "ok", img: null, source: "draw", tpl: "cay_mattroi", err: "" };
+      } else {
+        const prompt = sg.imagePrompt || (sg.dpScene && sg.dpScene.prompt) || sg.heading;
+        try {
+          const data = await gemini("image", {
+            contents: [{ parts: [{ text: prompt }] }],
+            generationConfig: { responseModalities: ["TEXT", "IMAGE"] }
+          });
+          const inline = firstInline(data);
+          if (!inline) throw new Error("AI không trả về ảnh.");
+          const img = await loadImageEl("data:" + (inline.mimeType || "image/png") + ";base64," + inline.data);
+          assets[i] = { status: "ok", img, source: "ai", err: "" };
+        } catch (e2) {
+          assets[i] = { status: "ok", img: null, source: "draw", tpl: "cay_mattroi", err: "" };
+        }
+      }
+    } catch (e) {
+      assets[i] = { status: "ok", img: null, source: "draw", tpl: "cay_mattroi", err: "" };
+    }
+    renderAssetRows();
+    return assets[i].status === "ok";
+  }
   if (scriptData._mode === "story") {
     /* CHẾ ĐỘ KỂ CHUYỆN: ưu tiên ẢNH AI phong cách minh hoạ truyện/hoạt hình.
        Hình SGK (nếu thầy gán tay) chỉ là dự phòng khi AI sinh không được. */
@@ -3725,7 +3808,7 @@ function renderAssetRows(){
     const row = document.createElement("div"); row.className = "asset-row";
     const a = assets[i], au = audios[i];
     let imgTxt = "—";
-    if (sg.type === "image" || sg.type === "sgk" || sg.type === "kechuyen") {
+    if (sg.type === "image" || sg.type === "sgk" || sg.type === "kechuyen" || sg.type === "dungphim") {
       if (sg.noImg && (!a || a.status !== "ok")) imgTxt = "Hình: ⚠ không có hình — đã chuyển slide chữ";
       else if (!a) imgTxt = "Hình: chờ...";
       else if (a.status === "ok") imgTxt = "Hình: ✔ " + (a.source === "sgk" ? "hình SGK (trong máy)" : (a.source === "online" ? "hình SGK (kho online)" : (a.source === "title" ? "THẺ TỰA BÀI (app tự vẽ)" : (a.source === "draw" ? "vẽ mẫu kể chuyện" : (a.source === "upload" ? "ảnh của thầy" : "AI sinh"))))) + ((a.imgs && a.imgs.length > 1) ? " ×" + a.imgs.length + " hình (chia đều thời lượng đoạn)" : "");
@@ -8169,7 +8252,919 @@ function kc2Init(){
   if (bW) bW.addEventListener("click", () => kc2Run(false));
   kc2SyncGallery();
 }
+/* =========================================================
+   [KC17 — 27/11/2026] 🎬 DỰNG PHIM — phim kể chuyện/hoạt hình
+   kiểu Giọt Nước Tí, dựng thẳng từ KỊCH BẢN KHUÔN KILL
+   (10 cảnh × 5 mục có nhãn: 1. Prompt hình EN, 2. Hành động,
+   3. Lời thoại từng nhân vật, 4. Giọng đọc, 5. Ghi chú nhạc).
+   Lệnh thầy 18:51–18:54 ngày 27/11/2026: thêm chức năng Dựng
+   Phim có ĐỦ DÀN GIỌNG theo bảng giọng chuẩn toàn series
+   (26/11/2026); đọc được form + cảnh của Kill (tải nguyên file
+   .docx/.txt hoặc dán text); tự tách hình với cảnh đúng nhau
+   (hình tải kèm theo thứ tự scene_01→Cảnh 1… / AI vẽ từ prompt
+   của chính cảnh / kho SGK); CHUẨN KHÔNG ĐỨNG HÌNH — hình trôi
+   khung liên tục (zoom + lia nhẹ theo cách Mưa), chuyển cảnh
+   mờ dần, tuyệt đối không freeze/tua ngược; thẻ kết + thumbnail
+   tự sinh như chuẩn đội. Không qua AI viết kịch bản, không phá
+   luồng cũ: mọi nhánh đều rẽ theo _mode === "dungphim".
+   ========================================================= */
+/*__PURE_DP__*/
+/* Bảng giọng chuẩn toàn series (thầy chốt 26/11/2026) + 5 bạn
+   mới Vườn nhà (27/11/2026). gender chỉ dùng khi lùi về Gemini
+   (Kore nữ / Charon nam); đường chính là VieNeu local đúng tên
+   giọng (máy chủ tự chuẩn tốc độ ~15 ký tự/giây theo atempo). */
+const DP_CHAR_VOICES = {
+  "Giọt Nước Tí": { voice: "Thái Sơn", atempo: 0.90, gender: "male" },
+  "Tí": { voice: "Thái Sơn", atempo: 0.90, gender: "male" },
+  "Bác Rễ": { voice: "Adam", atempo: 0.794, gender: "male" },
+  "Chị Lá": { voice: "Thùy Dung", atempo: 0.739, gender: "female" },
+  "Ông Mặt Trời": { voice: "Minh Triết", atempo: 0.814, gender: "male" },
+  "Dẫn chuyện": { voice: "Thái Sơn", atempo: 0.95, gender: "male" },
+  "Giun Đất": { voice: "Thái Sơn", atempo: 0.95, gender: "male" },
+  "Sâu Xanh": { voice: "Đức Trí", atempo: 0.85, gender: "male" },
+  "Chị Mây": { voice: "Mỹ Duyên", atempo: 0.85, gender: "female" },
+  "Thầy Hồ Tấn Khải": { voice: "Thái Sơn", atempo: 0.95, gender: "male" },
+  "Thầy": { voice: "Thái Sơn", atempo: 0.95, gender: "male" },
+  "Cá Nhỏ": { voice: "Ngọc Huyền", atempo: 0.85, gender: "female" },
+  "Rùa Biển con": { voice: "Thanh Bình", atempo: 0.80, gender: "male" },
+  "Khỉ con": { voice: "Adam bựa", atempo: 0.90, gender: "male" },
+  "Ngựa con": { voice: "Xuân Vĩnh", atempo: 0.90, gender: "male" },
+  "Sơn Dương con": { voice: "Thiện Minh", atempo: 0.85, gender: "male" },
+  "Lạc Đà con": { voice: "Thiền Tâm Đức", atempo: 0.80, gender: "male" },
+  "Chim Cánh Cụt con": { voice: "Mai Anh", atempo: 0.85, gender: "female" },
+  "Bọ Cánh Cứng Cát": { voice: "Thùy Dung", atempo: 0.739, gender: "female" },
+  "Cáo Tuyết Bắc Cực": { voice: "Kim Thanh", atempo: 0.85, gender: "female" },
+  "Cáo Tuyết": { voice: "Kim Thanh", atempo: 0.85, gender: "female" },
+  "Ếch Cây Mắt Đỏ": { voice: "Minh Đức", atempo: 0.85, gender: "male" },
+  "Hoa Tulip": { voice: "Ngọc Linh", atempo: 0.85, gender: "female" },
+  "Cá Hồi Hoa Anh Đào": { voice: "Thùy Dung", atempo: 0.85, gender: "female" },
+  "Cá Hồi": { voice: "Thùy Dung", atempo: 0.85, gender: "female" },
+  "Lạc Đà Llama": { voice: "Thái Sơn", atempo: 0.85, gender: "male" },
+  "Llama": { voice: "Thái Sơn", atempo: 0.85, gender: "male" },
+  "Cây Ô Liu Cổ Thụ": { voice: "Phạm Tuyên", atempo: 0.80, gender: "male" },
+  "Cây Ô Liu": { voice: "Phạm Tuyên", atempo: 0.80, gender: "male" },
+  "Cây Đước Ngập Mặn": { voice: "Thục Đoan", atempo: 0.85, gender: "female" },
+  "Cây Đước": { voice: "Thục Đoan", atempo: 0.85, gender: "female" },
+  "Thỏ Ngọc": { voice: "Đoan Trang", atempo: 0.85, gender: "female" },
+  "Robot Thám Hiểm": { voice: "Quốc Tuấn", atempo: 0.85, gender: "male" },
+  "Robot": { voice: "Quốc Tuấn", atempo: 0.85, gender: "male" },
+  "Tia Nắng Vàng": { voice: "Quỳnh Anh", atempo: 0.85, gender: "female" },
+  "Chó con": { voice: "Quang Sơn", atempo: 0.90, gender: "male" },
+  "Mèo con": { voice: "Ngọc Trân", atempo: 0.85, gender: "female" },
+  "Gà trống": { voice: "Hải Đăng", atempo: 0.85, gender: "male" },
+  "Gà mái": { voice: "Thục Đoan", atempo: 0.85, gender: "female" },
+  "Gà con": { voice: "Mai Anh", atempo: 0.90, gender: "female" }
+};
+function dpNormName(s){
+  return String(s == null ? "" : s).replace(/\s+/g, " ").trim();
+}
+function dpStripDia(s){
+  return dpNormName(s).normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d").replace(/Đ/g, "D").toLowerCase();
+}
+const DP_VOICE_BY_NODIA = {};
+Object.keys(DP_CHAR_VOICES).forEach(k => { DP_VOICE_BY_NODIA[dpStripDia(k)] = DP_CHAR_VOICES[k]; });
+/* Giọng cho 1 nhân vật: bảng chuẩn trước (khớp đúng → khớp bỏ
+   dấu), rồi tới mục 4 của chính cảnh (Kill ghi sẵn), cuối cùng
+   mặc định theo xưng hô (Chị/Cô/Bà → nữ Thùy Dung, còn lại nam
+   Thái Sơn). Vai Thầy luôn Thái Sơn 0,95 (giọng nam — luật phân
+   giọng của thầy). */
+function dpVoiceForChar(charName, sceneVoices){
+  const name = dpNormName(charName);
+  if (DP_CHAR_VOICES[name]) return Object.assign({ source: "bang-chuan" }, DP_CHAR_VOICES[name]);
+  const nd = dpStripDia(name);
+  if (DP_VOICE_BY_NODIA[nd]) return Object.assign({ source: "bang-chuan" }, DP_VOICE_BY_NODIA[nd]);
+  if (sceneVoices){
+    if (sceneVoices[name]) return Object.assign({ source: "muc-4" }, sceneVoices[name]);
+    for (const k of Object.keys(sceneVoices)) if (dpStripDia(k) === nd) return Object.assign({ source: "muc-4" }, sceneVoices[k]);
+  }
+  const female = /^(chị|cô|bà|dì|mẹ)\b/i.test(name) || /^(chi|co|ba|di|me)\b/.test(nd);
+  return female
+    ? { voice: "Thùy Dung", atempo: 0.85, gender: "female", source: "mac-dinh" }
+    : { voice: "Thái Sơn", atempo: 0.90, gender: "male", source: "mac-dinh" };
+}
+/* Tách mục 4 "Giọng đọc": "Tên (Giọng atempo) + Tên (Giọng atempo)".
+   Giọng có thể 2 chữ ("Adam bựa") — lấy chữ số cuối làm atempo. */
+function dpParseVoiceLine(text){
+  const out = {};
+  String(text == null ? "" : text).split("+").forEach(part => {
+    const p = part.trim(); if (!p) return;
+    const m = p.match(/^(.+?)\s*\(\s*([^()]+?)\s*\)\s*$/);
+    if (!m) return;
+    const charName = dpNormName(m[1]);
+    const inner = m[2].trim();
+    const am = inner.match(/^(.*?)\s+([\d]+[.,][\d]+)\s*$/);
+    const voice = am ? am[1].trim() : inner;
+    const atempo = am ? parseFloat(am[2].replace(",", ".")) : 0.85;
+    const known = DP_CHAR_VOICES[charName] || DP_VOICE_BY_NODIA[dpStripDia(charName)];
+    out[charName] = { voice: voice, atempo: atempo, gender: known ? known.gender : (/^(chị|cô|bà|dì|mẹ)\b/i.test(charName) ? "female" : "male") };
+  });
+  return out;
+}
+/* BỘ ĐỌC KỊCH BẢN KHUÔN KILL — thuần chữ (không DOM): nhận text
+   (dán tay / trích từ .docx) → {episodes:[{title, meta, scenes:
+   [{no,title,prompt,action,lines:[{char,text}],voices,music}]}]}.
+   Nhận diện theo nhãn: "TẬP n", "Cảnh n —", "- 1. Prompt hình
+   (EN):", "- 2. Hành động:", "- 3. Lời thoại:" rồi từng dòng
+   "Tên nhân vật: lời thoại", "- 4. Giọng đọc (VieNeu):",
+   "- 5. Ghi chú nhạc...:". Dòng không nhãn nối vào mục đang đọc
+   (prompt/thoại bị xuống dòng vẫn ghép đúng). Cảnh chỉ tính khi
+   có thoại hoặc có prompt — lọc nhiễu từ bảng kiểm ở đầu file. */
+function dpParseScript(rawText){
+  const text = String(rawText == null ? "" : rawText).replace(/\r\n?/g, "\n");
+  const lines = text.split("\n");
+  const episodes = [];
+  let ep = null, sc = null, item = 0;
+  const epRe = /^\s*TẬP\s+(\d+)\b\s*(?:\([^)]*\))?\s*[—\-–:]?\s*(.*)$/i;
+  const scRe = /^\s*Cảnh\s+(\d+)\s*[—\-–:]\s*(.+)$/i;
+  const itRe = /^\s*-?\s*([1-5])\s*[.)]\s*(Prompt hình|Hành động|Lời thoại|Giọng đọc|Ghi chú nhạc)[^:：]*[:：]\s*(.*)$/i;
+  const itRe2 = /^\s*-?\s*(Prompt hình|Hành động|Lời thoại|Giọng đọc|Ghi chú nhạc)[^:：]*[:：]\s*(.*)$/i;
+  const itemNo = { "prompt hình": 1, "hành động": 2, "lời thoại": 3, "giọng đọc": 4, "ghi chú nhạc": 5 };
+  function newEp(title){
+    ep = { title: dpNormName(String(title || "").replace(/^["“”']+|["“”']+$/g, "")), meta: {}, scenes: [] };
+    episodes.push(ep); sc = null; item = 0;
+  }
+  function newScene(no, title){
+    if (!ep) newEp("");
+    sc = { no: no, title: dpNormName(title), prompt: "", action: "", lines: [], voices: {}, music: "" };
+    ep.scenes.push(sc); item = 0;
+  }
+  for (const rawLine of lines){
+    const line = rawLine.trim();
+    if (!line) continue;
+    let m = line.match(epRe);
+    if (m && !/tổng số|cảnh ăn tiền/i.test(line)){ newEp(m[2] || ("Tập " + m[1])); continue; }
+    m = line.match(scRe);
+    if (m){ newScene(parseInt(m[1], 10), m[2]); continue; }
+    if (sc){
+      let im = line.match(itRe);
+      let no = 0, rest = "";
+      if (im){ no = parseInt(im[1], 10); rest = im[3] || ""; }
+      else { im = line.match(itRe2); if (im){ no = itemNo[im[1].toLowerCase()] || 0; rest = im[2] || ""; } }
+      if (no){
+        item = no;
+        if (no === 1) sc.prompt = (sc.prompt ? sc.prompt + " " : "") + rest;
+        else if (no === 2) sc.action = (sc.action ? sc.action + " " : "") + rest;
+        else if (no === 3 && rest) dpPushLine(sc, rest);
+        else if (no === 4) sc.voices = dpParseVoiceLine(rest);
+        else if (no === 5) sc.music = (sc.music ? sc.music + " " : "") + rest;
+        continue;
+      }
+      if (item === 1){ sc.prompt += " " + line; continue; }
+      if (item === 2){ sc.action += " " + line; continue; }
+      if (item === 3){ dpPushLine(sc, line); continue; }
+      if (item === 4){ Object.assign(sc.voices, dpParseVoiceLine(line)); continue; }
+      if (item === 5){ sc.music += " " + line; continue; }
+    } else if (ep){
+      const mm = line.match(/^-?\s*([^:：]{2,40})[:：]\s*(.+)$/);
+      if (mm) ep.meta[dpNormName(mm[1])] = mm[2].trim();
+    }
+  }
+  function dpPushLine(scene, line){
+    const m = line.match(/^([^:：]{1,40})[:：]\s*(.+)$/);
+    if (m && !/[.!?…]/.test(m[1]) && !/^-/.test(m[1])){
+      scene.lines.push({ char: dpNormName(m[1]), text: m[2].trim() });
+    } else if (scene.lines.length){
+      scene.lines[scene.lines.length - 1].text += " " + line;
+    } else {
+      scene.lines.push({ char: "Dẫn chuyện", text: line });
+    }
+  }
+  const clean = episodes.map(e => ({
+    title: e.title, meta: e.meta,
+    scenes: e.scenes.filter(s => s.lines.length > 0 || s.prompt.trim())
+  })).filter(e => e.scenes.length > 0);
+  return { episodes: clean };
+}
+/* Gán hình tải kèm cho cảnh đúng thứ tự: file có số trong tên
+   (scene_01, canh_2, 03...) khớp đúng số cảnh; file còn lại lấp
+   theo thứ tự vào cảnh chưa có hình. Trả về số cảnh đã gán. */
+function dpAssignImages(scenes, files){
+  const byNum = {}, rest = [];
+  (files || []).forEach(f => {
+    const m = String(f.name || "").match(/(\d+)(?=[^\d]*$)/) || String(f.name || "").match(/(\d+)/);
+    const num = m ? parseInt(m[1], 10) : null;
+    if (num && !byNum[num]) byNum[num] = f; else rest.push(f);
+  });
+  let assigned = 0;
+  (scenes || []).forEach(sc => {
+    if (byNum[sc.no]){ sc.dpUpload = byNum[sc.no].dataUrl; sc.dpUploadName = byNum[sc.no].name; sc.dpImgSrc = "upload"; delete byNum[sc.no]; assigned++; }
+  });
+  const leftover = Object.keys(byNum).map(k => byNum[k]).concat(rest);
+  (scenes || []).forEach(sc => {
+    if (!sc.dpUpload && leftover.length){ const f = leftover.shift(); sc.dpUpload = f.dataUrl; sc.dpUploadName = f.name; sc.dpImgSrc = "upload"; assigned++; }
+  });
+  return assigned;
+}
+/* Thời lượng đoạn theo chuẩn đội: đoạn = max(20s, thoại + 1,6s);
+   thoại vào sau 0,8s, các lượt cách nhau 0,4s. */
+function dpSceneTiming(lineDurs){
+  const timings = [];
+  let t = 0.8;
+  (lineDurs || []).forEach(d => { timings.push({ start: t, end: t + d }); t += d + 0.4; });
+  const content = lineDurs && lineDurs.length ? (t - 0.4) : 0.8;
+  return { timings: timings, content: content, segDur: Math.max(20, content + 1.6) };
+}
+/*__END_PURE_DP__*/
+
+/* [KC17] Đọc .docx ngay trong trình duyệt: .docx là file ZIP —
+   bộ đọc ZIP tối thiểu (central directory) + giải nén deflate
+   bằng DecompressionStream sẵn có của Chrome/Edge, trích chữ
+   từng đoạn <w:p>. Lỗi thì báo rõ để thầy dán text thay thế. */
+function dpXmlToText(xml){
+  const paras = String(xml || "").split(/<\/w:p>/);
+  const lines = [];
+  for (const p of paras){
+    const pp = p.replace(/<w:tab[^>]*\/>/g, "<w:t> </w:t>").replace(/<w:br[^>]*\/>/g, "<w:t> </w:t>");
+    const parts = [];
+    const re = /<w:t[^>]*>([^<]*)<\/w:t>/g;
+    let m;
+    while ((m = re.exec(pp)) !== null) parts.push(m[1]);
+    let line = parts.join("");
+    line = line.replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&apos;/g, "'").replace(/&amp;/g, "&");
+    lines.push(line);
+  }
+  return lines.join("\n");
+}
+async function dpDocxToText(buf){
+  const u8 = new Uint8Array(buf);
+  const dv = new DataView(buf);
+  let eocd = -1;
+  for (let i = u8.length - 22; i >= 0 && i > u8.length - 66000; i--){
+    if (u8[i] === 0x50 && u8[i + 1] === 0x4b && u8[i + 2] === 0x05 && u8[i + 3] === 0x06){ eocd = i; break; }
+  }
+  if (eocd < 0) throw new Error("File không phải .docx hợp lệ (không thấy cấu trúc ZIP).");
+  const cdCount = dv.getUint16(eocd + 10, true);
+  let cdOff = dv.getUint32(eocd + 16, true);
+  let target = null;
+  for (let n = 0; n < cdCount; n++){
+    if (dv.getUint32(cdOff, true) !== 0x02014b50) break;
+    const method = dv.getUint16(cdOff + 10, true);
+    const compSize = dv.getUint32(cdOff + 20, true);
+    const nameLen = dv.getUint16(cdOff + 28, true);
+    const extraLen = dv.getUint16(cdOff + 30, true);
+    const commentLen = dv.getUint16(cdOff + 32, true);
+    const localOff = dv.getUint32(cdOff + 42, true);
+    const name = new TextDecoder().decode(u8.subarray(cdOff + 46, cdOff + 46 + nameLen));
+    if (name === "word/document.xml"){ target = { method: method, compSize: compSize, localOff: localOff }; break; }
+    cdOff += 46 + nameLen + extraLen + commentLen;
+  }
+  if (!target) throw new Error("File .docx thiếu phần nội dung (word/document.xml).");
+  const lNameLen = dv.getUint16(target.localOff + 26, true);
+  const lExtraLen = dv.getUint16(target.localOff + 28, true);
+  const dataStart = target.localOff + 30 + lNameLen + lExtraLen;
+  const comp = u8.subarray(dataStart, dataStart + target.compSize);
+  let xmlBytes;
+  if (target.method === 0) xmlBytes = comp;
+  else if (target.method === 8){
+    if (typeof DecompressionStream === "undefined") throw new Error("Trình duyệt này chưa hỗ trợ giải nén .docx — thầy dán text kịch bản vào ô bên dưới thay thế nhé.");
+    const ds = new DecompressionStream("deflate-raw");
+    xmlBytes = new Uint8Array(await new Response(new Blob([comp]).stream().pipeThrough(ds)).arrayBuffer());
+  } else throw new Error("File .docx dùng cách nén lạ (method " + target.method + ") — thầy dán text thay thế nhé.");
+  return dpXmlToText(new TextDecoder("utf-8").decode(xmlBytes));
+}
+
+/* [KC17] Trạng thái panel Dựng Phim */
+let dpParsed = null;        /* kết quả dpParseScript gần nhất */
+let dpImgFiles = [];        /* [{name, dataUrl}] hình thầy tải kèm */
+const DP_SAMPLE = [
+  'TẬP MẪU — "GIỌT NƯỚC TÍ VÀ BUỔI SÁNG MỚI"',
+  "",
+  "Cảnh 1 — Buổi sáng trong Khu Vườn Kỳ Diệu",
+  "- 1. Prompt hình (EN): A cute translucent blue water droplet character with big round eyes and rosy cheeks waking up in a sunny magical garden full of flowers, cute 3D animation style",
+  "- 2. Hành động: Giọt Nước Tí thức dậy, vươn vai chào buổi sáng rồi chạy ra vườn phụ Chị Lá tưới hoa.",
+  "- 3. Lời thoại:",
+  "Giọt Nước Tí: Chào buổi sáng cả nhà! Hôm nay trời đẹp quá, mình đi thăm các bạn thôi!",
+  "Chị Lá: Chào Tí! Chị đang tưới hoa, em phụ chị một tay nhé!",
+  "- 4. Giọng đọc (VieNeu): Giọt Nước Tí (Thái Sơn 0,90) + Chị Lá (Thùy Dung 0,739)",
+  "- 5. Ghi chú nhạc không bản quyền: Nhạc nền vui tươi buổi sáng (nhạc AI không bản quyền).",
+  "",
+  "Cảnh 2 — Gặp Cá Nhỏ bên hồ sen",
+  "- 1. Prompt hình (EN): An orange clownfish character with thin white stripes swimming inside a clear water bubble above a lotus pond, a cute blue water droplet character beside it, cute 3D animation style",
+  "- 2. Hành động: Tí gặp Cá Nhỏ đang bơi trong bong bóng nước trên hồ sen, hai bạn rủ nhau đi khám phá khu vườn.",
+  "- 3. Lời thoại:",
+  "Cá Nhỏ: Tí ơi, nước hồ sáng nay mát lành quá! Mình bơi một vòng rồi cùng đi khám phá nhé!",
+  "Giọt Nước Tí: Ừa! Cá gặp nước là vui nhất! Đi thôi Cá Nhỏ ơi!",
+  "- 4. Giọng đọc (VieNeu): Cá Nhỏ (Ngọc Huyền 0,85) + Giọt Nước Tí (Thái Sơn 0,90)",
+  "- 5. Ghi chú nhạc không bản quyền: Nhạc nền trong trẻo, tiếng nước róc rách (nhạc AI không bản quyền).",
+  "",
+  "Cảnh 3 — Lời chúc cuối tập",
+  "- 1. Prompt hình (EN): All the cute garden characters waving goodbye together under a warm golden sunset in the magical garden, cute 3D animation style",
+  "- 2. Hành động: Cả đội vẫy tay chào khán giả, Thầy Hồ Tấn Khải gửi lời chúc cuối tập.",
+  "- 3. Lời thoại:",
+  "Giọt Nước Tí: Cảm ơn các bạn đã xem! Hẹn gặp lại ở tập sau nhé!",
+  "Thầy Hồ Tấn Khải: Thầy Hồ Tấn Khải chúc các em học tốt!",
+  "- 4. Giọng đọc (VieNeu): Giọt Nước Tí (Thái Sơn 0,90) + Thầy Hồ Tấn Khải (Thái Sơn 0,95)",
+  "- 5. Ghi chú nhạc không bản quyền: Nhạc outro vui tươi (nhạc AI không bản quyền)."
+].join("\n");
+
+function dpSetStatus(html, isWarn){
+  const el = $("dpStatus");
+  if (!el) return;
+  el.className = isWarn ? "warn" : "ok-box";
+  el.style.marginTop = "8px";
+  el.innerHTML = html;
+}
+function dpRenderEpPicker(){
+  const wrap = $("dpEpWrap"), sel = $("dpEpSelect");
+  if (!wrap || !sel) return;
+  if (!dpParsed || dpParsed.episodes.length <= 1){ wrap.classList.add("hidden"); return; }
+  sel.innerHTML = "";
+  dpParsed.episodes.forEach((e, i) => {
+    const o = document.createElement("option");
+    o.value = String(i);
+    o.textContent = "Tập " + (i + 1) + (e.title ? " — " + e.title : "") + " (" + e.scenes.length + " cảnh)";
+    sel.appendChild(o);
+  });
+  wrap.classList.remove("hidden");
+}
+function dpParseFromText(text, sourceLabel){
+  dpParsed = dpParseScript(text);
+  dpRenderEpPicker();
+  if (!dpParsed.episodes.length){
+    dpSetStatus("❌ Chưa tách được cảnh nào từ " + sourceLabel + ". Kịch bản cần đúng khuôn Kill: dòng <b>Cảnh 1 — …</b> rồi các mục <b>- 1. Prompt hình (EN):</b> <b>- 2. Hành động:</b> <b>- 3. Lời thoại:</b> (mỗi lượt thoại một dòng dạng <b>Tên nhân vật: lời thoại</b>) <b>- 4. Giọng đọc (VieNeu):</b> <b>- 5. Ghi chú nhạc:</b>. Thầy bấm <b>📄 Nạp kịch bản mẫu</b> để xem đúng khuôn.", true);
+    return false;
+  }
+  const ep = dpParsed.episodes[0];
+  const totalLines = ep.scenes.reduce((s, sc) => s + sc.lines.length, 0);
+  const chars = {};
+  ep.scenes.forEach(sc => sc.lines.forEach(l => { chars[l.char] = 1; }));
+  const charList = Object.keys(chars).map(c => {
+    const v = dpVoiceForChar(c, null);
+    return "<b>" + escapeHtml(c) + "</b> (" + escapeHtml(v.voice) + ")";
+  }).join(" • ");
+  dpSetStatus("✅ Đã đọc " + sourceLabel + ": <b>" + dpParsed.episodes.length + " tập</b>" + (dpParsed.episodes.length > 1 ? " (chọn tập ở ô phía trên)" : "") + " — tập đang chọn có <b>" + ep.scenes.length + " cảnh</b>, <b>" + totalLines + " lượt thoại</b>.<br>🎙 Dàn giọng theo bảng chuẩn: " + charList + ".<br>Bấm <b>🎬 TẠO VIDEO</b> phía dưới để xem bảng đối chiếu Cảnh ↔ Hình rồi dựng.", false);
+  return true;
+}
+function dpCurrentEpisode(){
+  if (!dpParsed || !dpParsed.episodes.length) return null;
+  const sel = $("dpEpSelect");
+  const idx = sel && !$("dpEpWrap").classList.contains("hidden") ? parseInt(sel.value, 10) || 0 : 0;
+  return dpParsed.episodes[Math.min(idx, dpParsed.episodes.length - 1)];
+}
+async function dpHandleScriptFile(file){
+  if (!file) return;
+  const name = (file.name || "").toLowerCase();
+  try {
+    let text;
+    if (name.endsWith(".docx")){
+      dpSetStatus("⏳ Đang đọc file .docx…", false);
+      text = await dpDocxToText(await file.arrayBuffer());
+    } else {
+      text = await file.text();
+    }
+    const ta = $("dpText");
+    if (ta) ta.value = text;
+    dpParseFromText(text, "file <b>" + escapeHtml(file.name) + "</b>");
+  } catch (e) {
+    dpSetStatus("❌ Không đọc được file: " + escapeHtml(e.message) + "<br>Thầy mở file, chọn tất cả (Ctrl+A) → sao chép → dán vào ô text phía dưới là app đọc được ngay.", true);
+  }
+}
+async function dpHandleImageFiles(fileList){
+  const files = Array.prototype.slice.call(fileList || []).filter(f => /^image\//.test(f.type || ""));
+  if (!files.length) return;
+  dpSetStatus("⏳ Đang nạp " + files.length + " hình cảnh…", false);
+  dpImgFiles = [];
+  for (const f of files){
+    try { dpImgFiles.push({ name: f.name, dataUrl: await kcReadUploadFile(f) }); } catch (e) { /* bỏ file lỗi */ }
+  }
+  dpImgFiles.sort((a, b) => String(a.name).localeCompare(String(b.name), "vi", { numeric: true }));
+  const el = $("dpImgStatus");
+  if (el) el.innerHTML = "🖼 Đã nạp <b>" + dpImgFiles.length + " hình</b> (" + dpImgFiles.map(f => escapeHtml(f.name)).join(", ") + "). App tự gán đúng cảnh theo số trong tên file (scene_01 → Cảnh 1, scene_02 → Cảnh 2…); cảnh nào chưa có hình sẽ dùng nguồn dự phòng thầy chọn ở màn duyệt.";
+  if (dpParsed && dpParsed.episodes.length) dpParseFromText($("dpText") ? $("dpText").value : "", "kịch bản đang có");
+}
+function dpSegFromScene(sc){
+  const narration = sc.lines.map(l => l.char + ": " + l.text).join("\n");
+  return {
+    type: "dungphim",
+    heading: "Cảnh " + sc.no + (sc.title ? " — " + sc.title : ""),
+    narration: narration,
+    imagePrompt: (sc.prompt || "") + ", cute 3D animation style, no text, no letters, no numbers, no watermark",
+    dpScene: sc,
+    dpImgSrc: sc.dpImgSrc || "ai",
+    dpUpload: sc.dpUpload || null,
+    dpUploadName: sc.dpUploadName || ""
+  };
+}
+async function routeDungPhimCreate(){
+  const text = ($("dpText") ? $("dpText").value : "").trim();
+  if (!dpParsed || !dpParsed.episodes.length){
+    if (!text){
+      showErr("inputError", "Thầy chưa tải file kịch bản (hoặc dán text) trong mục 🎬 Dựng Phim.");
+      const p = $("dungphimPanel"); if (p) p.scrollIntoView({ behavior: "smooth", block: "start" });
+      return;
+    }
+    if (!dpParseFromText(text, "text thầy dán")) return;
+  }
+  const ep = dpCurrentEpisode();
+  if (!ep || !ep.scenes.length){
+    showErr("inputError", "Chưa tách được cảnh nào — thầy kiểm tra lại kịch bản theo khuôn Kill.");
+    return;
+  }
+  const scenes = JSON.parse(JSON.stringify(ep.scenes));
+  if (dpImgFiles.length) dpAssignImages(scenes, dpImgFiles);
+  const segs = scenes.map(dpSegFromScene);
+  /* Thẻ kết chuẩn đội: cảnh duy nhất được đứng yên */
+  segs.push({
+    type: "dungphim", dpEnd: true, heading: "Thẻ kết — Đăng ký kênh",
+    narration: "", noAudioSec: 8,
+    dpScene: { no: scenes.length + 1, title: "Thẻ kết", prompt: "", action: "", lines: [], voices: {}, music: "" },
+    dpImgSrc: "draw", dpUpload: null, dpUploadName: ""
+  });
+  demoMode = false;
+  scriptData = {
+    title: ($("dpTitle") ? $("dpTitle").value.trim() : "") || ep.title || "Phim hoạt hình",
+    subject: "", grade: "",
+    segments: segs,
+    _mode: "dungphim",
+    _dp: { epTitle: ep.title || "", music: !($("dpMusic") && !$("dpMusic").checked) }
+  };
+  assets = {}; audios = {};
+  $("inputError").innerHTML = "";
+  $("progressNote").textContent = "— CHẾ ĐỘ DỰNG PHIM (kịch bản khuôn Kill: " + scenes.length + " cảnh + thẻ kết, đủ dàn giọng theo bảng chuẩn)";
+  $("progressCard").classList.remove("hidden");
+  $("resultCard").classList.add("hidden");
+  $("renderCard").classList.add("hidden");
+  $("assetBox").classList.add("hidden");
+  $("buildLog").innerHTML = "";
+  resetSteps(); setStep(1, "done");
+  renderScriptReview();
+}
+function syncDpPanel(){
+  const panel = $("dungphimPanel");
+  if (!panel) return;
+  panel.classList.toggle("hidden", videoType !== "dungphim");
+}
+function initDp(){
+  document.querySelectorAll(".type-chip").forEach(c =>
+    c.addEventListener("click", () => setTimeout(syncDpPanel, 0)));
+  const fInp = $("dpFile");
+  if (fInp) fInp.addEventListener("change", e => { const f = e.target.files && e.target.files[0]; e.target.value = ""; dpHandleScriptFile(f); });
+  const bFile = $("dpFileBtn");
+  if (bFile && fInp) bFile.addEventListener("click", () => fInp.click());
+  const iInp = $("dpImgFile");
+  if (iInp) iInp.addEventListener("change", e => { dpHandleImageFiles(e.target.files); e.target.value = ""; });
+  const bImg = $("dpImgBtn");
+  if (bImg && iInp) bImg.addEventListener("click", () => iInp.click());
+  const bParse = $("dpParseBtn");
+  if (bParse) bParse.addEventListener("click", () => dpParseFromText($("dpText") ? $("dpText").value : "", "text thầy dán"));
+  const bSample = $("dpSampleBtn");
+  if (bSample) bSample.addEventListener("click", () => {
+    const ta = $("dpText"); if (ta) ta.value = DP_SAMPLE;
+    dpParseFromText(DP_SAMPLE, "kịch bản mẫu");
+  });
+  const sel = $("dpEpSelect");
+  if (sel) sel.addEventListener("change", () => {
+    const ep = dpCurrentEpisode();
+    if (ep) dpSetStatus("🎞 Đang chọn tập: <b>" + escapeHtml(ep.title || "") + "</b> — " + ep.scenes.length + " cảnh. Bấm <b>🎬 TẠO VIDEO</b> phía dưới để đối chiếu Cảnh ↔ Hình rồi dựng.", false);
+  });
+  syncDpPanel();
+}
+
+/* [KC17] Màn duyệt Dựng Phim: bảng đối chiếu Cảnh ↔ Hình từng
+   cảnh (nguồn hình + xem trước + đổi tay), thoại từng lượt kèm
+   giọng đã gán theo bảng chuẩn — thầy kiểm trước khi bấm dựng. */
+function dpSrcStatus(sg){
+  if (sg.dpEnd) return "🏁 Thẻ kết app tự vẽ (đăng ký kênh + chữ ký)";
+  if (sg.dpImgSrc === "upload") return sg.dpUpload ? "⬆ Ảnh của thầy" + (sg.dpUploadName ? " (" + sg.dpUploadName + ")" : "") + " — đã gán đúng cảnh này" : "⬆ Chưa có ảnh — tải ảnh cho cảnh này hoặc đổi nguồn khác";
+  if (sg.dpImgSrc === "lib"){
+    if (sg.onlinePath) return "📚 Ảnh kho SGK online" + (sg.onlineFigure ? " (Hình " + sg.onlineFigure + ")" : "");
+    if (sg.sgkImageId) return "📚 Ảnh SGK trong máy";
+    return "📚 Chưa chọn ảnh kho — chưa chọn thì cảnh dùng hình vẽ mẫu dự phòng";
+  }
+  if (sg.dpImgSrc === "draw") return "🎨 Vẽ mẫu của app — có hình ngay khi dựng";
+  return "🤖 AI vẽ theo prompt hình của chính cảnh này (cần key sinh được ảnh; lỗi thì tự lùi về vẽ mẫu)";
+}
+function renderDpReviewInto(box){
+  const intro = document.createElement("div");
+  intro.className = "ok-box"; intro.style.marginBottom = "10px";
+  intro.innerHTML = "🎬 <b>Bảng đối chiếu Cảnh ↔ Hình:</b> mỗi cảnh dưới đây hiện đúng hình sẽ dùng + nguồn hình + dàn giọng từng lượt thoại. Cảnh nào lệch hình, thầy bấm đổi nguồn hoặc tải ảnh khác ngay tại cảnh đó. Hình chạy <b>trôi khung liên tục</b> (zoom + lia nhẹ) suốt cảnh — không đứng hình, không tua ngược; đoạn = tối thiểu 20 giây theo chuẩn đội.";
+  box.appendChild(intro);
+  scriptData.segments.forEach((sg, i) => {
+    const d = document.createElement("div"); d.className = "seg";
+    const head = document.createElement("div");
+    head.style.display = "flex"; head.style.gap = "8px"; head.style.alignItems = "center"; head.style.flexWrap = "wrap";
+    const tag = document.createElement("span"); tag.className = "tag dungphim";
+    tag.textContent = sg.dpEnd ? "🏁 Thẻ kết" : "🎬 Cảnh " + (sg.dpScene ? sg.dpScene.no : (i + 1));
+    head.appendChild(tag);
+    const st = document.createElement("span"); st.className = "small"; st.style.flex = "1"; st.textContent = dpSrcStatus(sg);
+    head.appendChild(st);
+    if (!sg.dpEnd){
+      if (i > 0){
+        const bUp = mkBtn("▲ Lên", "btn-ghost"); bUp.style.minWidth = "44px"; bUp.style.minHeight = "44px";
+        bUp.addEventListener("click", () => { const mv = kc5MovedSegments(scriptData.segments, i, -1); if (mv){ scriptData.segments.splice(0, scriptData.segments.length, ...mv); renderScriptReview(); } });
+        head.appendChild(bUp);
+      }
+      if (i < scriptData.segments.length - 1){
+        const bDn = mkBtn("▼ Xuống", "btn-ghost"); bDn.style.minWidth = "44px"; bDn.style.minHeight = "44px";
+        bDn.addEventListener("click", () => { const mv = kc5MovedSegments(scriptData.segments, i, 1); if (mv){ scriptData.segments.splice(0, scriptData.segments.length, ...mv); renderScriptReview(); } });
+        head.appendChild(bDn);
+      }
+      const bDel = mkBtn("🗑 Xoá cảnh", "btn-ghost");
+      bDel.disabled = scriptData.segments.length <= 2;
+      bDel.addEventListener("click", () => { scriptData.segments.splice(i, 1); renderScriptReview(); });
+      head.appendChild(bDel);
+    }
+    d.appendChild(head);
+    if (sg.dpEnd){
+      const p = document.createElement("p");
+      p.innerHTML = "Thẻ kết cuối phim: tên phim + huy hiệu đỏ <b>ĐĂNG KÝ KÊNH</b> + bấm chuông + chữ ký <b>✍ Thầy Hồ Tấn Khải</b> (8 giây, cảnh duy nhất được đứng yên).";
+      d.appendChild(p);
+      box.appendChild(d);
+      return;
+    }
+    const hInp = document.createElement("input");
+    hInp.type = "text"; hInp.value = sg.heading || ""; hInp.placeholder = "Tiêu đề cảnh";
+    hInp.style.width = "100%"; hInp.style.marginTop = "8px"; hInp.style.fontWeight = "700";
+    hInp.addEventListener("input", () => { sg.heading = hInp.value; });
+    d.appendChild(hInp);
+    if (sg.dpScene && sg.dpScene.action){
+      const ap = document.createElement("p");
+      ap.innerHTML = "🎬 Hành động: " + escapeHtml(sg.dpScene.action);
+      d.appendChild(ap);
+    }
+    /* Thoại từng lượt + giọng đã gán */
+    const linesBox = document.createElement("div");
+    linesBox.style.marginTop = "6px";
+    const syncNarr = () => { sg.narration = sg.dpScene.lines.map(l => l.char + ": " + l.text).join("\n"); updateDurInfo(); };
+    sg.dpScene.lines.forEach((ln, li) => {
+      const row = document.createElement("div");
+      row.style.display = "flex"; row.style.gap = "8px"; row.style.alignItems = "flex-start"; row.style.marginTop = "6px";
+      const cInp = document.createElement("input");
+      cInp.type = "text"; cInp.value = ln.char; cInp.placeholder = "Nhân vật";
+      cInp.style.flex = "0 0 170px"; cInp.style.fontWeight = "700";
+      const vLab = document.createElement("span"); vLab.className = "kc11chip";
+      const paintVoice = () => { const v = dpVoiceForChar(ln.char, sg.dpScene.voices); vLab.textContent = "🎙 " + v.voice + (v.source === "mac-dinh" ? " (mặc định)" : ""); };
+      paintVoice();
+      cInp.addEventListener("input", () => { ln.char = cInp.value; paintVoice(); syncNarr(); });
+      const tTx = document.createElement("textarea");
+      tTx.rows = 2; tTx.value = ln.text; tTx.style.flex = "1";
+      tTx.addEventListener("input", () => { ln.text = tTx.value; syncNarr(); });
+      const bX = mkBtn("✖", "btn-ghost");
+      bX.addEventListener("click", () => { sg.dpScene.lines.splice(li, 1); syncNarr(); renderScriptReview(); });
+      row.appendChild(cInp); row.appendChild(tTx); row.appendChild(bX);
+      linesBox.appendChild(row);
+      const vRow = document.createElement("div"); vRow.style.margin = "2px 0 0 178px"; vRow.appendChild(vLab);
+      linesBox.appendChild(vRow);
+    });
+    const bAddLine = mkBtn("➕ Thêm lượt thoại", "btn-ghost");
+    bAddLine.style.marginTop = "8px";
+    bAddLine.addEventListener("click", () => { sg.dpScene.lines.push({ char: "Giọt Nước Tí", text: "" }); syncNarr(); renderScriptReview(); });
+    linesBox.appendChild(bAddLine);
+    d.appendChild(linesBox);
+    /* Nguồn hình của cảnh */
+    const srcRow = document.createElement("div"); srcRow.className = "row"; srcRow.style.marginTop = "10px";
+    [["upload", "⬆ Ảnh của thầy"], ["ai", "🤖 AI vẽ theo prompt"], ["lib", "📚 Kho SGK"], ["draw", "🎨 Vẽ mẫu"]].forEach(pair => {
+      const b = mkBtn(pair[1], sg.dpImgSrc === pair[0] ? "btn-accent" : "btn-ghost");
+      b.addEventListener("click", () => { if (sg.dpImgSrc !== pair[0]) { sg.dpImgSrc = pair[0]; renderScriptReview(); } });
+      srcRow.appendChild(b);
+    });
+    d.appendChild(srcRow);
+    const body = document.createElement("div"); body.style.marginTop = "8px";
+    if (sg.dpImgSrc === "upload"){
+      if (sg.dpUpload){
+        const im = document.createElement("img"); im.src = sg.dpUpload;
+        im.style.width = "100%"; im.style.maxWidth = "560px"; im.style.borderRadius = "10px"; im.style.display = "block";
+        body.appendChild(im);
+      }
+      const uRow = document.createElement("div"); uRow.className = "row"; uRow.style.marginTop = "8px";
+      const bUp = mkBtn(sg.dpUpload ? "🔁 Đổi ảnh khác cho cảnh này" : "⬆ Chọn ảnh cho cảnh này", "btn");
+      const fInp = document.createElement("input"); fInp.type = "file"; fInp.accept = "image/*"; fInp.className = "hidden";
+      fInp.addEventListener("change", async e => {
+        const f = e.target.files && e.target.files[0]; e.target.value = "";
+        if (!f) return;
+        try { sg.dpUpload = await kcReadUploadFile(f); sg.dpUploadName = f.name; renderScriptReview(); }
+        catch (err) { alert("Không đọc được file ảnh: " + err.message); }
+      });
+      bUp.addEventListener("click", () => fInp.click());
+      uRow.appendChild(bUp); uRow.appendChild(fInp);
+      body.appendChild(uRow);
+    } else if (sg.dpImgSrc === "ai"){
+      const pTx = document.createElement("textarea");
+      pTx.rows = 3; pTx.value = sg.imagePrompt || ""; pTx.style.width = "100%";
+      pTx.placeholder = "Prompt hình (EN) — AI vẽ đúng cảnh này theo mô tả này...";
+      pTx.addEventListener("input", () => { sg.imagePrompt = pTx.value; });
+      body.appendChild(pTx);
+      const hint = document.createElement("div"); hint.className = "small"; hint.style.marginTop = "4px";
+      hint.textContent = "Prompt lấy từ mục 1 của chính cảnh này trong kịch bản Kill. AI vẽ lỗi (hết lượt ảnh) thì cảnh tự lùi về hình vẽ mẫu — không để trống.";
+      body.appendChild(hint);
+    } else if (sg.dpImgSrc === "lib"){
+      if (sg.onlinePath || sg.sgkImageId){
+        const prow = document.createElement("div");
+        prow.style.display = "flex"; prow.style.gap = "10px"; prow.style.alignItems = "flex-start";
+        const th = document.createElement("img"); th.className = "online-thumb";
+        const rec = sg.sgkImageId ? library.get(sg.sgkImageId) : null;
+        th.src = sg.onlinePath ? (sg.onlineUrl || ("../" + sg.onlinePath)) : ((rec && rec.dataUrl) || "");
+        prow.appendChild(th);
+        const bClear = mkBtn("✖ Bỏ chọn ảnh này", "btn-ghost");
+        bClear.addEventListener("click", () => { clearOnlineAssign(sg); delete sg.sgkImageId; renderScriptReview(); });
+        prow.appendChild(bClear);
+        body.appendChild(prow);
+      }
+      const sRow = document.createElement("div"); sRow.className = "row"; sRow.style.marginTop = "8px";
+      const sInp = document.createElement("input"); sInp.type = "text";
+      sInp.placeholder = "Từ khoá tìm ảnh trong kho SGK...";
+      sInp.style.flex = "1";
+      const sBtn = mkBtn("🔍 Tìm ảnh", "btn");
+      const grid = document.createElement("div"); grid.className = "pick-grid hidden"; grid.style.marginTop = "8px";
+      sBtn.addEventListener("click", () => {
+        grid.innerHTML = "";
+        const q = sInp.value.trim();
+        const entries = q ? kcSgkSearch(q) : kcSgkSuggestions(sg);
+        if (!onlineLibReady) grid.innerHTML = '<span class="small">Kho SGK online chưa tải xong — thầy chờ một lát rồi tìm lại.</span>';
+        else if (!entries.length) grid.innerHTML = '<span class="small">Không thấy ảnh khớp trong kho SGK.</span>';
+        entries.forEach(e => {
+          const im = document.createElement("img"); im.src = onlineImgUrl(e);
+          im.title = (e.caption || e.path) + (e.figure ? " — Hình " + e.figure : "");
+          im.addEventListener("click", () => { setOnlineAssign(sg, e); delete sg.sgkImageId; renderScriptReview(); });
+          grid.appendChild(im);
+        });
+        if (library.size){
+          const lb = document.createElement("div"); lb.className = "small"; lb.style.width = "100%"; lb.textContent = "📚 Hoặc ảnh SGK đã nạp trong máy:";
+          grid.appendChild(lb);
+          library.forEach(rec2 => {
+            const im = document.createElement("img"); im.src = rec2.dataUrl; im.title = rec2.name;
+            im.addEventListener("click", () => { sg.sgkImageId = rec2.id; clearOnlineAssign(sg); renderScriptReview(); });
+            grid.appendChild(im);
+          });
+        }
+        grid.classList.remove("hidden");
+      });
+      sRow.appendChild(sInp); sRow.appendChild(sBtn);
+      body.appendChild(sRow); body.appendChild(grid);
+    } else {
+      const cv = document.createElement("canvas"); cv.width = W; cv.height = H;
+      cv.style.width = "100%"; cv.style.maxWidth = "560px"; cv.style.borderRadius = "10px"; cv.style.display = "block";
+      try { kcDrawTemplate(cv.getContext("2d"), "cay_mattroi", 0.35); } catch (e) {}
+      body.appendChild(cv);
+    }
+    d.appendChild(body);
+    box.appendChild(d);
+  });
+  const addRow = document.createElement("div"); addRow.style.marginTop = "4px";
+  const bAdd = mkBtn("➕ Thêm cảnh", "btn");
+  bAdd.addEventListener("click", () => {
+    const endIdx = scriptData.segments.findIndex(s => s.dpEnd);
+    const newSeg = dpSegFromScene({ no: scriptData.segments.filter(s => !s.dpEnd).length + 1, title: "Cảnh mới", prompt: "", action: "", lines: [{ char: "Giọt Nước Tí", text: "" }], voices: {}, music: "" });
+    if (endIdx >= 0) scriptData.segments.splice(endIdx, 0, newSeg); else scriptData.segments.push(newSeg);
+    renderScriptReview();
+  });
+  addRow.appendChild(bAdd);
+  box.appendChild(addRow);
+}
+
+/* [KC17] Thu giọng 1 lượt thoại theo ĐÚNG giọng nhân vật:
+   VieNeu local (tên giọng bảng chuẩn) trước, lỗi từng lượt thì
+   lùi đúng lượt đó sang Gemini (Kore/Charon theo giới tính). */
+async function dpSynthLineBuffer(text, voiceName, gender){
+  const clean = String(text || "").trim();
+  if (!clean) return null;
+  if (voiceSource === "vieneu" && !kc12LocalBroken){
+    const cached = await ttsCacheLookup(clean, voiceName, KC12_LOCAL_MODEL_TAG);
+    if (cached){
+      const b = pcmToAudioBuffer(cached.pcm);
+      applyFadesArr(b.getChannelData(0), b.sampleRate, 12);
+      return b;
+    }
+    const ctrl = (typeof AbortController !== "undefined") ? new AbortController() : null;
+    const timer = ctrl ? setTimeout(() => { try { ctrl.abort(); } catch (e) {} }, 180000) : null;
+    let resp = null, netErr = null;
+    try {
+      resp = await fetch(KC12_LOCAL_URL + "/tts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: ttsSpeakText(clean), voice: voiceName, format: "mp3" }),
+        signal: ctrl ? ctrl.signal : undefined
+      });
+    } catch (e) { netErr = e; } finally { if (timer) clearTimeout(timer); }
+    if (resp && resp.ok){
+      const abuf = await decodeAudioBlob(await resp.blob());
+      applyFadesArr(abuf.getChannelData(0), abuf.sampleRate, 12);
+      ttsCacheSave(clean, KC12_LOCAL_MODEL_TAG, audioBufferToPcmBase64(abuf), voiceName);
+      return abuf;
+    }
+    if (netErr){
+      kc12LocalBroken = true;
+      if (building) kc12NoteLocalFallback(0);
+    }
+    /* resp lỗi (vd giọng không có trên máy chủ) → chỉ lượt này lùi Gemini */
+  }
+  const gvoice = gender === "male" ? MC_VOICES.male : MC_VOICES.female;
+  const cached2 = await ttsCacheLookup(clean, gvoice, ttsWantModel());
+  if (cached2){
+    const b = pcmToAudioBuffer(cached2.pcm);
+    applyFadesArr(b.getChannelData(0), b.sampleRate, 12);
+    return b;
+  }
+  const meta = {};
+  const data = await gemini("tts", {
+    contents: [{ parts: [{ text: clean }] }],
+    generationConfig: {
+      responseModalities: ["AUDIO"],
+      speechConfig: { voiceConfig: { prebuiltVoiceConfig: { voiceName: gvoice } } }
+    }
+  }, meta);
+  const inline = firstInline(data);
+  if (!inline) throw new Error("Gemini TTS không trả về âm thanh.");
+  const abuf = pcmToAudioBuffer(inline.data);
+  applyFadesArr(abuf.getChannelData(0), abuf.sampleRate, 12);
+  ttsCacheSave(clean, meta.model || "", inline.data, gvoice);
+  return abuf;
+}
+function dpSilentBuffer(sec){
+  const sr = 24000;
+  const buf = audioCtx().createBuffer(1, Math.max(1, Math.round(sec * sr)), sr);
+  return buf;
+}
+async function dpMixBuffers(bufs, timings, segDur){
+  const sr = 24000;
+  const totalSamples = Math.max(1, Math.ceil(segDur * sr));
+  if (typeof OfflineAudioContext !== "undefined"){
+    const off = new OfflineAudioContext(1, totalSamples, sr);
+    bufs.forEach((b, k) => {
+      if (!b) return;
+      const src = off.createBufferSource();
+      src.buffer = b;
+      src.connect(off.destination);
+      src.start(timings[k].start);
+    });
+    return await off.startRendering();
+  }
+  const out = audioCtx().createBuffer(1, totalSamples, sr);
+  const ch = out.getChannelData(0);
+  bufs.forEach((b, k) => {
+    if (!b) return;
+    const data = b.getChannelData(0);
+    const ratio = b.sampleRate / sr;
+    const startAt = Math.round(timings[k].start * sr);
+    const n = Math.floor(data.length / ratio);
+    for (let i2 = 0; i2 < n && startAt + i2 < ch.length; i2++) ch[startAt + i2] = data[Math.floor(i2 * ratio)];
+  });
+  return out;
+}
+/* [KC17] Thu + ráp tiếng 1 cảnh phim: từng lượt thoại đúng giọng
+   nhân vật, vào sau 0,8s, cách nhau 0,4s, đoạn tối thiểu 20s. */
+async function dpBuildSceneAudio(i){
+  const sg = scriptData.segments[i];
+  const lines = (sg.dpScene && sg.dpScene.lines) || [];
+  const bufs = [];
+  for (const ln of lines){
+    const v = dpVoiceForChar(ln.char, sg.dpScene.voices);
+    let buf = null;
+    try { buf = await dpSynthLineBuffer(ln.text, v.voice, v.gender); } catch (e) { buf = null; }
+    if (!buf) buf = dpSilentBuffer(Math.max(1.2, String(ln.text || "").length / 15));
+    bufs.push(buf);
+  }
+  const tmg = dpSceneTiming(bufs.map(b => b.duration));
+  const timings = tmg.timings.map((t, k) => ({ start: t.start, end: t.end, char: lines[k].char, text: lines[k].text }));
+  const mixed = await dpMixBuffers(bufs, timings, tmg.segDur);
+  sg.dpTimings = timings;
+  sg.dpDur = tmg.segDur;
+  audios[i] = { status: "ok", buffer: mixed, err: "", mc: null };
+  renderAssetRows();
+}
+/* [KC17] Nhạc nền tự sinh trong app (hợp âm pad êm, 100% nguyên
+   bản bằng WebAudio — không bản quyền): C–Am–F–G mỗi hợp âm 8s,
+   âm lượng thấp nằm dưới thoại. Chỉ chạy ở chế độ Dựng Phim. */
+function dpScheduleMusic(actx, dest, t0, total){
+  const chords = [
+    [130.81, 164.81, 196.00, 261.63],
+    [110.00, 130.81, 164.81, 220.00],
+    [87.31, 110.00, 130.81, 174.61],
+    [98.00, 123.47, 146.83, 196.00]
+  ];
+  const gain = actx.createGain();
+  gain.gain.value = 0.0;
+  const lp = actx.createBiquadFilter();
+  lp.type = "lowpass"; lp.frequency.value = 900;
+  gain.connect(lp); lp.connect(dest);
+  const chordDur = 8;
+  const nChords = Math.ceil(total / chordDur) + 1;
+  for (let c = 0; c < nChords; c++){
+    const start = t0 + c * chordDur;
+    if (start > t0 + total + chordDur) break;
+    const freqs = chords[c % chords.length];
+    freqs.forEach(f => {
+      const osc = actx.createOscillator();
+      osc.type = "triangle"; osc.frequency.value = f;
+      const og = actx.createGain();
+      og.gain.setValueAtTime(0, start);
+      og.gain.linearRampToValueAtTime(0.011, start + 1.6);
+      og.gain.setValueAtTime(0.011, start + chordDur - 1.6);
+      og.gain.linearRampToValueAtTime(0, start + chordDur);
+      osc.connect(og); og.connect(gain);
+      osc.start(start); osc.stop(start + chordDur + 0.1);
+    });
+  }
+  gain.gain.setValueAtTime(0, t0);
+  gain.gain.linearRampToValueAtTime(1, t0 + 1.5);
+  gain.gain.setValueAtTime(1, Math.max(t0 + 1.5, t0 + total - 2));
+  gain.gain.linearRampToValueAtTime(0, t0 + total);
+}
+/* [KC17] Vẽ cảnh phim: hình toàn khung TRÔI KHUNG LIÊN TỤC
+   (zoom chậm + lia ngang nhẹ theo tiến độ đoạn — chuẩn không
+   đứng hình của đội, cách Mưa), băng phụ đề hiện đúng lượt
+   thoại đang đọc theo mốc thời gian thật, chữ ký thầy góc
+   phải trên mọi cảnh. */
+function dpDrawKenBurns(ctx, img, f, seed){
+  const zoom = 1.10 + 0.12 * f;
+  const s = Math.max(W / img.width, H / img.height) * zoom;
+  const w = img.width * s, h = img.height * s;
+  const dir = (seed % 2 === 0) ? 1 : -1;
+  const panX = dir * (f - 0.5) * 0.06 * W;
+  const panY = (0.5 - f) * 0.03 * H;
+  ctx.drawImage(img, (W - w) / 2 + panX, (H - h) / 2 + panY, w, h);
+}
+function dpDrawFallbackBg(ctx, f){
+  const g = ctx.createLinearGradient(0, 0, W, H);
+  g.addColorStop(0, "#0b3d2e"); g.addColorStop(0.55, "#14532d"); g.addColorStop(1, "#07271d");
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+  ctx.save();
+  ctx.globalAlpha = 0.16;
+  ctx.fillStyle = "#ffd94d";
+  for (let k = 0; k < 5; k++){
+    const cx = ((k * 397 + f * 240) % (W + 300)) - 150;
+    const cy = 180 + (k % 3) * 260 + Math.sin((f * 6 + k) * 1.7) * 26;
+    ctx.beginPath(); ctx.arc(cx, cy, 90 + k * 22, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.restore();
+}
+function dpLineAt(sg, localT){
+  const ts = sg.dpTimings || [];
+  if (!ts.length) return null;
+  for (const t of ts) if (localT >= t.start && localT < t.end) return t;
+  let last = null;
+  for (const t of ts) if (localT >= t.start) last = t;
+  return last || ts[0];
+}
+function dpDrawEndCard(ctx, f){
+  slideBg(ctx);
+  ctx.save();
+  ctx.globalAlpha = 0.10 + 0.05 * Math.sin(f * Math.PI * 2);
+  ctx.fillStyle = "#ffd94d";
+  ctx.beginPath(); ctx.arc(W / 2, H / 2 - 60, 340 + 26 * f, 0, Math.PI * 2); ctx.fill();
+  ctx.restore();
+  ctx.textAlign = "center"; ctx.textBaseline = "middle";
+  ctx.fillStyle = "#ffd94d"; ctx.font = "800 84px " + FONT;
+  const title = (scriptData && scriptData.title) || "Phim hoạt hình";
+  wrapLines(ctx, title, 1500).slice(0, 2).forEach((ln, k) => ctx.fillText(ln, W / 2, 300 + k * 100));
+  /* Huy hiệu đỏ ĐĂNG KÝ KÊNH */
+  const bw = 620, bh = 110, bx = W / 2 - bw / 2, by = 560;
+  ctx.fillStyle = "#e62117";
+  rr(ctx, bx, by, bw, bh, 26); ctx.fill();
+  ctx.fillStyle = "#ffffff"; ctx.font = "800 54px " + FONT;
+  ctx.fillText("ĐĂNG KÝ KÊNH", W / 2, by + bh / 2 + 2);
+  ctx.fillStyle = "#f2f7f3"; ctx.font = "600 44px " + FONT;
+  ctx.fillText("🔔 Bấm chuông để xem tập mới nhất nhé!", W / 2, 770);
+  ctx.fillStyle = "#ffe9a8"; ctx.font = "700 40px " + FONT;
+  ctx.fillText("Cảm ơn các em đã theo dõi!", W / 2, 850);
+  kc9DrawTeacherSign(ctx);
+  ctx.textAlign = "left"; ctx.textBaseline = "top";
+}
+function drawDungPhimSlide(ctx, sg, asset, t){
+  const f = Math.max(0, Math.min(1, Number(t) || 0));
+  if (sg.dpEnd){ dpDrawEndCard(ctx, f); return; }
+  const has = asset && asset.status === "ok";
+  if (has && asset.source === "draw"){
+    kcDrawTemplate(ctx, asset.tpl || "cay_mattroi", f);
+  } else if (has && asset.img){
+    dpDrawKenBurns(ctx, asset.img, f, sg.dpScene ? sg.dpScene.no : 1);
+  } else {
+    dpDrawFallbackBg(ctx, f);
+  }
+  const bandH = 250;
+  const g = ctx.createLinearGradient(0, H - bandH - 70, 0, H);
+  g.addColorStop(0, "rgba(0,0,0,0)"); g.addColorStop(0.4, "rgba(0,0,0,0.8)"); g.addColorStop(1, "rgba(0,0,0,0.93)");
+  ctx.fillStyle = g; ctx.fillRect(0, H - bandH - 70, W, bandH + 70);
+  ctx.textAlign = "left"; ctx.textBaseline = "top";
+  ctx.fillStyle = "#ffd94d"; ctx.font = "700 44px " + FONT;
+  wrapLines(ctx, sg.heading || "", 1700).slice(0, 1).forEach(ln => ctx.fillText(ln, 110, H - bandH + 2));
+  const localT = f * (sg.dpDur || 20);
+  const cur = dpLineAt(sg, localT);
+  if (cur){
+    ctx.font = "700 42px " + FONT;
+    ctx.fillStyle = "#7dd87d";
+    const nameTxt = cur.char + ": ";
+    ctx.fillText(nameTxt, 110, H - bandH + 68);
+    const nameW = ctx.measureText(nameTxt).width;
+    ctx.font = "400 42px " + FONT;
+    ctx.fillStyle = "#ffffff";
+    const lines = wrapLines(ctx, cur.text, 1700 - nameW);
+    lines.slice(0, 1).forEach(ln => ctx.fillText(ln, 110 + nameW, H - bandH + 68));
+    if (lines.length > 1){
+      const rest = lines.slice(1).join(" ");
+      ctx.font = "400 42px " + FONT;
+      wrapLines(ctx, rest, 1700).slice(0, 2).forEach((ln, k) => ctx.fillText(ln, 110, H - bandH + 122 + k * 54));
+    }
+  }
+  kc9DrawTeacherSign(ctx);
+  if (scriptData && scriptData.title){
+    ctx.fillStyle = "#ffd94d"; ctx.font = "600 30px " + FONT; ctx.textAlign = "right";
+    ctx.fillText(scriptData.title, W - 110, 88); ctx.textAlign = "left";
+  }
+}
+
 function drawSlide(ctx, sg, asset, t){
+  if (sg.type === "dungphim") { drawDungPhimSlide(ctx, sg, asset, t || 0); return; }
   if (sg.type === "kechuyen") { drawKcSlide(ctx, sg, asset, t || 0); return; }
   if (sg.type === "phieu") { drawPhieuScene(ctx, sg, t || 0); return; }
   if (sg.type === "chuade") { drawChuadeScene(ctx, sg, t || 0); return; }
@@ -8561,6 +9556,10 @@ function recordVideo(){
       }
       off += durations[i];
     });
+    /* [KC17] Nhạc nền tự sinh cho Dựng Phim (WebAudio, không bản quyền) */
+    if (scriptData && scriptData._mode === "dungphim" && scriptData._dp && scriptData._dp.music) {
+      try { dpScheduleMusic(actx, dest, t0, total); } catch (e) {}
+    }
     const vStream = canvas.captureStream(0);
     const vTrack = vStream.getVideoTracks()[0];
     const stream = new MediaStream([].concat(vStream.getVideoTracks(), dest.stream.getAudioTracks()));
@@ -8611,8 +9610,9 @@ function recordVideo(){
       /* Chuyển cảnh trong pipeline phiếu: fade NGẮN 150ms giữa hai cảnh
          phiếu liên tiếp để khỏi chồng chữ mờ; ngoài pipeline phiếu giữ
          nguyên cắt thẳng như cũ. */
-      const fadeIn = (idx > 0 && localT < 0.15 && segs[idx].type === segs[idx - 1].type && (segs[idx].type === "phieu" || segs[idx].type === "chuade"))
-        ? Math.max(0, localT / 0.15) : 1;
+      const fadeDur = (idx > 0 && segs[idx].type === "dungphim" && segs[idx - 1].type === "dungphim") ? 0.4 : 0.15;
+      const fadeIn = (idx > 0 && localT < fadeDur && segs[idx].type === segs[idx - 1].type && (segs[idx].type === "phieu" || segs[idx].type === "chuade" || segs[idx].type === "dungphim"))
+        ? Math.max(0, localT / fadeDur) : 1;
       if (fadeIn < 1) {
         drawSlide(ctx, segs[idx - 1], assets[idx - 1], 1);
         ctx.save(); ctx.globalAlpha = fadeIn;
@@ -8658,6 +9658,9 @@ function buildDownloadName(sd, ext){
   if (sd && sd._chuade) {
     return "Video_ChuaDe_" + (slugPascal(sd._chuade.mon || "", 24) || "MonHoc") + "_" + (slugPascal(sd._chuade.tenBai || sd.title || "", 52) || "DeThi") + ext;
   }
+  if (sd && sd._mode === "dungphim") {
+    return "Phim_" + (slugPascal(sd.title || "", 64) || "HoatHinh") + ext;
+  }
   if (sd && sd._phieu) {
     return "Video_PhieuHocTap_" + (slugPascal(sd._phieu.tenBai || sd.title || "", 56) || "Phieu") + ext;
   }
@@ -8701,6 +9704,9 @@ function kc16Lines(sd){
   }
   if (sd && sd._phieu) {
     return { l1: "PHIẾU HỌC TẬP", l2: sd._phieu.tenBai || sd._phieu.tieuDePhieu || "" };
+  }
+  if (sd && sd._mode === "dungphim") {
+    return { l1: sd.title || "Phim hoạt hình", l2: "🎬 Dựng Phim • Giọt Nước Tí" };
   }
   if (sd && sd._mode === "kechuyen") {
     const p = sd._picked;
@@ -8881,7 +9887,7 @@ async function buildVideo(){
     let usedLib = false, imgErr = [];
     for (let i = 0; i < scriptData.segments.length; i++) {
       const sg = scriptData.segments[i];
-      if (sg.type !== "image" && sg.type !== "sgk" && sg.type !== "kechuyen") { assets[i] = { status: "skip", img: null, source: "none", err: "" }; continue; }
+      if (sg.type !== "image" && sg.type !== "sgk" && sg.type !== "kechuyen" && sg.type !== "dungphim") { assets[i] = { status: "skip", img: null, source: "none", err: "" }; continue; }
       if (demoMode) {
         if (sg.onlinePath) {
           try {
@@ -8904,7 +9910,7 @@ async function buildVideo(){
          hình, để video xuất ra không bao giờ dính ô "CHỜ HÌNH SGK". */
       const noImg = [], noImgChosen = [];
       scriptData.segments.forEach((sg, i) => {
-        if ((sg.type === "image" || sg.type === "sgk" || sg.type === "kechuyen") && (!assets[i] || assets[i].status !== "ok")) {
+        if ((sg.type === "image" || sg.type === "sgk" || sg.type === "kechuyen" || (sg.type === "dungphim" && !sg.dpEnd)) && (!assets[i] || assets[i].status !== "ok")) {
           sg.noImg = true;
           /* Phân biệt: đoạn THẦY CHỦ ĐỘNG bỏ chọn hết hình (và không nguồn
              nào khác được thử — status skip) khác với đoạn LỖI thật. */
@@ -8934,6 +9940,28 @@ async function buildVideo(){
     } else {
       setStep(4, "run");
       const auErr = [];
+      if (scriptData._mode === "dungphim") {
+        /* [KC17] Dựng Phim: thu từng lượt thoại đúng giọng nhân vật
+           (VieNeu bảng chuẩn / lùi Gemini theo giới tính), ráp theo
+           chuẩn đội (vào sau 0,8s, cách 0,4s, đoạn tối thiểu 20s).
+           Thẻ kết không thoại — buffer lặng theo noAudioSec. */
+        ttsBuildExhausted = false;
+        kc12LocalBroken = false; kc12FallbackNoted = false;
+        await kc12DetectLocal(true);
+        if (voiceSource === "vieneu") {
+          ttsPinModel = null;
+          logWarn("🎙️ Phim này đọc bằng <b>đủ dàn giọng VieNeu trên máy này</b> theo bảng giọng chuẩn toàn series — miễn phí, không tốn lượt key Gemini. Lượt nào máy chủ thiếu giọng sẽ tự lùi đúng lượt đó sang Gemini.");
+        } else {
+          ttsPinModel = await pickPrimaryTtsModel();
+          logWarn("🎙️ Máy này chưa có VieNeu local — phim đọc bằng <b>2 giọng Gemini</b> (nữ Kore • nam Charon) theo giới tính nhân vật. Muốn đủ dàn giọng từng nhân vật, thầy mở máy chủ VieNeu local rồi dựng lại.");
+        }
+        for (let i = 0; i < scriptData.segments.length; i++) {
+          const sgx = scriptData.segments[i];
+          if (sgx.dpEnd) { audios[i] = { status: "ok", buffer: dpSilentBuffer(sgx.noAudioSec || 8), err: "", mc: null }; renderAssetRows(); continue; }
+          await dpBuildSceneAudio(i);
+        }
+        ttsPinModel = null;
+      } else {
       /* GD13: gán vai 2 MC theo luật luân phiên + ghim 1 model TTS chính
          cho cả lượt dựng (chỉ xoay key, không đổi model giữa chừng).
          Nhóm gọi TTS cắt theo ranh giới MC — mỗi lượt gọi 1 giọng. */
@@ -8970,6 +9998,7 @@ async function buildVideo(){
       if (!useVieneu && ttsBuildExhausted) logWarn("🔇 <b>Đã hết hạn mức giọng hôm nay</b> — model giọng chính (" + ttsPinModel + ") đã cạn trên mọi key trong hồ. Các đoạn chưa có tiếng sẽ im lặng " + NO_AUDIO_SECONDS + " giây như trước giờ; thầy thử lại vào ngày mai hoặc thêm key mới vào hồ.");
       ttsPinModel = null;
       buildMcRoles = null;
+      }
       scriptData.segments.forEach((sg, i) => { if (!audios[i] || audios[i].status !== "ok") auErr.push(i + 1); });
       if (auErr.length === scriptData.segments.length) {
         setStep(4, "err");
@@ -9029,6 +10058,7 @@ $("createBtn").addEventListener("click", async () => {
   if (videoType === "chuade") { await routeChuadeCreate(); return; }
   if (videoType === "phieu") { await routePhieuCreate(); return; }
   if (videoType === "kechuyen") { await routeKechuyenCreate(); return; }
+  if (videoType === "dungphim") { await routeDungPhimCreate(); return; }
   if (!getKey()) {
     showErr("inputError", "Hồ key đang rỗng. Thầy tạo key miễn phí theo 3 bước ở mục 1 đầu trang, dán vào (mỗi key 1 dòng) rồi bấm Lưu Hồ Key.");
     $("keyGuide").open = true;
@@ -9396,6 +10426,7 @@ try { loadOnlineLib(); } catch (e) {}
 try { initPhieu(); } catch (e) {}
 try { initChuade(); } catch (e) {}
 try { initKc(); } catch (e) {}
+try { initDp(); } catch (e) {}
 try { kc2Init(); } catch (e) {}
 try { initLamDe(); } catch (e) {}
 try { initBaiTap(); } catch (e) {}
