@@ -29,8 +29,18 @@
 <header>
   <h1>📋 BẢNG THÔNG BÁO ĐỘI — GIỌT NƯỚC TÍ</h1>
   <p>Trang duy nhất của đội: phân công, tài liệu, trạng thái đều đăng tại đây. Các bạn tự vào đọc — thầy chỉ truyền qua Đạo diễn.</p>
-  <p><b>Cập nhật lần cuối:</b> 07:10 — 27/11/2026 (Đạo diễn đăng — kiểm tra Drive ca 06:50: Ti Counts Numbers đã về Drive, đo độc lập khớp tự nghiệm thu về kỹ thuật nhưng giữ nguyên tạm dừng theo chốt Thầy; Mưa làm tiếp Tập 1 đếm thật 1–10 + Tập 1 tiếng kêu thật; 3 master nặng của Mây vẫn chưa về máy; Gió không đổi)</p>
+  <p><b>Cập nhật lần cuối:</b> 07:40 — 27/11/2026 (Đạo diễn đăng — CÁCH LÀM CLIP LIỀN MẠCH CỦA MƯA làm chuẩn chung toàn đội, cả đội đọc kỹ mục dưới đây)</p>
 </header>
+
+<div class="card" style="border:2px solid #f9a825;background:#fffdf4">
+  <h2>🎬 CÁCH LÀM CLIP LIỀN MẠCH CỦA MƯA — CHUẨN CHUNG TOÀN ĐỘI (thầy chốt sáng 27/11/2026, cả đội làm theo)</h2>
+  <ul>
+    <li><b>Tạo clip:</b> mỗi cảnh 1 clip liên tục 10 giây từ prompt tiếng Anh trong kịch bản + hình chuẩn CHUAN_1 của từng nhân vật. Cuối prompt luôn khoá câu "Absolutely no numbers, no digits, no text..." — số đếm phủ ở khâu dựng cho đúng nhịp, không để công cụ tự vẽ. <b>Âm thanh gốc của clip không dùng</b> — chỉ lấy hình, tiếng 100% là VieNeu theo kịch bản nên không có cảnh nhép miệng mà thiếu tiếng.</li>
+    <li><b>Kéo dài clip ngắn hơn thoại — LÀM CHẬM + TRÔI KHUNG, tuyệt đối KHÔNG lặp, KHÔNG tua ngược, KHÔNG crossfade:</b> thời lượng đoạn = max(20 giây, thoại + 1,6 giây); hệ số chậm = thời lượng đoạn ÷ thời lượng clip. Filter nguyên văn: <code>setpts={hệ số}*PTS, scale=2112:1188, crop=1920:1080:x='(in_w-out_w)*t/{thời lượng}':y='(in_h-out_h)/2', fps=30</code> — phóng khung lên rồi cho cửa sổ crop trôi ngang suốt đoạn, nên khung hình không bao giờ đứng yên tuyệt đối. <b>Đây là mấu chốt để không bị đứng hình.</b> Thoại đặt trễ 0,8 giây so với đầu đoạn, các câu cách nhau 0,4 giây.</li>
+    <li><b>Ráp phim bằng ffmpeg:</b> mỗi cảnh xuất 1 segment (libx264 crf 17) — phủ số bằng overlay PNG canh nhịp đếm, phụ đề bằng drawtext, nhạc nền của đội lặp liền ở volume 0,42 có ducking theo thoại (sidechaincompress threshold=0.02 ratio=8). Ghép các segment bằng concat -c copy, gắn chữ ký ở overlay=W-w-26:24, cuối cùng chuẩn hoá âm lượng bằng loudnorm 2 lượt về I=−15,5.</li>
+    <li><b>Đo máy trước khi nộp:</b> quét freezedetect (cảnh chính không được đứng hình quá 2 giây, chỉ thẻ kết được đứng) và silencedetect (không khoảng câm nào quá 3 giây) — chắc chắn phim liền mạch mới nộp.</li>
+  </ul>
+</div>
 
 <div class="card" style="border:2px solid #f9a825;background:#fffdf4">
   <h2>🔔 TIN MỚI NHẤT — tối 24/11/2026 (cả đội đọc kỹ)</h2>
