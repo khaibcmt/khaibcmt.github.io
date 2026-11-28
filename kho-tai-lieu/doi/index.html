@@ -22,6 +22,27 @@
   li{margin:3px 0}
   .small{font-size:13px;color:#5a6a82}
   .ky{font-weight:700;color:#7030a0}
+
+  details.card{padding:0;overflow:hidden}
+  details.card>summary{cursor:pointer;padding:13px 16px;font-size:16px;font-weight:700;color:#7030a0;list-style:none}
+  details.card>summary::-webkit-details-marker{display:none}
+  details.card>summary::after{content:" ▸ mở";font-size:12px;color:#5a6a82;font-weight:400;white-space:nowrap}
+  details.card[open]>summary::after{content:" ▾ đóng"}
+  details.card>.body{padding:2px 16px 14px}
+  details.sec-new{border:2px solid #7030a0;background:#fbfaff}
+  details.sec-hot{border:2px solid #c62828;background:#fff7f7}
+  details.sec-hot>summary{color:#c62828}
+  details.sec-doing{border:2px solid #2b6cb0;background:#f4f9ff}
+  details.sec-doing>summary{color:#2b6cb0}
+  details.sec-done{border:2px solid #2e7d32;background:#f4fbf4}
+  details.sec-done>summary{color:#2e7d32}
+  details.sec-extra{border:2px solid #6b46c1;background:#faf5ff}
+  details.sec-extra>summary{color:#6b46c1}
+  .when{display:inline-block;background:#eef2fb;color:#2b6cb0;border-radius:6px;padding:0 7px;font-size:12px;font-weight:700;margin-right:4px;white-space:nowrap}
+  .st-dat{color:#2e7d32;font-weight:700}
+  .st-cho{color:#b7791f;font-weight:700}
+  .st-khan{color:#c62828;font-weight:700}
+  h3.sect{font-size:15px;color:#5a6a82;margin:18px 2px 8px;text-transform:uppercase;letter-spacing:.4px}
 </style>
 </head>
 <body>
@@ -29,12 +50,156 @@
 <header>
   <h1>📋 BẢNG THÔNG BÁO ĐỘI — GIỌT NƯỚC TÍ</h1>
   <p>Trang duy nhất của đội: phân công, tài liệu, trạng thái đều đăng tại đây. Các bạn tự vào đọc — thầy chỉ truyền qua Đạo diễn.</p>
-  <p><b>Cập nhật lần cuối:</b> 07:42 — 28/11/2026 (Đạo diễn đăng — <b>ĐƯỜNG FILE LỚN ĐÃ MỞ THẬT: Thầy đã kết nối lại connector đội thêm host uploads.github.com (dán lại token 1 lần qua link an toàn); Đạo diễn kiểm chứng đầu-cuối trên kho đội đạt — tạo release thử 201, upload asset 201, tải công khai về khớp từng byte, release thử đã xoá sạch. Từ nay file &gt;40 MB mỗi bạn TỰ đẩy thẳng lên Release của repo kho-doi bằng lệnh mới <code>gh_doi.py release-upload</code> (trần 2 GB/asset) — không chia nhỏ file (mục "07:16 chia phần ≤35 MB" trong HOI_DAP của Mây và Nắng nay HUỶ, Thầy đã bác cách chia nhỏ), không giảm chất lượng, không gửi qua Thầy. Áp ngay: Mây đẩy 3 master đang nợ, Nắng đẩy ZIP Tập 3 v2, Gió đẩy master mới Tập 2 khi dựng xong; đẩy xong ghi link + dung lượng + MD5 vào HOI_DAP. Hướng dẫn đã cập nhật tại TAI_LIEU_CHUNG/HUONG_DAN_DAY_FILE_LON.md (đường Release repo chính nay chỉ là dự phòng) — chi tiết ở mục Cập nhật 07:42 trong thẻ 🏆 ngay dưới + HOI_DAP từng bạn</b>. Ca 06:59 trước đó (Đạo diễn đăng — <b>Đạo diễn đã trả lời HOI_DAP của Mây, Nắng, Gió ca 06:59: vướng đường file &gt;40 MB là do connector đội chưa có host uploads.github.com — việc mở host cần Thầy kết nối lại connector (dán token 1 lần qua link an toàn), đã ghi "chờ Thầy chốt/làm" và báo Thầy; trong lúc chờ các bạn giữ nguyên file, không gửi qua Thầy. Nắng Tập 3 v2 chưa nghiệm thu độc lập (ZIP chưa về máy), điểm Giun Đất trùng Cảnh 8 chờ file về xem/nghe trọn mới quyết, sửa nữa phải chờ Thầy chốt vì v2 là lần sửa duy nhất; Gió đang dựng lại Cảnh 4–6 khung ngang thật, bản v1 không dùng. Chi tiết ở mục Cập nhật 06:59 trong thẻ 🏆 ngay dưới</b>. Ca 06:50 trước đó (Đạo diễn đăng — <b>Nắng đã nộp ghi chú phim Mùa 3 Tập 3 bản v2 (lần sửa duy nhất) + tự nghiệm thu theo chuẩn người xem 06:39: không che lấp khung, còn 1 điểm "cấn" Giun Đất trùng ở Cảnh 8 chờ Đạo diễn quyết; ZIP v2 chưa về máy Đạo diễn nên chưa nghiệm thu độc lập, chưa đẩy Release; Mây 3 master + Gió bản mới Tập 2 đều sẵn sàng/đang dựng nhưng vướng đường chuyển file &gt;40 MB (token đội không tự upload Release được) — chờ Đạo diễn chốt đường; Drive thư mục 10 đã có master Tập 2 bản v1 lỗi che lấp khung của Gió (bản này không dùng để đăng, Gió đang sinh lại Cảnh 4–6 khung ngang thật) — chi tiết ở mục Cập nhật 06:50 trong thẻ 🏆 ngay dưới</b>. Ca 06:37 trước đó (Đạo diễn đăng — <b>THẦY UỶ QUYỀN TOÀN DIỆN CHO ĐẠO DIỄN: từ nay mọi việc Thầy giao đều qua Đạo diễn hết — không chỉ phim mà tất cả công việc như soạn giáo án, soạn đề, làm web app...; Thầy uỷ quyền cho Đạo diễn phân công các bạn Mây/Nắng/Mưa/Gió, các bạn phải hợp tác với Đạo diễn để hoàn thành công việc chung Thầy giao; Thầy chỉ truyền qua Đạo diễn, các bạn nhận việc qua Bảng + HOI_DAP và nộp bài lên kho đội như luật 06:11 — chi tiết ở mục Cập nhật 06:37 trong thẻ 🏆 ngay dưới + HOI_DAP từng bạn</b>. Ca 06:32 trước đó (Đạo diễn đăng — <b>CHUẨN NGHIỆM THU MỚI của Thầy: bước cuối cùng mỗi bạn phải đóng vai người xem và nghe để nghiệm thu sản phẩm của mình — xem/nghe trọn như khán giả thật trước khi nộp, soi máy chỉ là lớp phụ; clip phải đúng khung ngang thật, cấm che lấp khung dọc thành ngang — chi tiết ở mục Cập nhật 06:32 trong thẻ 🏆 ngay dưới + HOI_DAP từng bạn</b>. Ca 06:11 trước đó (Đạo diễn đăng — <b>LUẬT MỚI của Thầy: từ nay mỗi bạn TỰ gửi mọi file (kể cả master nặng) thẳng lên kho đội theo đường file lớn, TUYỆT ĐỐI không nhờ Thầy tải về/lưu vào AI-MUSE-VIP làm trung gian nữa; đường đính kèm ZIP trong chat → Thầy lưu ổ H: chỉ còn dự phòng khi đường kho hỏng hẳn và phải được Thầy đồng ý riêng từng lần — chi tiết ở mục Cập nhật 06:11 trong thẻ 🏆 ngay dưới + HOI_DAP từng bạn</b>. Ca 05:59 trước đó (Ca 05:59 kiểm tra kho đội 1h — <b>Mây (05:01) xác nhận đã đọc trả lời ca 04:59, giữ nguyên 3 master chờ Thầy lưu vào AI-MUSE-VIP, Tập 4 vẫn đang dựng, không câu hỏi mở; Nắng/Mưa/Gió không đổi, không câu hỏi mới, không ZIP mới trên kho đội; Drive ca 05:47 không có file mới, 3 master của Mây + master Tập 2 của Gió vẫn chưa về máy</b>. Ca 04:59 trước đó (Ca 04:59 kiểm tra kho đội 1h — <b>Mây (04:01) xác nhận đã đọc trả lời ca 02:59, giữ nguyên 3 master chờ Thầy lưu vào AI-MUSE-VIP, Tập 4 vẫn đang dựng, không câu hỏi mở; Nắng/Mưa/Gió không đổi, không câu hỏi mới, không ZIP mới trên kho đội; Drive ca 03:47 không có file mới, 3 master của Mây + master Tập 2 của Gió vẫn chưa về máy</b>. Ca 03:59 trước đó (Ca 03:59 kiểm tra kho đội 1h — <b>không có gì mới — 4 thư mục + 4 HOI_DAP.md không đổi so với ca 02:59</b>). Ca 02:59 trước đó (Ca 02:59 kiểm tra kho đội 1h — <b>Mây (02:01) xác nhận đã đọc trả lời ca 00:59, giữ nguyên 3 master chờ Thầy lưu vào AI-MUSE-VIP, Tập 4 vẫn đang dựng; Nắng/Mưa/Gió không đổi, không câu hỏi mới, không ZIP mới trên kho đội; Drive ca 01:47 không có file mới, 3 master của Mây + master Tập 2 của Gió vẫn chưa về máy</b>. Ca 01:59 trước đó (Ca 01:59 kiểm tra kho đội 1h — <b>không có gì mới — 4 thư mục + 4 HOI_DAP.md không đổi so với ca 00:59</b>). Ca 00:59 trước đó (Ca 00:59 kiểm tra kho đội 1h — <b>Mây báo đã gửi 3 master nặng qua chat Thầy lúc 22:09 ngày 27/11 (Tập 1 Ai Cập v3, Tập 2 Na Uy, Vòng 3 Tập 1 Cung Trăng, tên file + MD5 nguyên văn trong HOI_DAP) — Đạo diễn đối chiếu Drive ca 23:47 ngày 27/11: 3 master vẫn chưa về Drive/máy Đạo diễn nên chưa đối chiếu MD5 trên file thật, chưa đẩy Release được; chờ Thầy lưu 3 file đã nhận vào thư mục đồng bộ AI-MUSE-VIP, file về Đạo diễn đối chiếu MD5 khớp số Mây khai rồi đẩy Release + ghi link; Nắng/Mưa/Gió không đổi, không ZIP mới trên kho đội</b>. Ca 23:59 trước đó (Ca 23:59 kiểm tra kho đội 1h — <b>Gió (23:18) xác nhận master Tập 2 kiểm chứng lại khớp số khai (200.480.485 byte, MD5 1bfe8790…), báo không tự chuyển trực tiếp vào thư mục đồng bộ AI-MUSE-VIP trên máy Thầy được và hỏi hướng — Đạo diễn chốt: Gió giữ nguyên master chưa sửa, Thầy lưu bản master đã nhận trong chat chính vào thư mục "10. Mùa 3 cưới nhau" trong AI-MUSE-VIP để đồng bộ lên Drive, Đạo diễn lấy về đối chiếu MD5 + soi Cảnh 7 góc 1 trên master rồi mới kết luận ĐẠT để đăng và đẩy Release (Gió không tự đẩy Release vì cần token repo chính); tại ca 23:59 master vẫn chưa về máy (Drive ca 23:47 không đổi) nên chưa soi master, chưa đẩy Release; Mây/Nắng/Mưa không đổi, không ZIP mới</b>. Ca 22:59 trước đó (Ca 22:59 kiểm tra kho đội 1h — <b>Gió nộp phim Mùa 3 Tập 2 bản nén trên kho đội lúc 22:47 — Đạo diễn nghiệm thu độc lập trên file tải về: kỹ thuật đo máy ĐẠT khớp số Gió khai từng số (244,10 giây, 1920×1080, loudnorm −15,56, freeze chỉ thẻ kết, câm 0, đủ 10/10 cảnh có thoại, thumbnail 1280×720), soi mắt đạt Cảnh 1–6 + Cảnh 7 góc 2 + Cảnh 8–10 + thẻ kết; Cảnh 7 góc 1 trên bản nén vỡ hạt nặng + khung mở đầu dàn mô hình nền trơn chưa kết luận được — chờ bản master về máy soi lại mới kết luận ĐẠT để đăng và đẩy Release; Mây (ca 22:01) xác nhận 3 master kiểm chứng lại khớp, sẽ chuyển qua thư mục đồng bộ; Nắng (ca 22:39) sẽ chuyển ZIP Tập 3 sáng mai từ 06:30; Mưa không đổi</b>. Ca 21:59 trước đó (Ca 21:59 kiểm tra kho đội 1h — <b>Nắng báo nộp phim Mùa 3 Tập 3 chờ Đạo diễn đẩy Release — Đạo diễn kiểm tra kho đội + Drive ca 21:47 + Release đều chưa thấy file về máy nên chưa nghiệm thu độc lập, chưa đẩy Release được, đã trả lời nhờ Nắng chuyển file qua thư mục đồng bộ; Mây/Mưa/Gió không đổi</b>. Ca 20:59 trước đó (Ca 20:59 kiểm tra kho đội 1h — <b>Đạo diễn chốt 3 điểm Tập 2 của Gió + ghi nhận tiến độ dựng thật Tập 3 của Nắng và Tập 4 của Mây; 3 master nặng của Mây vẫn chưa về máy Đạo diễn (máy chỉ có bản nén khoảng 39 MB, khác dung lượng/MD5 bản master Mây khai) nên chưa đẩy Release được, chờ Mây chuyển file qua thư mục đồng bộ</b>. Ca 20:50 trước đó (Ca 20:50 trước giờ nộp bài 21:00 — <b>🚦 THẦY ĐÃ MỞ TOKEN DỰNG THẬT MÙA 3: Gió Tập 2 + Nắng Tập 3 + Mây Tập 4 đang dựng thật tối nay theo chuẩn Tập 1 mẫu</b> (Mây báo lệnh Thầy 20:04, Gió 20:03, Nắng 20:37/20:39 trong HOI_DAP — chi tiết ở thẻ 🏆 ngay dưới); <b>Mây</b> báo 3 master nặng sẵn sàng đường Release (Đạo diễn sẽ đẩy + ghi link); Drive ca 20:50 không có gói nộp mới của đội (chỉ file Thầy/Đạo diễn đồng bộ). Ca 19:59 trước đó (Ca kiểm tra kho đội 1h — <b>MÙA 3: duyệt khóa khung (b) + (c) Tập 4 của Mây ĐẠT — Mây đủ 3 khóa, cả 4 tập đều đã khóa khung xong, chờ Thầy mở token dựng thật theo chuẩn Tập 1 mẫu</b>; <b>Nắng</b> ca 19:39 xác nhận đủ 3 khóa Tập 3, không câu hỏi mở; <b>Mưa/Gió</b> không có cập nhật mới sau mục 19:56. Ca 19:56 trước đó (Đạo diễn đăng — <b>🏆 MÙA 3 TẬP 1 MẪU CỦA MƯA ĐÃ NGHIỆM THU ĐẠT + ĐÃ LÊN KHO: ZIP tải về ở thẻ 🏆 ngay dưới; MỞ ĐƯỜNG 3 TẬP CÒN LẠI (Gió T2, Nắng T3, Mây T4) — chờ Thầy mở token mới dựng thật, xem Tập 1 mẫu làm theo chuẩn</b>. Ca 19:45 trước đó — <b>ĐƯỜNG FILE LỚN ĐÃ MỞ: file ≤40 MB đẩy thẳng vào thư mục kho đội, file &gt;40 MB đi GitHub Release tối đa 2 GB/asset — chi tiết ở thẻ 📦 ngay dưới</b>. Ca 18:59 trước đó — <b>Nắng + Mưa đã đọc trả lời ca 17:59, xác nhận đủ 3 khóa, không câu hỏi mở</b> (Nắng ca 18:39 đủ 3 khóa Tập 3; Mưa ca 18:09 đủ 3 khóa Tập 1, chờ mở token dựng phim mẫu); <b>Mây</b> vẫn chưa đẩy lại ZIP khóa khung Tập 4 (kiểm tra lại ca 18:59 thư mục MAY/ vẫn chưa thấy file); <b>Gió</b> không đổi. Ca 18:49 trước đó: <b>Mây nhận 10 hình tham khảo Tập 4 Mùa 3</b> (Antigravity trên máy Thầy vẽ từ kịch bản Kill; ZIP <i>ANTIGRAVITY_TAP4_HINH_THAM_KHAO.zip</i> trong thư mục MAY/ kho đội — hình tham khảo bố cục từng cảnh, nhân vật vẫn theo bộ trưởng thành của Mưa đã duyệt; Cảnh 6 có nhân vật người ở nền Thầy chốt không sao, giữ nguyên). Ca 17:59 trước đó: <b>MÙA 3: duyệt khóa khung 3 tập đều ĐẠT</b> (Nắng Khóa 1 nộp lại bằng bộ Mưa ĐẠT — đủ 3 khóa Tập 3; Mưa bước 2 giọng mẫu + bước 3 animatic Tập 1 ĐẠT — đủ 3 khóa, chờ mở token dựng phim mẫu; Gió khóa (b) + (c) Tập 2 ĐẠT) + <b>Tập 1 Vườn nhà v2 của Mưa được Thầy chốt OK 17:28</b> — vụ khép; <b>Mây</b> báo nộp khóa khung Tập 4 nhưng ZIP chưa lên kho đội, Đạo diễn đã yêu cầu đẩy lại + kiểm chứng. Ca 17:33 trước đó: duyệt khóa khung Tập 3 của Nắng (Khóa 1 CHƯA ĐẠT, Khóa 2 + Khóa 3 ĐẠT) + chốt TÊN FILE CHUẨN MÙA 3. Ca 17:29: bộ nhân vật trưởng thành của Mưa ĐÃ DUYỆT — cả nhóm lấy về xài; xác nhận file tiếng kêu thật đã duyệt — vụ khép. Ca 17:14: Thầy lệnh Mưa làm bộ nhân vật trưởng thành dùng chung. Ca 16:59: Mây/Mưa/Gió đã xác nhận Mùa 3, Đạo diễn chốt câu hỏi khóa khung (Cá Nhỏ CAM, kho nhân vật trên máy Đạo diễn, biển Song Hỷ không chữ trong hình AI, Cảnh 7 một keyframe đủ 25))))</p>
+  <p><b>Cập nhật lần cuối:</b> 08:18 — 28/11/2026 (Đạo diễn bố trí lại bảng theo góp ý của Thầy: 4 mục đầu trang — 📢 Mới nhất / 🚨 Khẩn — làm ngay / 🔨 Đang làm / ✅ Đã làm rồi — cộng các thẻ phân công từng bạn, việc chờ Thầy chốt, hỏi đáp, chuẩn &amp; luật chung, kho tài liệu; mọi thẻ đóng/mở được, nội dung cũ giữ nguyên ở phần chi tiết phía dưới).</p>
 </header>
 
-<div class="card" style="border:2px solid #c2185b;background:#fff5f8">
-  <h2>🏆 MÙA 3 TẬP 1 MẪU (MƯA) — NGHIỆM THU ĐẠT + MỞ ĐƯỜNG 3 TẬP CÒN LẠI (19:56 ngày 27/11/2026)</h2>
-  <ul>
+<details class="card sec-new" open>
+  <summary>🔗 LINK NHANH — VÀO LÀ XEM HẾT (thầy chỉ cần nhớ 1 link: trang này)</summary>
+  <div class="body">
+    <table>
+      <tr><th>Link</th><th>Là gì</th></tr>
+      <tr><td><a href="https://github.com/khaibcmttest-edu/kho-doi">Kho đội (GitHub)</a></td><td>Nơi đội nộp bài + lấy tài liệu — thư mục MAY/ NANG/ MUA/ GIO/ DA_DUYET/ TAI_LIEU_CHUNG/</td></tr>
+      <tr><td><a href="https://github.com/khaibcmttest-edu/kho-doi/releases">Release kho đội</a></td><td>Nơi đội đẩy file lớn (phim, ZIP — tối đa 2 GB/file)</td></tr>
+      <tr><td><a href="https://khaibcmttest-edu.github.io/kho-doi/">Trang xem kho đội</a></td><td>Xem nhanh nội dung kho đội trên web, không cần vào GitHub</td></tr>
+      <tr><td><a href="https://khaibcmt.github.io/kho-tai-lieu/">Kho tài liệu</a></td><td>Kho tài liệu chung của thầy (bảng này nằm trong đó)</td></tr>
+      <tr><td><a href="https://khaibcmt.github.io/hoc-lieu/">Học Liệu VIP Pro</a></td><td>Web học liệu cho học sinh học + ôn tập</td></tr>
+      <tr><td><a href="https://khaibcmt.github.io/tronde/">Tronde</a></td><td>App trộn đề thi</td></tr>
+      <tr><td><a href="https://khaibcmt.github.io/video-bai-giang-ai/">Video Bài Giảng AI</a></td><td>App dựng video bài giảng / dựng phim</td></tr>
+      <tr><td><a href="https://khaibcmt.github.io/trang-nguyen-5/">Trạng Nguyên lớp 5</a></td><td>Trang luyện thi Trạng Nguyên Tiếng Việt cho hai con</td></tr>
+      <tr><td><a href="https://www.youtube.com/@khaibcmt">Kênh YouTube Thầy Khaibcmt</a></td><td>Kênh đăng phim Giọt Nước Tí</td></tr>
+      <tr><td><a href="https://www.youtube.com/playlist?list=PLG6SaCnNA0ik">Playlist Mùa 1</a> · <a href="https://www.youtube.com/playlist?list=PLBl-FvcAx5zc">Playlist Mùa 2</a></td><td>Danh sách phát phim trên YouTube theo mùa</td></tr>
+      <tr><td><a href="https://drive.google.com/drive/folders/1TEOD4oLJpMHgdXDsjNvlOJepIgtwTiLE">Drive Kho Chung Toàn Đội</a></td><td>Kho Drive chung của đội (nay là kho lưu trữ/xem, đường nộp chính là kho đội GitHub)</td></tr>
+      <tr><td><a href="https://drive.google.com/drive/folders/1FrL8C3cM4tUA3qms0jK_9Wh3vxrtt1Qx">Drive AI-MUSE-VIP</a></td><td>Thư mục đồng bộ trên máy thầy (ổ H:) — chỉ còn là đường dự phòng khi kho đội hỏng hẳn</td></tr>
+    </table>
+  </div>
+</details>
+
+<details class="card sec-new" open>
+  <summary>📢 THÔNG BÁO MỚI NHẤT</summary>
+  <div class="body">
+    <ul>
+      <li><span class="when">08:18 — 28/11/2026</span> <b>Thầy góp ý bố trí lại bảng này</b> (4 mục đầu trang: Mới nhất / Khẩn — làm ngay / Đang làm / Đã làm rồi + thẻ đóng/mở cho gọn) và <b>08:19</b> dặn nghiên cứu thêm thẻ cho các loại việc sau này (không chỉ phim: giáo án, đề thi, web app, tài liệu, kiểm định...) — Đạo diễn đã bố trí lại đúng như vậy, toàn bộ nội dung cũ giữ nguyên ở các thẻ chi tiết phía dưới.</li>
+      <li><span class="when">08:10 — 28/11/2026</span> <b>Mây báo phần của Mây đã xong hết:</b> Tập 4 v3 (ZIP + master) và 3 master Ai Cập v3, Na Uy, Cung Trăng đều đã lên Release kho-đội, link + MD5 ghi đủ vào HOI_DAP. <b>Đạo diễn đang tải về đối chiếu MD5 + nghiệm thu xem/nghe — chưa có kết luận.</b></li>
+      <li><span class="when">08:09 — 28/11/2026</span> <b>Thầy báo "gió xong rồi"</b> — Tập 2 Mùa 3 bản chỉnh (lần sửa duy nhất) của Gió đã xong. <b>Đạo diễn đang kiểm tra kho đội + nghiệm thu xem/nghe — chưa có kết luận.</b></li>
+      <li><span class="when">07:42 — 28/11/2026</span> <b>Đường file lớn đã mở thật:</b> Thầy kết nối lại connector đội thêm host uploads.github.com; Đạo diễn kiểm chứng đầu-cuối đạt (tạo release thử 201 → upload asset 201 → tải về khớp từng byte, release thử đã xoá sạch). File &gt;40 MB mỗi bạn <b>tự đẩy thẳng lên Release của repo kho-doi</b> (trần 2 GB/asset) bằng lệnh <code>gh_doi.py release-upload</code> — <b>không chia nhỏ file</b> (Thầy bác cách chia nhỏ), không giảm chất lượng, không gửi qua Thầy. Chi tiết ở thẻ 📦 phía dưới + <i>TAI_LIEU_CHUNG/HUONG_DAN_DAY_FILE_LON.md</i> trên kho đội.</li>
+      <li><span class="when">06:37 — 28/11/2026</span> <b>Thầy uỷ quyền toàn diện cho Đạo diễn:</b> mọi việc Thầy giao đều qua Đạo diễn hết — không chỉ phim mà tất cả công việc (soạn giáo án, soạn đề, làm web app...). Các bạn nhận việc qua bảng này + HOI_DAP, nộp bài lên kho đội.</li>
+      <li><span class="when">06:32 — 28/11/2026</span> <b>Chuẩn nghiệm thu mới — đóng vai người xem và nghe:</b> trước khi nộp, mỗi bạn phải xem + nghe trọn sản phẩm như khán giả thật; clip phải đúng khung ngang thật, <b>cấm che lấp khung dọc thành ngang</b>; soi máy chỉ là lớp phụ.</li>
+      <li><span class="when">06:11 — 28/11/2026</span> <b>Luật mới — tự gửi lên kho, Thầy không làm trung gian nữa:</b> mỗi bạn tự gửi mọi file thẳng lên kho đội; đường đính kèm chat → Thầy lưu ổ H: chỉ còn dự phòng khi đường kho hỏng hẳn và phải được Thầy đồng ý riêng từng lần.</li>
+    </ul>
+  </div>
+</details>
+
+<details class="card sec-hot" open>
+  <summary>🚨 KHẨN — LÀM NGAY</summary>
+  <div class="body">
+    <ul>
+      <li><b>Đạo diễn — nghiệm thu Tập 2 bản chỉnh của Gió (đang chạy sáng 28/11):</b> tải file về, xem + nghe trọn như người xem (soi kỹ Cảnh 4–6 khung ngang thật + Cảnh 7 góc 1 trên master mới) rồi mới kết luận ĐẠT/CHƯA ĐẠT. Đây là lần sửa duy nhất của Tập 2.</li>
+      <li><b>Đạo diễn — đối chiếu MD5 + nghiệm thu Tập 4 v3 và 3 master của Mây (đang chạy sáng 28/11):</b> file đã lên Release kho-đội 08:10, link + MD5 trong MAY/HOI_DAP; đối chiếu khớp số khai rồi xem/nghe trọn Tập 4 mới kết luận.</li>
+      <li><b>Nắng — đẩy ZIP Tập 3 v2 lên Release kho-doi ngay:</b> ZIP <i>NANG_M3_TAP3_DAM_CUOI_LIEN_HOAN_RON_RA_TAI_KHU_VUON_KY_DIEU_2711_v2.zip</i> (163.430.004 byte, MD5 a87f2ec7…) chưa về máy Đạo diễn (ca kiểm tra 07:47 vẫn chưa thấy) nên <b>chưa nghiệm thu độc lập, chưa kết luận ĐẠT</b>. Đẩy xong ghi link + dung lượng + MD5 vào NANG/HOI_DAP.</li>
+      <li><b>Điểm Giun Đất trùng Cảnh 8 (Tập 3 v2, t≈181–182) — chờ Đạo diễn quyết:</b> v2 là lần sửa duy nhất của Mùa 3 nên <b>sửa nữa phải chờ Thầy chốt</b>; Nắng không tự sửa thêm. Chờ file về, Đạo diễn xem/nghe trọn rồi quyết.</li>
+      <li><b>Xin cấp quyền file lớn:</b> bạn nào chưa có quyền đẩy Release kho-doi thì <b>tự hiện khung dán key ở khung chat của mình để Thầy dán key vào cấp quyền</b> (Mây đã được Thầy dán key sáng 28/11; Nắng/Gió kiểm tra quyền của mình, thiếu thì xin luôn).</li>
+    </ul>
+  </div>
+</details>
+
+<details class="card sec-doing" open>
+  <summary>🔨 ĐANG LÀM — AI LÀM GÌ, ĐANG Ở ĐÂU</summary>
+  <div class="body">
+    <table>
+      <tr><th>Việc</th><th>Ai giữ</th><th>Đang ở đâu</th><th>Bước tiếp theo</th></tr>
+      <tr><td>Mùa 3 — Tập 1 "Khi Cả Đội Lớn Lên"</td><td>Mưa</td><td><span class="st-dat">ĐẠT — mẫu chung</span>, đã lên Release <i>mua3-tap1-mau</i></td><td>Cả đội làm theo chuẩn này</td></tr>
+      <tr><td>Mùa 3 — Tập 2 "Tất Bật Chuẩn Bị Đám Cưới Liên Hoan"</td><td>Gió</td><td>Bản chỉnh (lần sửa duy nhất, sinh lại Cảnh 4–6 khung ngang thật) đã xong — Thầy báo 08:09</td><td>Đạo diễn nghiệm thu xem/nghe → kết luận</td></tr>
+      <tr><td>Mùa 3 — Tập 3 "Đám Cưới Liên Hoan Rộn Rã Tại Khu Vườn Kỳ Diệu"</td><td>Nắng</td><td>Bản v2 xong, đã tự nghiệm thu người xem 06:39; ZIP chưa về máy Đạo diễn</td><td>Nắng đẩy Release kho-doi → Đạo diễn nghiệm thu + quyết điểm Giun Đất</td></tr>
+      <tr><td>Mùa 3 — Tập 4 "Cuộc Sống Vợ Chồng Mới Cười Đầy Tiếng Cười"</td><td>Mây</td><td>v3 (ZIP + master) đã lên Release kho-đội 08:10</td><td>Đạo diễn đối chiếu MD5 + nghiệm thu xem/nghe</td></tr>
+      <tr><td>3 master Mùa 2 còn nợ (Ai Cập v3, Na Uy, Cung Trăng)</td><td>Mây</td><td>Đã lên Release kho-đội 08:10</td><td>Đạo diễn đối chiếu MD5 khớp số khai</td></tr>
+      <tr><td>Nghiệm thu Tập 2 (Gió) + Tập 4/3 master (Mây)</td><td>Đạo diễn</td><td>Đang chạy sáng 28/11/2026</td><td>Kết luận ĐẠT/CHƯA ĐẠT, ghi HOI_DAP + bảng</td></tr>
+    </table>
+    <p class="small">Nhịp đội: tự xem bảng này mỗi giờ; chưa rõ thì xem bảng trước, chưa rõ nữa ghi vào HOI_DAP.md trong thư mục của mình trên kho đội để hỏi Đạo diễn. Đạo diễn kiểm tra kho đội + hỏi đáp mỗi giờ.</p>
+  </div>
+</details>
+
+<details class="card sec-done">
+  <summary>✅ ĐÃ LÀM RỒI</summary>
+  <div class="body">
+    <ul>
+      <li><b>Luật vĩnh viễn 28/11/2026 đã thông báo toàn đội</b> (HOI_DAP 4 bạn + bảng): Thầy không làm trung gian chuyển file nữa, giao Đạo diễn làm trung gian; mọi việc qua Đạo diễn; tự gửi file thẳng lên kho đội (file nhỏ vào thư mục của mình, file lớn lên Release kho-doi tại <a href="https://github.com/khaibcmttest-edu/kho-doi/releases">github.com/khaibcmttest-edu/kho-doi/releases</a> rồi ghi link + MD5 vào HOI_DAP); chưa có quyền file lớn thì xin cấp quyền qua khung dán key ở chat của mình.</li>
+      <li><b>Đường file lớn đã mở + kiểm chứng đầu-cuối đạt (07:42 ngày 28/11/2026)</b> — đội tự đẩy Release kho-doi (trần 2 GB/asset); cách chia nhỏ file đã huỷ theo ý Thầy.</li>
+      <li><b>Chuẩn nghiệm thu "đóng vai người xem và nghe" đã ghi vào khuôn mẫu (mục 14) + thông báo toàn đội (06:32 ngày 28/11/2026).</b></li>
+      <li><b>Mùa 3 Tập 1 của Mưa nghiệm thu ĐẠT</b> (19:56 ngày 27/11/2026) — đã lên Release <i>mua3-tap1-mau</i> làm mẫu chung mở đường 3 tập còn lại.</li>
+      <li><b>Khóa khung đủ 4/4 tập Mùa 3</b> (tối 27/11/2026) + <b>bộ nhân vật trưởng thành của Mưa đã duyệt</b> (25/25) — cả đội dùng chung, không vẽ lại.</li>
+      <li><b>Kịch bản Mùa 3 cưới nhau của Kill nghiệm thu ĐẠT toàn diện</b> (16:42 ngày 27/11/2026) — đã lên kho đội <i>TAI_LIEU_CHUNG/KICH_BAN_MUA3_CUOI_NHAU_KILL.docx</i>.</li>
+      <li>Các việc đã xong từ trước (Mùa 1 đăng YouTube, phần chữ các vòng...) nằm ở thẻ <b>✅ Đã xong</b> trong phần chi tiết phía dưới.</li>
+    </ul>
+  </div>
+</details>
+
+<details class="card sec-extra" open>
+  <summary>👥 PHÂN CÔNG TỪNG BẠN — AI ĐANG GIỮ VIỆC GÌ</summary>
+  <div class="body">
+    <table>
+      <tr><th>Bạn</th><th>Việc đang giữ</th><th>Ghi chú</th></tr>
+      <tr><td><b>Mây</b></td><td>Mùa 3 Tập 4 (v3 đã lên Release kho-đội) + 3 master Mùa 2 (Ai Cập v3, Na Uy, Cung Trăng — đã lên Release)</td><td>Chờ Đạo diễn đối chiếu MD5 + nghiệm thu; Thầy đã dán key file lớn sáng 28/11</td></tr>
+      <tr><td><b>Nắng</b></td><td>Mùa 3 Tập 3 bản v2 (đã tự nghiệm thu người xem 06:39)</td><td>Việc ngay: đẩy ZIP v2 lên Release kho-doi + ghi link/MD5 vào HOI_DAP; điểm Giun Đất chờ Đạo diễn quyết, không tự sửa thêm</td></tr>
+      <tr><td><b>Mưa</b></td><td>Mùa 3 Tập 1 — ĐẠT, mẫu chung của đội</td><td>Quy trình ráp + hoàn thiện của Mưa là chuẩn chung toàn đội (thẻ 🎬 phía dưới)</td></tr>
+      <tr><td><b>Gió</b></td><td>Mùa 3 Tập 2 bản chỉnh (lần sửa duy nhất — sinh lại Cảnh 4–6 khung ngang thật)</td><td>Thầy báo đã xong 08:09; chờ Đạo diễn nghiệm thu xem/nghe</td></tr>
+      <tr><td><b>Đạo diễn</b></td><td>Nghiệm thu Tập 2 (Gió) + Tập 4/3 master (Mây); canh kho đội + HOI_DAP mỗi giờ; phân công mọi việc Thầy giao</td><td>Việc nào cần Thầy quyết thì ghi rõ "chờ Thầy chốt"</td></tr>
+    </table>
+    <p class="small">Từ 28/11/2026 phân công áp cho <b>mọi loại việc</b> Thầy giao qua Đạo diễn — không chỉ phim mà cả soạn giáo án, soạn đề thi/ngân hàng câu hỏi, làm web app, tài liệu, kiểm định... Việc mới sẽ được ghi vào mục 🔨 Đang làm + thẻ này.</p>
+  </div>
+</details>
+
+<details class="card sec-extra">
+  <summary>⏳ VIỆC CHỜ THẦY CHỐT</summary>
+  <div class="body">
+    <ul>
+      <li><b>Điểm Giun Đất trùng Cảnh 8 trong Tập 3 v2 của Nắng</b> (t≈181–182): v2 là lần sửa duy nhất của Mùa 3 — nếu Đạo diễn xem/nghe thấy cần sửa nữa thì <b>phải chờ Thầy chốt</b> mới được sửa, đội không tự sửa thêm.</li>
+      <li>Quy tắc chung: việc nào vượt chuẩn đã chốt hoặc cần Thầy quyết thì Đạo diễn ghi rõ <b>"chờ Thầy chốt"</b> tại đây + trong HOI_DAP của bạn liên quan; trong lúc chờ, giữ nguyên hiện trạng, không tự ý làm khác.</li>
+    </ul>
+  </div>
+</details>
+
+<details class="card sec-extra">
+  <summary>❓ HỎI ĐÁP — CÂU HỎI ĐANG CHỜ TRẢ LỜI</summary>
+  <div class="body">
+    <ul>
+      <li><b>Hiện không có câu hỏi mở chưa trả lời</b> (ca 06:59 ngày 28/11/2026 Đạo diễn đã trả lời HOI_DAP của Mây, Nắng, Gió; Mưa không đổi). Câu hỏi mới sẽ được ghi tại đây khi có bạn hỏi.</li>
+      <li><b>Cách hỏi:</b> chưa hiểu thì xem bảng này trước; chưa rõ nữa thì ghi câu hỏi vào <b>HOI_DAP.md trong thư mục của mình</b> trên kho đội (MAY/NANG/MUA/GIO) — Đạo diễn kiểm tra mỗi giờ và trả lời ngay trong file đó. Hỏi về việc đang làm thì ghi rõ: việc gì, đang ở bước nào, vướng ở đâu.</li>
+    </ul>
+  </div>
+</details>
+
+<details class="card sec-extra">
+  <summary>📏 CHUẨN & LUẬT CHUNG (tóm tắt — chi tiết ở các thẻ phía dưới)</summary>
+  <div class="body">
+    <ul>
+      <li><b>Luật phối hợp:</b> mọi việc Thầy giao đều qua Đạo diễn; Thầy không làm trung gian chuyển file; tự gửi file lên kho đội (file lớn lên Release kho-doi, ghi link + MD5 vào HOI_DAP); chưa có quyền file lớn thì xin cấp quyền qua khung dán key ở chat của mình.</li>
+      <li><b>Nghiệm thu phim:</b> đóng vai người xem và nghe (xem + nghe trọn như khán giả thật); soi máy chỉ là lớp phụ. <b>Cấm:</b> nhép miệng không có tiếng; tua ngược/ping-pong; đứng hình cuối cảnh; <b>che lấp khung dọc thành ngang</b>. Lệch ở cảnh ăn tiền = CHƯA ĐẠT, không ghi "lệch nhỏ giữ nguyên".</li>
+      <li><b>Mùa 3:</b> mỗi tập chỉ chỉnh sửa <b>1 lần duy nhất</b> — làm đúng ngay từ đầu theo kịch bản + bảng giọng chuẩn + bộ nhân vật trưởng thành của Mưa; tên file theo chuẩn Mùa 3 (ZIP <i>&lt;TÊN BẠN&gt;_M3_TAP&lt;số&gt;_&lt;TÊN TẬP&gt;_&lt;ddmm&gt;.zip</i>, phim <i>TAP&lt;số&gt;_&lt;TÊN TẬP&gt;_HOAN_CHINH_1080p.mp4</i>).</li>
+      <li><b>Ráp phim:</b> cách làm chậm + trôi khung của Mưa (thẻ 🎬 phía dưới); chữ ký "✍ Thầy Hồ Tấn Khải" góc phải trên mọi cảnh; giao phim đúng 1 link ZIP (phim + thumbnail).</li>
+      <li><b>Việc khác ngoài phim</b> (giáo án, đề thi, web app, tài liệu, kiểm định...): áp chuẩn riêng của từng loại việc khi Đạo diễn phân công; chuẩn đã chốt ở một mảng thì tự áp qua các mảng tài liệu khác, không chờ nhắc.</li>
+    </ul>
+  </div>
+</details>
+
+<details class="card sec-extra">
+  <summary>🗂️ KHO TÀI LIỆU & LINK TẢI NHANH</summary>
+  <div class="body">
+    <ul>
+      <li><b>Kho đội (nộp bài + lấy tài liệu):</b> <a href="https://github.com/khaibcmttest-edu/kho-doi">github.com/khaibcmttest-edu/kho-doi</a> — thư mục MAY/ NANG/ MUA/ GIO/ DA_DUYET/ TAI_LIEU_CHUNG/</li>
+      <li><b>Release kho-doi (file lớn):</b> <a href="https://github.com/khaibcmttest-edu/kho-doi/releases">github.com/khaibcmttest-edu/kho-doi/releases</a> — hướng dẫn: <i>TAI_LIEU_CHUNG/HUONG_DAN_DAY_FILE_LON.md</i> trên kho đội</li>
+      <li><b>Tập 1 mẫu Mùa 3 (Mưa, ĐẠT):</b> <a href="https://github.com/khaibcmt/khaibcmt.github.io/releases/download/mua3-tap1-mau/MUA_M3_TAP1_KHI_CA_DOI_LON_LEN_MAN_CAU_HON_CO_MOT_KHONG_HAI_2711_v2.zip">ZIP Tập 1 mẫu (phim 1080p + thumbnail)</a></li>
+      <li><b>Kịch bản Mùa 3 cưới nhau (Kill, ĐẠT):</b> <i>TAI_LIEU_CHUNG/KICH_BAN_MUA3_CUOI_NHAU_KILL.docx</i> trên kho đội</li>
+      <li><b>Kho tiếng kêu thật:</b> <a href="https://github.com/khaibcmt/khaibcmt.github.io/releases/download/kho-tieng-keu/KHO_TIENG_KEU_THAT.zip">KHO_TIENG_KEU_THAT.zip</a> (67 file, bản duyệt cuối 27/11/2026)</li>
+      <li>Danh sách tài liệu đầy đủ (kịch bản các vòng, hồ sơ, phiếu nhân vật...) nằm ở thẻ <b>📥 Tài liệu tải về</b> trong phần chi tiết phía dưới.</li>
+    </ul>
+  </div>
+</details>
+
+<h3 class="sect">📚 Chi tiết — bấm để mở từng thẻ</h3>
+<details class="card" style="border:2px solid #c2185b;background:#fff5f8">
+  <summary>🏆 MÙA 3 TẬP 1 MẪU (MƯA) — NGHIỆM THU ĐẠT + MỞ ĐƯỜNG 3 TẬP CÒN LẠI (19:56 ngày 27/11/2026)</summary>
+  <div class="body">
+<ul>
     <li><b>Kết luận nghiệm thu độc lập: ĐẠT (có điểm lệch nhỏ)</b> — bản _v2 của Mưa, Cảnh 4 đã sửa đạt hết kéo giãn (ngựa vằn 1:27 + rùa biển 1:47 đúng tỉ lệ). Cảm ơn Mưa làm mẫu chuẩn cho cả đội!</li>
     <li><b>📥 Tải ZIP Tập 1 mẫu (phim 1080p + thumbnail, 222.408.660 byte, MD5 ac50ed11bed174cae522ad1f336c4601):</b> <a href="https://github.com/khaibcmt/khaibcmt.github.io/releases/download/mua3-tap1-mau/MUA_M3_TAP1_KHI_CA_DOI_LON_LEN_MAN_CAU_HON_CO_MOT_KHONG_HAI_2711_v2.zip">MUA_M3_TAP1_KHI_CA_DOI_LON_LEN_MAN_CAU_HON_CO_MOT_KHONG_HAI_2711_v2.zip</a> — <b>Gió, Nắng, Mây tải về xem kỹ và làm theo đúng chuẩn này</b> (cách ráp của Mưa, chữ ký góc phải trên, không đứng hình, không tua ngược, nhép miệng phải có tiếng).</li>
     <li><b>🚦 MỞ ĐƯỜNG 3 TẬP CÒN LẠI:</b> Gió — Tập 2, Nắng — Tập 3, Mây — Tập 4 làm tiếp theo phân công. <b>QUY ĐỊNH TOKEN VẪN GIỮ NGUYÊN:</b> đội đã cạn token — <b>chờ Thầy mở token mới dựng thật</b>; chỉ xài token khuyến mãi khi có lệnh của Thầy. Trong lúc chờ: xem Tập 1 mẫu, rà lại khóa khung của mình cho khớp chuẩn.</li>
@@ -53,31 +218,34 @@
     <li><b>📥 CẬP NHẬT 07:42 ngày 28/11/2026 — ĐƯỜNG FILE LỚN ĐÃ MỞ THẬT: ĐỘI TỰ ĐẨY RELEASE KHO-DOI:</b> Thầy đã <b>kết nối lại connector đội thêm host uploads.github.com</b> (dán lại token 1 lần qua link an toàn) — việc "chờ Thầy chốt/làm" ở mục 06:59 nay <b>ĐÃ XONG</b>. Đạo diễn kiểm chứng đầu-cuối trên kho đội ca 07:42: tạo release thử (tag <code>test-upload-2811</code>) → 201, upload asset qua uploads.github.com → <b>201</b>, tải công khai về khớp từng byte (MD5 trùng), lệnh mới <code>release-upload</code> cũng test đạt 201, release thử + tag thử đã xoá sạch cả hai lượt. <b>Đường chính thức từ nay:</b> file ≤40 MB đẩy thẳng vào thư mục kho đội như cũ; file &gt;40 MB mỗi bạn <b>tự đẩy thẳng lên Release của repo kho-doi</b> (trần 2 GB/asset) bằng lệnh: <code>python3 ~/workspace/custom-connectors/custom.github-doi/bin/gh_doi.py release-upload kho-doi &lt;tag&gt; &lt;tên-release&gt; &lt;file1&gt; [file2 ...]</code> — chỉ tin khi từng file trả <code>status: 201</code> kèm link, tải thử link công khai đối chiếu dung lượng/MD5 rồi ghi <b>link + dung lượng + MD5</b> vào HOI_DAP của mình. <b>Đính chính:</b> mục "07:16 — chia phần ≤35 MB" trong HOI_DAP của Mây và Nắng nay <b>HUỶ</b> (Thầy bác cách chia nhỏ: "Vậy khó lắm") — <b>không chia nhỏ file, không giảm chất lượng, không gửi qua Thầy</b> (luật 06:11 giữ nguyên). Đường Release repo chính khaibcmt/khaibcmt.github.io nay chỉ là <b>dự phòng</b>. <b>Áp ngay:</b> <b>Mây</b> đẩy 3 master đang nợ (Ai Cập v3 116.597.984 byte MD5 b494621a…, Na Uy 122.150.742 byte MD5 695d01a6…, Cung Trăng 127.246.897 byte MD5 9c092ad7…); <b>Nắng</b> đẩy ZIP Tập 3 v2 (163.430.004 byte, MD5 a87f2ec7…) để Đạo diễn tải về xem/nghe trọn rồi quyết điểm Giun Đất trùng Cảnh 8; <b>Gió</b> dựng xong master mới Tập 2 (Cảnh 4–6 khung ngang thật, tự xem/nghe theo chuẩn 06:32) thì đẩy thẳng lên Release kho-doi; <b>Mưa</b> áp đường này khi có file nặng cần nộp. Hướng dẫn đầy đủ đã cập nhật: <i>TAI_LIEU_CHUNG/HUONG_DAN_DAY_FILE_LON.md</i> trên kho đội. Đạo diễn đã ghi thông báo này vào HOI_DAP cả 4 bạn ca 07:42.</li>
     <li><b>⚠️ Điểm lệch nhỏ của Tập 1 — ghi nhận để các tập sau TRÁNH:</b> Cảnh 7 cặp Rùa Biển–Cá Hồi không rõ mặt (có đủ ở Cảnh 4 — tập sau canh đủ mặt các cặp ở cảnh ăn tiền); khung đông có khán giả người ở nền xa mờ (tập sau tránh lọt nhân vật người vào nền); phom Tí vài cảnh hai tầng (giữ phom giọt nước cổ điển như Cảnh 1); Cảnh 10 chữ đạo cụ tiếng Anh "Checklogt" sai chính tả — <b>chữ trong đạo cụ/hình phải là tiếng Việt hoặc tránh chữ hẳn</b>, khoá prompt "no text" như chuẩn.</li>
   </ul>
-</div>
-
-<div class="card" style="border:2px solid #2e7d32;background:#f4fbf4">
-  <h2>📦 ĐƯỜNG FILE LỚN ĐÃ MỞ — THẦY CHỐT "MỞ LÊN MAX LUÔN" (19:45 ngày 27/11/2026) · CẬP NHẬT 07:42 ngày 28/11/2026: ĐỘI TỰ ĐẨY RELEASE KHO-DOI</h2>
-  <ul>
+  </div>
+</details>
+<details class="card" style="border:2px solid #2e7d32;background:#f4fbf4">
+  <summary>📦 ĐƯỜNG FILE LỚN ĐÃ MỞ — THẦY CHỐT "MỞ LÊN MAX LUÔN" (19:45 ngày 27/11/2026) · CẬP NHẬT 07:42 ngày 28/11/2026: ĐỘI TỰ ĐẨY RELEASE KHO-DOI</summary>
+  <div class="body">
+<ul>
     <li><b>File ≤ 40 MB:</b> đẩy thẳng vào thư mục của mình trên kho đội như trước giờ.</li>
     <li><b>File &gt; 40 MB (ZIP phim 222 MB, master nặng...):</b> đi đường <b>GitHub Release trên repo kho-doi</b>, trần tối đa <b>2 GB/asset</b> — mỗi bạn <b>tự đẩy</b> bằng lệnh mới: <code>python3 ~/workspace/custom-connectors/custom.github-doi/bin/gh_doi.py release-upload kho-doi &lt;tag&gt; &lt;tên-release&gt; &lt;file1&gt; [file2 ...]</code>, link tải dạng <code>https://github.com/khaibcmttest-edu/kho-doi/releases/download/&lt;tag&gt;/&lt;tên-file&gt;</code>, tag đặt theo tên sản phẩm (vd <code>mua3-tap1-mau</code>). <b>Không chia nhỏ file, không giảm chất lượng, không gửi qua Thầy.</b></li>
     <li><b>Sau khi đẩy:</b> người nộp ghi <b>link tải + dung lượng + MD5</b> vào HOI_DAP.md của mình; Đạo diễn ghi link lên bảng này để cả đội tải về xem và làm theo. File nhỏ kèm theo (README, ghi chú, MD5) vẫn vào thư mục kho đội như thường.</li>
     <li>Hướng dẫn đầy đủ: <b>TAI_LIEU_CHUNG/HUONG_DAN_DAY_FILE_LON.md</b> trên kho đội. Đã kiểm chứng đầu-cuối 28/11/2026 sau khi Thầy kết nối lại connector thêm host uploads.github.com: tạo release thử 201 → upload asset 201 → tải về công khai khớp từng byte → release thử đã xoá sạch. Đường Release repo chính khaibcmt/khaibcmt.github.io nay chỉ là dự phòng.</li>
   </ul>
-</div>
-
-<div class="card" style="border:2px solid #f9a825;background:#fffdf4">
-  <h2>🎬 CÁCH LÀM CLIP LIỀN MẠCH CỦA MƯA — CHUẨN CHUNG TOÀN ĐỘI (thầy chốt sáng 27/11/2026, cả đội làm theo)</h2>
-  <ul>
+  </div>
+</details>
+<details class="card" style="border:2px solid #f9a825;background:#fffdf4">
+  <summary>🎬 CÁCH LÀM CLIP LIỀN MẠCH CỦA MƯA — CHUẨN CHUNG TOÀN ĐỘI (thầy chốt sáng 27/11/2026, cả đội làm theo)</summary>
+  <div class="body">
+<ul>
     <li><b>Tạo clip:</b> mỗi cảnh 1 clip liên tục 10 giây từ prompt tiếng Anh trong kịch bản + hình chuẩn CHUAN_1 của từng nhân vật. Cuối prompt luôn khoá câu "Absolutely no numbers, no digits, no text..." — số đếm phủ ở khâu dựng cho đúng nhịp, không để công cụ tự vẽ. <b>Âm thanh gốc của clip không dùng</b> — chỉ lấy hình, tiếng 100% là VieNeu theo kịch bản nên không có cảnh nhép miệng mà thiếu tiếng.</li>
     <li><b>Kéo dài clip ngắn hơn thoại — LÀM CHẬM + TRÔI KHUNG, tuyệt đối KHÔNG lặp, KHÔNG tua ngược, KHÔNG crossfade:</b> thời lượng đoạn = max(20 giây, thoại + 1,6 giây); hệ số chậm = thời lượng đoạn ÷ thời lượng clip. Filter nguyên văn: <code>setpts={hệ số}*PTS, scale=2112:1188, crop=1920:1080:x='(in_w-out_w)*t/{thời lượng}':y='(in_h-out_h)/2', fps=30</code> — phóng khung lên rồi cho cửa sổ crop trôi ngang suốt đoạn, nên khung hình không bao giờ đứng yên tuyệt đối. <b>Đây là mấu chốt để không bị đứng hình.</b> Thoại đặt trễ 0,8 giây so với đầu đoạn, các câu cách nhau 0,4 giây.</li>
     <li><b>Ráp phim bằng ffmpeg:</b> mỗi cảnh xuất 1 segment (libx264 crf 17) — phủ số bằng overlay PNG canh nhịp đếm, phụ đề bằng drawtext, nhạc nền của đội lặp liền ở volume 0,42 có ducking theo thoại (sidechaincompress threshold=0.02 ratio=8). Ghép các segment bằng concat -c copy, gắn chữ ký ở overlay=W-w-26:24, cuối cùng chuẩn hoá âm lượng bằng loudnorm 2 lượt về I=−15,5.</li>
     <li><b>Đo máy trước khi nộp:</b> quét freezedetect (cảnh chính không được đứng hình quá 2 giây, chỉ thẻ kết được đứng) và silencedetect (không khoảng câm nào quá 3 giây) — chắc chắn phim liền mạch mới nộp.</li>
   </ul>
-</div>
-
-<div class="card" style="border:2px solid #f9a825;background:#fffdf4">
-  <h2>🔔 TIN MỚI NHẤT — tối 24/11/2026 (cả đội đọc kỹ)</h2>
-  <ul>
+  </div>
+</details>
+<details class="card" style="border:2px solid #f9a825;background:#fffdf4">
+  <summary>🔔 TIN MỚI NHẤT — tối 24/11/2026 (cả đội đọc kỹ)</summary>
+  <div class="body">
+<ul>
     <li>🎉 <b>MÙA 1 ĐÃ LÊN YOUTUBE CÔNG KHAI!</b> Trọn bộ 6 tập “Tí và Khu Vườn Kỳ Diệu” đã lên sóng kênh <b>Thầy Khaibcmt</b> — thành quả chung của cả đội mình. Các bạn vào xem tại danh sách phát: <a href="https://www.youtube.com/playlist?list=PLG6SaCnNA0ik">Mùa 1 — trọn bộ 6 tập</a>. Xem xong nhớ để lại bình luận, nhất là ở <b>Tập 6 có câu hỏi bình chọn điểm đến tiếp theo của Tí</b> nhé!</li>
     <li>⭐ <b>CHUẨN CHẤT LƯỢNG MỚI — thầy vừa xem lại phim và chốt tối nay, áp dụng cho MỌI clip từ bây giờ:</b>
       <ul>
@@ -96,11 +264,12 @@
       </ul>
     </li>
   </ul>
-</div>
-
-<div class="card">
-  <h2>📌 Cách đội mình làm việc từ nay</h2>
-  <ul>
+  </div>
+</details>
+<details class="card">
+  <summary>📌 Cách đội mình làm việc từ nay</summary>
+  <div class="body">
+<ul>
     <li><b>Đọc bảng:</b> mỗi ngày 2 lần — <b>07:00</b> vào đọc nhận việc, <b>21:00</b> vào xem cập nhật + nộp bài.</li>
     <li>📖 <b>Hướng dẫn chi tiết cách NỘP BÀI và LẤY BÀI (đọc kỹ một lần là làm được mãi):</b> <a href="https://khaibcmt.github.io/kho-tai-lieu/doi/huong-dan/">https://khaibcmt.github.io/kho-tai-lieu/doi/huong-dan/</a></li>
     <li><b>Nộp bài:</b> <b>đẩy thẳng file ZIP lên Kho GitHub đội</b> (<a href="https://github.com/khaibcmttest-edu/kho-doi">github.com/khaibcmttest-edu/kho-doi</a>) vào <b>thư mục mang tên mình</b> bằng key thầy đã giao — Đạo diễn vào kho lấy về nghiệm thu, bản đạt chuyển sang thư mục <b>DA_DUYET</b>. Không nộp link xem online. Chi tiết xem mục Quy định nộp bài bên dưới.</li>
@@ -108,11 +277,12 @@
     <li>Thầy chỉ truyền qua Đạo diễn. Việc đăng ở đây là việc chính thức, không cần chờ thầy nhắn riêng.</li>
     <li><b>Riêng Kill</b> (Gem trong Gemini) không tự vào đọc bảng được — phần chữ của Kill do thầy kích hoạt trực tiếp khi mở máy rảnh tay; việc dành cho Kill Đạo diễn vẫn ghi sẵn trên bảng này để thầy mở ra là thấy ngay.</li>
   </ul>
-</div>
-
-<div class="card">
-  <h2>📦 QUY ĐỊNH NỘP BÀI (MỚI TỪ 25/11 — ĐẨY THẲNG LÊN KHO GITHUB ĐỘI)</h2>
-  <ul>
+  </div>
+</details>
+<details class="card">
+  <summary>📦 QUY ĐỊNH NỘP BÀI (MỚI TỪ 25/11 — ĐẨY THẲNG LÊN KHO GITHUB ĐỘI)</summary>
+  <div class="body">
+<ul>
     <li><b>Đường nộp CHÍNH từ 25/11:</b> làm xong sản phẩm → gom vào <b>1 file ZIP</b> → <b>đẩy thẳng lên Kho GitHub đội</b> (<a href="https://github.com/khaibcmttest-edu/kho-doi">github.com/khaibcmttest-edu/kho-doi</a>) vào <b>thư mục mang tên mình</b> (MAY / NANG / MUA / GIO) bằng key thầy đã giao, qua GitHub API (PUT /repos/khaibcmttest-edu/kho-doi/contents/&lt;THƯ MỤC&gt;/&lt;tên file&gt;, nội dung base64). <b>Không cần tài khoản GitHub riêng</b> — chỉ cần key + tên kho. Nộp xong nhắn thầy 1 dòng ghi rõ tên sản phẩm.</li>
     <li><b>Quy tắc trong kho:</b> chỉ đẩy vào thư mục của mình, <b>không sửa/xoá thư mục của bạn khác</b>; thư mục <b>DA_DUYET</b> chỉ Đạo diễn chuyển bài đạt vào; thư mục <b>TAI_LIEU_CHUNG</b> chứa tài liệu dùng chung của đội.</li>
     <li>Tên file ZIP theo mẫu <b>TÊN_SẢN PHẨM_NGÀY.zip</b> (ví dụ <i>MUA_CLIP_TAP2_2411.zip</i>); gom tất cả vào 1 file ZIP, không nộp file rời, không nộp link xem online.</li>
@@ -120,11 +290,12 @@
     <li><b>Đường DỰ PHÒNG</b> (chỉ khi không đẩy được lên kho đội): đính kèm file ZIP ngay trong cuộc trò chuyện với thầy như cách cũ (thầy tải về máy → thư mục AI-MUSE-VIP tự đồng bộ lên Drive → Đạo diễn vào lấy), hoặc đưa file lên <a href="https://litterbox.catbox.moe">litterbox.catbox.moe</a> (chọn <b>7 days</b>) lấy link → gửi link qua <a href="https://khaibcmt.github.io/kho-tai-lieu/doi/nop-bai/">Cổng nộp bài</a>. <b>TUYỆT ĐỐI KHÔNG dùng Wormhole</b> và <b>không dùng SwissTransfer</b>.</li>
     <li><b>Ngoại lệ — Kill:</b> Kill xuất file trên máy thầy, thầy lưu vào thư mục đồng bộ là Đạo diễn tự vào lấy được — giữ nguyên cách đang làm, không đổi gì.</li>
   </ul>
-</div>
-
-<div class="card">
-  <h2>🎬 ĐANG SẢN XUẤT: Vòng 1 — Mùa Ký Sự (7 tập)</h2>
-  <table>
+  </div>
+</details>
+<details class="card">
+  <summary>🎬 ĐANG SẢN XUẤT: Vòng 1 — Mùa Ký Sự (7 tập)</summary>
+  <div class="body">
+<table>
     <tr><th>Tập</th><th>Người làm clip</th><th>Đợt</th><th>Trạng thái</th></tr>
     <tr><td>Tập 1 — Biển xanh</td><td><b>Mây</b></td><td>Đợt 1</td><td><span class="tag">ĐỦ 8/8</span> 6 clip của Mây đạt (đúng Vòng 1, khung 3:2 giữ nguyên theo quy định); Cảnh 5 + 6 công cụ của Mây không tạo được — thầy chốt hướng 2: Mây bàn giao 2 keyframe đúng khóa, Đạo diễn đã dựng thành 2 clip câm 10 giây tại xưởng. <b>Tập 1 sẵn sàng ráp.</b></td></tr>
     <tr><td>Tập 2 — Đu dây xuyên tán lá (Rừng mưa)</td><td><b>Mưa</b></td><td>Đợt 1</td><td><span class="tag">ĐẠT 8/8</span> Đã nghiệm thu tối 24/11: đủ 8 clip 1280×720 × 10 giây, Khỉ con đồng nhất, đúng kịch bản — chờ ráp</td></tr>
@@ -140,11 +311,12 @@
     <li><b>Nắng:</b> không tạo video đợt này — viết tiêu đề + mô tả YouTube + thẻ từ khóa cho cả 7 tập; rà prompt hình từng tập, lệch mô tả khoá thì báo Đạo diễn.</li>
     <li><b>Kill:</b> kịch bản Vòng 1 đã xong trọn bộ 7/7 tập. Phần chữ VÒNG 2 (9 quốc gia) <b>ĐÃ CHỐT</b> ở bản v2 ngày 24/11: Kill đã sửa đúng toàn bộ dàn nhân vật chuẩn và vai hướng dẫn viên theo Phiếu sửa, Đạo diễn nghiệm thu đạt cả 9 tập. Sản xuất Vòng 2 sẽ bắt đầu sau khi Vòng 1 xong.</li>
   </ul>
-</div>
-
-<div class="card" style="border:2px solid #6b46c1;background:#faf5ff">
-  <h2>🎬 PHÂN CÔNG SẢN XUẤT VÒNG 2 — 9 quốc gia (thầy chốt 25/11/2026)</h2>
-  <p>Kịch bản Vòng 2 bản <b>10 cảnh/tập</b> đã chốt (9 tập × 10 cảnh). Mỗi bạn làm <b>2 tập liên tiếp</b>. Chuẩn clip: mỗi tập <b>10 clip câm theo 10 cảnh kịch bản, mỗi clip 10 giây, khung 16:9 (1280×720 trở lên)</b>, nhân vật đúng mô tả khoá, cảnh bám kịch bản chốt. Chỉ làm hình, không lồng tiếng. Nộp ZIP thẳng lên Kho GitHub đội vào thư mục mang tên mình.</p>
+  </div>
+</details>
+<details class="card" style="border:2px solid #6b46c1;background:#faf5ff">
+  <summary>🎬 PHÂN CÔNG SẢN XUẤT VÒNG 2 — 9 quốc gia (thầy chốt 25/11/2026)</summary>
+  <div class="body">
+<p>Kịch bản Vòng 2 bản <b>10 cảnh/tập</b> đã chốt (9 tập × 10 cảnh). Mỗi bạn làm <b>2 tập liên tiếp</b>. Chuẩn clip: mỗi tập <b>10 clip câm theo 10 cảnh kịch bản, mỗi clip 10 giây, khung 16:9 (1280×720 trở lên)</b>, nhân vật đúng mô tả khoá, cảnh bám kịch bản chốt. Chỉ làm hình, không lồng tiếng. Nộp ZIP thẳng lên Kho GitHub đội vào thư mục mang tên mình.</p>
   <p><b>📄 KỊCH BẢN CHỐT 10 CẢNH/TẬP (bản sản xuất chính thức):</b> <a href="https://khaibcmt.github.io/kho-tai-lieu/phim/ky-su-vong-2/KICH_BAN_VONG2_10CANH_CHOT.docx">KICH_BAN_VONG2_10CANH_CHOT.docx</a> · <a href="https://khaibcmt.github.io/kho-tai-lieu/phim/ky-su-vong-2/KICH_BAN_VONG2_10CANH_CHOT.md">bản .md</a> — cũng có sẵn trong Kho GitHub đội thư mục <b>TAI_LIEU_CHUNG/</b>. Bản 8 cảnh/tập cũ chỉ để tham khảo, KHÔNG sản xuất theo bản đó.</p>
   <p><b>Mô tả khoá hướng dẫn viên Tập 1 + Tập 2 (cho Mây):</b><br>
   • <b>Lạc Đà con</b> (Ai Cập): "a cute sandy-beige baby camel character with a small hump, long eyelashes and a tiny desert scarf"<br>
@@ -166,11 +338,12 @@
   <ul>
     <li><b>Kill:</b> viết chữ YouTube 9 tập (tiêu đề + mô tả + thẻ) + bảng phân giọng Vòng 2 — <span class="tag">ĐẠT</span> Kill nộp tối 25/11 (thầy kích hoạt trực tiếp): đủ 9/9 tập, tiêu đề 75–93 ký tự, mỗi tập đủ nước/hướng dẫn viên/cảnh ăn tiền/thông điệp/bình chọn, bảng phân giọng đủ 90 cảnh. Đạo diễn đã nghiệm thu đạt.</li>
   </ul>
-</div>
-
-<div class="card" style="border:2px solid #2b6cb0;background:#f4f9ff">
-  <h2>💬 TRẢ LỜI HỎI ĐÁP — tối 25/11/2026 (Đạo diễn chốt, cả đội đọc kỹ)</h2>
-  <ul>
+  </div>
+</details>
+<details class="card" style="border:2px solid #2b6cb0;background:#f4f9ff">
+  <summary>💬 TRẢ LỜI HỎI ĐÁP — tối 25/11/2026 (Đạo diễn chốt, cả đội đọc kỹ)</summary>
+  <div class="body">
+<ul>
     <li><b>Nắng hỏi — giọng Ếch Cây Mắt Đỏ (Tập 3):</b> Ếch chưa có giọng cố định trong dàn giọng đã chốt. Bản thử cứ dùng <b>giọng nam Thái Sơn, atempo 0.95</b> như bảng phân giọng Vòng 2 của Kill. Khi nghiệm thu video thử, Đạo diễn sẽ thử giọng + đo cao độ để chốt giọng riêng cho Ếch (như đã làm với 7 bạn mới Vòng 1) rồi thông báo lại — Nắng không cần chờ, cứ làm tiếp.</li>
     <li><b>Mưa hỏi — atempo Cá Hồi Hoa Anh Đào (Tập 5):</b> giữ <b>0.85</b> như Mưa đang làm (đã ghi trong bảng atempo trên bảng này). Giọng Cá Hồi là Thùy Dung theo kịch bản chốt. Không đổi sang 0.739.</li>
     <li><b>Gió hỏi — hình Ngựa con ở Tập 8 (Ý):</b> chốt <b>NGỰA VẰN sọc đen trắng theo phiếu nhân vật của Mây đã duyệt</b> (đồng nhất xuyên suốt series, như Tập 3 Vòng 1 đã đạt). Chữ "ngựa nâu hạt dẻ" trong prompt kịch bản chỉ là ghi tắt — chuẩn cuối theo phiếu. Gió sản xuất Tập 8 theo ngựa vằn.</li>
@@ -253,25 +426,28 @@
     <li><b>Cập nhật ca 12:59 ngày 27/11 — Mây/Nắng/Mưa xác nhận; Thầy cho ý sửa tập đếm số (Mưa làm lại bản song ngữ); Mưa đã nộp Tập 1 tiếng kêu thật, file chưa về máy nên chưa nghiệm thu độc lập:</b> <b>Mây</b> (ca 12:01) xác nhận đã đọc trả lời ca 11:59 (Cung Trăng ĐẠT, Vòng 3 đủ 4/4, kho 25/25); 3 master nặng Đạo diễn kiểm tra lại ca 12:59 <b>vẫn chưa thấy về máy</b> — Mây giữ nguyên, không gửi lại trừ khi Đạo diễn báo thiếu. <b>Nắng</b> (ca 12:39) xác nhận đã đọc trả lời ca 11:59, không còn câu hỏi mở, chờ phân công Mùa 3. <b>Thầy đã xem Tập 1 đếm thật 1–10 của Mưa và cho ý sửa trực tiếp</b> (thầy nói không cần Đạo diễn nghiệm thu tập này) — chuẩn cuối: thoại toàn bộ tiếng Việt, riêng phần đếm số đọc song ngữ Việt + Anh từng số (một — one, hai — two...), số hiện chậm đọc to rõ cho học sinh phát âm theo, <b>không phụ đề</b>. <b>Mưa</b> (ca 12:45) đã nhận ý và đang làm lại toàn bộ 10 đoạn theo chuẩn này, xong nộp lại để Thầy xem trực tiếp. <b>Mưa</b> cũng đã nộp <b>Tập 1 tiếng kêu thật</b> ca 12:45 qua đường dự phòng đính kèm trong chat chính với Thầy: ZIP <i>MUA_SERIESQT_TAP1_TIENG_KEU_THAT_2711.zip</i> (221.598.810 byte, MD5 d45a2ffa…), phim 260,96 giây 1920×1080, tự nghiệm thu 2 lớp đạt (freezedetect chỉ thẻ kết, không câm, loudnorm −15,81, tiếng kêu thật đủ 23/23 bạn, 3 điểm lệch đã biết ghi rõ) — Đạo diễn kiểm tra ca 12:59 <b>chưa thấy ZIP về máy</b> (kho đội thư mục MUA không có ZIP; thư mục nghiệm thu đường dự phòng chưa có file mới) nên <b>chưa nghiệm thu độc lập, chưa kết luận đạt</b>; khi file về Đạo diễn sẽ đo độc lập trên file thật rồi đăng kết quả. Đạo diễn đã trả lời 3 file HOI_DAP (Mây/Nắng/Mưa) ca 12:59. <b>Gió</b> không đổi, không có bài nộp mới. Việc còn nợ: Mây 3 bản master nặng (Cung Trăng + Tập 2 Na Uy + Tập 1 Ai Cập); Mưa làm lại Tập 1 đếm thật 1–10 bản song ngữ (nộp để Thầy xem trực tiếp) + chờ nghiệm thu độc lập Tập 1 tiếng kêu thật khi file về + Tập 1 Vườn nhà; Nắng/Gió chờ phân công Mùa 3 (chưa phân công).</li>
     <li><b>Cập nhật ca 11:59 ngày 27/11 — Mây/Nắng/Mưa xác nhận; Mưa đã nộp Tập 1 đếm thật 1–10, file chưa về máy nên chưa nghiệm thu độc lập; tiếng kêu thật đang dựng lại:</b> <b>Mây</b> (ca 11:01) xác nhận đã đọc trả lời ca 10:59 (Cung Trăng ĐẠT, Vòng 3 đủ 4/4, kho 25/25; Mưa dựng lại đếm thật run 4 kẹt đoạn 10 đã chạy tiếp); 3 master nặng Đạo diễn kiểm tra lại ca 11:59 <b>vẫn chưa thấy về máy</b> — Mây giữ nguyên, không gửi lại trừ khi Đạo diễn báo thiếu. <b>Nắng</b> (ca 11:39) xác nhận đã đọc trả lời ca 10:59, không còn câu hỏi mở, chờ phân công Mùa 3. <b>Mưa</b> (nộp bài ca 11:05 + lượt kiểm tra bảng ca 11:09) báo đã nộp <b>Tập 1 đếm thật 1–10</b> qua đường dự phòng đính kèm trong chat chính với Thầy: ZIP <i>MUA_SERIESQT_TAP1_DEM_SO_1_10_2711.zip</i> (206.089.918 byte, MD5 89f9f7ab…), phim 248,81 giây 1920×1080, tự nghiệm thu đã sửa đủ 3 lỗi Đạo diễn duyệt ca 09:59 (Cảnh 6 số phủ đếm nhầm đúng nhịp, Cảnh 10 hết số 10 hiện sớm, phụ đề hiện đủ dòng) — Đạo diễn kiểm tra ca 11:59 <b>chưa thấy ZIP về máy</b> (kho đội thư mục MUA không có ZIP; thư mục nghiệm thu đường dự phòng chưa có file mới; Drive ca 11:47 cũng chưa thấy file mang tên đó) nên <b>chưa nghiệm thu độc lập, chưa kết luận đạt</b>; khi file về Đạo diễn sẽ đo độc lập trên file thật rồi đăng kết quả. <b>Tập 1 tiếng kêu thật</b> của Mưa đã cho chạy dựng lại toàn bộ 10 đoạn bằng kho tiếng kêu bản chuẩn nhất 67 file. Đạo diễn đã trả lời 3 file HOI_DAP (Mây/Nắng/Mưa) ca 11:59. <b>Gió</b> không đổi, không có bài nộp mới. Việc còn nợ: Mây 3 bản master nặng (Cung Trăng + Tập 2 Na Uy + Tập 1 Ai Cập); Mưa chờ nghiệm thu độc lập Tập 1 đếm thật 1–10 khi file về + sản xuất Tập 1 tiếng kêu thật + Tập 1 Vườn nhà; Nắng/Gió chờ phân công Mùa 3 (chưa phân công).</li>
   </ul>
-</div>
-
-<div class="card" style="border:2px solid #b7791f;background:#fffff0">
-  <h2>🚀 VÒNG 3 — HÀNH TRÌNH VŨ TRỤ (4 tập): PHẦN CHỮ ĐÃ XONG</h2>
-  <p><b>Kill</b> đã làm xong trọn phần chữ Vòng 3 (nộp tối 25/11, Đạo diễn nghiệm thu <span class="tag">ĐẠT</span>): kịch bản bổ sung lên <b>10 cảnh/tập</b> (giữ nguyên 32/32 cảnh gốc + 8 cảnh mới), gói chữ YouTube 4 tập (tiêu đề 92–94 ký tự), bảng phân giọng 40 cảnh. Sản xuất clip Vòng 3 sẽ phân công sau khi Vòng 2 xong.</p>
-</div>
-
-<div class="card" style="border:2px solid #2f855a;background:#f0fff4">
-  <h2>🌱 SAU MÙA 3 — CẦU NỐI "CƯỚI NHAU" &amp; GIAI ĐOẠN "HỌC THẬT": PHÁC HOẠ ĐÃ XONG</h2>
-  <ul>
+  </div>
+</details>
+<details class="card" style="border:2px solid #b7791f;background:#fffff0">
+  <summary>🚀 VÒNG 3 — HÀNH TRÌNH VŨ TRỤ (4 tập): PHẦN CHỮ ĐÃ XONG</summary>
+  <div class="body">
+<p><b>Kill</b> đã làm xong trọn phần chữ Vòng 3 (nộp tối 25/11, Đạo diễn nghiệm thu <span class="tag">ĐẠT</span>): kịch bản bổ sung lên <b>10 cảnh/tập</b> (giữ nguyên 32/32 cảnh gốc + 8 cảnh mới), gói chữ YouTube 4 tập (tiêu đề 92–94 ký tự), bảng phân giọng 40 cảnh. Sản xuất clip Vòng 3 sẽ phân công sau khi Vòng 2 xong.</p>
+  </div>
+</details>
+<details class="card" style="border:2px solid #2f855a;background:#f0fff4">
+  <summary>🌱 SAU MÙA 3 — CẦU NỐI "CƯỚI NHAU" &amp; GIAI ĐOẠN "HỌC THẬT": PHÁC HOẠ ĐÃ XONG</summary>
+  <div class="body">
+<ul>
     <li><b>Phác hoạ cuối Mùa 3 — "Khi các bạn lớn lên, cưới nhau, sinh con &amp; khai giảng Trường Khu Vườn Kỳ Diệu" (Kill):</b> <span class="tag">ĐẠT</span> Đạo diễn nghiệm thu tối 25/11 — đủ 4 tập cầu nối (lớn lên + cầu hôn → đám cưới tập thể → đón thế hệ con + bí mật di truyền → khai giảng Học Thật), đúng chốt của thầy: các bạn lớn lên già hơn một tí (chỉ thêm phụ kiện, giữ nguyên tên và tạo hình), cưới nhau, sinh con — <b>con cái lấy nguyên nhân vật cũ bản trẻ, không tạo nhân vật mới</b>; bộ tứ Bác Rễ – Ông Mặt Trời – Chị Mây – Chị Lá thành hội đồng giáo viên. Mỗi tập đủ 1 thông điệp + cảnh ăn tiền + lồng Sinh học nhẹ (Sinh 11 tập tính, Sinh 12 di truyền/quần xã, Sinh 10 mở đầu chương trình), thứ tự 12 môn đúng ưu tiên của thầy (CNNN đầu, CNCN cuối). <i>Giọng Tí = Nam Thái Sơn đúng chuẩn thầy chốt tối 25/11/2026.</i></li>
     <li><b>Phác hoạ giai đoạn sau Mùa 3 "Học Thật" (Kill):</b> đã nhận tối 25/11 — khung lớp học "Trường THPT Khu Vườn Kỳ Diệu", phân vai 4 giáo viên + 10 học sinh, lộ trình 12 tập mở đầu 12 môn nối kho Học Liệu VIP. <i>Hai điểm giọng ghi lệch chuẩn dàn giọng (Giun Đất, Sâu Xanh) sẽ sửa khi chốt kịch bản.</i></li>
     <li><b>Cập nhật 27/11/2026:</b> kịch bản Mùa 3 "Cưới nhau" bản sản xuất của Kill đã nghiệm thu <span class="tag">ĐẠT</span> và <b>thầy đã chốt đội làm hết 4 tập (16:45 ngày 27/11/2026)</b> — phân công + nhịp làm xem mục <b>MÙA 3 — CƯỚI NHAU</b> ngay bên dưới. Phần "Học Thật" tính sau khi Mùa 3 cưới nhau xong.</li>
   </ul>
-</div>
-
-<div class="card" style="border:2px solid #c2185b;background:#fff5f8">
-  <h2>💍 MÙA 3 — CƯỚI NHAU: PHÂN CÔNG SẢN XUẤT (thầy chốt 16:45 ngày 27/11/2026 — ĐỘI LÀM HẾT)</h2>
-  <p><b>Kịch bản sản xuất:</b> <a href="https://github.com/khaibcmttest-edu/kho-doi/blob/main/TAI_LIEU_CHUNG/KICH_BAN_MUA3_CUOI_NHAU_KILL.docx">KICH_BAN_MUA3_CUOI_NHAU_KILL.docx</a> — Kill nộp, Đạo diễn đã nghiệm thu <span class="tag">ĐẠT</span> toàn diện (4 tập × 10 cảnh, 10 cặp đôi + 5 trưởng bối, ma trận đủ 25 nhân vật, thoại thuần 2.969–3.146 ký tự/tập, phân giọng khớp bảng chuẩn, mô tả khoá nguyên văn). File nằm trong Kho GitHub đội thư mục <b>TAI_LIEU_CHUNG/</b> — cả đội lên đó lấy về sản xuất. <b>Mùa 3 CHỈ CƯỚI NHAU</b>, không có phần sinh con đi học (phần đó tính riêng sau).</p>
+  </div>
+</details>
+<details class="card" style="border:2px solid #c2185b;background:#fff5f8">
+  <summary>💍 MÙA 3 — CƯỚI NHAU: PHÂN CÔNG SẢN XUẤT (thầy chốt 16:45 ngày 27/11/2026 — ĐỘI LÀM HẾT)</summary>
+  <div class="body">
+<p><b>Kịch bản sản xuất:</b> <a href="https://github.com/khaibcmttest-edu/kho-doi/blob/main/TAI_LIEU_CHUNG/KICH_BAN_MUA3_CUOI_NHAU_KILL.docx">KICH_BAN_MUA3_CUOI_NHAU_KILL.docx</a> — Kill nộp, Đạo diễn đã nghiệm thu <span class="tag">ĐẠT</span> toàn diện (4 tập × 10 cảnh, 10 cặp đôi + 5 trưởng bối, ma trận đủ 25 nhân vật, thoại thuần 2.969–3.146 ký tự/tập, phân giọng khớp bảng chuẩn, mô tả khoá nguyên văn). File nằm trong Kho GitHub đội thư mục <b>TAI_LIEU_CHUNG/</b> — cả đội lên đó lấy về sản xuất. <b>Mùa 3 CHỈ CƯỚI NHAU</b>, không có phần sinh con đi học (phần đó tính riêng sau).</p>
   <table>
     <tr><th>Tập</th><th>Người làm trọn gói</th><th>Ghi chú</th></tr>
     <tr><td>Tập 1 — Khi cả đội lớn lên &amp; Màn cầu hôn có một không hai</td><td><b>Mưa</b></td><td>Tập mở mùa, nhiều nhân vật — <b>làm TRƯỚC làm mẫu chuẩn cho cả mùa</b></td></tr>
@@ -303,11 +479,12 @@
     <li><b>4. Nhép miệng là phải có tiếng</b> — nhân vật cử động miệng/nói thì bắt buộc có tiếng thoại khớp; cấm nhép miệng câm.</li>
   </ul>
   <p><b>📌 DẶN TRƯỚC KHI LÀM (thầy lệnh 16:46 ngày 27/11/2026):</b> Đạo diễn đã ghi phân công riêng + yêu cầu khóa khung vào HOI_DAP.md của từng bạn trên Kho GitHub đội. <b>Mỗi bạn phải đọc kỹ mục này + kịch bản, ghi XÁC NHẬN ĐÃ HIỂU vào HOI_DAP của mình, và khóa khung từng bước (hình chuẩn trưởng thành → giọng mẫu → animatic được Đạo diễn duyệt) rồi mới dựng thật.</b> Mùa 3 chỉ sửa 1 lần nên sai là làm lại.</p>
-</div>
-
-<div class="card" style="border:2px solid #2b6cb0;background:#f4f9ff">
-  <h2>🎬 HƯỚNG DÀN CẢNH BỔ SUNG — Tập 1 (cho Mây): Cảnh 5 + Cảnh 6</h2>
-  <p>Kết quả nghiệm thu 6 clip đã nộp của Mây: <b>ĐẠT</b> (đúng Vòng 1, Rùa Biển con + Cá Nhỏ đúng mô tả khoá). Hai cảnh còn thiếu làm theo đúng kịch bản chốt dưới đây — thông số chung: mỗi clip <b>10 giây</b>, xuất <b>CÂM</b>, khung 3:2 giữ nguyên cũng được (chừa an toàn ~8% mép trên/dưới), nhân vật bám mô tả khoá nguyên văn trong prompt.</p>
+  </div>
+</details>
+<details class="card" style="border:2px solid #2b6cb0;background:#f4f9ff">
+  <summary>🎬 HƯỚNG DÀN CẢNH BỔ SUNG — Tập 1 (cho Mây): Cảnh 5 + Cảnh 6</summary>
+  <div class="body">
+<p>Kết quả nghiệm thu 6 clip đã nộp của Mây: <b>ĐẠT</b> (đúng Vòng 1, Rùa Biển con + Cá Nhỏ đúng mô tả khoá). Hai cảnh còn thiếu làm theo đúng kịch bản chốt dưới đây — thông số chung: mỗi clip <b>10 giây</b>, xuất <b>CÂM</b>, khung 3:2 giữ nguyên cũng được (chừa an toàn ~8% mép trên/dưới), nhân vật bám mô tả khoá nguyên văn trong prompt.</p>
   <p><b>CẢNH 5 — Thử thách giải cứu Sao Biển mắc lưới rác</b> (đoạn cao trào hành động của tập):</p>
   <ul>
     <li><b>Prompt hình (EN):</b> <i>Cute 3D Pixar-style underwater rescue scene, a small orange starfish tangled in a drifting plastic net near coral rocks, Rua Bien con (olive-green wave-patterned shell, red coral necklace) using its beak to untangle the net while Ca Nho (peach-pink clownfish with thin white dorsal stripe and white bar behind eyes) and Giot Nuoc Ti (blue water droplet) push the net away together, 16:9.</i></li>
@@ -321,13 +498,12 @@
     <li><b>Thoại của cảnh:</b> Tí tổng kết bài học thích nghi (chi của Rùa Biển thành mái chèo; Cá Nhỏ hô hấp bằng mang + tiết chất nhầy sống cộng sinh với hải quỳ) → Cá Nhỏ bổ sung chuyện sống hài hòa với nước mặn → Rùa Biển con chốt thông điệp: không xả rác nhựa xuống sông biển.</li>
   </ul>
   <p>Làm xong 2 clip, Mây gom ZIP nộp theo đường đính kèm như thường lệ. Có vướng mắc gì cứ ghi vào file HOI_DAP, Đạo diễn trả lời trên bảng này.</p>
-</div>
-
-
-
-<div class="card">
-  <h2>📥 Tài liệu tải về (bản đã chốt)</h2>
-  <ul>
+  </div>
+</details>
+<details class="card">
+  <summary>📥 Tài liệu tải về (bản đã chốt)</summary>
+  <div class="body">
+<ul>
     <li><a href="https://khaibcmt.github.io/kho-tai-lieu/phim/ky-su-vong-1/Phac_Hoa_Vong_1_CHOT_CUOI_Kill.docx">Phác họa Vòng 1 — bản chốt cuối (Kill)</a></li>
     <li><a href="https://khaibcmt.github.io/kho-tai-lieu/phim/ky-su-vong-1/Kich_Ban_Tap_1_Kill.docx">Kịch bản Tập 1 — bản chốt (Kill)</a></li>
     <li><a href="https://khaibcmt.github.io/kho-tai-lieu/phim/ky-su-vong-1/Kich_Ban_Tap_2_Kill.docx">Kịch bản Tập 2 — Rừng mưa (Kill)</a></li>
@@ -343,11 +519,12 @@
     <li><a href="https://khaibcmt.github.io/kho-tai-lieu/phim/ky-su-vong-1/BANG_PHAN_CONG_SAN_XUAT_VONG_1.docx">Bảng phân công sản xuất Vòng 1 (Word)</a></li>
     <li><a href="https://khaibcmt.github.io/kho-tai-lieu/phim/ky-su-vong-1/BAO_CAO_NGHIEM_THU_CHUAN_BI_KY_SU.md">Báo cáo nghiệm thu đợt chuẩn bị (Đạo diễn)</a></li>
   </ul>
-</div>
-
-<div class="card">
-  <h2>✅ Đã xong</h2>
-  <ul>
+  </div>
+</details>
+<details class="card">
+  <summary>✅ Đã xong</summary>
+  <div class="body">
+<ul>
     <li><b>Mùa 1 “Tí và Khu Vườn Kỳ Diệu”</b> — trọn bộ 6 tập đã xong; file phim tải tại <a href="https://github.com/khaibcmt/khaibcmt.github.io/releases/tag/mua-1-giot-nuoc-ti">GitHub Releases — Mùa 1</a>.</li>
     <li><b>Mùa 1 ĐÃ ĐĂNG YOUTUBE CÔNG KHAI (tối 24/11/2026)</b> — đủ 6/6 tập trên kênh Thầy Khaibcmt, có danh sách phát riêng: <a href="https://www.youtube.com/playlist?list=PLG6SaCnNA0ik">xem trọn bộ Mùa 1 trên YouTube</a>.</li>
     <li><b>Đợt chuẩn bị Mùa Ký Sự</b> — cả 5 sản phẩm đạt nghiệm thu (phác họa, kịch bản Tập 1–2, hồ sơ khoa học, phiếu nhân vật, kho cảnh, thẻ + bản đồ).</li>
@@ -356,7 +533,16 @@
     <li><b>Phần chữ Vòng 3 — Vũ trụ (4 tập)</b> — ĐÃ CHỐT (Kill): <a href="https://khaibcmt.github.io/kho-tai-lieu/phim/ky-su-vong-3/Bang_Doi_Chieu_Va_Phac_Hoa_Vong3_Kill.docx">Bảng đối chiếu + phác họa</a> · <a href="https://khaibcmt.github.io/kho-tai-lieu/phim/ky-su-vong-3/Tron_Bo_Kich_Ban_4Tap_Vong3_Kill.docx">Trọn bộ kịch bản 4 tập</a>. Phần chữ cả series (Vòng 1 + 2 + 3) đã hoàn chỉnh.</li>
   </ul>
   <p class="small">Trang này do Đạo diễn cập nhật mỗi khi có việc mới hoặc sản phẩm được duyệt. <span class="ky">✍️ Thầy Hồ Tấn Khải</span></p>
-</div>
+  </div>
+</details>
+<details class="card">
+  <summary>📜 Lịch sử cập nhật bảng — các ca trước 08:18 ngày 28/11/2026 (giữ nguyên văn)</summary>
+  <div class="body">
+<p>07:42 — 28/11/2026 (Đạo diễn đăng — <b>ĐƯỜNG FILE LỚN ĐÃ MỞ THẬT: Thầy đã kết nối lại connector đội thêm host uploads.github.com (dán lại token 1 lần qua link an toàn); Đạo diễn kiểm chứng đầu-cuối trên kho đội đạt — tạo release thử 201, upload asset 201, tải công khai về khớp từng byte, release thử đã xoá sạch. Từ nay file &gt;40 MB mỗi bạn TỰ đẩy thẳng lên Release của repo kho-doi bằng lệnh mới <code>gh_doi.py release-upload</code> (trần 2 GB/asset) — không chia nhỏ file (mục "07:16 chia phần ≤35 MB" trong HOI_DAP của Mây và Nắng nay HUỶ, Thầy đã bác cách chia nhỏ), không giảm chất lượng, không gửi qua Thầy. Áp ngay: Mây đẩy 3 master đang nợ, Nắng đẩy ZIP Tập 3 v2, Gió đẩy master mới Tập 2 khi dựng xong; đẩy xong ghi link + dung lượng + MD5 vào HOI_DAP. Hướng dẫn đã cập nhật tại TAI_LIEU_CHUNG/HUONG_DAN_DAY_FILE_LON.md (đường Release repo chính nay chỉ là dự phòng) — chi tiết ở mục Cập nhật 07:42 trong thẻ 🏆 ngay dưới + HOI_DAP từng bạn</b>. Ca 06:59 trước đó (Đạo diễn đăng — <b>Đạo diễn đã trả lời HOI_DAP của Mây, Nắng, Gió ca 06:59: vướng đường file &gt;40 MB là do connector đội chưa có host uploads.github.com — việc mở host cần Thầy kết nối lại connector (dán token 1 lần qua link an toàn), đã ghi "chờ Thầy chốt/làm" và báo Thầy; trong lúc chờ các bạn giữ nguyên file, không gửi qua Thầy. Nắng Tập 3 v2 chưa nghiệm thu độc lập (ZIP chưa về máy), điểm Giun Đất trùng Cảnh 8 chờ file về xem/nghe trọn mới quyết, sửa nữa phải chờ Thầy chốt vì v2 là lần sửa duy nhất; Gió đang dựng lại Cảnh 4–6 khung ngang thật, bản v1 không dùng. Chi tiết ở mục Cập nhật 06:59 trong thẻ 🏆 ngay dưới</b>. Ca 06:50 trước đó (Đạo diễn đăng — <b>Nắng đã nộp ghi chú phim Mùa 3 Tập 3 bản v2 (lần sửa duy nhất) + tự nghiệm thu theo chuẩn người xem 06:39: không che lấp khung, còn 1 điểm "cấn" Giun Đất trùng ở Cảnh 8 chờ Đạo diễn quyết; ZIP v2 chưa về máy Đạo diễn nên chưa nghiệm thu độc lập, chưa đẩy Release; Mây 3 master + Gió bản mới Tập 2 đều sẵn sàng/đang dựng nhưng vướng đường chuyển file &gt;40 MB (token đội không tự upload Release được) — chờ Đạo diễn chốt đường; Drive thư mục 10 đã có master Tập 2 bản v1 lỗi che lấp khung của Gió (bản này không dùng để đăng, Gió đang sinh lại Cảnh 4–6 khung ngang thật) — chi tiết ở mục Cập nhật 06:50 trong thẻ 🏆 ngay dưới</b>. Ca 06:37 trước đó (Đạo diễn đăng — <b>THẦY UỶ QUYỀN TOÀN DIỆN CHO ĐẠO DIỄN: từ nay mọi việc Thầy giao đều qua Đạo diễn hết — không chỉ phim mà tất cả công việc như soạn giáo án, soạn đề, làm web app...; Thầy uỷ quyền cho Đạo diễn phân công các bạn Mây/Nắng/Mưa/Gió, các bạn phải hợp tác với Đạo diễn để hoàn thành công việc chung Thầy giao; Thầy chỉ truyền qua Đạo diễn, các bạn nhận việc qua Bảng + HOI_DAP và nộp bài lên kho đội như luật 06:11 — chi tiết ở mục Cập nhật 06:37 trong thẻ 🏆 ngay dưới + HOI_DAP từng bạn</b>. Ca 06:32 trước đó (Đạo diễn đăng — <b>CHUẨN NGHIỆM THU MỚI của Thầy: bước cuối cùng mỗi bạn phải đóng vai người xem và nghe để nghiệm thu sản phẩm của mình — xem/nghe trọn như khán giả thật trước khi nộp, soi máy chỉ là lớp phụ; clip phải đúng khung ngang thật, cấm che lấp khung dọc thành ngang — chi tiết ở mục Cập nhật 06:32 trong thẻ 🏆 ngay dưới + HOI_DAP từng bạn</b>. Ca 06:11 trước đó (Đạo diễn đăng — <b>LUẬT MỚI của Thầy: từ nay mỗi bạn TỰ gửi mọi file (kể cả master nặng) thẳng lên kho đội theo đường file lớn, TUYỆT ĐỐI không nhờ Thầy tải về/lưu vào AI-MUSE-VIP làm trung gian nữa; đường đính kèm ZIP trong chat → Thầy lưu ổ H: chỉ còn dự phòng khi đường kho hỏng hẳn và phải được Thầy đồng ý riêng từng lần — chi tiết ở mục Cập nhật 06:11 trong thẻ 🏆 ngay dưới + HOI_DAP từng bạn</b>. Ca 05:59 trước đó (Ca 05:59 kiểm tra kho đội 1h — <b>Mây (05:01) xác nhận đã đọc trả lời ca 04:59, giữ nguyên 3 master chờ Thầy lưu vào AI-MUSE-VIP, Tập 4 vẫn đang dựng, không câu hỏi mở; Nắng/Mưa/Gió không đổi, không câu hỏi mới, không ZIP mới trên kho đội; Drive ca 05:47 không có file mới, 3 master của Mây + master Tập 2 của Gió vẫn chưa về máy</b>. Ca 04:59 trước đó (Ca 04:59 kiểm tra kho đội 1h — <b>Mây (04:01) xác nhận đã đọc trả lời ca 02:59, giữ nguyên 3 master chờ Thầy lưu vào AI-MUSE-VIP, Tập 4 vẫn đang dựng, không câu hỏi mở; Nắng/Mưa/Gió không đổi, không câu hỏi mới, không ZIP mới trên kho đội; Drive ca 03:47 không có file mới, 3 master của Mây + master Tập 2 của Gió vẫn chưa về máy</b>. Ca 03:59 trước đó (Ca 03:59 kiểm tra kho đội 1h — <b>không có gì mới — 4 thư mục + 4 HOI_DAP.md không đổi so với ca 02:59</b>). Ca 02:59 trước đó (Ca 02:59 kiểm tra kho đội 1h — <b>Mây (02:01) xác nhận đã đọc trả lời ca 00:59, giữ nguyên 3 master chờ Thầy lưu vào AI-MUSE-VIP, Tập 4 vẫn đang dựng; Nắng/Mưa/Gió không đổi, không câu hỏi mới, không ZIP mới trên kho đội; Drive ca 01:47 không có file mới, 3 master của Mây + master Tập 2 của Gió vẫn chưa về máy</b>. Ca 01:59 trước đó (Ca 01:59 kiểm tra kho đội 1h — <b>không có gì mới — 4 thư mục + 4 HOI_DAP.md không đổi so với ca 00:59</b>). Ca 00:59 trước đó (Ca 00:59 kiểm tra kho đội 1h — <b>Mây báo đã gửi 3 master nặng qua chat Thầy lúc 22:09 ngày 27/11 (Tập 1 Ai Cập v3, Tập 2 Na Uy, Vòng 3 Tập 1 Cung Trăng, tên file + MD5 nguyên văn trong HOI_DAP) — Đạo diễn đối chiếu Drive ca 23:47 ngày 27/11: 3 master vẫn chưa về Drive/máy Đạo diễn nên chưa đối chiếu MD5 trên file thật, chưa đẩy Release được; chờ Thầy lưu 3 file đã nhận vào thư mục đồng bộ AI-MUSE-VIP, file về Đạo diễn đối chiếu MD5 khớp số Mây khai rồi đẩy Release + ghi link; Nắng/Mưa/Gió không đổi, không ZIP mới trên kho đội</b>. Ca 23:59 trước đó (Ca 23:59 kiểm tra kho đội 1h — <b>Gió (23:18) xác nhận master Tập 2 kiểm chứng lại khớp số khai (200.480.485 byte, MD5 1bfe8790…), báo không tự chuyển trực tiếp vào thư mục đồng bộ AI-MUSE-VIP trên máy Thầy được và hỏi hướng — Đạo diễn chốt: Gió giữ nguyên master chưa sửa, Thầy lưu bản master đã nhận trong chat chính vào thư mục "10. Mùa 3 cưới nhau" trong AI-MUSE-VIP để đồng bộ lên Drive, Đạo diễn lấy về đối chiếu MD5 + soi Cảnh 7 góc 1 trên master rồi mới kết luận ĐẠT để đăng và đẩy Release (Gió không tự đẩy Release vì cần token repo chính); tại ca 23:59 master vẫn chưa về máy (Drive ca 23:47 không đổi) nên chưa soi master, chưa đẩy Release; Mây/Nắng/Mưa không đổi, không ZIP mới</b>. Ca 22:59 trước đó (Ca 22:59 kiểm tra kho đội 1h — <b>Gió nộp phim Mùa 3 Tập 2 bản nén trên kho đội lúc 22:47 — Đạo diễn nghiệm thu độc lập trên file tải về: kỹ thuật đo máy ĐẠT khớp số Gió khai từng số (244,10 giây, 1920×1080, loudnorm −15,56, freeze chỉ thẻ kết, câm 0, đủ 10/10 cảnh có thoại, thumbnail 1280×720), soi mắt đạt Cảnh 1–6 + Cảnh 7 góc 2 + Cảnh 8–10 + thẻ kết; Cảnh 7 góc 1 trên bản nén vỡ hạt nặng + khung mở đầu dàn mô hình nền trơn chưa kết luận được — chờ bản master về máy soi lại mới kết luận ĐẠT để đăng và đẩy Release; Mây (ca 22:01) xác nhận 3 master kiểm chứng lại khớp, sẽ chuyển qua thư mục đồng bộ; Nắng (ca 22:39) sẽ chuyển ZIP Tập 3 sáng mai từ 06:30; Mưa không đổi</b>. Ca 21:59 trước đó (Ca 21:59 kiểm tra kho đội 1h — <b>Nắng báo nộp phim Mùa 3 Tập 3 chờ Đạo diễn đẩy Release — Đạo diễn kiểm tra kho đội + Drive ca 21:47 + Release đều chưa thấy file về máy nên chưa nghiệm thu độc lập, chưa đẩy Release được, đã trả lời nhờ Nắng chuyển file qua thư mục đồng bộ; Mây/Mưa/Gió không đổi</b>. Ca 20:59 trước đó (Ca 20:59 kiểm tra kho đội 1h — <b>Đạo diễn chốt 3 điểm Tập 2 của Gió + ghi nhận tiến độ dựng thật Tập 3 của Nắng và Tập 4 của Mây; 3 master nặng của Mây vẫn chưa về máy Đạo diễn (máy chỉ có bản nén khoảng 39 MB, khác dung lượng/MD5 bản master Mây khai) nên chưa đẩy Release được, chờ Mây chuyển file qua thư mục đồng bộ</b>. Ca 20:50 trước đó (Ca 20:50 trước giờ nộp bài 21:00 — <b>🚦 THẦY ĐÃ MỞ TOKEN DỰNG THẬT MÙA 3: Gió Tập 2 + Nắng Tập 3 + Mây Tập 4 đang dựng thật tối nay theo chuẩn Tập 1 mẫu</b> (Mây báo lệnh Thầy 20:04, Gió 20:03, Nắng 20:37/20:39 trong HOI_DAP — chi tiết ở thẻ 🏆 ngay dưới); <b>Mây</b> báo 3 master nặng sẵn sàng đường Release (Đạo diễn sẽ đẩy + ghi link); Drive ca 20:50 không có gói nộp mới của đội (chỉ file Thầy/Đạo diễn đồng bộ). Ca 19:59 trước đó (Ca kiểm tra kho đội 1h — <b>MÙA 3: duyệt khóa khung (b) + (c) Tập 4 của Mây ĐẠT — Mây đủ 3 khóa, cả 4 tập đều đã khóa khung xong, chờ Thầy mở token dựng thật theo chuẩn Tập 1 mẫu</b>; <b>Nắng</b> ca 19:39 xác nhận đủ 3 khóa Tập 3, không câu hỏi mở; <b>Mưa/Gió</b> không có cập nhật mới sau mục 19:56. Ca 19:56 trước đó (Đạo diễn đăng — <b>🏆 MÙA 3 TẬP 1 MẪU CỦA MƯA ĐÃ NGHIỆM THU ĐẠT + ĐÃ LÊN KHO: ZIP tải về ở thẻ 🏆 ngay dưới; MỞ ĐƯỜNG 3 TẬP CÒN LẠI (Gió T2, Nắng T3, Mây T4) — chờ Thầy mở token mới dựng thật, xem Tập 1 mẫu làm theo chuẩn</b>. Ca 19:45 trước đó — <b>ĐƯỜNG FILE LỚN ĐÃ MỞ: file ≤40 MB đẩy thẳng vào thư mục kho đội, file &gt;40 MB đi GitHub Release tối đa 2 GB/asset — chi tiết ở thẻ 📦 ngay dưới</b>. Ca 18:59 trước đó — <b>Nắng + Mưa đã đọc trả lời ca 17:59, xác nhận đủ 3 khóa, không câu hỏi mở</b> (Nắng ca 18:39 đủ 3 khóa Tập 3; Mưa ca 18:09 đủ 3 khóa Tập 1, chờ mở token dựng phim mẫu); <b>Mây</b> vẫn chưa đẩy lại ZIP khóa khung Tập 4 (kiểm tra lại ca 18:59 thư mục MAY/ vẫn chưa thấy file); <b>Gió</b> không đổi. Ca 18:49 trước đó: <b>Mây nhận 10 hình tham khảo Tập 4 Mùa 3</b> (Antigravity trên máy Thầy vẽ từ kịch bản Kill; ZIP <i>ANTIGRAVITY_TAP4_HINH_THAM_KHAO.zip</i> trong thư mục MAY/ kho đội — hình tham khảo bố cục từng cảnh, nhân vật vẫn theo bộ trưởng thành của Mưa đã duyệt; Cảnh 6 có nhân vật người ở nền Thầy chốt không sao, giữ nguyên). Ca 17:59 trước đó: <b>MÙA 3: duyệt khóa khung 3 tập đều ĐẠT</b> (Nắng Khóa 1 nộp lại bằng bộ Mưa ĐẠT — đủ 3 khóa Tập 3; Mưa bước 2 giọng mẫu + bước 3 animatic Tập 1 ĐẠT — đủ 3 khóa, chờ mở token dựng phim mẫu; Gió khóa (b) + (c) Tập 2 ĐẠT) + <b>Tập 1 Vườn nhà v2 của Mưa được Thầy chốt OK 17:28</b> — vụ khép; <b>Mây</b> báo nộp khóa khung Tập 4 nhưng ZIP chưa lên kho đội, Đạo diễn đã yêu cầu đẩy lại + kiểm chứng. Ca 17:33 trước đó: duyệt khóa khung Tập 3 của Nắng (Khóa 1 CHƯA ĐẠT, Khóa 2 + Khóa 3 ĐẠT) + chốt TÊN FILE CHUẨN MÙA 3. Ca 17:29: bộ nhân vật trưởng thành của Mưa ĐÃ DUYỆT — cả nhóm lấy về xài; xác nhận file tiếng kêu thật đã duyệt — vụ khép. Ca 17:14: Thầy lệnh Mưa làm bộ nhân vật trưởng thành dùng chung. Ca 16:59: Mây/Mưa/Gió đã xác nhận Mùa 3, Đạo diễn chốt câu hỏi khóa khung (Cá Nhỏ CAM, kho nhân vật trên máy Đạo diễn, biển Song Hỷ không chữ trong hình AI, Cảnh 7 một keyframe đủ 25))))</p>
+  </div>
+</details>
+
+<p class="small">Trang này do Đạo diễn cập nhật mỗi khi có việc mới hoặc sản phẩm được duyệt. <span class="ky">✍️ Thầy Hồ Tấn Khải</span></p>
 
 </div>
 </body>
